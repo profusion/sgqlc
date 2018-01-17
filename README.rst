@@ -57,7 +57,38 @@ hand-written query (see more at ``examples/basic/http-endpoint.py``):
 However, writing GraphQL queries and later interpreting the results
 may be cumbersome, that's solved with our ``sgqlc.types``, that is
 usually paired with ``sgqlc.operation`` to generate queries and then
-interpret results (see more at ``examples/basic/types.py``):
+interpret results (see more at ``examples/basic/types.py``). The
+example below matches a subset of `GitHub API v4
+<https://developer.github.com/v4/query/>`_, in GraphQL syntax it would
+be::
+
+   query {
+     repository(owner: "profusion", name: "sgqlc") {
+       issues(first: 100) {
+         nodes {
+           number
+           title
+         }
+       }
+     }
+   }
+
+The output JSON object is:
+
+.. code-block:: json
+
+   {
+     "data": {
+       "repository": {
+         "issues": {
+           "nodes": [
+             {"number": 1, "title": "..."},
+             {"number": 2, "title": "..."}
+           ]
+         }
+       }
+     }
+   }
 
 .. code-block:: python
 
