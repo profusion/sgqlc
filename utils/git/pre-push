@@ -1,0 +1,39 @@
+#!/bin/bash
+
+BASE_PATH="$(git rev-parse --show-toplevel)"
+FLAKE8="flake8"
+
+function test_dependencies {
+    if ! type $FLAKE8 &> /dev/null; then
+      printf "\033[41mPlease install Flake8\033[0m\n"
+      return 1
+    fi
+
+    return 0
+}
+
+function call_flake8 {
+
+    echo "Linting Python files with Flake8"
+
+    $FLAKE8 --config $BASE_PATH/setup.cfg $BASE_PATH
+    FLAKE8_EXIT=$?
+
+    if [[ "${FLAKE8_EXIT}" == 0 ]]; then
+      printf "\033[42mFLAKE8 SUCCEEDED\033[0m\n"
+    else
+      printf "\033[41mFLAKE8 FAILED:\033[0m Fix flake8 errors and try again\n"
+      return 1
+    fi
+
+    return 0
+}
+
+EXIT_STATUS=0
+cd $BASE_PATH
+python3 setup.py bdist || (EXIT_STATUS=1 && exit $EXIT_STATUS)
+python3 setup.py sdist || (EXIT_STATUS=1 && exit $EXIT_STATUS)
+test_dependencies || (EXIT_STATUS=1 && exit $EXIT_STATUS)
+call_flake8 || EXIT_STATUS=1
+
+exit $EXIT_STATUS
