@@ -526,7 +526,7 @@ class ContainerTypeMeta(BaseMeta):
     def __dir__(cls):
         original_dir = super(ContainerTypeMeta, cls).__dir__(cls)
         try:
-            fields = list(cls._fields.keys())
+            fields = list(cls.__fields.keys())
         except AttributeError as e:
             fields = []
         return sorted(original_dir + fields)
