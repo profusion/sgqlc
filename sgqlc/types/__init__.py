@@ -240,12 +240,8 @@ class BaseMeta(type):
         if not bases or BaseType in bases or ContainerType in bases:
             return
 
-        auto_register = True
         auto_register_name = '_%s__auto_register' % (name,)
-        try:
-            auto_register = getattr(cls, auto_register_name)
-        except AttributeError:
-            pass
+        auto_register = getattr(cls, auto_register_name, True)
 
         if auto_register:
             cls.__schema__ += cls
@@ -485,11 +481,9 @@ class ContainerTypeMeta(BaseMeta):
     def __populate_interfaces(cls, bases):
         ifaces = []
         for b in bases:
-            if b in (Type, Interface):
-                continue
-            if b.__kind__ == 'interface':
+            if getattr(b, '__kind__', '') == 'interface':
                 ifaces.append(b)
-            for i in b.__interfaces__:
+            for i in getattr(b, '__interfaces__', []):
                 if i not in ifaces:
                     ifaces.append(i)
 
@@ -528,6 +522,14 @@ class ContainerTypeMeta(BaseMeta):
             return cls.__fields[key]
         except KeyError as exc:
             raise AttributeError('%s has no field %s' % (cls, key)) from exc
+
+    def __dir__(cls):
+        original_dir = super(ContainerTypeMeta, cls).__dir__(cls)
+        try:
+            fields = list(cls.__fields.keys())
+        except AttributeError as e:
+            fields = []
+        return sorted(original_dir + fields)
 
     def __iter__(cls):
         return iter(cls.__fields.values())
