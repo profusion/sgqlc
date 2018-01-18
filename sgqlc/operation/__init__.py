@@ -253,6 +253,14 @@ class Selection:
             query = ' {\n%s\n%s}' % ('\n'.join(lst), prefix)
         return prefix + alias + self.__field__.graphql_name + args + query
 
+    def __dir__(self):
+        original_dir = super(Selection, self).__dir__()
+        t = self.__field__.type
+        if not issubclass(t, ContainerType):
+            return original_dir
+        fields = [f.name for f in t]
+        return sorted(original_dir + fields)
+
     def __getattr__(self, name):
         try:
             return self[name]
@@ -372,6 +380,22 @@ class Selector:
         self.__parent += s
         return s
 
+    def __dir__(self):
+        original_dir = super(Selector, self).__dir__()
+        t = self.__field.type
+        if not issubclass(t, ContainerType):
+            return original_dir
+        fields = [f.name for f in t]
+        return sorted(original_dir + fields)
+
+    @property
+    def __fields__(self):
+        '''Calls the selector without arguments, creating a
+        :class:`Selection` instance and return
+        :func:`Selection.__fields__` method, ready to be called.
+        '''
+        return self().__fields__
+
     def __getattr__(self, name):
         try:
             return self[name]
@@ -379,10 +403,7 @@ class Selector:
             raise AttributeError('%s has no field %s' % (self, name)) from exc
 
     def __getitem__(self, name):
-        selection = self()
-        if name == '__fields__':
-            return selection.__fields__
-        return selection[name]
+        return self()[name]
 
     def __str__(self):
         return '%s(field=%s)' % (self.__class__.__name__, self.__field)
