@@ -12,6 +12,309 @@ and `Cursor Connections
 <https://facebook.github.io/relay/graphql/connections.htm>`_, which
 are widely used.
 
+Examples
+--------
+
+>>> from sgqlc.types import Type, Field, list_of
+>>> class NodeBasedInterface(Node):
+...     a_int = int
+...
+>>> NodeBasedInterface # or repr()
+interface NodeBasedInterface implements Node {
+  id: ID!
+  aInt: Int
+}
+>>> class NodeBasedType(Type, Node):
+...     a_int = int
+...
+>>> NodeBasedType # or repr()
+type NodeBasedType implements Node {
+  id: ID!
+  aInt: Int
+}
+
+:class:`Connection` subclasses will get ``page_info`` and
+``total_count``, as well as ``__iadd__`` to merge 2 connections:
+
+>>> class MyEdge(Type):
+...     node = NodeBasedType
+...     cursor = str
+...
+>>> class MyConn(Connection):
+...    nodes = list_of(NodeBasedType)
+...    edges = list_of(MyEdge)
+...
+>>> MyConn # or repr()
+type MyConn {
+  pageInfo: PageInfo!
+  totalCount: Int
+  nodes: [NodeBasedType]
+  edges: [MyEdge]
+}
+>>> class MyTypeWithConn(Type):
+...     conn = Field(MyConn, args=connection_args())
+...
+>>> MyTypeWithConn # or repr()
+type MyTypeWithConn {
+  conn(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): MyConn
+}
+
+Given ``json_data1`` being the contents of the GraphQL query::
+
+   query {
+      getMyTypeWithConn(id: "...") {
+        conn(first: 2) { # first page
+          pageInfo { startCursor, endCursor, hasNextPage, hasPreviousPage }
+          totalCount
+          nodes { id, aInt }
+          edges { cursor, node { id, aInt } }
+        }
+      }
+   }
+
+>>> json_data1 = { # page 1 (2 elements of 4)
+...     'pageInfo': {
+...         'startCursor': 'cursor-1',
+...         'endCursor': 'cursor-2',
+...         'hasNextPage': True,
+...         'hasPreviousPage': False,
+...     },
+...     'totalCount': 4,
+...     'nodes': [
+...         {'id': '1111', 'aInt': 1},
+...         {'id': '2222', 'aInt': 2},
+...     ],
+...     'edges': [
+...         {'cursor': 'cursor-1', 'node': {'id': '1111', 'aInt': 1}},
+...         {'cursor': 'cursor-2', 'node': {'id': '2222', 'aInt': 2}},
+...     ],
+... }
+>>> conn1 = MyConn(json_data1)
+>>> print(conn1.page_info)  # doctest: +ELLIPSIS
+PageInfo(end_cursor=cursor-2, start_cursor=cursor-1, has_next_page=True...
+>>> print(conn1.total_count)
+4
+>>> for n in conn1.nodes:
+...     print(repr(n))
+NodeBasedType(id='1111', a_int=1)
+NodeBasedType(id='2222', a_int=2)
+>>> for e in conn1.edges:
+...     print(repr(e))
+MyEdge(node=NodeBasedType(id='1111', a_int=1), cursor='cursor-1')
+MyEdge(node=NodeBasedType(id='2222', a_int=2), cursor='cursor-2')
+
+
+We'd execute the query to fetch the second page as ``json_data2``::
+
+   query {
+      getMyTypeWithConn(id: "...") {
+        conn(first: 2, after: "cursor-2") { # second page
+          pageInfo { startCursor, endCursor, hasNextPage, hasPreviousPage }
+          totalCount
+          nodes { id, aInt }
+          edges { cursor, node { id, aInt } }
+        }
+      }
+   }
+
+>>> json_data2 = { # page 2 (2 elements of 4)
+...     'pageInfo': {
+...         'startCursor': 'cursor-3',
+...         'endCursor': 'cursor-4',
+...         'hasNextPage': False,
+...         'hasPreviousPage': True,
+...     },
+...     'totalCount': 4,
+...     'nodes': [
+...         {'id': '3333', 'aInt': 3},
+...         {'id': '4444', 'aInt': 4},
+...     ],
+...     'edges': [
+...         {'cursor': 'cursor-3', 'node': {'id': '3333', 'aInt': 3}},
+...         {'cursor': 'cursor-4', 'node': {'id': '4444', 'aInt': 4}},
+...     ],
+... }
+>>> conn2 = MyConn(json_data2)
+>>> print(conn2.page_info)  # doctest: +ELLIPSIS
+PageInfo(end_cursor=cursor-4, start_cursor=cursor-3, has_next_page=False...
+>>> print(conn2.total_count)
+4
+>>> for n in conn2.nodes:
+...     print(repr(n))
+NodeBasedType(id='3333', a_int=3)
+NodeBasedType(id='4444', a_int=4)
+>>> for e in conn2.edges:
+...     print(repr(e))
+MyEdge(node=NodeBasedType(id='3333', a_int=3), cursor='cursor-3')
+MyEdge(node=NodeBasedType(id='4444', a_int=4), cursor='cursor-4')
+
+One can merge ``conn2`` into ``conn1``, also updating its backing
+store ``json_data1``:
+
+>>> conn1 += conn2
+>>> print(conn1.page_info)  # doctest: +ELLIPSIS
+PageInfo(end_cursor=cursor-4, start_cursor=cursor-1, has_next_page=False...
+>>> print(conn1.total_count)
+4
+>>> for n in conn1.nodes:
+...     print(repr(n))
+NodeBasedType(id='1111', a_int=1)
+NodeBasedType(id='2222', a_int=2)
+NodeBasedType(id='3333', a_int=3)
+NodeBasedType(id='4444', a_int=4)
+>>> for e in conn1.edges:
+...     print(repr(e))
+MyEdge(node=NodeBasedType(id='1111', a_int=1), cursor='cursor-1')
+MyEdge(node=NodeBasedType(id='2222', a_int=2), cursor='cursor-2')
+MyEdge(node=NodeBasedType(id='3333', a_int=3), cursor='cursor-3')
+MyEdge(node=NodeBasedType(id='4444', a_int=4), cursor='cursor-4')
+>>> import json
+>>> print(json.dumps(json_data1, sort_keys=True, indent=2))
+{
+  "edges": [
+    {
+      "cursor": "cursor-1",
+      "node": {
+        "aInt": 1,
+        "id": "1111"
+      }
+    },
+    {
+      "cursor": "cursor-2",
+      "node": {
+        "aInt": 2,
+        "id": "2222"
+      }
+    },
+    {
+      "cursor": "cursor-3",
+      "node": {
+        "aInt": 3,
+        "id": "3333"
+      }
+    },
+    {
+      "cursor": "cursor-4",
+      "node": {
+        "aInt": 4,
+        "id": "4444"
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "aInt": 1,
+      "id": "1111"
+    },
+    {
+      "aInt": 2,
+      "id": "2222"
+    },
+    {
+      "aInt": 3,
+      "id": "3333"
+    },
+    {
+      "aInt": 4,
+      "id": "4444"
+    }
+  ],
+  "pageInfo": {
+    "endCursor": "cursor-4",
+    "hasNextPage": false,
+    "hasPreviousPage": false,
+    "startCursor": "cursor-1"
+  },
+  "totalCount": 4
+}
+
+When merging, the receiver connection can be empty:
+
+>>> json_data0 = {}
+>>> conn0 = MyConn(json_data0)
+>>> conn0 += conn1
+>>> print(conn0.page_info)  # doctest: +ELLIPSIS
+PageInfo(end_cursor=cursor-4, start_cursor=cursor-1, has_next_page=False...
+>>> print(conn0.total_count)
+4
+>>> for n in conn0.nodes:
+...     print(repr(n))
+NodeBasedType(id='1111', a_int=1)
+NodeBasedType(id='2222', a_int=2)
+NodeBasedType(id='3333', a_int=3)
+NodeBasedType(id='4444', a_int=4)
+>>> for e in conn0.edges:
+...     print(repr(e))
+MyEdge(node=NodeBasedType(id='1111', a_int=1), cursor='cursor-1')
+MyEdge(node=NodeBasedType(id='2222', a_int=2), cursor='cursor-2')
+MyEdge(node=NodeBasedType(id='3333', a_int=3), cursor='cursor-3')
+MyEdge(node=NodeBasedType(id='4444', a_int=4), cursor='cursor-4')
+>>> print(json.dumps(json_data0, sort_keys=True, indent=2))
+{
+  "edges": [
+    {
+      "cursor": "cursor-1",
+      "node": {
+        "aInt": 1,
+        "id": "1111"
+      }
+    },
+    {
+      "cursor": "cursor-2",
+      "node": {
+        "aInt": 2,
+        "id": "2222"
+      }
+    },
+    {
+      "cursor": "cursor-3",
+      "node": {
+        "aInt": 3,
+        "id": "3333"
+      }
+    },
+    {
+      "cursor": "cursor-4",
+      "node": {
+        "aInt": 4,
+        "id": "4444"
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "aInt": 1,
+      "id": "1111"
+    },
+    {
+      "aInt": 2,
+      "id": "2222"
+    },
+    {
+      "aInt": 3,
+      "id": "3333"
+    },
+    {
+      "aInt": 4,
+      "id": "4444"
+    }
+  ],
+  "pageInfo": {
+    "endCursor": "cursor-4",
+    "hasNextPage": false,
+    "hasPreviousPage": false,
+    "startCursor": "cursor-1"
+  },
+  "totalCount": 4
+}
+
+
+
 :license: ISC
 '''
 
