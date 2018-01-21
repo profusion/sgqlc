@@ -95,6 +95,413 @@ modules will extend the behavior for common conventions:
    <https://facebook.github.io/relay/graphql/connections.htm>`_, which
    are widely used.
 
+
+Examples
+--------
+
+Common Usage
+~~~~~~~~~~~~
+
+Common usage is to create :class:`Type` subclasses with fields without
+arguments and do not use an explicit ``__schema__``, resulting in the
+types being added to the ``global_schema``. Built-in scalars can be
+declared using the Python classes, with :mod:`sgqlc.types` classes or
+with explicit :class:`Field` instances, the :class:`ContainerTypeMeta`
+takes care to make sure they are all instance of :class:`Field` at the
+final class:
+
+>>> class TypeUsingPython(Type):
+...     a_int = int
+...     a_float = float
+...     a_string = str
+...     a_boolean = bool
+...     a_id = id
+...     not_a_field = 1 # not a BaseType subclass or mapped python class
+...
+>>> TypeUsingPython  # or repr(TypeUsingPython), prints out GraphQL!
+type TypeUsingPython {
+  aInt: Int
+  aFloat: Float
+  aString: String
+  aBoolean: Boolean
+  aId: ID
+}
+>>> TypeUsingPython.a_int  # or repr(Field), prints out GraphQL!
+aInt: Int
+>>> TypeUsingPython.a_int.name
+'a_int'
+>>> TypeUsingPython.a_int.graphql_name  # auto-generated from name
+'aInt'
+>>> TypeUsingPython.a_int.type  # always a :mod:`sgqlc.types` class
+scalar Int
+>>> TypeUsingPython.__schema__ is global_schema
+True
+>>> global_schema  # or repr(Schema), prints out GraphQL!
+schema {
+  scalar Int
+  scalar Float
+  scalar String
+  scalar Boolean
+  scalar ID
+  scalar Time
+  scalar Date
+  scalar DateTime
+  interface Node {
+    id: ID!
+  }
+  type PageInfo {
+    endCursor: String
+    startCursor: String
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+  }
+  type TypeUsingPython {
+    aInt: Int
+    aFloat: Float
+    aString: String
+    aBoolean: Boolean
+    aId: ID
+  }
+}
+
+You can then use some standard Python operators to check fields in a
+:class:`Type`:
+
+>>> 'a_float' in TypeUsingPython
+True
+>>> 'x' in TypeUsingPython
+False
+>>> for field in TypeUsingPython:  # iterates over :class:`Field`
+...     print(repr(field))
+...
+aInt: Int
+aFloat: Float
+aString: String
+aBoolean: Boolean
+aId: ID
+
+As mentioned, fields can be created with basic Python types (simpler),
+with :mod:`sgqlc.types` or with :class:`Field` directly:
+
+>>> class TypeUsingSGQLC(Type):
+...     a_int = Int
+...     a_float = Float
+...     a_string = String
+...     a_boolean = Boolean
+...     a_id = ID
+...
+>>> TypeUsingSGQLC  # or repr(TypeUsingSGQLC), prints out GraphQL!
+type TypeUsingSGQLC {
+  aInt: Int
+  aFloat: Float
+  aString: String
+  aBoolean: Boolean
+  aId: ID
+}
+
+Using :class:`Field` instances
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Allows for greater control, such as explicitly define the
+``graphql_name`` instead of generating one from the Python
+``name``. It is also used to declare field arguments:
+
+>>> class TypeUsingFields(Type):
+...     a_int = Field(int)         # can use Python classes
+...     a_float = Field(float)
+...     a_string = Field(String)   # or sgqlc.types classes
+...     a_boolean = Field(Boolean)
+...     a_id = Field(ID, graphql_name='anotherName') # allows customizations
+...     pow = Field(int, args={'base': int, 'exp': int}) # with arguments
+...     # more than 3 arguments renders each into new line
+...     many = Field(int, args={'a': int, 'b': int, 'c': int, 'd': int})
+...
+>>> TypeUsingFields  # or repr(TypeUsingFields), prints out GraphQL!
+type TypeUsingFields {
+  aInt: Int
+  aFloat: Float
+  aString: String
+  aBoolean: Boolean
+  anotherName: ID
+  pow(base: Int, exp: Int): Int
+  many(
+    a: Int
+    b: Int
+    c: Int
+    d: Int
+  ): Int
+}
+
+Adding types to specific :class:`Schema`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Create a schema instance and assign as ``__schema__`` class
+member. Note that previously defined types in ``base_schema`` are
+inherited, and by default ``global_schema`` is used as base schema:
+
+>>> my_schema = Schema(global_schema)
+>>> class MySchemaType(Type):
+...     __schema__ = my_schema
+...     i = int
+...
+>>> class MyOtherType(Type):
+...     i = int
+...
+>>> 'TypeUsingPython' in my_schema
+True
+>>> 'MySchemaType' in global_schema
+False
+>>> 'MySchemaType' in my_schema
+True
+>>> 'MyOtherType' in global_schema
+True
+>>> 'MyOtherType' in my_schema  # added after my_schema was created!
+False
+>>> my_schema.MySchemaType  # access types as schema attributes
+type MySchemaType {
+  i: Int
+}
+>>> my_schema['MySchemaType']  # access types as schema items
+type MySchemaType {
+  i: Int
+}
+>>> for t in my_schema:  # doctest: +ELLIPSIS
+...     print(repr(t))
+...
+scalar Int
+scalar Float
+...
+type MySchemaType {
+  i: Int
+}
+
+
+Inheritance and Interfaces
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Inheriting another type inherits all fields:
+
+>>> class MySubclass(TypeUsingPython):
+...     sub_field = int
+...
+>>> MySubclass
+type MySubclass {
+  aInt: Int
+  aFloat: Float
+  aString: String
+  aBoolean: Boolean
+  aId: ID
+  subField: Int
+}
+
+Interfaces are similar, however they emit ``implements IfaceName``:
+
+>>> class MyIface(Interface):
+...     sub_field = int
+...
+>>> MyIface
+interface MyIface {
+  subField: Int
+}
+>>> class MySubclassWithIface(TypeUsingPython, MyIface):
+...     pass
+...
+>>> MySubclassWithIface
+type MySubclassWithIface implements MyIface {
+  aInt: Int
+  aFloat: Float
+  aString: String
+  aBoolean: Boolean
+  aId: ID
+  subField: Int
+}
+
+Although usually types are declared first, they can be declared after
+interfaces as well. Note order of fields respect inheritance order:
+
+>>> class MySubclassWithIface2(MyIface, TypeUsingPython):
+...     pass
+...
+>>> MySubclassWithIface2
+type MySubclassWithIface2 implements MyIface {
+  subField: Int
+  aInt: Int
+  aFloat: Float
+  aString: String
+  aBoolean: Boolean
+  aId: ID
+}
+
+Cross References (Loops)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+If types link to themselves, declare as strings so they are
+lazy-evaluated:
+
+>>> class LinkToItself(Type):
+...    other = Field('LinkToItself')
+...    non_null_other = non_null('LinkToItself')
+...    list_other = list_of('LinkToItself')
+...    list_other_non_null = list_of(non_null('LinkToItself'))
+...    non_null_list_other_non_null = non_null(list_of(non_null(
+...        'LinkToItself')))
+...
+>>> LinkToItself
+type LinkToItself {
+  other: LinkToItself
+  nonNullOther: LinkToItself!
+  listOther: [LinkToItself]
+  listOtherNonNull: [LinkToItself!]
+  nonNullListOtherNonNull: [LinkToItself!]!
+}
+>>> LinkToItself.other.type
+type LinkToItself {
+  other: LinkToItself
+  nonNullOther: LinkToItself!
+  listOther: [LinkToItself]
+  listOtherNonNull: [LinkToItself!]
+  nonNullListOtherNonNull: [LinkToItself!]!
+}
+
+Also works for two unrelated types:
+
+>>> class CrossLinkA(Type):
+...    other = Field('CrossLinkB')
+...    non_null_other = non_null('CrossLinkB')
+...    list_other = list_of('CrossLinkB')
+...    list_other_non_null = list_of(non_null('CrossLinkB'))
+...    non_null_list_other_non_null = non_null(list_of(non_null(
+...        'CrossLinkB')))
+...
+>>> class CrossLinkB(Type):
+...    other = Field('CrossLinkA')
+...    non_null_other = non_null('CrossLinkA')
+...    list_other = list_of('CrossLinkA')
+...    list_other_non_null = list_of(non_null('CrossLinkA'))
+...    non_null_list_other_non_null = non_null(list_of(non_null(
+...        'CrossLinkA')))
+...
+>>> CrossLinkA
+type CrossLinkA {
+  other: CrossLinkB
+  nonNullOther: CrossLinkB!
+  listOther: [CrossLinkB]
+  listOtherNonNull: [CrossLinkB!]
+  nonNullListOtherNonNull: [CrossLinkB!]!
+}
+>>> CrossLinkB
+type CrossLinkB {
+  other: CrossLinkA
+  nonNullOther: CrossLinkA!
+  listOther: [CrossLinkA]
+  listOtherNonNull: [CrossLinkA!]
+  nonNullListOtherNonNull: [CrossLinkA!]!
+}
+>>> CrossLinkA.other.type
+type CrossLinkB {
+  other: CrossLinkA
+  nonNullOther: CrossLinkA!
+  listOther: [CrossLinkA]
+  listOtherNonNull: [CrossLinkA!]
+  nonNullListOtherNonNull: [CrossLinkA!]!
+}
+>>> CrossLinkB.other.type
+type CrossLinkA {
+  other: CrossLinkB
+  nonNullOther: CrossLinkB!
+  listOther: [CrossLinkB]
+  listOtherNonNull: [CrossLinkB!]
+  nonNullListOtherNonNull: [CrossLinkB!]!
+}
+
+Utilities
+~~~~~~~~~
+
+One can obtain fields as container attributes or items:
+
+>>> TypeUsingPython.a_int
+aInt: Int
+>>> TypeUsingPython['a_int']
+aInt: Int
+
+However they raise exceptions if doesn't exist:
+
+>>> TypeUsingPython.does_not_exist
+Traceback (most recent call last):
+  ...
+AttributeError: TypeUsingPython has no field does_not_exist
+>>> TypeUsingPython['does_not_exist']
+Traceback (most recent call last):
+  ...
+KeyError: 'TypeUsingPython has no field does_not_exist'
+
+Fields show in ``dir()`` alongside with non-fields (sorted):
+
+>>> for name in dir(TypeUsingPython):
+...     if not name.startswith('_'):
+...         print(name)
+a_boolean
+a_float
+a_id
+a_int
+a_string
+not_a_field
+
+Unless :func:`non_null` is used, containers can be created for
+``None``:
+
+>>> TypeUsingPython(None)
+TypeUsingPython()
+
+>>> TypeUsingPython.__to_json_value__(None) # returns None
+
+For instances, field values can be obtained or set attributes or
+items, when setting a known field, it also updates the backing store:
+
+>>> json_data = {'aInt': 1}
+>>> obj = TypeUsingPython(json_data)
+>>> obj.a_int
+1
+>>> obj['a_int']
+1
+>>> obj.a_int = 2
+>>> json_data['aInt']
+2
+>>> obj['a_int'] = 3
+>>> json_data['aInt']
+3
+>>> obj['a_float'] = 2.1 # known field!
+>>> json_data['aFloat']
+2.1
+>>> obj.a_float = 3.3 # known field!
+>>> json_data['aFloat']
+3.3
+
+Unknown fields raise exceptions when obtained, but are allowed to be
+set, however doesn't update the backing store:
+
+>>> obj.does_not_exist
+Traceback (most recent call last):
+  ...
+AttributeError: 'TypeUsingPython' object has no attribute 'does_not_exist'
+>>> obj['does_not_exist']
+Traceback (most recent call last):
+  ...
+KeyError: 'TypeUsingPython(a_int=3, a_float=3.3) has no field does_not_exist'
+>>> obj['does_not_exist'] = 'abc' # unknown field, no updates to json_data
+>>> json_data['does_not_exist']
+Traceback (most recent call last):
+  ...
+KeyError: 'does_not_exist'
+
+While ``repr()`` prints out summary in Python-friendly syntax, ``bytes()``
+can be used to get compressed JSON with sorted keys:
+
+>>> print(repr(obj))
+TypeUsingPython(a_int=3, a_float=3.3)
+>>> print(bytes(obj).decode('utf-8'))
+{"aFloat":3.3,"aInt":3}
+
 :license: ISC
 '''
 
@@ -128,7 +535,7 @@ class Schema:
     Once types are constructed, they are automatically added to the
     schema as properties of the same name, for example
     :class:`Int` is exposed as ``schema.Int``,
-    ``schema['Int']`` or ``schema.scalars['Int']``.
+    ``schema['Int']`` or ``schema.scalar['Int']``.
 
     New schema will inherit the types defined at ``base_schema``,
     which defaults to ``global_schema``, at the time of their
@@ -164,12 +571,91 @@ class Schema:
                 self.__kinds.setdefault(k, ODict()).update(v)
 
     def __contains__(self, key):
+        '''Checks if the type name is known in this schema.
+
+        Considering ``TypeUsingPython``, previously declared in the
+        module documentation:
+
+        >>> 'TypeUsingPython' in global_schema
+        True
+        >>> 'UnknownTypeName' in global_schema
+        False
+        '''
         return key in self.__all
 
     def __getitem__(self, key):
+        '''Get the type given its name.
+
+        Considering ``TypeUsingPython``, previously declared in the
+        module documentation:
+
+        >>> global_schema['TypeUsingPython']
+        type TypeUsingPython {
+          aInt: Int
+          aFloat: Float
+          aString: String
+          aBoolean: Boolean
+          aId: ID
+        }
+
+        >>> global_schema['UnknownTypeName']
+        Traceback (most recent call last):
+          ...
+        KeyError: 'UnknownTypeName'
+        '''
         return self.__all[key]
 
     def __getattr__(self, key):
+        '''Get the type using schema attribute.
+
+        Considering ``TypeUsingPython``, previously declared in the
+        module documentation:
+
+        >>> global_schema.TypeUsingPython
+        type TypeUsingPython {
+          aInt: Int
+          aFloat: Float
+          aString: String
+          aBoolean: Boolean
+          aId: ID
+        }
+
+        >>> global_schema.UnknownTypeName
+        Traceback (most recent call last):
+          ...
+        AttributeError: UnknownTypeName
+
+        One can use ``Schema.kind.Type`` syntax as well, it exposes an
+        :class:`ODict` object:
+
+        >>> global_schema.scalar.Int
+        scalar Int
+        >>> global_schema.scalar['Int']
+        scalar Int
+        >>> global_schema.scalar.UnknownTypeName  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+          ...
+        AttributeError: ... has no field UnknownTypeName
+        >>> global_schema.type.TypeUsingPython  # doctest: +ELLIPSIS
+        type TypeUsingPython {
+        ...
+        >>> for t in global_schema.type.values():  # doctest: +ELLIPSIS
+        ...     print(repr(t))
+        ...
+        type PageInfo {
+        ...
+        type TypeUsingPython {
+        ...
+        type TypeUsingSGQLC {
+        ...
+        type TypeUsingFields {
+        ...
+        type MyOtherType {
+        ...
+        type MyType {
+        ...
+        }
+        '''
         try:
             return self.__kinds[key]  # .type, .scalar, etc...
         except KeyError:
@@ -180,6 +666,19 @@ class Schema:
             raise AttributeError(key) from exc
 
     def __iter__(self):
+        '''Schema provides an iterator over :class:`BaseType`
+        subclasses:
+
+        >>> for t in global_schema:  # doctest: +ELLIPSIS
+        ...     print(repr(t))
+        ...
+        scalar Int
+        scalar Float
+        ...
+        type MyType {
+        ...
+        }
+        '''
         return iter(self.__all.values())
 
     def __iadd__(self, typ):
@@ -192,6 +691,42 @@ class Schema:
         schema, otherwise :class:`ValueError` is raised.
 
         To remove a type, use ``schema -= typ``.
+
+        As explained in the :mod:`sgqlc.types` documentation, the
+        newly created schema will inherit types from the base schema
+        only at creation time:
+
+        >>> my_schema = Schema(global_schema)
+        >>> class MySchemaType(Type):
+        ...     __schema__ = my_schema
+        ...     i = int
+        ...
+        >>> 'MySchemaType' in global_schema
+        False
+        >>> 'MySchemaType' in my_schema
+        True
+
+        But ``__iadd__`` and ``__isub__`` can be used to add or remove
+        types:
+
+        >>> global_schema += MySchemaType
+        >>> 'MySchemaType' in global_schema
+        True
+        >>> global_schema -= MySchemaType
+        >>> 'MySchemaType' in global_schema
+        False
+
+        Note that different type with the same name can't be added:
+
+        >>> my_schema2 = Schema(global_schema)
+        >>> class MySchemaType(Type):   # redefining, different schema: ok
+        ...     __schema__ = my_schema2
+        ...     f = float
+        ...
+        >>> my_schema += MySchemaType
+        Traceback (most recent call last):
+          ...
+        ValueError: Schema already has MySchemaType=MySchemaType
         '''
         name = typ.__name__
         t = self.__all.setdefault(name, typ)
@@ -214,6 +749,15 @@ class Schema:
         return self
 
     def __str__(self):
+        '''Short schema, using only type names.
+
+        Instead of declaring the whole schema in GraphQL notation as
+        done by ``repr()``, just list the type names:
+
+        >>> print(str(global_schema))  # doctest: +ELLIPSIS
+        {Int, Float, String, Boolean, ID, ...}
+
+        '''
         return '{' + ', '.join(str(e) for e in self) + '}'
 
     def __to_graphql__(self, indent=0, indent_string='  '):
@@ -227,6 +771,17 @@ class Schema:
         return self.__to_graphql__()
 
     def __bytes__(self):
+        '''GraphQL schema without indentation.
+
+        >>> print(bytes(global_schema).decode('utf-8'))  # doctest: +ELLIPSIS
+        schema {
+        scalar Int
+        scalar Float
+        scalar String
+        ...
+        }
+
+        '''
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
 
 
@@ -260,6 +815,18 @@ class BaseMeta(type):
         return bytes(cls.__to_graphql__(indent_string=''), 'utf-8')
 
     def __ensure__(cls, t):
+        '''Checks if ``t`` is subclass of ``BaseType`` or if a mapping
+        is known.
+
+        >>> BaseType.__ensure__(Int)
+        scalar Int
+        >>> BaseType.__ensure__(int)
+        scalar Int
+        >>> BaseType.__ensure__(bytes)
+        Traceback (most recent call last):
+           ...
+        TypeError: Not BaseType or mapped: <class 'bytes'>
+        '''
         if isinstance(t, type) and issubclass(t, cls):
             return t
         try:
@@ -276,16 +843,8 @@ class BaseType(metaclass=BaseMeta):
     __kind__ = None
 
 
-def non_null(t):
-    '''Generates non-null type (t!)
-    '''
-    t = BaseType.__ensure__(t)
-    name = t.__name__ + '!'
-    try:
-        return t.__schema__.__cache__[name]
-    except KeyError:
-        pass
-
+def _create_non_null_wrapper(name, t):
+    'creates type wrapper for non-null of given type'
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             raise ValueError(name + ' received null value')
@@ -294,33 +853,21 @@ def non_null(t):
     def __to_graphql_input__(value, indent=0, indent_string='  '):
         return t.__to_graphql_input__(value, indent, indent_string)
 
-    wrapper = type(name, (t,), {
+    return type(name, (t,), {
         '__new__': __new__,
         '_%s__auto_register' % name: False,
         '__to_graphql_input__': __to_graphql_input__,
     })
-    t.__schema__.__cache__[name] = wrapper
-    return wrapper
 
 
-def list_of(t):
-    '''Generates list of types ([t])
-    '''
-    t = BaseType.__ensure__(t)
-    name = '[' + t.__name__ + ']'
-    try:
-        return t.__schema__.__cache__[name]
-    except KeyError:
-        pass
-
+def _create_list_of_wrapper(name, t):
+    'creates type wrapper for list of given type'
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             return None
         return [t(v, selection_list) for v in json_data]
 
     def __to_graphql_input__(value, indent=0, indent_string='  '):
-        if value is None:
-            return None
         r = []
         for v in value:
             r.append(t.__to_graphql_input__(v, indent, indent_string))
@@ -331,12 +878,282 @@ def list_of(t):
             return None
         return [t.__to_json_value__(v) for v in value]
 
-    wrapper = type(name, (t,), {
+    return type(name, (t,), {
         '__new__': __new__,
         '_%s__auto_register' % name: False,
         '__to_graphql_input__': __to_graphql_input__,
         '__to_json_value__': __to_json_value__,
     })
+
+
+class Lazy:
+    '''Holds a type name until it's created.
+
+    This is used to solve cross reference problems, the fields will
+    store an instance of this until it's evaluated.
+    '''
+    __slots__ = ('name', 'target_name', 'ready_cb', 'inner_lazy')
+
+    def __init__(self, name, target_name, ready_cb, inner_lazy=None):
+        self.name = name
+        self.target_name = target_name
+        self.ready_cb = ready_cb
+        self.inner_lazy = inner_lazy
+
+    def __repr__(self):
+        '''Print out pending Lazy
+
+        >>> Lazy('a', 'a!', lambda x: x)
+        <Lazy name='a' target_name='a!'>
+
+        '''
+        return str(self)
+
+    def __str__(self):
+        return '<Lazy name=%r target_name=%r>' % (self.name, self.target_name)
+
+    def resolve(self, schema):
+        trail = []
+        lazy = self
+        while lazy.inner_lazy is not None:
+            trail.append(lazy)
+            lazy = lazy.inner_lazy
+
+        t = lazy.ready_cb(schema[lazy.name])
+        while trail:
+            lazy = trail.pop()
+            t = lazy.ready_cb(t)
+
+        return t
+
+
+def non_null(t):
+    '''Generates non-null type (t!)
+
+    >>> class TypeWithNonNullFields(Type):
+    ...     a_int = non_null(int)
+    ...     a_float = non_null(Float)
+    ...     a_string = Field(non_null(String))
+    ...
+    >>> TypeWithNonNullFields
+    type TypeWithNonNullFields {
+      aInt: Int!
+      aFloat: Float!
+      aString: String!
+    }
+
+    Giving proper JSON data:
+
+    >>> json_data = {'aInt': 1, 'aFloat': 2.1, 'aString': 'hello'}
+    >>> obj = TypeWithNonNullFields(json_data)
+    >>> obj
+    TypeWithNonNullFields(a_int=1, a_float=2.1, a_string='hello')
+
+    Giving incorrect JSON data:
+
+    >>> json_data = {'aInt': None, 'aFloat': 2.1, 'aString': 'hello'}
+    >>> obj = TypeWithNonNullFields(json_data)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: TypeWithNonNullFields selection 'a_int': ...
+    >>> json_data = {'aInt': 1, 'aFloat': None, 'aString': 'hello'}
+    >>> obj = TypeWithNonNullFields(json_data)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: TypeWithNonNullFields selection 'a_float': ...
+    >>> json_data = {'aInt': 1, 'aFloat': 2.1, 'aString': None}
+    >>> obj = TypeWithNonNullFields(json_data)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: TypeWithNonNullFields selection 'a_string': ...
+
+    .. note::
+
+       Note that **missing** keys in JSON data are not considered
+       ``None``, and they won't show in ``iter(obj)``, ``__str__()``
+       or ``__repr__()``
+
+       >>> json_data = {'aInt': 1, 'aFloat': 2.1}
+       >>> obj = TypeWithNonNullFields(json_data)
+       >>> obj # repr()
+       TypeWithNonNullFields(a_int=1, a_float=2.1)
+       >>> for field_name in obj:
+       ...     print(field_name, repr(obj[field_name]))
+       ...
+       a_int 1
+       a_float 2.1
+
+    '''
+    if isinstance(t, str):
+        return Lazy(t, t + '!', non_null)
+    elif isinstance(t, Lazy):
+        return Lazy(t.target_name, t.target_name + '!', non_null, t)
+
+    t = BaseType.__ensure__(t)
+    name = t.__name__ + '!'
+    try:
+        return t.__schema__.__cache__[name]
+    except KeyError:
+        pass
+
+    wrapper = _create_non_null_wrapper(name, t)
+    t.__schema__.__cache__[name] = wrapper
+    return wrapper
+
+
+def list_of(t):
+    '''Generates list of types ([t])
+
+    The example below highlights the usage including its usage with
+    lists:
+
+    - ``non_null_list_of_int`` means it must be a list, not ``None``,
+      however list elements may be ``None``, ie: ``[None, 1, None, 2]``;
+
+    - ``list_of_non_null_int`` means it may be ``None`` or be a list,
+      however list elements must not be ``None``, ie: ``None`` or
+      ``[1, 2]``;
+
+    - ``non_null_list_of_non_null_int`` means it must be a list, not
+      ``None`` **and** the list elements must not be ``Non``, ie:
+      ``[1, 2]``.
+
+    >>> class TypeWithListFields(Type):
+    ...     list_of_int = list_of(int)
+    ...     list_of_float = list_of(Float)
+    ...     list_of_string = Field(list_of(String))
+    ...     non_null_list_of_int = non_null(list_of(int))
+    ...     list_of_non_null_int = list_of(non_null(int))
+    ...     non_null_list_of_non_null_int = non_null(list_of(non_null(int)))
+    ...
+    >>> TypeWithListFields
+    type TypeWithListFields {
+      listOfInt: [Int]
+      listOfFloat: [Float]
+      listOfString: [String]
+      nonNullListOfInt: [Int]!
+      listOfNonNullInt: [Int!]
+      nonNullListOfNonNullInt: [Int!]!
+    }
+
+    It takes care to enforce proper type, including non-null checking
+    on its elements when creating instances. Giving proper JSON data:
+
+    >>> json_data = {
+    ...     'listOfInt': [1, 2],
+    ...     'listOfFloat': [1.1, 2.1],
+    ...     'listOfString': ['hello', 'world'],
+    ...     'nonNullListOfInt': [None, 1, None, 2],
+    ...     'listOfNonNullInt': [1, 2, 3],
+    ...     'nonNullListOfNonNullInt': [1, 2, 3, 4],
+    ... }
+    >>> obj = TypeWithListFields(json_data)
+    >>> for field_name in obj:
+    ...     print(field_name, repr(obj[field_name]))
+    ...
+    list_of_int [1, 2]
+    list_of_float [1.1, 2.1]
+    list_of_string ['hello', 'world']
+    non_null_list_of_int [None, 1, None, 2]
+    list_of_non_null_int [1, 2, 3]
+    non_null_list_of_non_null_int [1, 2, 3, 4]
+
+    Note that lists that are **not** enclosed in ``non_null()`` can be
+    ``None``:
+
+    >>> json_data = {
+    ...     'listOfInt': None,
+    ...     'listOfFloat': None,
+    ...     'listOfString': None,
+    ...     'nonNullListOfInt': [None, 1, None, 2],
+    ...     'listOfNonNullInt': None,
+    ...     'nonNullListOfNonNullInt': [1, 2, 3],
+    ... }
+    >>> obj = TypeWithListFields(json_data)
+    >>> for field_name in obj:
+    ...     print(field_name, repr(obj[field_name]))
+    ...
+    list_of_int None
+    list_of_float None
+    list_of_string None
+    non_null_list_of_int [None, 1, None, 2]
+    list_of_non_null_int None
+    non_null_list_of_non_null_int [1, 2, 3]
+
+    Types will be converted, so although not usual (since GraphQL
+    gives you the proper JSON type), this can be done:
+
+    >>> json_data = {
+    ...     'listOfInt': ['1', '2'],
+    ...     'listOfFloat': [1, '2.1'],
+    ...     'listOfString': ['hello', 2],
+    ...     'nonNullListOfInt': [None, '1', None, 2.1],
+    ...     'listOfNonNullInt': ['1', 2.1, 3],
+    ...     'nonNullListOfNonNullInt': ['1', 2.1, 3, 4],
+    ... }
+    >>> obj = TypeWithListFields(json_data)
+    >>> for field_name in obj:
+    ...     print(field_name, repr(obj[field_name]))
+    ...
+    list_of_int [1, 2]
+    list_of_float [1.0, 2.1]
+    list_of_string ['hello', '2']
+    non_null_list_of_int [None, 1, None, 2]
+    list_of_non_null_int [1, 2, 3]
+    non_null_list_of_non_null_int [1, 2, 3, 4]
+
+    Giving incorrect (nonconvertible) JSON data will raise exceptions:
+
+    >>> json_data = { 'listOfInt': 1 }
+    >>> obj = TypeWithListFields(json_data)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+       ...
+    ValueError: TypeWithListFields selection 'list_of_int': ...
+
+    >>> json_data = { 'listOfInt': ['x'] }
+    >>> obj = TypeWithListFields(json_data)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+       ...
+    ValueError: TypeWithListFields selection 'list_of_int': ...
+
+    >>> json_data = { 'listOfNonNullInt': [1, None] }
+    >>> obj = TypeWithListFields(json_data)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+       ...
+    ValueError: TypeWithListFields selection 'list_of_non_null_int': ...
+
+
+    Lists are usable as input types as well:
+
+    >>> class TypeWithListInput(Type):
+    ...     a = Field(str, args={'values': Arg(list_of(int), default=[1, 2])})
+    ...     b = Field(str, args={'values': Arg(list_of(int))})
+    ...
+    >>> TypeWithListInput
+    type TypeWithListInput {
+      a(values: [Int] = [1, 2]): String
+      b(values: [Int]): String
+    }
+
+    >>> print(json.dumps(list_of(int).__to_json_value__([1, 2])))
+    [1, 2]
+    >>> print(json.dumps(list_of(int).__to_json_value__(None)))
+    null
+
+    '''
+    if isinstance(t, str):
+        return Lazy(t, '[' + t + ']', list_of)
+    elif isinstance(t, Lazy):
+        return Lazy(t.target_name, '[' + t.target_name + ']', list_of, t)
+
+    t = BaseType.__ensure__(t)
+    name = '[' + t.__name__ + ']'
+    try:
+        return t.__schema__.__cache__[name]
+    except KeyError:
+        pass
+
+    wrapper = _create_list_of_wrapper(name, t)
     t.__schema__.__cache__[name] = wrapper
     return wrapper
 
@@ -350,6 +1167,15 @@ class Scalar(BaseType):
 
     Scalar classes will never produce instance of themselves, rather
     return the converted value (int, bool...)
+
+    >>> class MyTypeWithScalar(Type):
+    ...     v = Scalar
+    ...
+    >>> MyTypeWithScalar({'v': 1}).v
+    1
+    >>> MyTypeWithScalar({'v': 'abc'}).v
+    'abc'
+
     '''
     __kind__ = 'scalar'
 
@@ -361,6 +1187,8 @@ class Scalar(BaseType):
 
     @classmethod
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
+        if hasattr(value, '__to_graphql_input__'):
+            return value.__to_graphql_input__(value, indent, indent_string)
         return json.dumps(cls.__to_json_value__(value))
 
     @classmethod
@@ -417,6 +1245,51 @@ class Enum(BaseType, metaclass=EnumMeta):
     Note that ``__choices__`` is not set in the final class, the
     metaclass will use that to build members and provide the
     ``__iter__``, ``__contains__`` and ``__len__`` instead.
+
+    The instance constructor will never return instance of
+    :class:`Enum`, rather the string, if that matches.
+
+    Examples:
+
+    >>> class Colors(Enum):
+    ...     __choices__ = ('RED', 'GREEN', 'BLUE')
+    ...
+    >>> Colors('RED')
+    'RED'
+    >>> Colors(None) # returns None
+    >>> Colors('MAGENTA')
+    Traceback (most recent call last):
+      ...
+    ValueError: Colors does not accept value MAGENTA
+
+    Using a string will automatically split and convert to tuple:
+
+    >>> class Fruits(Enum):
+    ...     __choices__ = 'APPLE ORANGE BANANA'
+    ...
+    >>> Fruits.__choices__
+    ('APPLE', 'ORANGE', 'BANANA')
+    >>> len(Fruits)
+    3
+
+    Failing to define choices will raise exception:
+
+    >>> class FailureEnum(Enum):
+    ...     pass
+    Traceback (most recent call last):
+      ...
+    ValueError: FailureEnum: missing __choices__
+
+    Enumerations have a special syntax in GraphQL, no quotes:
+
+    >>> print(Fruits.__to_graphql_input__(Fruits.APPLE))
+    APPLE
+
+    And for JSON it's a string as well (so JSON encoder adds quotes):
+
+    >>> print(json.dumps(Fruits.__to_json_value__(Fruits.APPLE)))
+    "APPLE"
+
     '''
     __kind__ = 'enum'
     __choices__ = ()
@@ -429,29 +1302,80 @@ class Enum(BaseType, metaclass=EnumMeta):
         return json_data
 
 
-class Union(BaseType):
+class UnionMeta(BaseMeta):
+    'meta class to set __types__ as :class:`BaseType` instances'
+
+    def __init__(cls, name, bases, namespace):
+        super(UnionMeta, cls).__init__(name, bases, namespace)
+        if not cls.__types__ and BaseType not in bases:
+            raise ValueError(name + ': missing __types__')
+
+        types = []
+        for t in cls.__types__:
+            if isinstance(t, str):
+                t = cls.__schema__[t]
+            else:
+                t = BaseType.__ensure__(t)
+            types.append(t)
+
+        cls.__types__ = tuple(types)
+
+    def __contains__(cls, name_or_type):
+        if isinstance(name_or_type, str):
+            name_or_type = cls.__schema__[name_or_type]
+        else:
+            name_or_type = BaseType.__ensure__(name_or_type)
+        return name_or_type in cls.__types__
+
+    def __iter__(cls):
+        return iter(cls.__types__)
+
+    def __len__(cls):
+        return len(cls.__types__)
+
+    def __to_graphql__(cls, indent=0, indent_string='  '):
+        suffix = ' = ' + ' | '.join(str(c) for c in cls.__types__)
+        return BaseMeta.__to_graphql__(cls, indent, indent_string) + suffix
+
+
+class Union(BaseType, metaclass=UnionMeta):
     '''This is an abstract class that union of multiple types should
     inherit and define ``__types__``, a list of pre-defined
     :class:`Type`.
+
+    >>> class IntOrFloatOrString(Union):
+    ...     __types__ = (Int, float, 'String')
+    ...
+    >>> IntOrFloatOrString # or repr(), prints out GraphQL!
+    union IntOrFloatOrString = Int | Float | String
+    >>> Int in IntOrFloatOrString
+    True
+    >>> 'Int' in IntOrFloatOrString  # may use type names as well
+    True
+    >>> int in IntOrFloatOrString  # may use native Python types as well
+    True
+    >>> ID in IntOrFloatOrString
+    False
+    >>> len(IntOrFloatOrString)
+    3
+    >>> for t in IntOrFloatOrString:
+    ...     print(repr(t))
+    scalar Int
+    scalar Float
+    scalar String
+
+    Failing to define types will raise exception:
+
+    >>> class FailureUnion(Union):
+    ...     pass
+    Traceback (most recent call last):
+      ...
+    ValueError: FailureUnion: missing __types__
+
     '''
 
     __kind__ = 'union'
     __types__ = ()
-
-    @classmethod
-    def __iter__(cls):
-        return iter(cls.__types__)
-
-    @classmethod
-    def __contains__(cls, name_or_type):
-        if isinstance(name_or_type, str):
-            name_or_type = cls.__schema__[name_or_type]
-        return name_or_type in cls.__types__
-
-    @classmethod
-    def __to_graphql__(cls, indent=0, indent_string='  '):
-        suffix = ' = ' + ' | '.join(str(c) for c in cls.__types__)
-        return BaseMeta.__to_graphql__(cls, indent, indent_string) + suffix
 
 
 class ContainerTypeMeta(BaseMeta):
@@ -481,6 +1405,8 @@ class ContainerTypeMeta(BaseMeta):
     def __populate_interfaces(cls, bases):
         ifaces = []
         for b in bases:
+            if b in (Type, Interface, Input):
+                continue
             if getattr(b, '__kind__', '') == 'interface':
                 ifaces.append(b)
             for i in getattr(b, '__interfaces__', []):
@@ -503,10 +1429,11 @@ class ContainerTypeMeta(BaseMeta):
 
             field = getattr(cls, name)
             if not isinstance(field, Field):
-                try:
-                    field = BaseType.__ensure__(field)
-                except TypeError as e:
-                    continue
+                if not isinstance(field, Lazy):
+                    try:
+                        field = BaseType.__ensure__(field)
+                    except TypeError as e:
+                        continue
 
                 field = Field(field)
 
@@ -601,7 +1528,8 @@ class ContainerType(BaseType, metaclass=ContainerTypeMeta):
             object.__setattr__(self, '__json_data__', {})
             return
 
-        def set_field(name, field):
+        def set_field(field):
+            name = field.name
             graphql_name = field.graphql_name
             if graphql_name in json_data:
                 try:
@@ -616,42 +1544,171 @@ class ContainerType(BaseType, metaclass=ContainerTypeMeta):
         if self.__selection_list__ is not None:
             for sel in self.__selection_list__:
                 field = sel.__field__
-                name = sel.__alias__ or field.name
-                set_field(name, field)
+                if sel.__alias__ is not None:
+                    alias = sel.__alias__
+                    field = Field(field.type, alias, field.args)
+                    field._set_container(self.__schema__, self, alias)
+                set_field(field)
         else:
             for field in self.__class__:
-                set_field(field.name, field)
+                set_field(field)
 
         # backing store, changed by setattr()
         object.__setattr__(self, '__json_data__', json_data)
 
     def __setattr__(self, name, value):
+        '''Sets the attribute value, if a :class:`Field` updates backing store.
+
+        Considering ``TypeUsingPython``, previously declared in the
+        module documentation:
+
+        >>> json_data = {'aInt': 1,  'aFloat': 2.1}
+        >>> obj = global_schema.TypeUsingPython(json_data)
+        >>> obj.a_int, obj.a_float
+        (1, 2.1)
+        >>> obj.a_int = 123
+        >>> obj.a_int, obj.a_float
+        (123, 2.1)
+        >>> json_data['aInt']
+        123
+
+        However that's valid for known :class:`Field` for the given
+        :class:`ContainerType` subclasses:
+
+        >>> obj.new_attr = 'some value'  # no field, no backing store updates
+        >>> obj.new_attr
+        'some value'
+        >>> json_data['new_attr']
+        Traceback (most recent call last):
+          ...
+        KeyError: 'new_attr'
+        >>> json_data['newAttr']
+        Traceback (most recent call last):
+          ...
+        KeyError: 'newAttr'
+
+        '''
         object.__setattr__(self, name, value)
         if not hasattr(self, '__json_data__'):  # still populating
             return
         # apply changes to json backing store, if name is known
         field = self.__fields_cache__.get(name)
         if field is None:
-            return
+            field = getattr(self.__class__, name, None)
+            if field is None:
+                return
+            self.__fields_cache__[name] = field
+
         json_value = field.type.__to_json_value__(value)
         self.__json_data__[field.graphql_name] = json_value
 
     def __getitem__(self, name):
+        '''Get the field given its name.
+
+        Considering ``TypeUsingPython``, previously declared in the
+        module documentation:
+
+        >>> global_schema.TypeUsingPython['a_int']
+        aInt: Int
+
+        >>> global_schema.TypeUsingPython['unknown_field']
+        Traceback (most recent call last):
+          ...
+        KeyError: 'TypeUsingPython has no field unknown_field'
+        '''
         try:
             return getattr(self, name)
         except AttributeError as exc:
             raise KeyError('%s has no field %s' % (self, name)) from exc
 
     def __setitem__(self, name, value):
+        '''Set the item, maps to ``setattr(self, name, value)``'''
         setattr(self, name, value)
 
     def __iter__(self):
+        '''Iterate over known fields of the **instance**.
+
+        Unlike ``iter(SubclassOfType)``, which iterates over all
+        declared fields, this iterator matches only fields that exist
+        in the object, based on the ``json_data`` used to create the
+        object, and the one that provides the backing store:
+
+        >>> json_data = { 'aInt': 1, 'aFloat': 2.1 }
+        >>> obj = global_schema.TypeUsingPython(json_data)
+        >>> for field_name in obj:
+        ...    print(field_name, repr(obj[field_name]))
+        a_int 1
+        a_float 2.1
+        >>> for field in obj.__class__:
+        ...    print(repr(field))
+        aInt: Int
+        aFloat: Float
+        aString: String
+        aBoolean: Boolean
+        aId: ID
+
+        After it's set for the given instance, then it's included in
+        the iterator:
+
+        >>> obj.a_string = 'hello world'  # known field
+        >>> for field_name in obj:
+        ...    print(field_name, repr(obj[field_name]))
+        a_int 1
+        a_float 2.1
+        a_string 'hello world'
+
+        However that's valid for known :class:`Field` for the given
+        :class:`ContainerType` subclasses:
+
+        >>> obj.new_attr = 'some value'  # unknown field, not in 'iter'
+        >>> for field_name in obj:
+        ...    print(field_name, repr(obj[field_name]))
+        a_int 1
+        a_float 2.1
+        a_string 'hello world'
+
+        '''
         return iter(self.__fields_cache__.keys())
 
     def __contains__(self, name):
+        '''Checks if for a known field name in the **instance**.
+
+        Unlike ``name in SubclassOfType``, which checks amongst all
+        declared fields, this matches only fields that exist
+        in the object, based on the ``json_data`` used to create the
+        object, and the one that provides the backing store:
+
+        >>> json_data = { 'aInt': 1, 'aFloat': 2.1 }
+        >>> obj = global_schema.TypeUsingPython(json_data)
+        >>> 'a_int' in obj
+        True
+        >>> 'a_float' in obj
+        True
+        >>> 'a_string' in obj  # in class, but not instance
+        False
+        >>> 'a_string' in obj.__class__
+        True
+
+        After it's set for the given instance, then becomes true:
+
+        >>> obj.a_string = 'hello world'  # known field
+        >>> 'a_string' in obj  # now in instance
+        True
+        '''
         return hasattr(self, name)
 
     def __len__(self):
+        '''Checks how many fields are set in the **instance**.
+
+        >>> json_data = { 'aInt': 1, 'aFloat': 2.1 }
+        >>> obj = global_schema.TypeUsingPython(json_data)
+        >>> len(obj)
+        2
+
+        >>> obj.a_string = 'hello world'  # known field
+        >>> len(obj)
+        3
+        '''
         i = 0
         for name in self:
             i += 1
@@ -704,7 +1761,12 @@ class BaseItem:
           ``Arg._to_graphql_name()``
         :type graphql_name: str
         '''
-        self._type = BaseType.__ensure__(typ)
+        if isinstance(typ, str):
+            self._type = Lazy(typ, typ, lambda x: x)
+        elif isinstance(typ, Lazy):
+            self._type = typ
+        else:
+            self._type = BaseType.__ensure__(typ)
         self.graphql_name = graphql_name
         self.name = None
         self.schema = None
@@ -719,9 +1781,10 @@ class BaseItem:
 
     @property
     def type(self):
-        if not isinstance(self._type, str):
+        if not isinstance(self._type, Lazy):
             return self._type
-        return self.schema[self._type]
+        self._type = self._type.resolve(self.schema)
+        return self._type
 
     @staticmethod
     def _to_graphql_name(name):
@@ -745,12 +1808,30 @@ class BaseItem:
 
 class Variable:
     '''GraphQL variable: ``$varName``
+
+    Usually given as :class:`Arg` default value:
+
+    >>> class MyTypeWithVariable(Type):
+    ...     f = Field(str, args={'first': Arg(int, default=Variable('var'))})
+    ...
+    >>> MyTypeWithVariable
+    type MyTypeWithVariable {
+      f(first: Int = $var): String
+    }
+    >>> print(repr(MyTypeWithVariable.f.args['first'].default))
+    $var
+    >>> print(str(MyTypeWithVariable.f.args['first'].default))
+    $var
+    >>> print(bytes(MyTypeWithVariable.f.args['first'].default).decode('utf8'))
+    $var
+
     '''
 
-    __slots__ = ('name',)
+    __slots__ = ('name', 'graphql_name')
 
-    def __init__(self, name):
+    def __init__(self, name, graphql_name=None):
         self.name = name
+        self.graphql_name = graphql_name or self._to_graphql_name(name)
 
     def __str__(self):
         return self.__to_graphql__()
@@ -761,16 +1842,39 @@ class Variable:
     def __bytes__(self):
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
 
-    def __to_graphql__(self):
-        return '$' + self.name
+    @staticmethod
+    def _to_graphql_name(name):
+        '''Converts a Python name, ``a_name`` to GraphQL: ``aName``.
+        '''
+        parts = name.split('_')
+        return ''.join(parts[:1] + [p.title() for p in parts[1:]])
+
+    def __to_graphql__(self, indent=0, indent_string='  '):
+        return '$' + self.graphql_name
 
     @classmethod
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
-        return '$' + value
+        return '$' + value.graphql_name
 
 
 class Arg(BaseItem):
-    'GraphQL :class:`Field` argument.'
+    '''GraphQL :class:`Field` argument.
+
+    >>> class MyTypeWithArgument(Type):
+    ...     a = Field(str, args={'arg_name': int}) # implicit
+    ...     b = Field(str, args={'arg': Arg(int)})  # explicit + Python
+    ...     c = Field(str, args={'arg': Arg(Int)})  # explicit + sgqlc.types
+    ...     d = Field(str, args={'arg': Arg(int, default=1)})
+    ...
+    >>> MyTypeWithArgument
+    type MyTypeWithArgument {
+      a(argName: Int): String
+      b(arg: Int): String
+      c(arg: Int): String
+      d(arg: Int = 1): String
+    }
+
+    '''
     __slots__ = ('default',)
 
     def __init__(self, typ, graphql_name=None, default=None):
@@ -792,16 +1896,19 @@ class Arg(BaseItem):
         '''
         super(Arg, self).__init__(typ, graphql_name)
         self.default = default
-        if default is not None:
+        if default is not None and not isinstance(default, Variable):
             assert typ(default)
 
     def __to_graphql__(self, indent=0, indent_string='  '):
         default = ''
         if self.default is not None:
-            default = self.type.__to_graphql_input__(
-                self.default, indent, indent_string)
+            if isinstance(self.default, Variable):
+                default = self.default.__to_graphql__(indent, indent_string)
+            else:
+                default = self.type.__to_graphql_input__(
+                    self.default, indent, indent_string)
             default = ' = ' + default
-        return '%s: %s%s' % (self.graphql_name, self.type, default)
+        return super(Arg, self).__to_graphql__(indent, indent_string) + default
 
     def __to_graphql_input__(self, value, indent=0, indent_string='  '):
         v = self.type.__to_graphql_input__(value, indent, indent_string)
@@ -809,22 +1916,97 @@ class Arg(BaseItem):
 
 
 class ArgDict(OrderedDict):
-    '''The Field Argeters
+    '''The :class:`Field` Argument Dict.
 
-    This takes care to ensure values are :class:`Arg`. For ease of
-    use, can be created in various forms:
+    Common usage is inside :class:`Field`:
 
-    >>> ArgDict(name=str)
-    name: String
+    >>> class MyType(Type):
+    ...     a = Field(Int, args={'argument1': String})     # implicit
+    ...     b = Field(Int, args=ArgDict(argument1=String)) # explicit
+    ...
+    >>> print(repr(MyType))
+    type MyType {
+      a(argument1: String): Int
+      b(argument1: String): Int
+    }
+    >>> print(repr(MyType.a))
+    a(argument1: String): Int
+    >>> print(repr(MyType.a.args))
+    (argument1: String)
+    >>> print(repr(MyType.b))
+    b(argument1: String): Int
+    >>> print(repr(MyType.b.args))
+    (argument1: String)
+    >>> print(repr(MyType.b.args['argument1']))
+    argument1: String
+    >>> print(bytes(MyType.b.args['argument1']).decode('utf-8'))
+    argument1: String
 
-    >>> ArgDict({'name': str})
-    name: String
+    This takes care to ensure values are :class:`Arg`. In the example
+    above, we're not passing :class:`Arg`, rather just a type
+    (:class:`String`) and it's working internally to create
+    :class:`Arg`. For ease of use, can be created in various
+    forms. Note they must be added to a container field to be useful,
+    which would call :func:`ArgDict._set_container()` for you, here
+    called manually for testing purposes:
 
-    >>> ArgDict(('name', str), ('other', int))
-    name: String, other: Int
+    >>> ad = ArgDict(name=str)
+    >>> ad._set_container(global_schema, None)  # done automatically by Field
+    >>> print(ad)
+    (name: String)
 
-    >>> ArgDict((('name', str), ('other', int)))
-    name: String, other: Int
+    >>> ad = ArgDict(name=String)
+    >>> ad._set_container(global_schema, None)  # done automatically by Field
+    >>> print(ad)
+    (name: String)
+
+    >>> ad = ArgDict({'name': str})
+    >>> ad._set_container(global_schema, None)  # done automatically by Field
+    >>> print(ad)
+    (name: String)
+
+    >>> ad = ArgDict(('name', str), ('other', int))
+    >>> ad._set_container(global_schema, None)  # done automatically by Field
+    >>> print(ad)
+    (name: String, other: Int)
+
+    >>> ad = ArgDict((('name', str), ('other', int)))
+    >>> ad._set_container(global_schema, None)  # done automatically by Field
+    >>> print(ad)
+    (name: String, other: Int)
+
+    Note that for better understanding, more than 3 arguments are
+    printed in multiple lines:
+
+    >>> ad = ArgDict(a=int, b=float, c=str, d=list_of(int))
+    >>> ad._set_container(global_schema, None)  # done automatically by Field
+    >>> print(ad)
+    (
+      a: Int
+      b: Float
+      c: String
+      d: [Int]
+    )
+    >>> print(bytes(ad).decode('utf-8'))
+    (
+    a: Int
+    b: Float
+    c: String
+    d: [Int]
+    )
+
+    This is also the case for input values:
+
+    >>> print('fieldName' + ad.__to_graphql_input__({
+    ...     'a': 1, 'b': 2.2, 'c': 'hi', 'd': [1, 2],
+    ... }))
+    fieldName(
+        a: 1
+        b: 2.2
+        c: "hi"
+        d: [1, 2]
+      )
+
     '''
     def __init__(self, *lst, **mapping):
         super(ArgDict, self).__init__()
@@ -953,10 +2135,24 @@ class Field(BaseItem):
         args = self.args.__to_graphql__(indent + 1, indent_string)
         return '%s%s: %s' % (self.graphql_name, args, self.type)
 
-    def __repr__(self):
-        return self.__to_graphql__()
-
     def __bytes__(self):
+        '''Prints GraphQL without indentation.
+
+        >>> print(repr(global_schema.TypeUsingFields.many))
+        many(
+            a: Int
+            b: Int
+            c: Int
+            d: Int
+          ): Int
+        >>> print(bytes(global_schema.TypeUsingFields.many).decode('utf-8'))
+        many(
+        a: Int
+        b: Int
+        c: Int
+        d: Int
+        ): Int
+        '''
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
 
 
@@ -984,7 +2180,31 @@ class Interface(ContainerType):
 
 
 class Input(ContainerType):
-    'GraphQL ``input Name``.'
+    '''GraphQL ``input Name``.
+
+    Input types are similar to :class:`Type`, but they are used as
+    argument values. They have more restrictions, such as no
+    :class:`Interface`, :class:`Union` or :class:`Type` are allowed as
+    field types. Only scalars or :class:`Input`.
+
+    .. note::
+
+       SGQLC currently doesn't enforce the field type restrictions
+       imposed by the server.
+
+    >>> class MyInput(Input):
+    ...     a_int = int
+    ...     a_float = float
+    ...
+    >>> MyInput
+    input MyInput {
+      aInt: Int
+      aFloat: Float
+    }
+    >>> print(MyInput.__to_graphql_input__({'a_int': 1, 'a_float': 2.2}))
+    {aInt: 1, aFloat: 2.2}
+
+    '''
     __kind__ = 'input'
 
     @classmethod
@@ -1003,7 +2223,16 @@ class Input(ContainerType):
 ########################################################################
 
 class Int(Scalar):
-    'Maps GraphQL ``Int`` to Python ``int``.'
+    '''Maps GraphQL ``Int`` to Python ``int``.
+
+    >>> Int # or repr()
+    scalar Int
+    >>> str(Int)
+    'Int'
+    >>> bytes(Int)
+    b'scalar Int'
+
+    '''
     converter = int
 
 
