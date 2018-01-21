@@ -59,6 +59,545 @@ objects:
    print(obj.parent.child.field)
    print(obj.parent.sibling.x.y)
 
+
+Examples
+--------
+
+Let's start defining the types, including the schema root ``Query``:
+
+>>> from sgqlc.types import *
+>>> class User(Type):
+...     login = non_null(str)
+...     name = str
+...
+>>> class Issue(Type):
+...     number = non_null(int)
+...     title = non_null(str)
+...     body = str
+...     reporter = non_null(User)
+...
+>>> class Repository(Type):
+...     id = ID
+...     name = non_null(str)
+...     owner = non_null(User)
+...     issues = Field(list_of(non_null(Issue)), args={
+...         'title_contains': str,
+...         'reporter_login': str,
+...     })
+...
+>>> class Query(Type):
+...     repository = Field(Repository, args={'id': non_null(ID)})
+...
+>>> class Mutation(Type):
+...     add_issue = Field(Issue, args={
+...         'repository_id': non_null(ID),
+...         'title': non_null(str),
+...         'body': str,
+...     })
+...
+>>> global_schema  # doctest: +ELLIPSIS
+schema {
+  ...
+  type User {
+    login: String!
+    name: String
+  }
+  type Issue {
+    number: Int!
+    title: String!
+    body: String
+    reporter: User!
+  }
+  type Repository {
+    id: ID
+    name: String!
+    owner: User!
+    issues(titleContains: String, reporterLogin: String): [Issue!]
+  }
+  type Query {
+    repository(id: ID!): Repository
+  }
+  type Mutation {
+    addIssue(repositoryId: ID!, title: String!, body: String): Issue
+  }
+}
+
+Selecting to Generate Queries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Then let's select numbers and titles of issues of repository with
+identifier ``repo1``:
+
+>>> op = Operation(Query)
+>>> repository = op.repository(id='repo1')
+>>> repository.issues.number()
+number
+>>> repository.issues.title()
+title
+>>> op # or repr(), prints out GraphQL!
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+}
+
+You can see we stored ``op.repository(id='repo1')`` result in a
+variable, later reusing it. Executing this statement will emit a new
+:class:`Selection` and only one field selection is allowed in the
+selection list (unless an alias is used). Trying the code below will
+**error**:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.number() # ok!
+number
+>>> op.repository(id='repo1').issues.title() # fails
+Traceback (most recent call last):
+  ...
+ValueError: repository already have a selection repository(id: "repo1") {
+  issues {
+    number
+  }
+}. Maybe use __alias__ as param?
+
+That is, if you wanted to query for two repositories, you should use
+``__alias__`` argument in the call. But here would **not** produce the
+query we want, as seen below:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.number()
+number
+>>> op.repository(id='repo1', __alias__='alias').issues.title()
+title
+>>> op  # not what we want in this example, 2 independent queries
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+    }
+  }
+  alias: repository(id: "repo1") {
+    issues {
+      title
+    }
+  }
+}
+
+In our case, to get the correct query, do as in the first example and
+save the result of ``op.repository(id='repo1')``.
+
+Last but not least, in the first example you can also note that we're
+not calling ``issues``, just accessing its members. This is a shortcut
+for an empty call, and the handle is saved for you (ease of use):
+
+>>> op = Operation(Query)
+>>> repository = op.repository(id='repo1')
+>>> repository.issues().number()
+number
+>>> repository.issues().title()
+title
+>>> op # or repr(), prints out GraphQL!
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+}
+
+This could be rewritten saving the issues selector:
+
+>>> op = Operation(Query)
+>>> issues = op.repository(id='repo1').issues()
+>>> issues.number()
+number
+>>> issues.title()
+title
+>>> op
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+}
+
+Or even simpler with ``__fields__(*names, **names_and_args)``:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.__fields__('number', 'title')
+>>> op
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+}
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.__fields__(
+...     number=True,
+...     title=True,
+... )
+>>> op
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+}
+
+Which also allows to include all but some fields:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.__fields__(
+...     __exclude__=('body', 'reporter'),
+... )
+>>> op
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+}
+
+Or using named arguments:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.__fields__(
+...     body=False,
+...     reporter=False,
+... )
+>>> op
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+}
+
+If no arguments are given to ``__fields__()``, then it defaults to
+include every member, and this is done recursively:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.__fields__()
+>>> op
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+      body
+      reporter {
+        login
+        name
+      }
+    }
+  }
+}
+
+Named arguments may be used to provide fields with argument values:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').__fields__(
+...    issues={'title_contains': 'bug'}, # adds field and children
+... )
+>>> op
+query {
+  repository(id: "repo1") {
+    issues(titleContains: "bug") {
+      number
+      title
+      body
+      reporter {
+        login
+        name
+      }
+    }
+  }
+}
+
+Arguments can be given as tuple of key-value pairs as well:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').__fields__(
+...    issues=(('title_contains', 'bug'),), # adds field and children
+... )
+>>> op
+query {
+  repository(id: "repo1") {
+    issues(titleContains: "bug") {
+      number
+      title
+      body
+      reporter {
+        login
+        name
+      }
+    }
+  }
+}
+
+
+Interpret Query Results
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Given the operation explained above:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.__fields__('number', 'title')
+>>> op
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+}
+
+After calling the GraphQL endpoint, you should get a JSON object that
+matches the one below:
+
+>>> json_data = {'data': {
+...     'repository': {'issues': [
+...         {'number': 1, 'title': 'found a bug'},
+...         {'number': 2, 'title': 'a feature request'},
+...     ]},
+... }}
+
+To interpret this, simply add the data to the operation:
+
+>>> obj = op + json_data
+>>> repository = obj.repository
+>>> for issue in repository.issues:
+...     print(issue)
+Issue(number=1, title=found a bug)
+Issue(number=2, title=a feature request)
+
+Which are instances of classes declared in the beginning of example
+section:
+
+>>> repository.__class__ is Repository
+True
+>>> repository.issues[0].__class__ is Issue
+True
+
+While it's mostly the same as creating instances yourself:
+
+>>> repository = Repository(json_data['data']['repository'])
+>>> for issue in repository.issues:
+...     print(issue)
+Issue(number=1, title=found a bug)
+Issue(number=2, title=a feature request)
+
+The difference is that it will handle **aliases** for you:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1', __alias__='r_name1').issues.__fields__(
+...     'number', 'title',
+... )
+>>> op.repository(id='repo2', __alias__='r_name2').issues.__fields__(
+...     'number', 'title',
+... )
+>>> op
+query {
+  r_name1: repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+  r_name2: repository(id: "repo2") {
+    issues {
+      number
+      title
+    }
+  }
+}
+
+>>> json_data = {'data': {
+...     'r_name1': {'issues': [
+...         {'number': 1, 'title': 'found a bug'},
+...         {'number': 2, 'title': 'a feature request'},
+...     ]},
+...     'r_name2': {'issues': [
+...         {'number': 10, 'title': 'something awesome'},
+...         {'number': 20, 'title': 'other thing broken'},
+...     ]},
+... }}
+>>> obj = op + json_data
+>>> for issue in obj.r_name1.issues:
+...     print(issue)
+Issue(number=1, title=found a bug)
+Issue(number=2, title=a feature request)
+>>> for issue in obj.r_name2.issues:
+...     print(issue)
+Issue(number=10, title=something awesome)
+Issue(number=20, title=other thing broken)
+
+Updating also reflects on the correct backing store:
+
+>>> obj.r_name2.name = 'repo2 name'
+>>> json_data['data']['r_name2']['name']
+'repo2 name'
+
+Mutations
+~~~~~~~~~
+
+Mutations are handled as well, just use that as :class:`Operation`
+root type:
+
+>>> op = Operation(Mutation)
+>>> op.add_issue(repository_id='repo1', title='an issue').__fields__()
+>>> op
+mutation {
+  addIssue(repositoryId: "repo1", title: "an issue") {
+    number
+    title
+    body
+    reporter {
+      login
+      name
+    }
+  }
+}
+
+
+Utilities
+~~~~~~~~~
+
+Starting with the first selection example:
+
+>>> op = Operation(Query)
+>>> repository = op.repository(id='repo1')
+>>> repository.issues.number()
+number
+>>> repository.issues.title()
+title
+
+One can get a indented print out using ``repr()``:
+
+>>> print(repr(op))
+query {
+  repository(id: "repo1") {
+    issues {
+      number
+      title
+    }
+  }
+}
+>>> print(repr(repository))
+repository(id: "repo1") {
+  issues {
+    number
+    title
+  }
+}
+>>> print(repr(repository.issues.number()))
+number
+
+Note that :class:`Selector` is different:
+
+>>> print(repr(repository.issues.number))
+Selector(field=number)
+
+Or can get a compact print out without indentation using ``bytes()``:
+
+>>> print(bytes(op).decode('utf-8'))
+query {
+repository(id: "repo1") {
+issues {
+number
+title
+}
+}
+}
+>>> print(bytes(repository).decode('utf-8'))
+repository(id: "repo1") {
+issues {
+number
+title
+}
+}
+>>> print(bytes(repository.issues.number()).decode('utf-8'))
+number
+
+
+:class:`Selection` and :class:`Selector` both implement ``len()``:
+
+>>> len(op)                        # number of selections (here: top level)
+1
+>>> len(repository.issues())       # number of selections
+2
+>>> len(repository.issues)         # number of selections (implicit empty call)
+2
+>>> len(repository.issues.title()) # leaf is always 1
+1
+
+:class:`Selection` and :class:`Selector` both implement ``dir()`` to
+also list fields:
+
+>>> for name in dir(repository.issues()): # on selection also yields fields
+...     if not name.startswith('_'):
+...         print(name)
+body
+number
+reporter
+title
+>>> for name in dir(repository.issues): # same for selector
+...     if not name.startswith('_'):
+...         print(name)
+body
+number
+reporter
+title
+>>> for name in dir(repository.issues.number()): # no fields for scalar
+...     if not name.startswith('_'):
+...         print(name)
+>>> for name in dir(repository.issues.number): # no fields for scalar
+...     if not name.startswith('_'):
+...         print(name)
+
+Classes also implement ``iter()`` to iterate over selections:
+
+>>> for i, sel in enumerate(op):
+...     print('#%d: %s' % (i, sel))
+#0: repository(id: "repo1") {
+  issues {
+    number
+    title
+  }
+}
+>>> for i, sel in enumerate(repository):
+...     print('#%d: %s' % (i, sel))
+#0: issues {
+  number
+  title
+}
+>>> for i, sel in enumerate(repository.issues):
+...     print('#%d: %s' % (i, sel))
+#0: number
+#1: title
+>>> for i, sel in enumerate(repository.issues()):
+...     print('#%d: %s' % (i, sel))
+#0: number
+#1: title
+>>> for i, sel in enumerate(repository.issues.number()):
+...     print('#%d: %s' % (i, sel))
+#0: number
+
 :license: ISC
 '''
 
@@ -154,6 +693,11 @@ class Selection:
             return len(self.__selection_list)
         return 1
 
+    def __iter__(self):
+        if self.__selection_list is not None:
+            return iter(self.__selection_list)
+        return iter((self,))
+
     def __get_all_fields_selection_list(self):
         q = SelectionList(self.__field__.type)
         for f in self.__field__.type:
@@ -244,13 +788,10 @@ class Selection:
 
         query = ''
         if self.__selection_list is not None:
-            lst = []
             selections = self.__selection_list
             if not selections:
                 selections = self.__get_all_fields_selection_list()
-            for s in selections:
-                lst.append(s.__to_graphql__(indent + 1, indent_string))
-            query = ' {\n%s\n%s}' % ('\n'.join(lst), prefix)
+            query = ' ' + selections.__to_graphql__(indent, indent_string)
         return prefix + alias + self.__field__.graphql_name + args + query
 
     def __dir__(self):
@@ -283,7 +824,7 @@ class Selection:
         return self.__to_graphql__()
 
     def __repr__(self):
-        return self.__to_graphql__()
+        return str(self)
 
     def __bytes__(self):
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
@@ -396,6 +937,12 @@ class Selector:
         '''
         return self().__fields__
 
+    def __len__(self):
+        return len(self())
+
+    def __iter__(self):
+        return iter(self())
+
     def __getattr__(self, name):
         try:
             return self[name]
@@ -430,6 +977,33 @@ class SelectionList:
       parent.field.child()
       parent.field(param1=value1).child()
 
+    Direct usage example (not recommended):
+
+    >>> sl = SelectionList(global_schema.Repository)
+    >>> sl += Selection('x', global_schema.Repository.id, {})
+    >>> sl # or repr()
+    {
+      x: id
+    }
+    >>> print(bytes(sl).decode('utf-8')) # no indentation
+    {
+    x: id
+    }
+    >>> sl.id    # or any other field from Repository returns a Selector
+    Selector(field=id)
+    >>> sl['id'] # also as get item
+    Selector(field=id)
+    >>> sl.x    # not the alias
+    Traceback (most recent call last):
+      ...
+    AttributeError: {
+      x: id
+    } has no field x
+    >>> sl['x'] #
+    Traceback (most recent call last):
+      ...
+    KeyError: 'Repository has no field x'
+
     '''
 
     __slots__ = ('__type', '__selectors', '__selections')
@@ -444,7 +1018,7 @@ class SelectionList:
         return self.__to_graphql__()
 
     def __repr__(self):
-        return self.__to_graphql__()
+        return str(self)
 
     def __bytes__(self):
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
@@ -516,6 +1090,87 @@ class Operation:
       parent = op + json_data
       print(parent.field.child)
 
+    Example usage:
+
+    >>> op = Operation(global_schema.Query)
+    >>> op.repository
+    Selector(field=repository)
+    >>> repository = op.repository(id='repo1')
+    >>> repository.issues.number()
+    number
+    >>> repository.issues.title()
+    title
+    >>> op # or repr(), prints out GraphQL!
+    query {
+      repository(id: "repo1") {
+        issues {
+          number
+          title
+        }
+      }
+    }
+
+    The root type can be omitted, then ``global_schema.Query`` is used:
+
+    >>> op = Operation()  # same as Operation(global_schema.Query)
+    >>> op.repository
+    Selector(field=repository)
+
+    Operations can be named:
+
+    >>> op = Operation(name='MyOp')
+    >>> repository = op.repository(id='repo1')
+    >>> repository.issues.number()
+    number
+    >>> repository.issues.title()
+    title
+    >>> op # or repr(), prints out GraphQL!
+    query MyOp {
+      repository(id: "repo1") {
+        issues {
+          number
+          title
+        }
+      }
+    }
+
+    Operations can also have argument (variables), in this case it
+    must be named (otherwise a name is created based on root type
+    name, such as ``"Query"``):
+
+    >>> from sgqlc.types import Variable
+    >>> op = Operation(repo_id=str, reporter_login=str)
+    >>> repository = op.repository(id=Variable('repo_id'))
+    >>> issues = repository.issues(reporter_login=Variable('reporter_login'))
+    >>> issues.__fields__('number', 'title')
+    >>> op # or repr(), prints out GraphQL!
+    query Query($repoId: String, $reporterLogin: String) {
+      repository(id: $repoId) {
+        issues(reporterLogin: $reporterLogin) {
+          number
+          title
+        }
+      }
+    }
+
+    Selectors can be acquired as attributes or items, but they must
+    exist in the target type:
+
+    >>> op = Operation()
+    >>> op.repository
+    Selector(field=repository)
+    >>> op['repository']
+    Selector(field=repository)
+    >>> op.does_not_exist
+    Traceback (most recent call last):
+      ...
+    AttributeError: query {
+    } has no field does_not_exist
+    >>> op['does_not_exist']
+    Traceback (most recent call last):
+      ...
+    KeyError: 'Query has no field does_not_exist'
+
     '''
     def __init__(self, typ=None, name=None, **args):
         if typ is None:
@@ -568,7 +1223,7 @@ class Operation:
         return self.__to_graphql__()
 
     def __repr__(self):
-        return self.__to_graphql__()
+        return str(self)
 
     def __bytes__(self):
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
