@@ -16,6 +16,70 @@ as they will be automatically recognized by the framework.
 
 Conversions assume ISO 8601 encoding.
 
+Examples
+--------
+
+>>> from sgqlc.types import Type
+>>> class MyDateTimeType(Type):
+...     time1 = datetime.time
+...     time2 = Time
+...     date1 = datetime.date
+...     date2 = Date
+...     datetime1 = datetime.datetime
+...     datetime2 = DateTime
+...
+>>> MyDateTimeType # or repr() to print out GraphQL
+type MyDateTimeType {
+  time1: Time
+  time2: Time
+  date1: Date
+  date2: Date
+  datetime1: DateTime
+  datetime2: DateTime
+}
+>>> json_data = {
+...     'time1': '12:34:56',
+...     'time2': '12:34:56-03:00', # set timezone GMT-3h
+...     'date1': '2018-01-02',
+...     'date2': '20180102', # compact form is accepted
+...     'datetime1': '2018-01-02T12:34:56Z', # Z = GMT/UTC
+...     'datetime2': '20180102T123456-0300', # compact form is accepted
+... }
+>>> obj = MyDateTimeType(json_data)
+>>> for field_name in obj: # doctest: +ELLIPSIS
+...     print(field_name, repr(obj[field_name]))
+time1 datetime.time(12, 34, 56)
+time2 datetime.time(12, 34, 56, tzinfo=...(-1, 75600)))
+date1 datetime.date(2018, 1, 2)
+date2 datetime.date(2018, 1, 2)
+datetime1 datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=....utc)
+datetime2 datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(-1, 75600)))
+
+Pre-converted types are allowed:
+
+>>> json_data = { 'time1': datetime.time(12, 34, 56) }
+>>> obj = MyDateTimeType(json_data)
+>>> obj.time1
+datetime.time(12, 34, 56)
+
+However, invalid encoded strings are not:
+
+>>> json_data = { 'time1': '12-3' }
+>>> obj = MyDateTimeType(json_data)  # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+   ...
+ValueError: MyDateTimeType selection 'time1': ...
+>>> json_data = { 'date1': '12-3' }
+>>> obj = MyDateTimeType(json_data)  # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+   ...
+ValueError: MyDateTimeType selection 'date1': ...
+>>> json_data = { 'datetime1': '2018-01-02X12-34-56Z' }
+>>> obj = MyDateTimeType(json_data)  # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+   ...
+ValueError: MyDateTimeType selection 'datetime1': ...
+
 :license: ISC
 '''
 
@@ -34,6 +98,37 @@ class Time(Scalar):
 
     While not a standard GraphQL type, it's often used, so expose to
     make life simpler.
+
+    >>> Time('12:34:56') # naive, no timezone
+    datetime.time(12, 34, 56)
+    >>> Time('12:34:56Z') # Z = GMT/UTC
+    datetime.time(12, 34, 56, tzinfo=datetime.timezone.utc)
+    >>> Time('12:34:56-05:30') # doctest: +ELLIPSIS
+    datetime.time(12, 34, 56, tzinfo=...(-1, 70200)))
+    >>> Time('12:34:56+05:30') # doctest: +ELLIPSIS
+    datetime.time(12, 34, 56, tzinfo=...(0, 19800)))
+    >>> Time('123456') # compact form
+    datetime.time(12, 34, 56)
+    >>> Time('123456Z') # compact form, GMT/UTC
+    datetime.time(12, 34, 56, tzinfo=datetime.timezone.utc)
+    >>> Time('123456-0530') # doctest: +ELLIPSIS
+    datetime.time(12, 34, 56, tzinfo=...(-1, 70200)))
+    >>> Time('123456+0530') # doctest: +ELLIPSIS
+    datetime.time(12, 34, 56, tzinfo=...(0, 19800)))
+
+    Pre-converted values are allowed:
+
+    >>> Time(datetime.time(12, 34, 56))
+    datetime.time(12, 34, 56)
+
+    It can also serialize to JSON:
+
+    >>> Time.__to_json_value__(datetime.time(12, 34, 56))
+    '12:34:56'
+    >>> tzinfo = datetime.timezone.utc
+    >>> Time.__to_json_value__(datetime.time(12, 34, 56, 0, tzinfo))
+    '12:34:56+00:00'
+
     '''
 
     _re_parse = re.compile(
@@ -71,6 +166,22 @@ class Date(Scalar):
 
     While not a standard GraphQL type, it's often used, so expose to
     make life simpler.
+
+    >>> Date('2018-01-02')
+    datetime.date(2018, 1, 2)
+    >>> Date('20180102') # compact form
+    datetime.date(2018, 1, 2)
+
+    Pre-converted values are allowed:
+
+    >>> Date(datetime.date(2018, 1, 2))
+    datetime.date(2018, 1, 2)
+
+    It can also serialize to JSON:
+
+    >>> Date.__to_json_value__(datetime.date(2018, 1, 2))
+    '2018-01-02'
+
     '''
 
     _re_parse = re.compile(r'^(?P<Y>\d{4})-?(?P<m>\d{2})-?(?P<d>\d{2})$')
@@ -99,6 +210,37 @@ class DateTime(Scalar):
 
     While not a standard GraphQL type, it's often used, so expose to
     make life simpler.
+
+    >>> DateTime('2018-01-02T12:34:56') # naive, no timezone
+    datetime.datetime(2018, 1, 2, 12, 34, 56)
+    >>> DateTime('2018-01-02T12:34:56Z') # Z = GMT/UTC
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=datetime.timezone.utc)
+    >>> DateTime('2018-01-02T12:34:56-05:30') # doctest: +ELLIPSIS
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(-1, 70200)))
+    >>> DateTime('2018-01-02T12:34:56+05:30') # doctest: +ELLIPSIS
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(0, 19800)))
+    >>> DateTime('20180102T123456') # compact form
+    datetime.datetime(2018, 1, 2, 12, 34, 56)
+    >>> DateTime('20180102T123456Z') # compact form, GMT/UTC
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=datetime.timezone.utc)
+    >>> DateTime('20180102T123456-0530') # doctest: +ELLIPSIS
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(-1, 70200)))
+    >>> DateTime('20180102T123456+0530') # doctest: +ELLIPSIS
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(0, 19800)))
+
+    Pre-converted values are allowed:
+
+    >>> DateTime(datetime.datetime(2018, 1, 2, 12, 34, 56))
+    datetime.datetime(2018, 1, 2, 12, 34, 56)
+
+    It can also serialize to JSON:
+
+    >>> dt = datetime.datetime(2018, 1, 2, 12, 34, 56)
+    >>> DateTime.__to_json_value__(dt)
+    '2018-01-02T12:34:56'
+    >>> tzinfo = datetime.timezone.utc
+    >>> DateTime.__to_json_value__(dt.replace(tzinfo=tzinfo))
+    '2018-01-02T12:34:56+00:00'
     '''
 
     _re_parse = re.compile(
