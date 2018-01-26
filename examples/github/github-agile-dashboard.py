@@ -25,226 +25,9 @@ import sys
 
 from collections import OrderedDict
 
-from sgqlc.types import Interface, Type, Input, Field, Enum, list_of, non_null
-from sgqlc.types.datetime import DateTime
-from sgqlc.types.relay import Node, Connection, connection_args
-from sgqlc.operation import Operation
-from sgqlc.endpoint.http import HTTPEndpoint
-
-
-########################################################################
-# GitHub specific GraphQL entities.
-#
-# NOTE: We're only mapping properties that we care about!
-########################################################################
-class Actor(Interface):
-    avatar_url = str
-    login = str
-    url = str
-
-
-class Label(Type, Node):
-    color = str
-    name = str
-
-
-class MilestoneState(Enum):
-    __choices__ = 'CLOSED OPEN'
-
-
-class Milestone(Type, Node):
-    closed = bool
-    closed_at = DateTime
-    created_at = DateTime
-    title = str
-    description = str
-    due_on = DateTime
-    creator = Actor
-    number = int
-    state = MilestoneState
-    url = str
-
-
-class MilestoneConnection(Connection):
-    nodes = list_of(Milestone)
-
-
-class Comment(Node):
-    author = Actor
-    body_text = str
-    created_at = DateTime
-    last_edited_at = DateTime
-    url = str
-
-
-class ProjectState(Enum):
-    __choices__ = 'CLOSED OPEN'
-
-
-class Project(Type, Node):
-    number = int
-    name = str
-    state = ProjectState
-    url = str
-
-
-class ProjectConnection(Connection):
-    nodes = list_of(Project)
-
-
-class ProjectCard(Type, Node):
-    project = Project
-    url = str
-
-
-class ProjectCardConnection(Connection):
-    nodes = list_of(ProjectCard)
-
-
-class IssueComment(Type, Comment):
-    pass
-
-
-class IssueState(Enum):
-    __choices__ = 'CLOSED OPEN'
-
-
-class OrderDirection(Enum):
-    __choices__ = 'ASC DESC'
-
-
-class IssueOrderField(Enum):
-    __choices__ = 'COMMENTS CREATED_AT UPDATED_AT'
-
-
-class IssueOrder(Input):
-    direction = OrderDirection
-    field = IssueOrderField
-
-
-class LabelConnection(Connection):
-    nodes = list_of(Label)
-
-
-class ActorConnection(Connection):
-    nodes = list_of(Actor)
-
-
-class IssueCommentConnection(Connection):
-    nodes = list_of(IssueComment)
-
-
-class Issue(Type, Node):
-    number = int
-    title = str
-    body_text = str
-    author = Actor
-    created_at = DateTime
-    last_edited_at = DateTime
-    closed = bool
-    closed_at = DateTime
-    milestone = Milestone
-    state = IssueState
-    url = str
-    labels = Field(LabelConnection, args=connection_args())
-    assignees = Field(ActorConnection, args=connection_args())
-    comments = Field(IssueCommentConnection, args=connection_args())
-    project_cards = Field(ProjectCardConnection, args=connection_args())
-
-
-class PullRequestReviewState(Enum):
-    __choices__ = 'APPROVED CHANGES_REQUESTED COMMENTED DISMISSED PENDING'
-
-
-class PullRequestReviewComment(Type, Comment):
-    pass
-
-
-class PullRequestReviewCommentConnection(Connection):
-    nodes = list_of(PullRequestReviewComment)
-
-
-class PullRequestReview(Type):
-    author = Actor
-    body_text = str
-    created_at = DateTime
-    last_edited_at = DateTime
-    state = PullRequestReviewState
-    url = str
-    comments = Field(PullRequestReviewCommentConnection,
-                     args=connection_args())
-
-
-class PullRequestReviewConnection(Connection):
-    nodes = list_of(PullRequestReview)
-
-
-class PullRequestState(Enum):
-    __choices__ = 'CLOSED MERGED OPEN'
-
-
-class PullRequest(Type):
-    number = int
-    title = str
-    body_text = str
-    author = Actor
-    created_at = DateTime
-    last_edited_at = DateTime
-    closed = bool
-    closed_at = DateTime
-    milestone = Milestone
-    state = PullRequestState
-    url = str
-    labels = Field(LabelConnection, args=connection_args())
-    assignees = Field(ActorConnection, args=connection_args())
-    comments = Field(IssueCommentConnection, args=connection_args())
-    project_cards = Field(ProjectCardConnection, args=connection_args())
-
-    additions = int
-    deletions = int
-    head_ref_name = str
-    merged = bool
-    merged_at = DateTime
-    reviews = Field(PullRequestReviewConnection, args=connection_args(
-        states=list_of(non_null(PullRequestReviewState)),
-    ))
-
-
-class IssueConnection(Connection):
-    nodes = list_of(Issue)
-
-
-class PullRequestConnection(Connection):
-    nodes = list_of(PullRequest)
-
-
-class Repository(Type, Node):
-    issues = Field(IssueConnection, args=connection_args(
-        labels=list_of(non_null(str)),
-        order_by=IssueOrder,
-        states=list_of(non_null(IssueState)),
-    ))
-    pull_requests = Field(PullRequestConnection, args=connection_args(
-        labels=list_of(non_null(str)),
-        order_by=IssueOrder,
-        states=list_of(non_null(PullRequestState)),
-    ))
-    labels = Field(LabelConnection, args=connection_args())
-    milestones = Field(MilestoneConnection, args=connection_args())
-    projects = Field(ProjectConnection, args=connection_args())
-    isPrivate = bool
-    name = str
-    name_with_owner = str
-    url = str
-
-
-class Query(Type):
-    node = Field(Node, args={'id': non_null(id)})
-    repository = Field(Repository, args={
-        'name': non_null(str),
-        'owner': non_null(str),
-    })
-
+from sgqlc.operation import Operation  # noqa: I900
+from sgqlc.endpoint.http import HTTPEndpoint  # noqa: I900
+from github_schema import github_schema as schema  # noqa: I900
 
 logger = logging.getLogger(__name__)
 
@@ -374,7 +157,7 @@ def select_pull_requests(repo, labels=(), states=(),
 
 
 def create_operation(owner, name, labels=(), issue_states=(), pr_states=()):
-    op = Operation()
+    op = Operation(schema.Query)
 
     repo = op.repository(owner=owner, name=name)
 
@@ -844,7 +627,7 @@ def cmd_dashboard_text(endpoint, args):  # noqa: C901
             out_common(issue)
             out()
 
-        review_state_len = len(PullRequestReviewState.__choices__)
+        review_state_len = len(schema.PullRequestReviewState.__choices__)
 
         def get_reviews_summary(pr):
             if not pr.reviews or not pr.reviews.nodes:
@@ -1004,7 +787,7 @@ def cmd_dashboard_text(endpoint, args):  # noqa: C901
             out(colors[name], prefix + text)
 
     def out_node(node):
-        if isinstance(node, Issue):
+        if isinstance(node, schema.Issue):
             out_issue(node)
         else:
             out_pr(node)
@@ -1074,13 +857,13 @@ if __name__ == '__main__':
     ap.add_argument('--issue-state', action='append',
                     help=('Filter Issues by state. '
                           'Providing a single empty string disables Issues'),
-                    choices=IssueState.__choices__ + ('',),
+                    choices=schema.IssueState.__choices__ + ('',),
                     default=[])
     ap.add_argument('--pr-state', action='append',
                     help=('Filter Pull Requests by state. '
                           'Providing a single empty string disables '
                           'Pull Requests'),
-                    choices=PullRequestState.__choices__ + ('',),
+                    choices=schema.PullRequestState.__choices__ + ('',),
                     default=[])
     ap.add_argument('repo',
                     help='Repository name, such as "team/repo".')

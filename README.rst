@@ -357,6 +357,59 @@ fields", or "include all except...":
   type_selection.__fields__(a=False, b=False)
 
 
+Code Generator
+--------------
+
+Manually converting an existing GraphQL schema to ``sgqlc.types``
+subclasses is boring and error prone. To aid such task we offer a code
+generator that outputs a Python module straight from JSON of an
+introspection call:
+
+.. code-block:: console
+
+   user@host$ python3 -m sgqlc.introspection \
+        --exclude-deprecated \
+        --exclude-description \
+        -H "Authorization: bearer ${GH_TOKEN}" \
+        https://api.github.com/graphql \
+        github_schema.json
+   user@host$ sgqlc-codegen github_schema.json github_schema.py
+
+This generates ``github_schema`` that provides the
+:class:`sgqlc.types.Schema` instance of the same name
+``github_schema``. Then it's a matter of using that in your Python code, as in the example below from ``examples/github/github-agile-dashboard.py``:
+
+.. code-block:: python
+
+   from sgqlc.operation import Operation
+   from github_schema import github_schema as schema
+
+   op = Operation(schema.Query)  # note 'schema.'
+
+   # -- code below follows as the original usage example:
+
+   # select a field, here with selection arguments, then another field:
+   issues = op.repository(owner=owner, name=name).issues(first=100)
+   # select sub-fields explicitly: { nodes { number title } }
+   issues.nodes.number()
+   issues.nodes.title()
+   # here uses __fields__() to select by name (*args)
+   issues.page_info.__fields__('has_next_page')
+   # here uses __fields__() to select by name (**kwargs)
+   issues.page_info.__fields__(end_cursor=True)
+
+   # you can print the resulting GraphQL
+   print(op)
+
+   # Call the endpoint:
+   data = endpoint(op)
+
+   # Interpret results into native objects
+   repo = (op + data).repository
+   for issue in repo.issues.nodes:
+       print(issue)
+
+
 Authors
 -------
 
