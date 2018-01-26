@@ -41,6 +41,9 @@ setup(
         'Topic :: Utilities',
     ],
     platforms='any',
+    scripts=[
+        'bin/sgqlc-codegen',
+    ],
     packages=find_packages(exclude=('doc', 'examples', 'utils', 'tests')),
     test_suite='nose.collector',
     tests_require=['nose', 'coverage'],
