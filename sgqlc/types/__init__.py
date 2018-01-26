@@ -1897,7 +1897,7 @@ class Arg(BaseItem):
         super(Arg, self).__init__(typ, graphql_name)
         self.default = default
         if default is not None and not isinstance(default, Variable):
-            assert typ(default)
+            typ(default)
 
     def __to_graphql__(self, indent=0, indent_string='  '):
         default = ''
