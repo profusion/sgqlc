@@ -25,6 +25,7 @@ import json
 import logging
 import urllib.error
 import urllib.request
+import urllib.parse
 
 from .base import BaseEndpoint
 
@@ -145,8 +146,9 @@ class HTTPEndpoint(BaseEndpoint):
 
         self.logger.debug('Query:\n%s', query)
 
+        target = f'{self.url}?query={urllib.parse.quote_plus(query)}'
         req = urllib.request.Request(
-            url=self.url, data=post_data, headers=headers)
+            url=target, data=post_data, headers=headers)
         try:
             with urllib.request.urlopen(req, timeout=timeout) as f:
                 body = f.read().decode('utf-8')
