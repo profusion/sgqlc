@@ -7,3 +7,5 @@ __pycache__
 /sgqlc.egg-info
 /.coverage
 /cover
+/.venv
+/.eggs

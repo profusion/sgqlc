@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+
+[dev-packages]
+"flake8" = "*"
+"pep8" = "*"
+"flake8-builtins" = "*"
+"flake8-colors" = "*"
+"flake8-comprehensions" = "*"
+"flake8-deprecated" = "*"
+"flake8-rst-docstrings" = "*"
+"flake8-requirements" = "*"
+"flake8-single-quotes" = "*"
+"flake8-regex" = "*"
+"flake8-module-name" = "*"
+"flake8-tidy-imports" = "*"
+"flake8-print" = "*"
+pygments = "*"
+nose = "*"
+sphinx = "*"
+
+[requires]
+python_version = "3.7"
