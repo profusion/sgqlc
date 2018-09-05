@@ -1779,7 +1779,7 @@ class BaseItem:
         if not self.graphql_name:
             self.graphql_name = self._to_graphql_name(name)
 
-    @property
+    @property  # noqa: A003
     def type(self):
         if not isinstance(self._type, Lazy):
             return self._type
