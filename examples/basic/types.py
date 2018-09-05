@@ -52,7 +52,7 @@ issues.page_info.__fields__('has_next_page')
 issues.page_info.__fields__(end_cursor=True)
 
 # you can print the resulting GraphQL
-print(op)
+print(op)  # noqa: T001
 
 # Call the endpoint:
 data = endpoint(op)
@@ -60,4 +60,4 @@ data = endpoint(op)
 # Interpret results into native objects
 repo = (op + data).repository
 for issue in repo.issues.nodes:
-    print(issue)
+    print(issue)  # noqa: T001
