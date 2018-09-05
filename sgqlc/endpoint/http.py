@@ -148,7 +148,7 @@ class HTTPEndpoint(BaseEndpoint):
         req = urllib.request.Request(
             url=self.url, data=post_data, headers=headers)
         try:
-            with urllib.request.urlopen(req, timeout=timeout) as f:
+            with self.urlopen(req, timeout=timeout) as f:
                 body = f.read().decode('utf-8')
                 try:
                     data = json.loads(body)
