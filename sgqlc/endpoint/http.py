@@ -24,9 +24,39 @@ __all__ = ('HTTPEndpoint',)
 import json
 import logging
 import urllib.error
+import urllib.parse
 import urllib.request
 
 from .base import BaseEndpoint
+
+
+def add_query_to_url(url, extra_query):
+    '''Adds an extra query to URL, returning the new URL.
+
+    Extra query may be a dict or a list as returned by
+    :func:`urllib.parse.parse_qsl()` and :func:`urllib.parse.parse_qs()`.
+
+    '''
+    split = urllib.parse.urlsplit(url)
+    merged_query = urllib.parse.parse_qsl(split.query)
+    if isinstance(extra_query, dict):
+        for k, v in extra_query.items():
+            if not isinstance(v, (tuple, list)):
+                merged_query.append((k, v))
+            else:
+                for cv in v:
+                    merged_query.append((k, cv))
+    else:
+        merged_query.extend(extra_query)
+
+    merged_split = urllib.parse.SplitResult(
+        split.scheme,
+        split.netloc,
+        split.path,
+        urllib.parse.urlencode(merged_query),
+        split.fragment,
+    )
+    return merged_split.geturl()
 
 
 class HTTPEndpoint(BaseEndpoint):
@@ -67,7 +97,8 @@ class HTTPEndpoint(BaseEndpoint):
 
     logger = logging.getLogger(__name__)
 
-    def __init__(self, url, base_headers=None, timeout=None, urlopen=None):
+    def __init__(self, url, base_headers=None, timeout=None, urlopen=None,
+                 method='POST'):
         '''
         :param url: the default GraphQL endpoint url.
         :type url: str
@@ -87,10 +118,12 @@ class HTTPEndpoint(BaseEndpoint):
         self.base_headers = base_headers or {}
         self.timeout = timeout
         self.urlopen = urlopen or urllib.request.urlopen
+        self.method = method
 
     def __str__(self):
-        return '%s(url=%s, base_headers=%r, timeout=%r)' % (
-            self.__class__.__name__, self.url, self.base_headers, self.timeout)
+        return '%s(url=%s, base_headers=%r, timeout=%r, method=%s)' % (
+            self.__class__.__name__, self.url, self.base_headers, self.timeout,
+            self.method)
 
     def __call__(self, query, variables=None, operation_name=None,
                  extra_headers=None, timeout=None):
@@ -129,24 +162,23 @@ class HTTPEndpoint(BaseEndpoint):
             # and generate compact representation of the queries
             query = bytes(query).decode('utf-8')
 
-        post_data = json.dumps({
-            'query': query,
-            'variables': variables,
-            'operationName': operation_name,
-        }).encode('utf-8')
         headers = self.base_headers.copy()
         if extra_headers:
             headers.update(extra_headers)
+
         headers.update({
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json; charset=utf-8',
-            'Content-Length': len(post_data),
         })
+
+        if self.method.upper() == 'POST':
+            get_http_request = self.get_http_post_request
+        else:
+            get_http_request = self.get_http_get_request
+
+        req = get_http_request(query, variables, operation_name, headers)
 
         self.logger.debug('Query:\n%s', query)
 
-        req = urllib.request.Request(
-            url=self.url, data=post_data, headers=headers)
         try:
             with self.urlopen(req, timeout=timeout) as f:
                 body = f.read().decode('utf-8')
@@ -159,6 +191,30 @@ class HTTPEndpoint(BaseEndpoint):
                     return self._log_json_error(body, exc)
         except urllib.error.HTTPError as exc:
             return self._log_http_error(query, req, exc)
+
+    def get_http_post_request(self, query, variables, operation_name, headers):
+        post_data = json.dumps({
+            'query': query,
+            'variables': variables,
+            'operationName': operation_name,
+        }).encode('utf-8')
+        headers.update({
+            'Content-Type': 'application/json; charset=utf-8',
+            'Content-Length': len(post_data),
+        })
+        return urllib.request.Request(
+            url=self.url, data=post_data, headers=headers, method='POST')
+
+    def get_http_get_request(self, query, variables, operation_name, headers):
+        params = {'query': query}
+        if operation_name:
+            params['operationName'] = operation_name
+
+        if variables:
+            params['variables'] = json.dumps(variables)
+
+        url = add_query_to_url(self.url, params)
+        return urllib.request.Request(url=url, headers=headers, method='GET')
 
     def _log_http_error(self, query, req, exc):
         '''Log :exc:`urllib.error.HTTPError`, converting to
@@ -240,13 +296,19 @@ if __name__ == '__main__':
                     help='Increase verbosity',
                     action='count',
                     default=0)
+    ap.add_argument('--method', '-m',
+                    choices=['GET', 'POST'],
+                    help='HTTP Method to use',
+                    default='POST',
+                    )
 
     args = ap.parse_args()
 
     logfmt = '%(levelname)s: %(message)s'
     logging.basicConfig(format=logfmt, level=max(10, 40 - (args.verbose * 10)))
 
-    endpoint = HTTPEndpoint(args.url, dict(args.header), args.timeout)
+    endpoint = HTTPEndpoint(args.url, dict(args.header), args.timeout,
+                            method=args.method)
     data = endpoint(args.query, dict(args.var))
 
     json.dump(data, sys.stdout, sort_keys=True, indent=2, default=str)
