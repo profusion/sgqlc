@@ -180,7 +180,7 @@ class HTTPEndpoint(BaseEndpoint):
         self.logger.debug('Query:\n%s', query)
 
         try:
-            with self.urlopen(req, timeout=timeout) as f:
+            with self.urlopen(req, timeout=timeout or self.timeout) as f:
                 body = f.read().decode('utf-8')
                 try:
                     data = json.loads(body)
