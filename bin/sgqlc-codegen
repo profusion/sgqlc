@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import keyword
 import os
 import os.path
 import sys
@@ -193,7 +194,10 @@ class %(name)s(sgqlc.types.Enum):
         s = []
         for w in cls.re_camel_case_words.findall(name):
             s.append(w.lower())
-        return '_'.join(s)
+        name = '_'.join(s)
+        if keyword.iskeyword(name):
+            return name + '_'
+        return name
 
     def get_type_ref(self, t):
         kind = t['kind']
