@@ -196,8 +196,8 @@ def download(endpoint, reponame, labels=(), issue_states=(), pr_states=()):
         return report_download_errors(errors)
 
     repodata = (op + d).repository
-    while (repodata.issues.page_info.has_next_page or
-           repodata.pull_requests.page_info.has_next_page):
+    while (repodata.issues.page_info.has_next_page
+           or repodata.pull_requests.page_info.has_next_page):
         op = Operation()
         repo = op.repository(owner=owner, name=name)
 
@@ -918,8 +918,8 @@ if __name__ == '__main__':
     logging.basicConfig(format=logfmt, level=max(10, 40 - (args.verbose * 10)))
     HTTPEndpoint.logger.setLevel(endpoint_loglevel)
 
-    graphql_endpoint = (args.graphql_endpoint or cfg['graphql-endpoint'] or
-                        DEFAULT_GRAPHQL_ENDPOINT)
+    graphql_endpoint = (args.graphql_endpoint or cfg['graphql-endpoint']
+                        or DEFAULT_GRAPHQL_ENDPOINT)
     token = args.token or cfg['token']
     if not token:
         raise SystemExit('token must be provided. You may create an '

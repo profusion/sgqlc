@@ -1432,7 +1432,7 @@ class ContainerTypeMeta(BaseMeta):
                 if not isinstance(field, Lazy):
                     try:
                         field = BaseType.__ensure__(field)
-                    except TypeError as e:
+                    except TypeError:
                         continue
 
                 field = Field(field)
