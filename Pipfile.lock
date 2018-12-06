@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "15765cb6d68e89c69c0898ed29abffdf1b8e793ba94df2421d34042260cb01f7"
+            "sha256": "9dadf946320e50c974c7676f8b9785bc8dae764f14ff8ec499cdd593cdac3641"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -15,7 +15,12 @@
             }
         ]
     },
-    "default": {},
+    "default": {
+        "sgqlc": {
+            "editable": true,
+            "path": "."
+        }
+    },
     "develop": {
         "alabaster": {
             "hashes": [

@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+sgqlc = {editable = true, path = "."}
 
 [dev-packages]
 "flake8" = "*"
