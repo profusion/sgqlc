@@ -19,6 +19,7 @@ setup(
     version=version,
     description='Simple GraphQL Client',
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     author='Gustavo Sverzut Barbieri',
     author_email='barbieri@profusion.mobi',
     url='http://github.com/profusion/sgqlc',
