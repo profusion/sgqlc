@@ -5,7 +5,7 @@ import os.path
 from setuptools import setup, find_packages
 
 name = 'sgqlc'
-version = 2
+version = 3
 release = 1
 
 
