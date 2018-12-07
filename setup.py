@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os.path
+import re
 from setuptools import setup, find_packages
 
 name = 'sgqlc'
@@ -9,9 +10,14 @@ version = 3
 release = 1
 
 
+def cleanup_rst(doc):
+    re_sphinx_extensions = re.compile(':(mod|class):')
+    return re_sphinx_extensions.sub(':literal:', doc)
+
+
 def read(fname):
     with open(os.path.join(os.path.dirname(__file__), fname)) as f:
-        return f.read()
+        return cleanup_rst(f.read())
 
 
 setup(
