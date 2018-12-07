@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 name = 'sgqlc'
 version = 3
-release = 1
+release = 2
 
 
 def cleanup_rst(doc):
@@ -22,7 +22,7 @@ def read(fname):
 
 setup(
     name=name,
-    version=version,
+    version=f'{version}.{release}',
     description='Simple GraphQL Client',
     long_description=read('README.rst'),
     long_description_content_type='text/x-rst',
