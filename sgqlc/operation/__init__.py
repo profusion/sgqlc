@@ -188,6 +188,23 @@ query {
 In our case, to get the correct query, do as in the first example and
 save the result of ``op.repository(id='repo1')``.
 
+Aliases may be used to rename fields everywhere, not just in the topmost
+query, and for other reasons other than allow two calls with the same
+name. One may use it to translate API fields to something else, example:
+
+>>> op = Operation(Query)
+>>> repository = op.repository(id='repo1')
+>>> repository.issues.number(__alias__='code')
+code: number
+>>> op # or repr(), prints out GraphQL!
+query {
+  repository(id: "repo1") {
+    issues {
+      code: number
+    }
+  }
+}
+
 Last but not least, in the first example you can also note that we're
 not calling ``issues``, just accessing its members. This is a shortcut
 for an empty call, and the handle is saved for you (ease of use):
@@ -405,9 +422,11 @@ Issue(number=2, title=a feature request)
 The difference is that it will handle **aliases** for you:
 
 >>> op = Operation(Query)
->>> op.repository(id='repo1', __alias__='r_name1').issues.__fields__(
-...     'number', 'title',
-... )
+>>> r_name1 = op.repository(id='repo1', __alias__='r_name1')
+>>> r_name1.issues.number(__alias__='code')
+code: number
+>>> r_name1.issues.title(__alias__='headline')
+headline: title
 >>> op.repository(id='repo2', __alias__='r_name2').issues.__fields__(
 ...     'number', 'title',
 ... )
@@ -415,8 +434,8 @@ The difference is that it will handle **aliases** for you:
 query {
   r_name1: repository(id: "repo1") {
     issues {
-      number
-      title
+      code: number
+      headline: title
     }
   }
   r_name2: repository(id: "repo2") {
@@ -429,8 +448,8 @@ query {
 
 >>> json_data = {'data': {
 ...     'r_name1': {'issues': [
-...         {'number': 1, 'title': 'found a bug'},
-...         {'number': 2, 'title': 'a feature request'},
+...         {'code': 1, 'headline': 'found a bug'},
+...         {'code': 2, 'headline': 'a feature request'},
 ...     ]},
 ...     'r_name2': {'issues': [
 ...         {'number': 10, 'title': 'something awesome'},
@@ -440,8 +459,8 @@ query {
 >>> obj = op + json_data
 >>> for issue in obj.r_name1.issues:
 ...     print(issue)
-Issue(number=1, title=found a bug)
-Issue(number=2, title=a feature request)
+Issue(code=1, headline=found a bug)
+Issue(code=2, headline=a feature request)
 >>> for issue in obj.r_name2.issues:
 ...     print(issue)
 Issue(number=10, title=something awesome)

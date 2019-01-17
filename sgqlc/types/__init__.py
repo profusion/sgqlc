@@ -848,7 +848,7 @@ def _create_non_null_wrapper(name, t):
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             raise ValueError(name + ' received null value')
-        return t(json_data)
+        return t(json_data, selection_list)
 
     def __to_graphql_input__(value, indent=0, indent_string='  '):
         return t.__to_graphql_input__(value, indent, indent_string)
@@ -1528,13 +1528,13 @@ class ContainerType(BaseType, metaclass=ContainerTypeMeta):
             object.__setattr__(self, '__json_data__', {})
             return
 
-        def set_field(field):
+        def set_field(field, sel):
             name = field.name
             graphql_name = field.graphql_name
             if graphql_name in json_data:
                 try:
                     value = json_data[graphql_name]
-                    value = field.type(value)
+                    value = field.type(value, sel)
                     setattr(self, name, value)
                     cache[name] = field
                 except Exception as exc:
@@ -1548,10 +1548,10 @@ class ContainerType(BaseType, metaclass=ContainerTypeMeta):
                     alias = sel.__alias__
                     field = Field(field.type, alias, field.args)
                     field._set_container(self.__schema__, self, alias)
-                set_field(field)
+                set_field(field, sel)
         else:
             for field in self.__class__:
-                set_field(field)
+                set_field(field, None)
 
         # backing store, changed by setattr()
         object.__setattr__(self, '__json_data__', json_data)
