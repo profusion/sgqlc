@@ -3,6 +3,7 @@
 import sys
 from sgqlc.endpoint.http import HTTPEndpoint
 from sgqlc.types import Type, Field, list_of
+from sgqlc.types.datetime import DateTime
 from sgqlc.types.relay import Connection, connection_args
 from sgqlc.operation import Operation
 
@@ -11,6 +12,7 @@ from sgqlc.operation import Operation
 class Issue(Type):
     number = int
     title = str
+    created_at = DateTime
 
 
 class IssueConnection(Connection):  # Connection provides page_info!
@@ -46,6 +48,8 @@ issues = op.repository(owner=owner, name=name).issues(first=100)
 # select sub-fields explicitly: { nodes { number title } }
 issues.nodes.number()
 issues.nodes.title()
+# rename fields with __alias__: instead of node.created_at, use node.timestamp
+issues.nodes.created_at(__alias__='timestamp')
 # here uses __fields__() to select by name (*args)
 issues.page_info.__fields__('has_next_page')
 # here uses __fields__() to select by name (**kwargs)
