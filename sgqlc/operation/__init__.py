@@ -422,11 +422,9 @@ Issue(number=2, title=a feature request)
 The difference is that it will handle **aliases** for you:
 
 >>> op = Operation(Query)
->>> r_name1 = op.repository(id='repo1', __alias__='r_name1')
->>> r_name1.issues.number(__alias__='code')
-code: number
->>> r_name1.issues.title(__alias__='headline')
-headline: title
+>>> op.repository(id='repo1', __alias__='r_name1').issues.__fields__(
+...     number='code', title='headline',
+... )
 >>> op.repository(id='repo2', __alias__='r_name2').issues.__fields__(
 ...     'number', 'title',
 ... )
@@ -741,6 +739,8 @@ class Selection:
         those names will be included. Alternatively one can include
         fields using ``name=True``. To include fields with selection
         parameters, then use ``name=dict(...)`` or ``name=list(...)``.
+        To include fields without arguments and with aliases, use the
+        shortcut ``name='alias'``.
 
         .. code-block:: python
 
@@ -750,6 +750,9 @@ class Selection:
 
           # field1 with parameters
           parent.field.child.__fields__(field1=dict(param1='value1'))
+
+          # field1 renamed (aliased) to alias1
+          parent.field.child.__fields__(field1='alias1')
 
           # all but field2
           parent.field.child.__fields__(field2=False)
@@ -791,6 +794,8 @@ class Selection:
             if args and not isinstance(args, dict):
                 if isinstance(args, (tuple, list)):
                     args = dict(args)
+                elif isinstance(args, str):
+                    args = {'__alias__': args}
                 else:
                     args = {}
             self[n](**args)
