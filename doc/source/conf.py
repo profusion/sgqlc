@@ -53,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'sgqlc'
-copyright = '2018, ProFUSION Sistemas e Solucoes LTDA'
+copyright = 'ProFUSION Sistemas e Solucoes LTDA'
 author = 'ProFUSION Sistemas e Solucoes LTDA'
 
 # The version info for the project you're documenting, acts as replacement for
