@@ -366,6 +366,56 @@ query {
   }
 }
 
+If a field of a container type (interface or type) is used without explicit
+fields as documented above, all of its fields will be added automatically.
+It will avoid dependency loops and limit the allowed nest depth to 2 by
+default, but that can be overridden with an explicit ``auto_select_depth``
+to ``__to_graphql__()`` (which is used by ``str()``, ``repr()`` and the
+likes):
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1') # printed with depth=2 (default)
+repository(id: "repo1") {
+  id
+  name
+  owner {
+    login
+    name
+  }
+  issues {
+    number
+    title
+    body
+  }
+}
+>>> op # the whole query printed with depth=2 (default)
+query {
+  repository(id: "repo1") {
+    id
+    name
+    owner {
+      login
+      name
+    }
+    issues {
+      number
+      title
+      body
+    }
+  }
+}
+
+>>> print(op.__to_graphql__(auto_select_depth=1)) # omits owner/issues
+query {
+  repository(id: "repo1") {
+    id
+    name
+  }
+}
+
+
+
+
 
 Interpret Query Results
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -627,6 +677,9 @@ from collections import OrderedDict
 from ..types import ContainerType, ArgDict, global_schema
 
 
+DEFAULT_AUTO_SELECT_DEPTH = 2
+
+
 class Selection:
     '''Select a field with in a container type.
 
@@ -715,10 +768,29 @@ class Selection:
             return iter(self.__selection_list)
         return iter((self,))
 
-    def __get_all_fields_selection_list(self):
-        q = SelectionList(self.__field__.type)
-        for f in self.__field__.type:
-            q += Selection(None, f, {})
+    def __get_all_fields_selection_list(self, depth, trail):
+        t = self.__field__.type
+        q = SelectionList(t)
+        trail.append(t)
+        recursive = len(trail) < depth
+
+        for f in t:
+            sel = Selection(None, f, {})
+            if issubclass(f.type, ContainerType):
+                if recursive and f.type not in trail:
+                    # change the locally created selection list to the
+                    # auto-selected one. This must be explicit here so
+                    # it doesn't affect __to_graphql__(), that one must not
+                    # affect the actual selection it's operating on!
+                    sel.__selection_list = \
+                        sel.__get_all_fields_selection_list(depth, trail)
+                else:
+                    sel = None
+
+            if sel:
+                q += sel
+
+        trail.pop()
         return q
 
     def __fields__(self, *names, **names_and_args):
@@ -800,7 +872,8 @@ class Selection:
                     args = {}
             self[n](**args)
 
-    def __to_graphql__(self, indent=0, indent_string='  '):
+    def __to_graphql__(self, indent=0, indent_string='  ',
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
         prefix = indent_string * indent
 
         alias = ''
@@ -814,8 +887,10 @@ class Selection:
         if self.__selection_list is not None:
             selections = self.__selection_list
             if not selections:
-                selections = self.__get_all_fields_selection_list()
-            query = ' ' + selections.__to_graphql__(indent, indent_string)
+                selections = self.__get_all_fields_selection_list(
+                    auto_select_depth, [])
+            query = ' ' + selections.__to_graphql__(
+                indent, indent_string, auto_select_depth)
         return prefix + alias + self.__field__.graphql_name + args + query
 
     def __dir__(self):
@@ -1047,12 +1122,15 @@ class SelectionList:
     def __bytes__(self):
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
 
-    def __to_graphql__(self, indent=0, indent_string='  '):
+    def __to_graphql__(self, indent=0, indent_string='  ',
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
         prefix = indent_string * indent
 
         s = ['{']
         for v in self.__selections:
-            s.append(v.__to_graphql__(indent + 1, indent_string))
+            s.append(v.__to_graphql__(
+                indent + 1, indent_string, auto_select_depth,
+            ))
 
         s.append(prefix + '}')
         return '\n'.join(s)
@@ -1213,7 +1291,8 @@ class Operation:
         self.__args._set_container(typ.__schema__, self)
         self.__selection_list = SelectionList(typ)
 
-    def __to_graphql__(self, indent=0, indent_string='  '):
+    def __to_graphql__(self, indent=0, indent_string='  ',
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
         prefix = indent_string * indent
         kind = 'query'
         if self.__type.__name__ == 'Mutation':
@@ -1225,7 +1304,7 @@ class Operation:
 
         args = self.__args.__to_graphql__(indent, indent_string)
         selections = self.__selection_list.__to_graphql__(
-            indent, indent_string)
+            indent, indent_string, auto_select_depth)
         return prefix + kind + name + args + ' ' + selections
 
     def __iter__(self):
