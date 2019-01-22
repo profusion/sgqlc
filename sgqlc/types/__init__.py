@@ -1392,6 +1392,7 @@ class ContainerTypeMeta(BaseMeta):
         if cls.__kind__ == 'interface':
             cls.__fix_type_kind(bases)
 
+        cls.__populate_meta_fields()
         cls.__populate_interfaces(bases)
         cls.__inherit_fields(bases)
         cls.__create_own_fields()
@@ -1401,6 +1402,13 @@ class ContainerTypeMeta(BaseMeta):
             if b.__kind__ == 'type':
                 cls.__kind__ = 'type'
                 break
+
+    def __populate_meta_fields(cls):
+        field = Field(non_null(String), '__typename')
+        field._set_container(cls.__schema__, cls, '__typename__')
+        cls.__meta_fields = {
+            '__typename__': field,
+        }
 
     def __populate_interfaces(cls, bases):
         ifaces = []
@@ -1442,6 +1450,12 @@ class ContainerTypeMeta(BaseMeta):
             delattr(cls, name)  # let fallback to cls.__fields using getitem
 
     def __getitem__(cls, key):
+        if key.startswith('_'):
+            try:
+                return cls.__meta_fields[key]
+            except KeyError:
+                pass
+
         try:
             return cls.__fields[key]
         except KeyError as exc:
