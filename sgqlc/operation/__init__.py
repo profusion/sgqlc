@@ -66,9 +66,14 @@ Examples
 Let's start defining the types, including the schema root ``Query``:
 
 >>> from sgqlc.types import *
->>> class User(Type):
-...     login = non_null(str)
-...     name = str
+>>> class Actor(Interface):
+...    login = non_null(str)
+...
+>>> class User(Type, Actor):
+...    name = str
+...
+>>> class Organization(Type, Actor):
+...    location = str
 ...
 >>> class Issue(Type):
 ...     number = non_null(int)
@@ -79,7 +84,7 @@ Let's start defining the types, including the schema root ``Query``:
 >>> class Repository(Type):
 ...     id = ID
 ...     name = non_null(str)
-...     owner = non_null(User)
+...     owner = non_null(Actor)
 ...     issues = Field(list_of(non_null(Issue)), args={
 ...         'title_contains': str,
 ...         'reporter_login': str,
@@ -98,9 +103,16 @@ Let's start defining the types, including the schema root ``Query``:
 >>> global_schema  # doctest: +ELLIPSIS
 schema {
   ...
-  type User {
+  interface Actor {
+    login: String!
+  }
+  type User implements Actor {
     login: String!
     name: String
+  }
+  type Organization implements Actor {
+    login: String!
+    location: String
   }
   type Issue {
     number: Int!
@@ -111,7 +123,7 @@ schema {
   type Repository {
     id: ID
     name: String!
-    owner: User!
+    owner: Actor!
     issues(titleContains: String, reporterLogin: String): [Issue!]
   }
   type Query {
@@ -380,7 +392,6 @@ repository(id: "repo1") {
   name
   owner {
     login
-    name
   }
   issues {
     number
@@ -395,7 +406,6 @@ query {
     name
     owner {
       login
-      name
     }
     issues {
       number
@@ -540,6 +550,86 @@ mutation {
     }
   }
 }
+
+
+Inline Fragments & Interfaces
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When a field specifies an interface such as the ``Repository.owner``
+in our example, only the interface fields can be queried. However,
+the actual type may implement much more, and to solve that in GraphQL
+we usually do an inline fragment ``... on ActualType { field1, field2 }``.
+
+To achieve that we use the ``__as__(ActualType)`` on the selection list,
+example:
+
+>>> op = Operation(Query)
+>>> repo = op.repository(id='repo1')
+>>> repo.owner.login() # interface fields can be declared as usual
+login
+>>> repo.owner().__as__(Organization).location() # location field for Orgs
+location
+>>> repo.owner.__as__(User).name() # name field for Users
+name
+>>> op
+query {
+  repository(id: "repo1") {
+    owner {
+      login
+      __typename
+      ... on Organization {
+        location
+      }
+      ... on User {
+        name
+      }
+    }
+  }
+}
+
+Note that ``__typename`` is automatically selected so it can create the
+proper type when interprets the results:
+
+>>> json_data = {'data': {'repository': {'owner': {
+...    '__typename': 'User',
+...    'login': 'user',
+...    'name': 'User Name',
+... }}}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+User(login='user', __typename__='User', name='User Name')
+
+>>> json_data = {'data': {'repository': {'owner': {
+...    '__typename': 'Organization',
+...    'login': 'a-company',
+...    'name': 'A Company',
+... }}}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+Organization(login='a-company', __typename__='Organization')
+
+If the returned type doesn't have an explicit type fields, the
+Interface field is returned:
+
+>>> json_data = {'data': {'repository': {'owner': {
+...    '__typename': 'SomethingElse',
+...    'login': 'something-else',
+...    'field': 'value',
+... }}}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+Actor(login='something-else', __typename__='SomethingElse')
+
+In the unusual situation where ``__typename`` is not returned,
+it's going to behave as the interface type as well:
+
+>>> json_data = {'data': {'repository': {'owner': {
+...    'login': 'user',
+...    'name': 'User Name',
+... }}}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+Actor(login='user')
 
 
 Utilities
@@ -902,6 +992,14 @@ class Selection:
         return sorted(original_dir + fields)
 
     def __getattr__(self, name):
+        if name.startswith('_'):
+            sl = self.__selection_list
+            proxied_fields = ('__type__', '__casts__', '__as__')
+            if name in proxied_fields:
+                if sl is None:
+                    return None
+                return getattr(sl, name)
+
         try:
             return self[name]
         except KeyError as exc:
@@ -1020,6 +1118,16 @@ class Selector:
         self.__parent += s
         return s
 
+    def __as__(self, typ):
+        '''Create a selection list on the given type.
+
+        The selection list will be result in an inline fragment
+        in the query with an additional query for ``__typename``,
+        which is later used to create the proper type when
+        the results are interpreted.
+        '''
+        return self().__as__(typ)
+
     def __dir__(self):
         original_dir = super(Selector, self).__dir__()
         t = self.__field.type
@@ -1102,16 +1210,24 @@ class SelectionList:
     Traceback (most recent call last):
       ...
     KeyError: 'Repository has no field x'
+    >>> sl.__type__ # returns the type the selection operates on
+    type Repository {
+      id: ID
+      name: String!
+      owner: Actor!
+      issues(titleContains: String, reporterLogin: String): [Issue!]
+    }
 
     '''
 
-    __slots__ = ('__type', '__selectors', '__selections')
+    __slots__ = ('__type', '__selectors', '__selections', '__casts')
 
     def __init__(self, typ):
         assert issubclass(typ, ContainerType), str(typ) + ': not a container'
         self.__type = typ
         self.__selectors = {}
         self.__selections = []
+        self.__casts = OrderedDict()
 
     def __str__(self):
         return self.__to_graphql__()
@@ -1125,11 +1241,18 @@ class SelectionList:
     def __to_graphql__(self, indent=0, indent_string='  ',
                        auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
         prefix = indent_string * indent
+        next_indent = indent + 1
 
         s = ['{']
         for v in self.__selections:
             s.append(v.__to_graphql__(
-                indent + 1, indent_string, auto_select_depth,
+                next_indent, indent_string, auto_select_depth,
+            ))
+
+        next_prefix = prefix + indent_string
+        for v in self.__casts.values():
+            s.append(next_prefix + v.__to_graphql__(
+                next_indent, indent_string, auto_select_depth,
             ))
 
         s.append(prefix + '}')
@@ -1157,6 +1280,43 @@ class SelectionList:
         assert isinstance(selection, Selection)
         self.__selections.append(selection)
         return self
+
+    @property
+    def __type__(self):
+        return self.__type
+
+    @property
+    def __casts__(self):
+        return self.__casts
+
+    def __as__(self, typ):
+        '''Create a child selection list on the given type.
+
+        The selection list will be result in an inline fragment
+        in the query with an additional query for ``__typename``,
+        which is later used to create the proper type when
+        the results are interpreted.
+
+        The newly created selection list is shared for all users
+        of the same type in this selection list.
+        '''
+        try:
+            return self.__casts[typ.__name__]
+        except KeyError:
+            pass
+
+        sl = InlineFragmentSelectionList(typ)
+        self.__casts[typ.__name__] = sl
+        self['__typename__']()
+        return sl
+
+
+class InlineFragmentSelectionList(SelectionList):
+    def __to_graphql__(self, indent=0, indent_string='  ',
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
+        selection = SelectionList.__to_graphql__(
+            self, indent, indent_string, auto_select_depth)
+        return '... on %s %s' % (self.__type__, selection)
 
 
 class Operation:

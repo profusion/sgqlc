@@ -1535,6 +1535,9 @@ class ContainerType(BaseType, metaclass=ContainerTypeMeta):
 
     def __init__(self, json_data, selection_list=None):
         object.__setattr__(self, '__selection_list__', selection_list)
+        self.__populate_fields(json_data)
+
+    def __populate_fields(self, json_data):
         cache = OrderedDict()
         object.__setattr__(self, '__fields_cache__', cache)
         if json_data is None:
@@ -1542,33 +1545,66 @@ class ContainerType(BaseType, metaclass=ContainerTypeMeta):
             object.__setattr__(self, '__json_data__', {})
             return
 
-        def set_field(field, sel):
-            name = field.name
-            graphql_name = field.graphql_name
-            if graphql_name in json_data:
-                try:
-                    value = json_data[graphql_name]
-                    value = field.type(value, sel)
-                    setattr(self, name, value)
-                    cache[name] = field
-                except Exception as exc:
-                    raise ValueError('%s selection %r: %r (%s)' % (
-                        self.__class__, name, value, exc)) from exc
-
         if self.__selection_list__ is not None:
-            for sel in self.__selection_list__:
-                field = sel.__field__
-                if sel.__alias__ is not None:
-                    alias = sel.__alias__
-                    field = Field(field.type, alias, field.args)
-                    field._set_container(self.__schema__, self, alias)
-                set_field(field, sel)
+            self.__populate_fields_from_selection_list(
+                self.__selection_list__, json_data)
         else:
             for field in self.__class__:
-                set_field(field, None)
+                self.__populate_field_data(field, field.type, None, json_data)
 
         # backing store, changed by setattr()
         object.__setattr__(self, '__json_data__', json_data)
+
+    def __populate_field_data(self, field, ftype, sel, json_data):
+        name = field.name
+        graphql_name = field.graphql_name
+        if graphql_name not in json_data:
+            return
+
+        try:
+            value = json_data[graphql_name]
+            value = ftype(value, sel)
+            setattr(self, name, value)
+            self.__fields_cache__[name] = field
+        except Exception as exc:
+            raise ValueError('%s selection %r: %r (%s)' % (
+                self.__class__, name, value, exc)) from exc
+
+    def __populate_fields_from_selection_list(self, sl, json_data):
+        for sel in sl:
+            field = sel.__field__
+            ftype = self.__get_type_for_selection(sel, json_data)
+            if sel.__alias__ is not None:
+                alias = sel.__alias__
+                field = Field(ftype, alias, field.args)
+                field._set_container(self.__schema__, self, alias)
+            self.__populate_field_data(field, ftype, sel, json_data)
+
+        casts = sl.__casts__
+        if casts:
+            tname = json_data.get('__typename')
+            csl = casts.get(tname)
+            if csl:
+                self.__populate_fields_from_selection_list(csl, json_data)
+
+    @staticmethod
+    def __get_type_for_selection(sel, json_data):
+        field = sel.__field__
+        ftype = field.type
+        casts = sel.__casts__
+        if not casts:
+            return ftype
+
+        graphql_name = field.graphql_name
+        tname = json_data.get(graphql_name, {}).get('__typename')
+        if not tname:
+            return ftype
+
+        sl = casts.get(tname)
+        if sl is None:
+            return ftype
+
+        return sl.__type__
 
     def __setattr__(self, name, value):
         '''Sets the attribute value, if a :class:`Field` updates backing store.

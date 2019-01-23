@@ -2,17 +2,30 @@
 
 import sys
 from sgqlc.endpoint.http import HTTPEndpoint
-from sgqlc.types import Type, Field, list_of
+from sgqlc.types import Type, Field, Interface, list_of
 from sgqlc.types.datetime import DateTime
 from sgqlc.types.relay import Connection, connection_args
 from sgqlc.operation import Operation
 
 
 # Declare types matching GitHub GraphQL schema:
+class Actor(Interface):
+    login = str
+
+
+class User(Type, Actor):
+    bio = str
+
+
+class Organization(Type, Actor):
+    location = str
+
+
 class Issue(Type):
     number = int
     title = str
     created_at = DateTime
+    author = Actor
 
 
 class IssueConnection(Connection):  # Connection provides page_info!
@@ -54,6 +67,13 @@ issues.nodes.created_at(__alias__='timestamp')
 issues.page_info.__fields__('has_next_page')
 # here uses __fields__() to select by name (**kwargs)
 issues.page_info.__fields__(end_cursor=True)
+
+# Interfaces:
+# - fields owned by the interface itself
+issues.nodes.author.login()
+# - fields implemented by a type
+issues.nodes.author.__as__(User).bio()
+issues.nodes.author().__as__(Organization).location()
 
 # you can print the resulting GraphQL
 print(op)  # noqa: T001
