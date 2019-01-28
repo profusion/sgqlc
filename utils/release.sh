@@ -7,4 +7,4 @@ if [ "$PIPENV_ACTIVE" = "1" ]; then
 fi
 
 rm -fr dist/ build
-./setup.py egg_info -Db '' sdist bdist_wheel
+./setup.py egg_info -Db '' sdist bdist_wheel bdist_egg
