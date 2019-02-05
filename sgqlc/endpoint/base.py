@@ -125,7 +125,7 @@ class BaseEndpoint:
         for i, error in enumerate(errors):
             paths = error.get('path')
             if paths:
-                paths = ' ' + '/'.join(paths)
+                paths = ' ' + '/'.join(str(path) for path in paths)
             else:
                 paths = ''
             self.logger.info('Error #{}{}:'.format(i, paths))
