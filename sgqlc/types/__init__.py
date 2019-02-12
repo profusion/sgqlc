@@ -1534,6 +1534,9 @@ class ContainerType(BaseType, metaclass=ContainerTypeMeta):
     '''
 
     def __init__(self, json_data, selection_list=None):
+        assert json_data is None or isinstance(json_data, dict), \
+            '%r (%s) is not a JSON Object' % (
+                json_data, type(json_data).__name__)
         object.__setattr__(self, '__selection_list__', selection_list)
         self.__populate_fields(json_data)
 
