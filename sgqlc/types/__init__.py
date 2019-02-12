@@ -1564,6 +1564,7 @@ class ContainerType(BaseType, metaclass=ContainerTypeMeta):
         if graphql_name not in json_data:
             return
 
+        value = None
         try:
             value = json_data[graphql_name]
             value = ftype(value, sel)
