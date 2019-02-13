@@ -9,6 +9,45 @@ import sys
 import re
 import functools
 
+from graphql.language.ast import Value as GraphQLASTValue
+from graphql.language.parser import parse_value as parse_graphql_value
+from graphql.language.visitor import Visitor, visit
+
+
+class JSONOutputVisitor(Visitor):
+    def leave_IntValue(self, node, *args):
+        return int(node.value)
+
+    def leave_FloatValue(self, node, *args):
+        return float(node.value)
+
+    def leave_StringValue(self, node, *args):
+        return node.value
+
+    def leave_BooleanValue(self, node, *args):
+        return node.value
+
+    def leave_EnumValue(self, node, *args):
+        return node.value
+
+    def leave_ListValue(self, node, *args):
+        return node.values
+
+    def leave_ObjectValue(self, node, *args):
+        return dict(node.fields)
+
+    def leave_ObjectField(self, node, *args):
+        return (node.name.value, node.value)
+
+
+def parse_graphql_value_to_json(source):
+    value = parse_graphql_value(source)
+    visitor = JSONOutputVisitor()
+    v = visit(value, JSONOutputVisitor())
+    if isinstance(v, GraphQLASTValue):
+        v = v.value
+    return v
+
 
 class CodeGen:
     def __init__(self, schema_name, schema, writer):
@@ -233,11 +272,7 @@ class %(name)s(sgqlc.types.Enum):
             if defval.startswith('$'):
                 defval = 'sgqlc.types.Variable(%r)' % defval[1:]
             else:
-                try:
-                    defval = json.loads(defval)
-                except json.JSONDecodeError:
-                    pass
-                defval = '%s(%r)' % (tref, defval)
+                defval = repr(parse_graphql_value_to_json(defval))
 
         self.writer('''\
         (%(py_name)r, sgqlc.types.Arg(%(type)s, graphql_name=%(gql_name)r, \

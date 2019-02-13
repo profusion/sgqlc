@@ -32,6 +32,7 @@ setup(
     license='ISCL',
     python_requires='>=3.6',
     requires=[],
+    install_requires=['graphql-core'],
     extras_require={
         'sphinx': ['sphinx'],
     },
