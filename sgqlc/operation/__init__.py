@@ -1446,6 +1446,7 @@ class Operation:
             name = typ.__name__
 
         self.__type = typ
+        self.__kind = typ.__name__.lower()
         self.__name = name
         self.__args = ArgDict(variable_args)
         self.__args._set_container(typ.__schema__, self)
@@ -1454,10 +1455,7 @@ class Operation:
     def __to_graphql__(self, indent=0, indent_string='  ',
                        auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
         prefix = indent_string * indent
-        kind = 'query'
-        if self.__type.__name__ == 'Mutation':
-            kind = 'mutation'
-
+        kind = self.__kind
         name = ''
         if self.__name:
             name = ' ' + self.__name
