@@ -75,11 +75,18 @@ Let's start defining the types, including the schema root ``Query``:
 >>> class Organization(Type, Actor):
 ...    location = str
 ...
+>>> class Assignee(Type):
+...    email = non_null(str)
+...
+>>> class UserOrAssignee(Union):
+...    __types__ = (User, Assignee)
+...
 >>> class Issue(Type):
 ...     number = non_null(int)
 ...     title = non_null(str)
 ...     body = str
 ...     reporter = non_null(User)
+...     assigned = UserOrAssignee
 ...
 >>> class Repository(Type):
 ...     id = ID
@@ -114,11 +121,16 @@ schema {
     login: String!
     location: String
   }
+  type Assignee {
+    email: String!
+  }
+  union UserOrAssignee = User | Assignee
   type Issue {
     number: Int!
     title: String!
     body: String
     reporter: User!
+    assigned: UserOrAssignee
   }
   type Repository {
     id: ID
@@ -295,6 +307,16 @@ query {
     issues {
       number
       title
+      assigned {
+        __typename
+        ... on User {
+          login
+          name
+        }
+        ... on Assignee {
+          email
+        }
+      }
     }
   }
 }
@@ -312,6 +334,16 @@ query {
     issues {
       number
       title
+      assigned {
+        __typename
+        ... on User {
+          login
+          name
+        }
+        ... on Assignee {
+          email
+        }
+      }
     }
   }
 }
@@ -331,6 +363,16 @@ query {
       reporter {
         login
         name
+      }
+      assigned {
+        __typename
+        ... on User {
+          login
+          name
+        }
+        ... on Assignee {
+          email
+        }
       }
     }
   }
@@ -353,6 +395,9 @@ query {
         login
         name
       }
+      assigned {
+        __typename
+      }
     }
   }
 }
@@ -373,6 +418,9 @@ query {
       reporter {
         login
         name
+      }
+      assigned {
+        __typename
       }
     }
   }
@@ -420,6 +468,57 @@ query {
   repository(id: "repo1") {
     id
     name
+  }
+}
+>>> print(op.__to_graphql__(auto_select_depth=3)) # shows reporter
+query {
+  repository(id: "repo1") {
+    id
+    name
+    owner {
+      login
+    }
+    issues {
+      number
+      title
+      body
+      reporter {
+        login
+        name
+      }
+      assigned {
+        __typename
+      }
+    }
+  }
+}
+>>> print(op.__to_graphql__(auto_select_depth=4)) # shows assigned sub-types
+query {
+  repository(id: "repo1") {
+    id
+    name
+    owner {
+      login
+    }
+    issues {
+      number
+      title
+      body
+      reporter {
+        login
+        name
+      }
+      assigned {
+        __typename
+        ... on User {
+          login
+          name
+        }
+        ... on Assignee {
+          email
+        }
+      }
+    }
   }
 }
 
@@ -548,6 +647,16 @@ mutation {
       login
       name
     }
+    assigned {
+      __typename
+      ... on User {
+        login
+        name
+      }
+      ... on Assignee {
+        email
+      }
+    }
   }
 }
 
@@ -571,6 +680,10 @@ login
 location
 >>> repo.owner.__as__(User).name() # name field for Users
 name
+>>> repo.issues().assigned.__as__(Assignee).email()
+email
+>>> repo.issues().assigned.__as__(User).login()
+login
 >>> op
 query {
   repository(id: "repo1") {
@@ -584,6 +697,17 @@ query {
         name
       }
     }
+    issues {
+      assigned {
+        __typename
+        ... on Assignee {
+          email
+        }
+        ... on User {
+          login
+        }
+      }
+    }
   }
 }
 
@@ -594,10 +718,19 @@ proper type when interprets the results:
 ...    '__typename': 'User',
 ...    'login': 'user',
 ...    'name': 'User Name',
-... }}}}
+...    },
+...    'issues': [
+...      {'assigned': {'__typename': 'Assignee', 'email': 'e@mail.com'}},
+...      {'assigned': {'__typename': 'User', 'login': 'xpto'}},
+...    ],
+... }}}
 >>> obj = op + json_data
 >>> obj.repository.owner
 User(login='user', __typename__='User', name='User Name')
+>>> for i in obj.repository.issues:
+...     print(i)
+Issue(assigned=Assignee(__typename__=Assignee, email=e@mail.com))
+Issue(assigned=User(__typename__=User, login=xpto))
 
 >>> json_data = {'data': {'repository': {'owner': {
 ...    '__typename': 'Organization',
@@ -709,6 +842,7 @@ also list fields:
 >>> for name in dir(repository.issues()): # on selection also yields fields
 ...     if not name.startswith('_'):
 ...         print(name)
+assigned
 body
 number
 reporter
@@ -716,6 +850,7 @@ title
 >>> for name in dir(repository.issues): # same for selector
 ...     if not name.startswith('_'):
 ...         print(name)
+assigned
 body
 number
 reporter
@@ -764,7 +899,8 @@ __all__ = ('Operation',)
 
 from collections import OrderedDict
 
-from ..types import ContainerType, ArgDict, global_schema
+from ..types import BaseTypeWithTypename, Union, ContainerType, ArgDict, \
+    global_schema
 
 
 DEFAULT_AUTO_SELECT_DEPTH = 2
@@ -845,7 +981,7 @@ class Selection:
         self.__args__ = args
         self.__field_selector = {}
         self.__selection_list = None
-        if issubclass(field.type, ContainerType):
+        if issubclass(field.type, BaseTypeWithTypename):
             self.__selection_list = SelectionList(field.type)
 
     def __len__(self):
@@ -858,15 +994,25 @@ class Selection:
             return iter(self.__selection_list)
         return iter((self,))
 
-    def __get_all_fields_selection_list(self, depth, trail):
-        t = self.__field__.type
-        q = SelectionList(t)
-        trail.append(t)
+    def __select_all_types(cls, union_type, depth, trail):
         recursive = len(trail) < depth
 
-        for f in t:
+        q = SelectionList(union_type)
+        q.__typename__()
+        for t in union_type:
+            if recursive and t not in trail:
+                sel = q.__as__(t)
+                for x in cls.__select_all_fields(t, depth, trail):
+                    sel += x
+        return q
+
+    def __select_all_fields(cls, container_type, depth, trail):
+        recursive = len(trail) < depth
+
+        q = SelectionList(container_type)
+        for f in container_type:
             sel = Selection(None, f, {})
-            if issubclass(f.type, ContainerType):
+            if issubclass(f.type, BaseTypeWithTypename):
                 if recursive and f.type not in trail:
                     # change the locally created selection list to the
                     # auto-selected one. This must be explicit here so
@@ -879,6 +1025,16 @@ class Selection:
 
             if sel:
                 q += sel
+        return q
+
+    def __get_all_fields_selection_list(self, depth, trail):
+        t = self.__field__.type
+        trail.append(t)
+
+        if issubclass(t, Union):
+            q = self.__select_all_types(t, depth, trail)
+        else:
+            q = self.__select_all_fields(t, depth, trail)
 
         trail.pop()
         return q
@@ -1223,7 +1379,8 @@ class SelectionList:
     __slots__ = ('__type', '__selectors', '__selections', '__casts')
 
     def __init__(self, typ):
-        assert issubclass(typ, ContainerType), str(typ) + ': not a container'
+        assert issubclass(typ, BaseTypeWithTypename), \
+            str(typ) + ': not a selection list type (container or union)'
         self.__type = typ
         self.__selectors = {}
         self.__selections = []

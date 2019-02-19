@@ -792,7 +792,8 @@ class BaseMeta(type):
     'Automatically adds class to its schema'
     def __init__(cls, name, bases, namespace):
         super(BaseMeta, cls).__init__(name, bases, namespace)
-        if not bases or BaseType in bases or ContainerType in bases:
+        if not bases or BaseType in bases or \
+                BaseTypeWithTypename in bases or ContainerType in bases:
             return
 
         auto_register_name = '_%s__auto_register' % (name,)
@@ -841,6 +842,28 @@ class BaseType(metaclass=BaseMeta):
     '''
     __schema__ = global_schema
     __kind__ = None
+
+
+class BaseMetaWithTypename(BaseMeta):
+    'BaseMeta with ``__typename`` field (containers and union).'
+    def __init__(cls, name, bases, namespace):
+        super(BaseMetaWithTypename, cls).__init__(name, bases, namespace)
+
+        if not bases or BaseType in bases or BaseTypeWithTypename in bases:
+            return
+
+        cls.__populate_meta_fields()
+
+    def __populate_meta_fields(cls):
+        field = Field(non_null('String'), '__typename')
+        field._set_container(cls.__schema__, cls, '__typename__')
+        cls.__meta_fields__ = {
+            '__typename__': field,
+        }
+
+
+class BaseTypeWithTypename(BaseType, metaclass=BaseMetaWithTypename):
+    'BaseType with ``__typename`` field (containers and union).'
 
 
 def _create_non_null_wrapper(name, t):
@@ -1302,12 +1325,12 @@ class Enum(BaseType, metaclass=EnumMeta):
         return json_data
 
 
-class UnionMeta(BaseMeta):
+class UnionMeta(BaseMetaWithTypename):
     'meta class to set __types__ as :class:`BaseType` instances'
 
     def __init__(cls, name, bases, namespace):
         super(UnionMeta, cls).__init__(name, bases, namespace)
-        if not cls.__types__ and BaseType not in bases:
+        if not cls.__types__ and BaseTypeWithTypename not in bases:
             raise ValueError(name + ': missing __types__')
 
         types = []
@@ -1337,8 +1360,11 @@ class UnionMeta(BaseMeta):
         suffix = ' = ' + ' | '.join(str(c) for c in cls.__types__)
         return BaseMeta.__to_graphql__(cls, indent, indent_string) + suffix
 
+    def __getitem__(cls, key):
+        return cls.__meta_fields__[key]
 
-class Union(BaseType, metaclass=UnionMeta):
+
+class Union(BaseTypeWithTypename, metaclass=UnionMeta):
     '''This is an abstract class that union of multiple types should
     inherit and define ``__types__``, a list of pre-defined
     :class:`Type`.
@@ -1378,7 +1404,7 @@ class Union(BaseType, metaclass=UnionMeta):
     __types__ = ()
 
 
-class ContainerTypeMeta(BaseMeta):
+class ContainerTypeMeta(BaseMetaWithTypename):
     '''Creates container types, ensures fields are instance of Field.
     '''
     def __init__(cls, name, bases, namespace):
@@ -1386,13 +1412,13 @@ class ContainerTypeMeta(BaseMeta):
         cls.__fields = OrderedDict()
         cls.__interfaces__ = ()
 
-        if not bases or BaseType in bases or ContainerType in bases:
+        if not bases or BaseTypeWithTypename in bases or \
+                ContainerType in bases:
             return
 
         if cls.__kind__ == 'interface':
             cls.__fix_type_kind(bases)
 
-        cls.__populate_meta_fields()
         cls.__populate_interfaces(bases)
         cls.__inherit_fields(bases)
         cls.__create_own_fields()
@@ -1402,13 +1428,6 @@ class ContainerTypeMeta(BaseMeta):
             if b.__kind__ == 'type':
                 cls.__kind__ = 'type'
                 break
-
-    def __populate_meta_fields(cls):
-        field = Field(non_null(String), '__typename')
-        field._set_container(cls.__schema__, cls, '__typename__')
-        cls.__meta_fields = {
-            '__typename__': field,
-        }
 
     def __populate_interfaces(cls, bases):
         ifaces = []
@@ -1452,7 +1471,7 @@ class ContainerTypeMeta(BaseMeta):
     def __getitem__(cls, key):
         if key.startswith('_'):
             try:
-                return cls.__meta_fields[key]
+                return cls.__meta_fields__[key]
             except KeyError:
                 pass
 
@@ -1502,7 +1521,7 @@ class ContainerTypeMeta(BaseMeta):
         return d
 
 
-class ContainerType(BaseType, metaclass=ContainerTypeMeta):
+class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
     '''Container of :class:`Field`.
 
     For ease of use, fields can be declared by sub classes in the
