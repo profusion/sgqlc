@@ -1319,6 +1319,7 @@ class UnionMeta(BaseMeta):
             types.append(t)
 
         cls.__types__ = tuple(types)
+        cls.__meta_fields_dict = None
 
     def __contains__(cls, name_or_type):
         if isinstance(name_or_type, str):
@@ -1336,6 +1337,23 @@ class UnionMeta(BaseMeta):
     def __to_graphql__(cls, indent=0, indent_string='  '):
         suffix = ' = ' + ' | '.join(str(c) for c in cls.__types__)
         return BaseMeta.__to_graphql__(cls, indent, indent_string) + suffix
+
+    def __getitem__(cls, key):
+        return cls.__meta_fields[key]
+
+    @property
+    def __meta_fields(cls):
+
+        if cls.__meta_fields_dict is not None:
+            return cls.__meta_fields_dict
+
+        field = Field(non_null(String), '__typename')
+        field._set_container(cls.__schema__, cls, '__typename__')
+        cls.__meta_fields_dict = {
+            '__typename__': field,
+        }
+
+        return cls.__meta_fields_dict
 
 
 class Union(BaseType, metaclass=UnionMeta):

@@ -764,11 +764,16 @@ __all__ = ('Operation',)
 
 from collections import OrderedDict
 
-from ..types import ContainerType, ArgDict, global_schema
+from ..types import Union, ContainerType, ArgDict, global_schema
 
 
 DEFAULT_AUTO_SELECT_DEPTH = 2
 
+class SelectionHelpers:
+    @staticmethod
+    def supports_fields_query(type):
+        return issubclass(type, ContainerType)\
+            or issubclass(type, Union)
 
 class Selection:
     '''Select a field with in a container type.
@@ -845,7 +850,7 @@ class Selection:
         self.__args__ = args
         self.__field_selector = {}
         self.__selection_list = None
-        if issubclass(field.type, ContainerType):
+        if SelectionHelpers.supports_fields_query(field.type):
             self.__selection_list = SelectionList(field.type)
 
     def __len__(self):
@@ -1223,7 +1228,7 @@ class SelectionList:
     __slots__ = ('__type', '__selectors', '__selections', '__casts')
 
     def __init__(self, typ):
-        assert issubclass(typ, ContainerType), str(typ) + ': not a container'
+        assert SelectionHelpers.supports_fields_query(typ), str(typ) + ': not a container'
         self.__type = typ
         self.__selectors = {}
         self.__selections = []
@@ -1434,7 +1439,7 @@ class Operation:
     KeyError: 'Query has no field does_not_exist'
 
     '''
-    def __init__(self, typ=None, name=None, **args):
+    def __init__(self, typ=None, name=None, kind=None, **args):
         if typ is None:
             typ = global_schema.Query
 
@@ -1446,18 +1451,24 @@ class Operation:
             name = typ.__name__
 
         self.__type = typ
+        self.__kind = self.__resolve_kind(type, kind)
         self.__name = name
         self.__args = ArgDict(variable_args)
         self.__args._set_container(typ.__schema__, self)
         self.__selection_list = SelectionList(typ)
 
+    def __resolve_kind(self, type, kind):
+        if kind in ("query", "mutation", "subscription"):
+            return kind
+        elif self.__type.__name__ == 'Mutation':
+            return "mutation"
+        else:
+            return "query"
+
     def __to_graphql__(self, indent=0, indent_string='  ',
                        auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
         prefix = indent_string * indent
-        kind = 'query'
-        if self.__type.__name__ == 'Mutation':
-            kind = 'mutation'
-
+        kind = self.__kind
         name = ''
         if self.__name:
             name = ' ' + self.__name
