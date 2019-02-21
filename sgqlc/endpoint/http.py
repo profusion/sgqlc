@@ -251,7 +251,7 @@ class HTTPEndpoint(BaseEndpoint):
             # GraphQL servers return 400 and {'errors': [...]}
             # if only errors was returned, no {'data': ...}
             data = json.loads(body)
-            if data and data.get('errors'):
+            if data and not isinstance(data, str) and data.get('errors'):
                 return self._log_graphql_error(query, data)
             return {'data': None, 'errors': [{
                 'message': str(exc),
