@@ -101,6 +101,67 @@ class BaseEndpoint:
             'body': body,
         }]}
 
+    def _fixup_graphql_error(self, data):
+        '''Given a possible GraphQL error payload, make sure it's in shape.
+
+        This will ensure the given ``data`` is in the shape:
+
+        .. code-block:: json
+
+           {"errors": [{"message": "some string"}]}
+
+        If ``errors`` is not an array, it will be made into a single element
+        array, with the object in that format, with its string representation
+        being the message.
+
+        If an element of the ``errors`` array is not in the format, then
+        it's converted to the format, with its string representation being
+        the message.
+
+        The input object is not changed, a copy is made if needed.
+
+        :return: the given ``data`` formatted to the correct shape, a copy
+                 is made and returned if any fix up was needed.
+        :rtype: dict
+        '''
+        original_data = data
+        errors = data.get('errors')
+        original_errors = errors
+        if not isinstance(errors, list):
+            self.logger.warning('data["errors"] is not a list! Fix up data=%r',
+                                data)
+            data = data.copy()
+            data['errors'] = [{'message': str(errors)}]
+            return data
+
+        for i, error in enumerate(errors):
+            if not isinstance(error, dict):
+                self.logger.warning('Error #%d: is not a dict: %r. Fix up!',
+                                    i, error)
+                if data is original_data:
+                    data = data.copy()
+                if errors is original_errors:
+                    errors = errors.copy()
+                    data['errors'] = errors
+
+                errors[i] = {'message': str(error)}
+                continue
+
+            message = error.get('message')
+            if not isinstance(message, str):
+                if data is original_data:
+                    data = data.copy()
+                if errors is original_errors:
+                    errors = errors.copy()
+                    data['errors'] = errors
+
+                message = str(error) if message is None else str(message)
+                error = error.copy()
+                error['message'] = message
+                errors[i] = error
+
+        return data
+
     def _log_graphql_error(self, query, data):
         '''Log a ``{"errors": [...]}`` GraphQL return and return itself.
 
@@ -120,6 +181,7 @@ class BaseEndpoint:
             # and generate compact representation of the queries
             query = bytes(query).decode('utf-8')
 
+        data = self._fixup_graphql_error(data)
         errors = data['errors']
         self.logger.error('GraphQL query failed with %s errors', len(errors))
         for i, error in enumerate(errors):
