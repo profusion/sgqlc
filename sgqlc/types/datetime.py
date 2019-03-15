@@ -158,7 +158,11 @@ class Time(Scalar):
 
     @classmethod
     def __to_json_value__(cls, value):
-        return None if value is None else value.isoformat()
+        if value is None:
+            return None
+        if isinstance(value, str):
+            return value
+        return value.isoformat()
 
 
 class Date(Scalar):
@@ -201,7 +205,11 @@ class Date(Scalar):
 
     @classmethod
     def __to_json_value__(cls, value):
-        return None if value is None else value.isoformat()
+        if value is None:
+            return None
+        if isinstance(value, str):
+            return value
+        return value.isoformat()
 
 
 class DateTime(Scalar):
@@ -276,7 +284,11 @@ class DateTime(Scalar):
 
     @classmethod
     def __to_json_value__(cls, value):
-        return None if value is None else value.isoformat()
+        if value is None:
+            return None
+        if isinstance(value, str):
+            return value
+        return value.isoformat()
 
 
 map_python_to_graphql.update({
