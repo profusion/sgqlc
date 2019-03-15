@@ -419,3 +419,22 @@ Authors
 License
 -------
 `sgqlc` is licensed under the `ISC <https://opensource.org/licenses/ISC>`_.
+
+
+Getting started developing
+--------------------------
+
+You need to use `pipenv <https://pipenv.readthedocs.io/en/latest>`_.
+
+::
+
+    pipenv install --dev -e .
+    pipenv shell
+
+Run the tests:
+
+::
+
+    ./utils/git/pre-commit
+
+To integrate changes from another branch, please rebase instead of creating merge commits (`read more <https://git-scm.com/book/en/v2/Git-Branching-Rebasing>`_).

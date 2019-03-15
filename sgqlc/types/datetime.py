@@ -128,6 +128,9 @@ class Time(Scalar):
     >>> tzinfo = datetime.timezone.utc
     >>> Time.__to_json_value__(datetime.time(12, 34, 56, 0, tzinfo))
     '12:34:56+00:00'
+    >>> Time.__to_json_value__('12:34:56')
+    '12:34:56'
+    >>> Time.__to_json_value__(None)
 
     '''
 
@@ -185,6 +188,9 @@ class Date(Scalar):
 
     >>> Date.__to_json_value__(datetime.date(2018, 1, 2))
     '2018-01-02'
+    >>> Date.__to_json_value__('2018-01-02')
+    '2018-01-02'
+    >>> Date.__to_json_value__(None)
 
     '''
 
@@ -246,9 +252,13 @@ class DateTime(Scalar):
     >>> dt = datetime.datetime(2018, 1, 2, 12, 34, 56)
     >>> DateTime.__to_json_value__(dt)
     '2018-01-02T12:34:56'
+    >>> DateTime.__to_json_value__('2018-01-02T12:34:56')
+    '2018-01-02T12:34:56'
     >>> tzinfo = datetime.timezone.utc
     >>> DateTime.__to_json_value__(dt.replace(tzinfo=tzinfo))
     '2018-01-02T12:34:56+00:00'
+    >>> DateTime.__to_json_value__(None)
+
     '''
 
     _re_parse = re.compile(
