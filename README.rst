@@ -428,13 +428,40 @@ You need to use `pipenv <https://pipenv.readthedocs.io/en/latest>`_.
 
 ::
 
-    pipenv install --dev -e .
+    pipenv install --dev
     pipenv shell
 
-Run the tests:
+Install the git hooks:
 
 ::
 
-    ./utils/git/pre-commit
+   ./utils/git/install-git-hooks.sh
 
-To integrate changes from another branch, please rebase instead of creating merge commits (`read more <https://git-scm.com/book/en/v2/Git-Branching-Rebasing>`_).
+Run the tests (one of the below):
+
+::
+
+    ./utils/git/pre-commit       # flake8 and nose
+
+    ./setup.py nosetests         # only nose (unit/doc tests)
+    flake8 --config setup.cfg .  # style checks
+
+Keep 100% coverage, you can look at coverage report at
+``cover/index.html``.  To do that, prefer `doctest
+<https://docs.python.org/3.7/library/doctest.html>`_ so it serves as
+both documentation and test. However we use `nose
+<https://nose.readthedocs.io>`_ to write explicit tests that would be
+hard to express using ``doctest``.
+
+Build and review the generated Sphinx documentation, validate if your
+changes look right:
+
+::
+
+    ./setup.py build_sphinx
+    open doc/build/html/index.html
+
+
+To integrate changes from another branch, please **rebase** instead of
+creating merge commits (`read more
+<https://git-scm.com/book/en/v2/Git-Branching-Rebasing>`_).
