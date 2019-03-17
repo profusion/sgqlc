@@ -79,7 +79,7 @@ class BaseEndpoint:
           this base signature and may extend with extra parameters
           such as timeout, extra headers and so on.
         '''
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover
 
     def _log_json_error(self, body, exc):
         '''Log a :exc:`json.JSONDecodeError`, converting to
@@ -174,9 +174,9 @@ class BaseEndpoint:
         :return: the input ``data``
         :rtype: dict
         '''
-        if isinstance(query, bytes):
+        if isinstance(query, bytes):  # pragma: no cover
             query = query.decode('utf-8')
-        elif not isinstance(query, str):
+        elif not isinstance(query, str):  # pragma: no cover
             # allows sgqlc.operation.Operation to be passed
             # and generate compact representation of the queries
             query = bytes(query).decode('utf-8')
