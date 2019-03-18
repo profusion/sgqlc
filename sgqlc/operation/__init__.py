@@ -890,6 +890,37 @@ Classes also implement ``iter()`` to iterate over selections:
 ...     print('#%d: %s' % (i, sel))
 #0: number
 
+Given a :class:`Selector` one can query a **selection** given its alias:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.number()
+number
+>>> op.repository(id='repo2', __alias__='alias').issues.title()
+title
+>>> type(op['repository'])  # it's the selector, not a selection!
+<class 'sgqlc.operation.Selector'>
+>>> op['repository'].__selection__() # default selection
+repository(id: "repo1") {
+  issues {
+    number
+  }
+}
+>>> op['repository'].__selection__('alias') # aliased selection
+alias: repository(id: "repo2") {
+  issues {
+    title
+  }
+}
+
+Which is useful to query the selection alias and arguments:
+
+>>> op['repository'].__selection__('alias').__alias__
+'alias'
+>>> op['repository'].__selection__('alias').__args__
+{'id': 'repo2'}
+>>> op['repository'].__selection__().__args__
+{'id': 'repo1'}
+
 :license: ISC
 '''
 
@@ -1320,6 +1351,10 @@ class Selector:
 
     def __repr__(self):
         return str(self)
+
+    def __selection__(self, alias=None):
+        'Return the selection given its alias'
+        return self.__selections[alias]
 
 
 class SelectionList:
