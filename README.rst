@@ -1,6 +1,9 @@
 `sgqlc` - Simple GraphQL Client
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. image:: https://travis-ci.com/profusion/sgqlc.svg?branch=master
+    :target: https://travis-ci.com/profusion/sgqlc
+
 Introduction
 ------------
 
