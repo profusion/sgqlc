@@ -6,11 +6,10 @@ env:
   global:
     - PIPENV_VENV_IN_PROJECT=1
     - PIPENV_IGNORE_VIRTUALENVS=1
-cache:
-  pip: true
-  directories:
-    - .venv
+cache: pip
 install:
   - pip install pipenv
-  - pipenv install --dev --three
+  - pip install coveralls
+  - pipenv install --dev --three --deploy
 script: pipenv run -- ./utils/git/pre-push
+after_script: coveralls
