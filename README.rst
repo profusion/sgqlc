@@ -4,6 +4,9 @@
 .. image:: https://travis-ci.com/profusion/sgqlc.svg?branch=master
     :target: https://travis-ci.com/profusion/sgqlc
 
+.. image:: https://coveralls.io/repos/github/profusion/sgqlc/badge.svg?branch=master
+    :target: https://coveralls.io/github/profusion/sgqlc?branch=master
+
 Introduction
 ------------
 
