@@ -389,7 +389,7 @@ class %(name)s(sgqlc.types.Scalar):
         self.writer('''\
 class %(name)s(sgqlc.types.Union):
     __schema__ = %(schema_name)s
-    __types__ = (%(types)s,)
+    __types__ = (%(types)s)
 
 
 ''' % {
