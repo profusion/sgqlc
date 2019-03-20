@@ -385,16 +385,17 @@ class %(name)s(sgqlc.types.Scalar):
 
     def write_type_union(self, t):
         name = t['name']
+        types = [v['name'] for v in t['possibleTypes']]
         self.writer('''\
 class %(name)s(sgqlc.types.Union):
     __schema__ = %(schema_name)s
-    __types__ = (%(types)s)
+    __types__ = (%(types)s,)
 
 
 ''' % {
             'name': name,
             'schema_name': self.schema_name,
-            'types': ', '.join(v['name'] for v in t['possibleTypes']),
+            'types': ', '.join(types) if len(types) > 1 else types[0],
         })
         self.written_types.add(name)
 
