@@ -1201,6 +1201,7 @@ class Scalar(BaseType):
 
     '''
     __kind__ = 'scalar'
+    __json_dump_args__ = {}  # given to json.dumps(obj, **args)
 
     def converter(value):
         return value
@@ -1212,7 +1213,8 @@ class Scalar(BaseType):
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
         if hasattr(value, '__to_graphql_input__'):
             return value.__to_graphql_input__(value, indent, indent_string)
-        return json.dumps(cls.__to_json_value__(value))
+        return json.dumps(cls.__to_json_value__(value),
+                          **cls.__json_dump_args__)
 
     @classmethod
     def __to_json_value__(cls, value):
@@ -1552,6 +1554,12 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
     Members started with underscore (``_``) are not processed.
     '''
 
+    __json_dump_args__ = {
+        # given to json.dumps() in __bytes__()
+        'sort_keys': True,
+        'separators': (',', ':'),
+    }
+
     def __init__(self, json_data, selection_list=None):
         assert json_data is None or isinstance(json_data, dict), \
             '%r (%s) is not a JSON Object' % (
@@ -1804,8 +1812,8 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
 
     def __bytes__(self):
         return bytes(json.dumps(
-            self.__to_json_value__(),
-            sort_keys=True, separators=(',', ':')), 'utf-8')
+            self.__to_json_value__(), **self.__json_dump_args__),
+            'utf-8')
 
 
 class BaseItem:
