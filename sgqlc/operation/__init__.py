@@ -921,6 +921,11 @@ Which is useful to query the selection alias and arguments:
 >>> op['repository'].__selection__().__args__
 {'id': 'repo1'}
 
+To get the arguments of the default (non-aliased) one can use the shortcut:
+
+>>> op['repository'].__args__
+{'id': 'repo1'}
+
 :license: ISC
 '''
 
@@ -1276,12 +1281,12 @@ class Selector:
     '''
 
     __slots__ = (
-        '__parent', '__field', '__selections',
+        '__parent__', '__field__', '__selections',
     )
 
     def __init__(self, parent, field):
-        self.__parent = parent
-        self.__field = field
+        self.__parent__ = parent
+        self.__field__ = field
         self.__selections = {}
 
     def __call__(self, **args):
@@ -1299,10 +1304,10 @@ class Selector:
                 return s
             raise ValueError(
                 ('%s already have a selection %s. '
-                 'Maybe use __alias__ as param?') % (self.__field, s))
+                 'Maybe use __alias__ as param?') % (self.__field__, s))
 
-        s = self.__selections[alias] = Selection(alias, self.__field, args)
-        self.__parent += s
+        s = self.__selections[alias] = Selection(alias, self.__field__, args)
+        self.__parent__ += s
         return s
 
     def __as__(self, typ):
@@ -1317,7 +1322,7 @@ class Selector:
 
     def __dir__(self):
         original_dir = super(Selector, self).__dir__()
-        t = self.__field.type
+        t = self.__field__.type
         if not issubclass(t, ContainerType):
             return original_dir
         fields = [f.name for f in t]
@@ -1328,6 +1333,9 @@ class Selector:
         '''Calls the selector without arguments, creating a
         :class:`Selection` instance and return
         :func:`Selection.__fields__` method, ready to be called.
+
+        To query the actual field this selector operates, use
+        ``self.__field__``
         '''
         return self().__fields__
 
@@ -1347,7 +1355,7 @@ class Selector:
         return self()[name]
 
     def __str__(self):
-        return '%s(field=%s)' % (self.__class__.__name__, self.__field)
+        return '%s(field=%s)' % (self.__class__.__name__, self.__field__)
 
     def __repr__(self):
         return str(self)
@@ -1355,6 +1363,11 @@ class Selector:
     def __selection__(self, alias=None):
         'Return the selection given its alias'
         return self.__selections[alias]
+
+    @property
+    def __args__(self):
+        'Shortcut for self.__selection__().__args__'
+        return self.__selection__().__args__
 
 
 class SelectionList:
