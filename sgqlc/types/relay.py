@@ -218,7 +218,7 @@ MyEdge(node=NodeBasedType(id='4444', a_int=4), cursor='cursor-4')
     "hasNextPage": false,
     "hasPreviousPage": false,
     "startCursor": "cursor-1"
-  },
+  }
 }
 
 When merging, the receiver connection can be empty:
@@ -295,7 +295,7 @@ MyEdge(node=NodeBasedType(id='4444', a_int=4), cursor='cursor-4')
     "hasNextPage": false,
     "hasPreviousPage": false,
     "startCursor": "cursor-1"
-  },
+  }
 }
 
 
