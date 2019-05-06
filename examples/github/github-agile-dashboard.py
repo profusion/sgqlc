@@ -147,7 +147,6 @@ def select_pull_requests(repo, labels=(), states=(),
     nodes.assignees(first=100).nodes.login()
 
     reviews = nodes.reviews(first=100)
-    reviews.total_count()
     reviews.nodes.author.login()
     reviews.nodes.__fields__(
         body_text=True,
