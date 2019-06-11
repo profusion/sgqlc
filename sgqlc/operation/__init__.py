@@ -1294,6 +1294,11 @@ class Selector:
 
         To provide an alias, use ``__alias__`` keyword argument.
         '''
+        args = {
+            k: v.__to_internal_json_value__()
+            if getattr(v, '__to_json_value__', None)
+            else v for k, v in args.items()
+        }
         alias = None
         if '__alias__' in args:
             alias = args.pop('__alias__')

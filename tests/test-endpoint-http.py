@@ -6,7 +6,7 @@ import urllib.request
 from nose.tools import eq_
 from unittest.mock import patch
 from sgqlc.endpoint.http import HTTPEndpoint, add_query_to_url
-from sgqlc.types import Schema, Type
+from sgqlc.types import Schema, Type, Field, String, ArgDict, Arg, Input, Enum
 from sgqlc.operation import Operation
 
 test_url = 'http://some-server.com/graphql'
@@ -231,6 +231,61 @@ def test_basic_operation_query(mock_urlopen):
     data = endpoint(op)
     eq_(data, json.loads(graphql_response_ok))
     check_mock_urlopen(mock_urlopen, query=bytes(op))
+
+
+def test_input_parameter_query():
+    schema = Schema()
+
+    if 'Query' in schema:
+        schema -= schema.Query
+
+    if 'NestedThing' in schema:
+        schema -= schema.NestedThing
+
+    if 'InputThing' in schema:
+        schema -= schema.InputThing
+
+    class TestEnum(Enum):
+        __choices__ = ['def', 'ghi']
+
+    class NestedThing(Input):
+        __schema__ = schema
+        nested_value = Field(String)
+        nested_enum = Field(TestEnum)
+
+        @staticmethod
+        def create(nested_value, nested_enum):
+            return NestedThing(json_data={k: v for k, v in {
+                'nested_value': nested_value.__to_internal_json_value__()
+                if getattr(nested_value, '__to_internal_json_value__', None)
+                else nested_value,
+                'nested_enum': nested_enum.__to_internal_json_value__()
+                if getattr(nested_enum, '__to_internal_json_value__', None)
+                else nested_enum,
+            }.items() if k and v})
+
+    class InputThing(Input):
+        __schema__ = schema
+        nest = Field(NestedThing)
+
+        @staticmethod
+        def create(nest):
+            return InputThing(json_data={k: v for k, v in {
+                'nest': nest.__to_internal_json_value__()
+                if getattr(nest, '__to_internal_json_value__', None) else nest,
+            }.items() if k and v})
+
+    class Query(Type):
+        __schema__ = schema
+        thing = Field(String,
+                      args=ArgDict((('param_value', Arg(InputThing)),)))
+
+    op = Operation(Query)
+    op.thing(param_value=InputThing.create(nest=NestedThing.create(
+        nested_value="abc",
+        nested_enum="def")))
+    assert 'nestedValue: "abc"' in str(op)
+    assert 'nestedEnum: def' in str(op)
 
 
 @patch('urllib.request.urlopen')

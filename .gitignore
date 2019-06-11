@@ -2,6 +2,7 @@
 *.pyo
 __pycache__
 *~
+.idea
 /build
 /dist
 /sgqlc.egg-info

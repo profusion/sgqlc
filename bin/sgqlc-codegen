@@ -314,6 +314,20 @@ class %(name)s(sgqlc.types.Input):
         })
         for field in t['inputFields']:
             self.write_field_input(field)
+        self.writer('''
+    @staticmethod
+    def create(''')
+        for field in t['inputFields']:
+            self.writer('%s=None, ' % self.graphql_to_python(field['name']))
+        self.writer('):\n')
+        self.writer('        return %s(json_data={k: v for k, v in {\n' % name)
+        for field in t['inputFields']:
+            self.writer("            '%s': %s.__to_internal_json_value__() if getattr(%s, '__to_internal_json_value__', None) else %s,\n"
+                        % (self.graphql_to_python(field['name']),
+                           self.graphql_to_python(field['name']),
+                           self.graphql_to_python(field['name']),
+                           self.graphql_to_python(field['name'])))
+        self.writer('        }.items() if k and v})\n')
         self.writer('\n\n')
         self.written_types.add(name)
 

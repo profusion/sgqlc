@@ -454,6 +454,7 @@ Unless :func:`non_null` is used, containers can be created for
 TypeUsingPython()
 
 >>> TypeUsingPython.__to_json_value__(None) # returns None
+>>> TypeUsingPython.__to_internal_json_value__(None) # returns None
 
 For instances, field values can be obtained or set attributes or
 items, when setting a known field, it also updates the backing store:
@@ -1220,6 +1221,10 @@ class Scalar(BaseType):
     def __to_json_value__(cls, value):
         return value
 
+    @classmethod
+    def __to_internal_json_value__(cls, value):
+        return value
+
 
 class EnumMeta(BaseMeta):
     'meta class to set enumeration attributes, __contains__, __iter__...'
@@ -1257,6 +1262,9 @@ class EnumMeta(BaseMeta):
         return value
 
     def __to_json_value__(cls, value):
+        return value
+
+    def __to_internal_json_value__(cls, value):
         return value
 
 
@@ -1522,6 +1530,17 @@ class ContainerTypeMeta(BaseMetaWithTypename):
                 d[f.graphql_name] = f.type.__to_json_value__(value[name])
         return d
 
+    def __to_internal_json_value__(cls, value):
+        if value is None:
+            return None
+        d = {}
+        for name, f in cls.__fields.items():
+            # elements may not exist since not queried and would
+            # trigger exception for non-null fields
+            if name in value:
+                d[f.name] = f.type.__to_internal_json_value__(value[name])
+        return d
+
 
 class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
     '''Container of :class:`Field`.
@@ -1588,12 +1607,13 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
     def __populate_field_data(self, field, ftype, sel, json_data):
         name = field.name
         graphql_name = field.graphql_name
-        if graphql_name not in json_data:
+        if graphql_name not in json_data and name not in json_data:
             return
 
         value = None
         try:
-            value = json_data[graphql_name]
+            value = json_data[graphql_name] if graphql_name in json_data \
+                else json_data[name]
             value = ftype(value, sel)
             setattr(self, name, value)
             self.__fields_cache__[name] = field
@@ -1809,6 +1829,10 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
 
     def __to_json_value__(self):
         return ContainerTypeMeta.__to_json_value__(self.__class__, self)
+
+    def __to_internal_json_value__(self):
+        return ContainerTypeMeta.__to_internal_json_value__(self.__class__,
+                                                            self)
 
     def __bytes__(self):
         return bytes(json.dumps(
