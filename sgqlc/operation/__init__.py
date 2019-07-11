@@ -75,6 +75,9 @@ Let's start defining the types, including the schema root ``Query``:
 >>> class Organization(Type, Actor):
 ...    location = str
 ...
+>>> class ActorConnection(Type):
+...    actors = Field(list_of(non_null(Actor)), args={'login': non_null(str)})
+...
 >>> class Assignee(Type):
 ...    email = non_null(str)
 ...
@@ -87,6 +90,7 @@ Let's start defining the types, including the schema root ``Query``:
 ...     body = str
 ...     reporter = non_null(User)
 ...     assigned = UserOrAssignee
+...     commenters = ActorConnection
 ...
 >>> class Repository(Type):
 ...     id = ID
@@ -121,6 +125,9 @@ schema {
     login: String!
     location: String
   }
+  type ActorConnection {
+    actors(login: String!): [Actor!]
+  }
   type Assignee {
     email: String!
   }
@@ -131,6 +138,7 @@ schema {
     body: String
     reporter: User!
     assigned: UserOrAssignee
+    commenters: ActorConnection
   }
   type Repository {
     id: ID
@@ -299,7 +307,7 @@ Which also allows to include all but some fields:
 
 >>> op = Operation(Query)
 >>> op.repository(id='repo1').issues.__fields__(
-...     __exclude__=('body', 'reporter'),
+...     __exclude__=('body', 'reporter', 'commenters'),
 ... )
 >>> op
 query {
@@ -327,6 +335,7 @@ Or using named arguments:
 >>> op.repository(id='repo1').issues.__fields__(
 ...     body=False,
 ...     reporter=False,
+...     commenters=False,
 ... )
 >>> op
 query {
@@ -372,6 +381,11 @@ query {
         }
         ... on Assignee {
           email
+        }
+      }
+      commenters {
+        actors {
+          login
         }
       }
     }
@@ -518,6 +532,11 @@ query {
           email
         }
       }
+      commenters {
+        actors {
+          login
+        }
+      }
     }
   }
 }
@@ -657,6 +676,11 @@ mutation {
         email
       }
     }
+    commenters {
+      actors {
+        login
+      }
+    }
   }
 }
 
@@ -684,6 +708,12 @@ name
 email
 >>> repo.issues().assigned.__as__(User).login()
 login
+>>> repo.issues().commenters().actors().login()
+login
+>>> repo.issues().commenters().actors().__as__(Organization).location()
+location
+>>> repo.issues().commenters().actors().__as__(User).name()
+name
 >>> op
 query {
   repository(id: "repo1") {
@@ -707,6 +737,18 @@ query {
           login
         }
       }
+      commenters {
+        actors {
+          login
+          __typename
+          ... on Organization {
+            location
+          }
+          ... on User {
+            name
+          }
+        }
+      }
     }
   }
 }
@@ -720,8 +762,24 @@ proper type when interprets the results:
 ...    'name': 'User Name',
 ...    },
 ...    'issues': [
-...      {'assigned': {'__typename': 'Assignee', 'email': 'e@mail.com'}},
-...      {'assigned': {'__typename': 'User', 'login': 'xpto'}},
+...      {
+...          'assigned': {'__typename': 'Assignee', 'email': 'e@mail.com'},
+...          'commenters': {
+...              'actors': [
+...                  {'login': 'user', '__typename': 'User', 'name': 'User Name'},
+...                  {'login': 'a-company', '__typename': 'Organization', 'location': 'that place'}
+...              ]
+...          }
+...      },
+...      {
+...          'assigned': {'__typename': 'User', 'login': 'xpto'},
+...          'commenters': {
+...              'actors': [
+...                  {'login': 'user', '__typename': 'User', 'name': 'User Name'},
+...                  {'login': 'xpto', '__typename': 'User'}
+...              ]
+...          }
+...      },
 ...    ],
 ... }}}
 >>> obj = op + json_data
@@ -729,8 +787,8 @@ proper type when interprets the results:
 User(login='user', __typename__='User', name='User Name')
 >>> for i in obj.repository.issues:
 ...     print(i)
-Issue(assigned=Assignee(__typename__=Assignee, email=e@mail.com))
-Issue(assigned=User(__typename__=User, login=xpto))
+Issue(assigned=Assignee(__typename__=Assignee, email=e@mail.com), commenters=ActorConnection(actors=[Actor(login='user', __typename__='User', name='User Name'), Actor(login='a-company', __typename__='Organization', location='that place')]))
+Issue(assigned=User(__typename__=User, login=xpto), commenters=ActorConnection(actors=[Actor(login='user', __typename__='User', name='User Name'), Actor(login='xpto', __typename__='User')]))
 
 >>> json_data = {'data': {'repository': {'owner': {
 ...    '__typename': 'Organization',
@@ -844,6 +902,7 @@ also list fields:
 ...         print(name)
 assigned
 body
+commenters
 number
 reporter
 title
@@ -852,6 +911,7 @@ title
 ...         print(name)
 assigned
 body
+commenters
 number
 reporter
 title
@@ -927,7 +987,7 @@ To get the arguments of the default (non-aliased) one can use the shortcut:
 {'id': 'repo1'}
 
 :license: ISC
-'''
+'''  # noqa: E501
 
 __docformat__ = 'reStructuredText en'
 

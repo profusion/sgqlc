@@ -1627,7 +1627,14 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
             return ftype
 
         graphql_name = field.graphql_name
-        tname = json_data.get(graphql_name, {}).get('__typename')
+        try:
+            tname = json_data.get(graphql_name, {}).get('__typename')
+        except AttributeError:
+            # The selection returned something other than a dict, e.g. a list.
+            # Nothing to worry about, it just means this object doesn't contain
+            # a typename.
+            tname = None
+
         if not tname:
             return ftype
 
