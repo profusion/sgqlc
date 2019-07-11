@@ -197,7 +197,7 @@ def download(endpoint, reponame, labels=(), issue_states=(), pr_states=()):
     repodata = (op + d).repository
     while (repodata.issues.page_info.has_next_page
            or repodata.pull_requests.page_info.has_next_page):
-        op = Operation()
+        op = Operation(schema.Query)
         repo = op.repository(owner=owner, name=name)
 
         if repodata.issues.page_info.has_next_page:
