@@ -1,7 +1,4 @@
 '''
-sgqlc - Simple GraphQL Client
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 GraphQL Types for `Relay <https://facebook.github.io/relay/>`_
 ==============================================================
 

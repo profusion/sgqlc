@@ -1,7 +1,4 @@
 '''
-sgqlc - Simple GraphQL Client
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 GraphQL Types in Python
 =======================
 
@@ -2096,6 +2093,7 @@ class ArgDict(OrderedDict):
       )
 
     '''
+
     def __init__(self, *lst, **mapping):
         super(ArgDict, self).__init__()
 

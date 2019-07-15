@@ -1,7 +1,4 @@
 '''
-sgqlc - Simple GraphQL Client
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 Generate Operations (Query and Mutations) using Python
 ======================================================
 
@@ -1699,6 +1696,7 @@ class Operation:
     KeyError: 'Query has no field does_not_exist'
 
     '''
+
     def __init__(self, typ=None, name=None, **args):
         if typ is None:
             typ = global_schema.Query
