@@ -164,7 +164,7 @@ class HTTPEndpoint(BaseEndpoint):
             headers.update(extra_headers)
 
         headers.update({
-            'Accept': 'application/json; charset=utf-8',
+            'Accept': headers.get('Accept', 'application/json; charset=utf-8'),
         })
 
         if self.method.upper() == 'POST':

@@ -11,6 +11,11 @@ from sgqlc.operation import Operation
 
 test_url = 'http://some-server.com/graphql'
 
+extra_accept_header = ', '.join([
+    'application/json; charset=utf-8',
+    'application/vnd.xyz.feature-flag+json',
+])
+
 graphql_query = '''
 query GitHubRepoIssues($repoOwner: String!, $repoName: String!) {
   repository(owner: $repoOwner, name: $repoName) {
@@ -98,7 +103,11 @@ def check_request_headers_(req, headers, name):
 
 
 def check_request_headers(req, base_headers, extra_headers):
-    eq_(req.get_header('Accept'), 'application/json; charset=utf-8')
+    if extra_headers and 'Accept' in extra_headers:
+        accept_header = extra_accept_header
+    else:
+        accept_header = 'application/json; charset=utf-8'
+    eq_(req.get_header('Accept'), accept_header)
     if req.method == 'POST':
         eq_(req.get_header('Content-type'), 'application/json; charset=utf-8')
     check_request_headers_(req, base_headers, 'base')
@@ -244,6 +253,7 @@ def test_headers(mock_urlopen):
     }
     extra_headers = {
         'Extra': '123',
+        'Accept': extra_accept_header,
     }
 
     endpoint = HTTPEndpoint(test_url, base_headers=base_headers)
@@ -345,6 +355,7 @@ def test_get(mock_urlopen):
     }
     extra_headers = {
         'Extra': '123',
+        'Accept': extra_accept_header,
     }
     variables = {'repoOwner': 'owner', 'repoName': 'name'}
     operation_name = 'xpto'
