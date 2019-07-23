@@ -32,7 +32,7 @@ setup(
     license='ISCL',
     python_requires='>=3.6',
     requires=[],
-    install_requires=['graphql-core'],
+    install_requires=['graphql-core', 'websocket-client'],
     extras_require={
         'sphinx': ['sphinx'],
     },
