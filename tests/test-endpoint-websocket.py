@@ -1,3 +1,4 @@
+import itertools
 import json
 import re
 from unittest.mock import patch, Mock
@@ -143,11 +144,25 @@ def test_basic_subscription(mock_websocket):
         """,
         """
         {
+            "type": "ka",
+            "id": null,
+            "payload": null
+        }
+        """,
+        """
+        {
             "type": "data",
             "id": "123",
             "payload": {
                 "data": {"test": "1"}
             }
+        }
+        """,
+        """
+        {
+            "type": "ka",
+            "id": null,
+            "payload": null
         }
         """,
         """
@@ -275,3 +290,49 @@ def test_query_bad_message_id(mock_websocket):
         raise Exception('should have failed')
     except ValueError as e:
         eq_(e.args[0], 'Unexpected id 321 when waiting for query results')
+
+
+@patch('sgqlc.endpoint.websocket.websocket')
+def test_stop_generator(mock_websocket):
+    'Test stopping the generator while iterating through'
+    mock_connection = Mock()
+    mock_websocket.create_connection.return_value = mock_connection
+    mock_connection.recv.side_effect = [
+        """
+        {
+            "type": "connection_ack",
+            "id": "123"
+        }
+        """,
+        """
+        {
+            "type": "data",
+            "id": "123",
+            "payload": {
+                "data": {"test": "1"}
+            }
+        }
+        """,
+        """
+        {
+            "type": "data",
+            "id": "123",
+            "payload": {
+                "data": {"test": "2"}
+            }
+        }
+        """,
+        """
+        {
+            "type": "complete",
+            "id": "123"
+        }
+        """,
+    ]
+    generator = endpoint('subscription {test}')
+    first = [x for x in itertools.islice(generator, 1)][0]
+    generator.cancel()
+    eq_(first, {'data': {'test': '1'}})
+    eq_(mock_connection.send.call_args[0][0], '{"type": "stop", '
+                                              '"id": "123", '
+                                              '"payload": null}')
