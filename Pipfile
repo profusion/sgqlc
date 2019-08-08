@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 sgqlc = {editable = true,path = "."}
 graphql-core = "*"
-websocket-client = "==0.56.0"
+websocket_client = "==0.56.0"
 
 [dev-packages]
 "flake8" = "*"
@@ -22,9 +22,9 @@ websocket-client = "==0.56.0"
 "flake8-module-name" = "*"
 "flake8-tidy-imports" = "*"
 "flake8-print" = "*"
-pygments = "*"
 nose = "*"
-sphinx = "*"
+Pygments = "*"
+Sphinx = "*"
 
 [requires]
 python_version = "3.7"

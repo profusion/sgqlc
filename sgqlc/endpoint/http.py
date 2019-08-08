@@ -122,8 +122,8 @@ class HTTPEndpoint(BaseEndpoint):
             self.__class__.__name__, self.url, self.base_headers, self.timeout,
             self.method)
 
-    def __call__(self, query, variables=None, operation_name=None,
-                 extra_headers=None, timeout=None):
+    def __call__(self, query, variables=None,  # noqa: C901
+                 operation_name=None, extra_headers=None, timeout=None):
         '''Calls the GraphQL endpoint.
 
         :param query: the GraphQL query or mutation to execute. Note
@@ -163,9 +163,8 @@ class HTTPEndpoint(BaseEndpoint):
         if extra_headers:
             headers.update(extra_headers)
 
-        headers.update({
-            'Accept': headers.get('Accept', 'application/json; charset=utf-8'),
-        })
+        if 'Accept' not in headers:
+            headers['Accept'] = 'application/json; charset=utf-8'
 
         if self.method.upper() == 'POST':
             get_http_request = self.get_http_post_request
