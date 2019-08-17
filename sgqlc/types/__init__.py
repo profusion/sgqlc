@@ -547,12 +547,16 @@ class Schema:
 
     The schema is an iterator that will report all registered types.
     '''
-    __slots__ = ('__all', '__kinds', '__cache__')
+    __slots__ = ('__all', '__kinds', '__cache__',
+                 'query_type', 'mutation_type', 'subscription_type')
 
     def __init__(self, base_schema=None):
         self.__all = OrderedDict()
         self.__kinds = {}
         self.__cache__ = {}
+        self.query_type = None
+        self.mutation_type = None
+        self.subscription_type = None
 
         if base_schema is None:
             try:
@@ -731,6 +735,12 @@ class Schema:
             raise ValueError('%s already has %s=%s' %
                              (self.__class__.__name__, name, typ))
         self.__kinds.setdefault(typ.__kind__, ODict()).update({name: typ})
+        if self.query_type is None and name == 'Query':
+            self.query_type = t
+        if self.mutation_type is None and name == 'Mutation':
+            self.mutation_type = t
+        if self.subscription_type is None and name == 'Subscription':
+            self.subscription_type = t  # pragma: no cover
         return self
 
     def __isub__(self, typ):
@@ -743,6 +753,12 @@ class Schema:
         name = typ.__name__
         del self.__all[name]
         del self.__kinds[typ.__kind__][name]
+        if self.query_type is typ:
+            self.query_type = None  # pragma: no cover
+        elif self.mutation_type is typ:
+            self.mutation_type = None  # pragma: no cover
+        elif self.subscription_type is typ:
+            self.subscription_type = None  # pragma: no cover
         return self
 
     def __str__(self):

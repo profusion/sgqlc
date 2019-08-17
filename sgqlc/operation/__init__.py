@@ -1585,7 +1585,8 @@ class Operation:
     '''GraphQL Operation: query or mutation.
 
     The given type must be one of ``schema.Query`` or
-    ``schema.Mutation``, defaults to ``global_schema.Query``.
+    ``schema.Mutation``, defaults to ``global_schema.Query`` or
+    whatever is defined as ``global_schema.query_type``.
 
     The operation has an internal
     :class:`sgqlc.operation.SelectionList` and will proxy attributes
@@ -1634,7 +1635,8 @@ class Operation:
       }
     }
 
-    The root type can be omitted, then ``global_schema.Query`` is used:
+    The root type can be omitted, then ``global_schema.Query`` or
+    whatever is defined as ```global_schema.query_type`` is used:
 
     >>> op = Operation()  # same as Operation(global_schema.Query)
     >>> op.repository
@@ -1699,7 +1701,7 @@ class Operation:
 
     def __init__(self, typ=None, name=None, **args):
         if typ is None:
-            typ = global_schema.Query
+            typ = global_schema.query_type
 
         variable_args = OrderedDict()
         for k, v in args.items():
@@ -1709,11 +1711,27 @@ class Operation:
             name = typ.__name__
 
         self.__type = typ
-        self.__kind = typ.__name__.lower()
+        self.__kind = self._get_kind()
         self.__name = name
         self.__args = ArgDict(variable_args)
         self.__args._set_container(typ.__schema__, self)
         self.__selection_list = SelectionList(typ)
+
+    def _get_kind(self):
+        typ = self.__type
+        schema = typ.__schema__
+        if schema.query_type is typ:
+            return 'query'
+        elif schema.mutation_type is typ:
+            return 'mutation'
+        elif schema.subscription_type is typ:  # pragma: no cover
+            return 'subscription'
+        else:  # pragma: no cover
+            raise ValueError(
+                "schema doesn't define %s as query, mutation "
+                "or subscription type"
+                % (typ.__name__,)
+            )
 
     def __to_graphql__(self, indent=0, indent_string='  ',
                        auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
