@@ -63,6 +63,7 @@ Examples
 Let's start defining the types, including the schema root ``Query``:
 
 >>> from sgqlc.types import *
+>>> from datetime import datetime
 >>> class Actor(Interface):
 ...    login = non_null(str)
 ...
@@ -89,6 +90,14 @@ Let's start defining the types, including the schema root ``Query``:
 ...     assigned = UserOrAssignee
 ...     commenters = ActorConnection
 ...
+>>> class ReporterFilterInput(Input):
+...     name_contains = str
+...
+>>> class IssuesFilter(Input):
+...     reporter = list_of(ReporterFilterInput)
+...     start_date = non_null(datetime)
+...     end_date = datetime
+...
 >>> class Repository(Type):
 ...     id = ID
 ...     name = non_null(str)
@@ -96,6 +105,7 @@ Let's start defining the types, including the schema root ``Query``:
 ...     issues = Field(list_of(non_null(Issue)), args={
 ...         'title_contains': str,
 ...         'reporter_login': str,
+...         'filter': IssuesFilter,
 ...     })
 ...
 >>> class Query(Type):
@@ -137,11 +147,19 @@ schema {
     assigned: UserOrAssignee
     commenters: ActorConnection
   }
+  input ReporterFilterInput {
+    nameContains: String
+  }
+  input IssuesFilter {
+    reporter: [ReporterFilterInput]
+    startDate: DateTime!
+    endDate: DateTime
+  }
   type Repository {
     id: ID
     name: String!
     owner: Actor!
-    issues(titleContains: String, reporterLogin: String): [Issue!]
+    issues(titleContains: String, reporterLogin: String, filter: IssuesFilter): [Issue!]
   }
   type Query {
     repository(id: ID!): Repository
@@ -1476,10 +1494,10 @@ class SelectionList:
       id: ID
       name: String!
       owner: Actor!
-      issues(titleContains: String, reporterLogin: String): [Issue!]
+      issues(titleContains: String, reporterLogin: String, filter: IssuesFilter): [Issue!]
     }
 
-    '''
+    '''  # noqa: E501
 
     __slots__ = ('__type', '__selectors', '__selections', '__casts')
 
@@ -1679,6 +1697,45 @@ class Operation:
       }
     }
 
+    Complex argument types are also supported as JSON object (GraphQL names
+    and raw types) or actual types:
+
+    >>> op = Operation()
+    >>> repository = op.repository(id='sgqlc')
+    >>> issues = repository.issues(filter={
+    ...     'reporter': [{'nameContains': 'Gustavo'}],
+    ...     'startDate': '2019-01-01T00:00:00+00:00',
+    ... })
+    >>> issues.__fields__('number', 'title')
+    >>> op # or repr(), prints out GraphQL!
+    query {
+      repository(id: "sgqlc") {
+        issues(filter: {reporter: [{nameContains: "Gustavo"}], startDate: "2019-01-01T00:00:00+00:00"}) {
+          number
+          title
+        }
+      }
+    }
+
+    >>> from datetime import datetime, timezone
+    >>> from sgqlc.types import global_schema
+    >>> op = Operation()
+    >>> repository = op.repository(id='sgqlc')
+    >>> issues = repository.issues(filter=global_schema.IssuesFilter(
+    ...     reporter=[global_schema.ReporterFilterInput(name_contains='Gustavo')],
+    ...     start_date=datetime(2019, 1, 1, tzinfo=timezone.utc),
+    ... ))
+    >>> issues.__fields__('number', 'title')
+    >>> op # or repr(), prints out GraphQL!
+    query {
+      repository(id: "sgqlc") {
+        issues(filter: {reporter: [{nameContains: "Gustavo"}], startDate: "2019-01-01T00:00:00+00:00"}) {
+          number
+          title
+        }
+      }
+    }
+
     Selectors can be acquired as attributes or items, but they must
     exist in the target type:
 
@@ -1697,7 +1754,7 @@ class Operation:
       ...
     KeyError: 'Query has no field does_not_exist'
 
-    '''
+    '''  # noqa: E501
 
     def __init__(self, typ=None, name=None, **args):
         if typ is None:

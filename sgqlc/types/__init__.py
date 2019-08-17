@@ -881,12 +881,18 @@ class BaseTypeWithTypename(BaseType, metaclass=BaseMetaWithTypename):
 
 def _create_non_null_wrapper(name, t):
     'creates type wrapper for non-null of given type'
+    def realize_type(v, selection_list=None):
+        if isinstance(v, (t, Variable)):
+            return v
+        return t(v, selection_list)
+
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             raise ValueError(name + ' received null value')
-        return t(json_data, selection_list)
+        return realize_type(json_data, selection_list)
 
     def __to_graphql_input__(value, indent=0, indent_string='  '):
+        value = realize_type(value)
         return t.__to_graphql_input__(value, indent, indent_string)
 
     return type(name, (t,), {
@@ -898,14 +904,21 @@ def _create_non_null_wrapper(name, t):
 
 def _create_list_of_wrapper(name, t):
     'creates type wrapper for list of given type'
+    def realize_type(v, selection_list=None):
+        if isinstance(v, (t, Variable)):  # pragma: no cover
+            return v
+        return t(v, selection_list)
+
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             return None
-        return [t(v, selection_list) for v in json_data]
+
+        return [realize_type(v, selection_list) for v in json_data]
 
     def __to_graphql_input__(value, indent=0, indent_string='  '):
         r = []
         for v in value:
+            v = realize_type(v)
             r.append(t.__to_graphql_input__(v, indent, indent_string))
         return '[' + ', '.join(r) + ']'
 
@@ -2057,6 +2070,8 @@ class Arg(BaseItem):
         return super(Arg, self).__to_graphql__(indent, indent_string) + default
 
     def __to_graphql_input__(self, value, indent=0, indent_string='  '):
+        if not isinstance(value, (self.type, Variable)):
+            value = self.type(value)
         v = self.type.__to_graphql_input__(value, indent, indent_string)
         return '%s: %s' % (self.graphql_name, v)
 
@@ -2382,11 +2397,67 @@ class Input(ContainerType):
     '''
     __kind__ = 'input'
 
+    def __init__(self, _json_obj=None, _selection_list=None, **kwargs):
+        '''Create the type given a json object or keyword arguments.
+
+        >>> class AnotherInput(Input):
+        ...     a_str = str
+        ...
+        >>> class TheInput(Input):
+        ...     a_int = int
+        ...     a_float = float
+        ...     a_nested = AnotherInput
+        ...     a_nested_list = list_of(AnotherInput)
+        ...
+
+        >>> TheInput(a_int=1, a_float=1.2, a_nested=AnotherInput(a_str='hi'))
+        TheInput(a_int=1, a_float=1.2, a_nested=AnotherInput(a_str='hi'))
+
+        >>> TheInput({'aInt': 1, 'aFloat': 1.2, 'aNested': {'aStr': 'hi'}})
+        TheInput(a_int=1, a_float=1.2, a_nested=AnotherInput(a_str='hi'))
+
+        >>> value = TheInput(a_int=1, a_float=1.2,
+        ...                  a_nested=AnotherInput(a_str='hi'),
+        ...                  a_nested_list=[AnotherInput(a_str='there')])
+        >>> print(TheInput.__to_graphql_input__(value))
+        {aInt: 1, aFloat: 1.2, aNested: {aStr: "hi"}, aNestedList: [{aStr: "there"}]}
+        >>> value = TheInput({'aInt': 1, 'aFloat': 1.2, 'aNested': {'aStr': 'hi'},
+        ...           'aNestedList': [{'aStr': 'there'}]})
+        >>> print(TheInput.__to_graphql_input__(value))
+        {aInt: 1, aFloat: 1.2, aNested: {aStr: "hi"}, aNestedList: [{aStr: "there"}]}
+
+        .. note::
+
+            ``selection_list`` parameter makes no sense and is ignored,
+            it's only provided to cope with the ``ContainerType`` interface.
+
+        '''  # noqa: E501
+        if _json_obj is None:
+            _json_obj = {}
+        super().__init__(_json_obj, _selection_list)
+        cls = type(self)
+        for k, v in kwargs.items():
+            f = cls[k]
+            if not isinstance(v, (f.type, Variable, list)):
+                v = f.type(v)
+            setattr(self, k, v)
+
     @classmethod
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
         args = []
-        for k, v in value.items():
-            f = cls[k]
+        if isinstance(value, Input):
+            value = value.__json_data__
+
+        for f in cls:
+            try:
+                v = value[f.graphql_name]
+            except KeyError:
+                try:
+                    # previous versions allowed Python name as dict keys
+                    v = value[f.name]
+                except KeyError:  # pragma: no cover
+                    continue
+
             vs = f.type.__to_graphql_input__(v, indent, indent_string)
             args.append('%s: %s' % (f.graphql_name, vs))
 
