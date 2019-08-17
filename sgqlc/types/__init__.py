@@ -1341,6 +1341,7 @@ class UnionMeta(BaseMetaWithTypename):
             types.append(t)
 
         cls.__types__ = tuple(types)
+        cls.__typename_to_type__ = {t.__name__: t for t in types}
 
     def __contains__(cls, name_or_type):
         if isinstance(name_or_type, str):
@@ -1397,10 +1398,50 @@ class Union(BaseTypeWithTypename, metaclass=UnionMeta):
       ...
     ValueError: FailureUnion: missing __types__
 
+    Whenever instantiating the type, pass a JSON object with
+    ``__typename`` (done automatically using fragments via ``__as__``):
+
+    >>> class TypeA(Type):
+    ...     i = int
+    ...
+    >>> class TypeB(Type):
+    ...     s = str
+    ...
+    >>> class TypeU(Union):
+    ...     __types__ = (TypeA, TypeB)
+    ...
+    >>> data = {'__typename': 'TypeA', 'i': 1}
+    >>> TypeU(data)
+    TypeA(i=1)
+    >>> data = {'__typename': 'TypeB', 's': 'hi'}
+    >>> TypeU(data)
+    TypeB(s='hi')
+
+    It nicely handles unknown types:
+
+    >>> data = {'v': 123}
+    >>> TypeU(data) # no __typename
+    UnknownType()
+    >>> data = {'__typename': 'TypeUnknown', 'v': 123}
+    >>> TypeU(data) # auto-generates empty types
+    TypeUnknown()
+
     '''
 
     __kind__ = 'union'
     __types__ = ()
+
+    def __new__(cls, json_data, selection_list=None):
+        type_name = json_data.get('__typename')
+        if not type_name:
+            t = UnknownType
+        else:
+            t = cls.__typename_to_type__.get(type_name)
+            if t is None:
+                t = type(type_name, (UnknownType,), {})
+                cls.__typename_to_type__[type_name] = t
+
+        return t(json_data, selection_list)
 
 
 class ContainerTypeMeta(BaseMetaWithTypename):
@@ -2340,6 +2381,11 @@ class Boolean(Scalar):
 class ID(Scalar):
     'Maps GraphQL ``ID`` to Python ``str``.'
     converter = str
+
+
+class UnknownType(Type):
+    'Type found in the response that was not present in schema'
+    __auto_register = False  # do not expose this in Schema, just subclasses
 
 
 map_python_to_graphql = {
