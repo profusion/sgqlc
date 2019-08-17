@@ -1458,6 +1458,8 @@ class ContainerTypeMeta(BaseMetaWithTypename):
 
         if cls.__kind__ == 'interface':
             cls.__fix_type_kind(bases)
+            if cls.__kind__ == 'interface':
+                cls.__possible_types__ = {}
 
         cls.__populate_interfaces(bases)
         cls.__inherit_fields(bases)
@@ -1481,6 +1483,8 @@ class ContainerTypeMeta(BaseMetaWithTypename):
                     ifaces.append(i)
 
         cls.__interfaces__ = tuple(ifaces)
+        for i in ifaces:
+            i.__possible_types__[cls.__name__] = cls
 
     def __inherit_fields(cls, bases):
         for b in bases:
@@ -2302,8 +2306,36 @@ class Interface(ContainerType):
     ``interface Name implements Iface1, Iface2``,
     also making their fields automatically available in the final
     class.
+
+    Whenever interfaces are instantiated, if there is a ``__typename``
+    in ``json_data`` and the type is known, it will automatically
+    create the more specific type. Otherwise it instantiates the interface
+    itself:
+
+    >>> class SomeIface(Interface):
+    ...     i = int
+    ...
+    >>> class TypeWithIface(Type, SomeIface):
+    ...     pass
+    ...
+    >>> data = {'__typename': 'TypeWithIface', 'i': 123}
+    >>> SomeIface(data)
+    TypeWithIface(i=123)
+    >>> data = {'__typename': 'UnknownType', 'i': 123}
+    >>> SomeIface(data)
+    SomeIface(i=123)
     '''
     __kind__ = 'interface'
+
+    def __new__(cls, *args, **kwargs):
+        if len(args) > 0 and isinstance(args[0], dict):
+            type_name = args[0].get('__typename')
+            if type_name:
+                t = cls.__possible_types__.get(type_name)
+                if t is not None and t is not cls:
+                    return t(*args, **kwargs)
+
+        return ContainerType.__new__(cls)
 
 
 class Input(ContainerType):

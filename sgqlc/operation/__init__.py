@@ -784,8 +784,8 @@ proper type when interprets the results:
 User(login='user', __typename__='User', name='User Name')
 >>> for i in obj.repository.issues:
 ...     print(i)
-Issue(assigned=Assignee(__typename__=Assignee, email=e@mail.com), commenters=ActorConnection(actors=[Actor(login='user', __typename__='User', name='User Name'), Actor(login='a-company', __typename__='Organization', location='that place')]))
-Issue(assigned=User(__typename__=User, login=xpto), commenters=ActorConnection(actors=[Actor(login='user', __typename__='User', name='User Name'), Actor(login='xpto', __typename__='User')]))
+Issue(assigned=Assignee(__typename__=Assignee, email=e@mail.com), commenters=ActorConnection(actors=[User(login='user', __typename__='User', name='User Name'), Organization(login='a-company', __typename__='Organization', location='that place')]))
+Issue(assigned=User(__typename__=User, login=xpto), commenters=ActorConnection(actors=[User(login='user', __typename__='User', name='User Name'), User(login='xpto', __typename__='User')]))
 
 >>> json_data = {'data': {'repository': {'owner': {
 ...    '__typename': 'Organization',
