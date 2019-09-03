@@ -18,6 +18,7 @@ class WebSocketEndpoint(BaseEndpoint):
         '''
         self.url = url
         self.ws_options = ws_options
+        self.keep_alives = ['ka']
 
     def __str__(self):
         return '%s(url=%s, ws_options=%s)' % (
@@ -65,13 +66,14 @@ class WebSocketEndpoint(BaseEndpoint):
         try:
             init_id = self.generate_id()
             ws.send(json.dumps({'type': 'connection_init', 'id': init_id}))
-            response = json.loads(ws.recv())
+            response = self._get_response(ws)
             if response['type'] != 'connection_ack':
                 raise ValueError(
                     f'Unexpected {response["type"]} '
                     f'when waiting for connection ack'
                 )
-            if response['id'] != init_id:
+            # response does not always have an id
+            if response.get('id', init_id) != init_id:
                 raise ValueError(
                     f'Unexpected id {response["id"]} '
                     f'when waiting for connection ack'
@@ -83,7 +85,7 @@ class WebSocketEndpoint(BaseEndpoint):
                                 'payload': {'query': query,
                                             'variables': variables,
                                             'operationName': operation_name}}))
-            response = json.loads(ws.recv())
+            response = self._get_response(ws)
             while response['type'] != 'complete':
                 if response['id'] != query_id:
                     raise ValueError(
@@ -95,10 +97,18 @@ class WebSocketEndpoint(BaseEndpoint):
                 else:
                     raise ValueError(f'Unexpected message {response} '
                                      f'when waiting for query results')
-                response = json.loads(ws.recv())
+                response = self._get_response(ws)
 
         finally:
             ws.close()
+
+    def _get_response(self, ws):
+        '''Ignore any keep alive responses'''
+
+        response = json.loads(ws.recv())
+        while response['type'] in self.keep_alives:
+            response = json.loads(ws.recv())
+        return response
 
     @staticmethod
     def generate_id() -> str:

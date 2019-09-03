@@ -66,6 +66,57 @@ def test_basic_query(mock_websocket):
 
 
 @patch('sgqlc.endpoint.websocket.websocket')
+def test_basic_query_apollo(mock_websocket):
+    '''Test websocket endpoint against simple apollo query with keepalive
+    and no id in connection_ack'''
+    mock_connection = Mock()
+    mock_websocket.create_connection.return_value = mock_connection
+    mock_connection.recv.side_effect = [
+        """
+        {
+            "type": "connection_ack"
+        }
+        """,
+        """
+        {
+            "type": "ka"
+        }
+        """,
+        """
+        {
+            "type": "ka"
+        }
+        """,
+        """
+        {
+            "type": "data",
+            "id": "123",
+            "payload": {
+                "data": {"test": ["1", "2"]}
+            }
+        }
+        """,
+        """
+        {
+            "type": "ka"
+        }
+        """,
+        """
+        {
+            "type": "ka"
+        }
+        """,
+        """
+        {
+            "type": "complete",
+            "id": "123"
+        }
+        """,
+    ]
+    eq_(list(endpoint('query {test}')), [{'data': {'test': ['1', '2']}}])
+
+
+@patch('sgqlc.endpoint.websocket.websocket')
 def test_operation_query(mock_websocket):
     'Test if query with type sgqlc.operation.Operation() or raw bytes works'
 
