@@ -93,6 +93,7 @@ class CodeGen:
     def write(self):
         self.write_header()
         self.write_types()
+        self.write_entry_points()
 
     def write_banner(self, text):
         bar = '#' * 72
@@ -385,17 +386,19 @@ class %(name)s(sgqlc.types.Scalar):
 
     def write_type_union(self, t):
         name = t['name']
-        types = [v['name'] for v in t['possibleTypes']]
+        possible_types = t['possibleTypes']
+        trailing_comma = ',' if len(possible_types) == 1 else ''
         self.writer('''\
 class %(name)s(sgqlc.types.Union):
     __schema__ = %(schema_name)s
-    __types__ = (%(types)s)
+    __types__ = (%(types)s%(trailing_comma)s)
 
 
 ''' % {
             'name': name,
             'schema_name': self.schema_name,
-            'types': ', '.join(types) if len(types) > 1 else types[0],
+            'types': ', '.join(v['name'] for v in possible_types),
+            'trailing_comma': trailing_comma,
         })
         self.written_types.add(name)
 
@@ -427,6 +430,20 @@ class %(name)s(sgqlc.types.Union):
 
 ''' % {
             'schema_name': self.schema_name,
+        })
+
+    def write_entry_points(self):
+        self.write_banner('Schema Entry Points')
+        self.writer('''\
+%(schema_name)s.query_type = %(query_type)s
+%(schema_name)s.mutation_type = %(mutation_type)s
+%(schema_name)s.subscription_type = %(subscription_type)s
+
+''' % {
+            'schema_name': self.schema_name,
+            'query_type': self.query_type,
+            'mutation_type': self.mutation_type,
+            'subscription_type': self.subscription_type,
         })
 
 

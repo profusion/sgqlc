@@ -147,7 +147,6 @@ def select_pull_requests(repo, labels=(), states=(),
     nodes.assignees(first=100).nodes.login()
 
     reviews = nodes.reviews(first=100)
-    reviews.total_count()
     reviews.nodes.author.login()
     reviews.nodes.__fields__(
         body_text=True,
@@ -198,7 +197,7 @@ def download(endpoint, reponame, labels=(), issue_states=(), pr_states=()):
     repodata = (op + d).repository
     while (repodata.issues.page_info.has_next_page
            or repodata.pull_requests.page_info.has_next_page):
-        op = Operation()
+        op = Operation(schema.Query)
         repo = op.repository(owner=owner, name=name)
 
         if repodata.issues.page_info.has_next_page:

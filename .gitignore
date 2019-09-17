@@ -2,6 +2,7 @@
 *.pyo
 __pycache__
 *~
+*.DS_Store
 /build
 /dist
 /sgqlc.egg-info
@@ -11,3 +12,5 @@ __pycache__
 /.venv
 /.eggs
 .vscode
+.python-version
+.idea
