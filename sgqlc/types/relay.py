@@ -1,7 +1,4 @@
 '''
-sgqlc - Simple GraphQL Client
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 GraphQL Types for `Relay <https://facebook.github.io/relay/>`_
 ==============================================================
 
@@ -34,7 +31,7 @@ type NodeBasedType implements Node {
 }
 
 :class:`Connection` subclasses will get ``page_info`` and
-``total_count``, as well as ``__iadd__`` to merge 2 connections:
+``__iadd__`` to merge 2 connections:
 
 >>> class MyEdge(Type):
 ...     node = NodeBasedType
@@ -47,7 +44,6 @@ type NodeBasedType implements Node {
 >>> MyConn # or repr()
 type MyConn {
   pageInfo: PageInfo!
-  totalCount: Int
   nodes: [NodeBasedType]
   edges: [MyEdge]
 }
@@ -70,7 +66,6 @@ Given ``json_data1`` being the contents of the GraphQL query::
       getMyTypeWithConn(id: "...") {
         conn(first: 2) { # first page
           pageInfo { startCursor, endCursor, hasNextPage, hasPreviousPage }
-          totalCount
           nodes { id, aInt }
           edges { cursor, node { id, aInt } }
         }
@@ -84,7 +79,6 @@ Given ``json_data1`` being the contents of the GraphQL query::
 ...         'hasNextPage': True,
 ...         'hasPreviousPage': False,
 ...     },
-...     'totalCount': 4,
 ...     'nodes': [
 ...         {'id': '1111', 'aInt': 1},
 ...         {'id': '2222', 'aInt': 2},
@@ -97,8 +91,6 @@ Given ``json_data1`` being the contents of the GraphQL query::
 >>> conn1 = MyConn(json_data1)
 >>> print(conn1.page_info)  # doctest: +ELLIPSIS
 PageInfo(end_cursor=cursor-2, start_cursor=cursor-1, has_next_page=True...
->>> print(conn1.total_count)
-4
 >>> for n in conn1.nodes:
 ...     print(repr(n))
 NodeBasedType(id='1111', a_int=1)
@@ -115,7 +107,6 @@ We'd execute the query to fetch the second page as ``json_data2``::
       getMyTypeWithConn(id: "...") {
         conn(first: 2, after: "cursor-2") { # second page
           pageInfo { startCursor, endCursor, hasNextPage, hasPreviousPage }
-          totalCount
           nodes { id, aInt }
           edges { cursor, node { id, aInt } }
         }
@@ -129,7 +120,6 @@ We'd execute the query to fetch the second page as ``json_data2``::
 ...         'hasNextPage': False,
 ...         'hasPreviousPage': True,
 ...     },
-...     'totalCount': 4,
 ...     'nodes': [
 ...         {'id': '3333', 'aInt': 3},
 ...         {'id': '4444', 'aInt': 4},
@@ -142,8 +132,6 @@ We'd execute the query to fetch the second page as ``json_data2``::
 >>> conn2 = MyConn(json_data2)
 >>> print(conn2.page_info)  # doctest: +ELLIPSIS
 PageInfo(end_cursor=cursor-4, start_cursor=cursor-3, has_next_page=False...
->>> print(conn2.total_count)
-4
 >>> for n in conn2.nodes:
 ...     print(repr(n))
 NodeBasedType(id='3333', a_int=3)
@@ -159,8 +147,6 @@ store ``json_data1``:
 >>> conn1 += conn2
 >>> print(conn1.page_info)  # doctest: +ELLIPSIS
 PageInfo(end_cursor=cursor-4, start_cursor=cursor-1, has_next_page=False...
->>> print(conn1.total_count)
-4
 >>> for n in conn1.nodes:
 ...     print(repr(n))
 NodeBasedType(id='1111', a_int=1)
@@ -229,8 +215,7 @@ MyEdge(node=NodeBasedType(id='4444', a_int=4), cursor='cursor-4')
     "hasNextPage": false,
     "hasPreviousPage": false,
     "startCursor": "cursor-1"
-  },
-  "totalCount": 4
+  }
 }
 
 When merging, the receiver connection can be empty:
@@ -240,8 +225,6 @@ When merging, the receiver connection can be empty:
 >>> conn0 += conn1
 >>> print(conn0.page_info)  # doctest: +ELLIPSIS
 PageInfo(end_cursor=cursor-4, start_cursor=cursor-1, has_next_page=False...
->>> print(conn0.total_count)
-4
 >>> for n in conn0.nodes:
 ...     print(repr(n))
 NodeBasedType(id='1111', a_int=1)
@@ -309,8 +292,7 @@ MyEdge(node=NodeBasedType(id='4444', a_int=4), cursor='cursor-4')
     "hasNextPage": false,
     "hasPreviousPage": false,
     "startCursor": "cursor-1"
-  },
-  "totalCount": 4
+  }
 }
 
 
@@ -361,12 +343,10 @@ class Connection(Type):
       ``obj.connection``, resetting
       ``obj.connection.page_info.has_next_page``,
       ``obj.connection.page_info.end_cursor`` and
-      ``obj.connection.total_count``. These changes will be applied to
       the JSON backing store, if any.
     '''
     __auto_register = False  # do not expose this in Schema, just subclasses
     page_info = non_null(PageInfo)
-    total_count = int
 
     def __iadd__(self, other):
         # NOTE: assign to list, not '+=', so ContainerType.__setattr__()
@@ -384,11 +364,6 @@ class Connection(Type):
             self.edges = self.edges + other.edges
         elif has_other_edges:
             self.edges = other.edges
-
-        has_other_total_count = hasattr(other, 'total_count') and \
-            other.total_count is not None
-        if has_other_total_count:
-            self.total_count = other.total_count
 
         has_self_page_info = hasattr(self, 'page_info') and \
             self.page_info is not None

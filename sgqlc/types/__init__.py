@@ -1,7 +1,4 @@
 '''
-sgqlc - Simple GraphQL Client
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 GraphQL Types in Python
 =======================
 
@@ -550,12 +547,16 @@ class Schema:
 
     The schema is an iterator that will report all registered types.
     '''
-    __slots__ = ('__all', '__kinds', '__cache__')
+    __slots__ = ('__all', '__kinds', '__cache__',
+                 'query_type', 'mutation_type', 'subscription_type')
 
     def __init__(self, base_schema=None):
         self.__all = OrderedDict()
         self.__kinds = {}
         self.__cache__ = {}
+        self.query_type = None
+        self.mutation_type = None
+        self.subscription_type = None
 
         if base_schema is None:
             try:
@@ -734,6 +735,12 @@ class Schema:
             raise ValueError('%s already has %s=%s' %
                              (self.__class__.__name__, name, typ))
         self.__kinds.setdefault(typ.__kind__, ODict()).update({name: typ})
+        if self.query_type is None and name == 'Query':
+            self.query_type = t
+        if self.mutation_type is None and name == 'Mutation':
+            self.mutation_type = t
+        if self.subscription_type is None and name == 'Subscription':
+            self.subscription_type = t  # pragma: no cover
         return self
 
     def __isub__(self, typ):
@@ -746,6 +753,12 @@ class Schema:
         name = typ.__name__
         del self.__all[name]
         del self.__kinds[typ.__kind__][name]
+        if self.query_type is typ:
+            self.query_type = None  # pragma: no cover
+        elif self.mutation_type is typ:
+            self.mutation_type = None  # pragma: no cover
+        elif self.subscription_type is typ:
+            self.subscription_type = None  # pragma: no cover
         return self
 
     def __str__(self):
@@ -868,12 +881,18 @@ class BaseTypeWithTypename(BaseType, metaclass=BaseMetaWithTypename):
 
 def _create_non_null_wrapper(name, t):
     'creates type wrapper for non-null of given type'
+    def realize_type(v, selection_list=None):
+        if isinstance(v, (t, Variable)):
+            return v
+        return t(v, selection_list)
+
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             raise ValueError(name + ' received null value')
-        return t(json_data, selection_list)
+        return realize_type(json_data, selection_list)
 
     def __to_graphql_input__(value, indent=0, indent_string='  '):
+        value = realize_type(value)
         return t.__to_graphql_input__(value, indent, indent_string)
 
     return type(name, (t,), {
@@ -885,14 +904,21 @@ def _create_non_null_wrapper(name, t):
 
 def _create_list_of_wrapper(name, t):
     'creates type wrapper for list of given type'
+    def realize_type(v, selection_list=None):
+        if isinstance(v, (t, Variable)):  # pragma: no cover
+            return v
+        return t(v, selection_list)
+
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             return None
-        return [t(v, selection_list) for v in json_data]
+
+        return [realize_type(v, selection_list) for v in json_data]
 
     def __to_graphql_input__(value, indent=0, indent_string='  '):
         r = []
         for v in value:
+            v = realize_type(v)
             r.append(t.__to_graphql_input__(v, indent, indent_string))
         return '[' + ', '.join(r) + ']'
 
@@ -1201,6 +1227,7 @@ class Scalar(BaseType):
 
     '''
     __kind__ = 'scalar'
+    __json_dump_args__ = {}  # given to json.dumps(obj, **args)
 
     def converter(value):
         return value
@@ -1212,7 +1239,8 @@ class Scalar(BaseType):
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
         if hasattr(value, '__to_graphql_input__'):
             return value.__to_graphql_input__(value, indent, indent_string)
-        return json.dumps(cls.__to_json_value__(value))
+        return json.dumps(cls.__to_json_value__(value),
+                          **cls.__json_dump_args__)
 
     @classmethod
     def __to_json_value__(cls, value):
@@ -1281,9 +1309,7 @@ class Enum(BaseType, metaclass=EnumMeta):
     'RED'
     >>> Colors(None) # returns None
     >>> Colors('MAGENTA')
-    Traceback (most recent call last):
-      ...
-    ValueError: Colors does not accept value MAGENTA
+    'MAGENTA'
 
     Using a string will automatically split and convert to tuple:
 
@@ -1321,7 +1347,7 @@ class Enum(BaseType, metaclass=EnumMeta):
         if json_data is None:
             return None
         if json_data not in cls:
-            raise ValueError('%s does not accept value %s' % (cls, json_data))
+            return json_data
         return json_data
 
 
@@ -1342,6 +1368,7 @@ class UnionMeta(BaseMetaWithTypename):
             types.append(t)
 
         cls.__types__ = tuple(types)
+        cls.__typename_to_type__ = {t.__name__: t for t in types}
 
     def __contains__(cls, name_or_type):
         if isinstance(name_or_type, str):
@@ -1398,10 +1425,50 @@ class Union(BaseTypeWithTypename, metaclass=UnionMeta):
       ...
     ValueError: FailureUnion: missing __types__
 
+    Whenever instantiating the type, pass a JSON object with
+    ``__typename`` (done automatically using fragments via ``__as__``):
+
+    >>> class TypeA(Type):
+    ...     i = int
+    ...
+    >>> class TypeB(Type):
+    ...     s = str
+    ...
+    >>> class TypeU(Union):
+    ...     __types__ = (TypeA, TypeB)
+    ...
+    >>> data = {'__typename': 'TypeA', 'i': 1}
+    >>> TypeU(data)
+    TypeA(i=1)
+    >>> data = {'__typename': 'TypeB', 's': 'hi'}
+    >>> TypeU(data)
+    TypeB(s='hi')
+
+    It nicely handles unknown types:
+
+    >>> data = {'v': 123}
+    >>> TypeU(data) # no __typename
+    UnknownType()
+    >>> data = {'__typename': 'TypeUnknown', 'v': 123}
+    >>> TypeU(data) # auto-generates empty types
+    TypeUnknown()
+
     '''
 
     __kind__ = 'union'
     __types__ = ()
+
+    def __new__(cls, json_data, selection_list=None):
+        type_name = json_data.get('__typename')
+        if not type_name:
+            t = UnknownType
+        else:
+            t = cls.__typename_to_type__.get(type_name)
+            if t is None:
+                t = type(type_name, (UnknownType,), {})
+                cls.__typename_to_type__[type_name] = t
+
+        return t(json_data, selection_list)
 
 
 class ContainerTypeMeta(BaseMetaWithTypename):
@@ -1418,6 +1485,8 @@ class ContainerTypeMeta(BaseMetaWithTypename):
 
         if cls.__kind__ == 'interface':
             cls.__fix_type_kind(bases)
+            if cls.__kind__ == 'interface':
+                cls.__possible_types__ = {}
 
         cls.__populate_interfaces(bases)
         cls.__inherit_fields(bases)
@@ -1441,6 +1510,8 @@ class ContainerTypeMeta(BaseMetaWithTypename):
                     ifaces.append(i)
 
         cls.__interfaces__ = tuple(ifaces)
+        for i in ifaces:
+            i.__possible_types__[cls.__name__] = cls
 
     def __inherit_fields(cls, bases):
         for b in bases:
@@ -1552,6 +1623,12 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
     Members started with underscore (``_``) are not processed.
     '''
 
+    __json_dump_args__ = {
+        # given to json.dumps() in __bytes__()
+        'sort_keys': True,
+        'separators': (',', ':'),
+    }
+
     def __init__(self, json_data, selection_list=None):
         assert json_data is None or isinstance(json_data, dict), \
             '%r (%s) is not a JSON Object' % (
@@ -1619,7 +1696,14 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
             return ftype
 
         graphql_name = field.graphql_name
-        tname = json_data.get(graphql_name, {}).get('__typename')
+        try:
+            tname = json_data.get(graphql_name, {}).get('__typename')
+        except AttributeError:
+            # The selection returned something other than a dict, e.g. a list.
+            # Nothing to worry about, it just means this object doesn't contain
+            # a typename.
+            tname = None
+
         if not tname:
             return ftype
 
@@ -1804,8 +1888,8 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
 
     def __bytes__(self):
         return bytes(json.dumps(
-            self.__to_json_value__(),
-            sort_keys=True, separators=(',', ':')), 'utf-8')
+            self.__to_json_value__(), **self.__json_dump_args__),
+            'utf-8')
 
 
 class BaseItem:
@@ -1984,6 +2068,8 @@ class Arg(BaseItem):
         return super(Arg, self).__to_graphql__(indent, indent_string) + default
 
     def __to_graphql_input__(self, value, indent=0, indent_string='  '):
+        if not isinstance(value, (self.type, Variable)):
+            value = self.type(value)
         v = self.type.__to_graphql_input__(value, indent, indent_string)
         return '%s: %s' % (self.graphql_name, v)
 
@@ -2081,6 +2167,7 @@ class ArgDict(OrderedDict):
       )
 
     '''
+
     def __init__(self, *lst, **mapping):
         super(ArgDict, self).__init__()
 
@@ -2248,8 +2335,36 @@ class Interface(ContainerType):
     ``interface Name implements Iface1, Iface2``,
     also making their fields automatically available in the final
     class.
+
+    Whenever interfaces are instantiated, if there is a ``__typename``
+    in ``json_data`` and the type is known, it will automatically
+    create the more specific type. Otherwise it instantiates the interface
+    itself:
+
+    >>> class SomeIface(Interface):
+    ...     i = int
+    ...
+    >>> class TypeWithIface(Type, SomeIface):
+    ...     pass
+    ...
+    >>> data = {'__typename': 'TypeWithIface', 'i': 123}
+    >>> SomeIface(data)
+    TypeWithIface(i=123)
+    >>> data = {'__typename': 'UnknownType', 'i': 123}
+    >>> SomeIface(data)
+    SomeIface(i=123)
     '''
     __kind__ = 'interface'
+
+    def __new__(cls, *args, **kwargs):
+        if len(args) > 0 and isinstance(args[0], dict):
+            type_name = args[0].get('__typename')
+            if type_name:
+                t = cls.__possible_types__.get(type_name)
+                if t is not None and t is not cls:
+                    return t(*args, **kwargs)
+
+        return ContainerType.__new__(cls)
 
 
 class Input(ContainerType):
@@ -2280,11 +2395,67 @@ class Input(ContainerType):
     '''
     __kind__ = 'input'
 
+    def __init__(self, _json_obj=None, _selection_list=None, **kwargs):
+        '''Create the type given a json object or keyword arguments.
+
+        >>> class AnotherInput(Input):
+        ...     a_str = str
+        ...
+        >>> class TheInput(Input):
+        ...     a_int = int
+        ...     a_float = float
+        ...     a_nested = AnotherInput
+        ...     a_nested_list = list_of(AnotherInput)
+        ...
+
+        >>> TheInput(a_int=1, a_float=1.2, a_nested=AnotherInput(a_str='hi'))
+        TheInput(a_int=1, a_float=1.2, a_nested=AnotherInput(a_str='hi'))
+
+        >>> TheInput({'aInt': 1, 'aFloat': 1.2, 'aNested': {'aStr': 'hi'}})
+        TheInput(a_int=1, a_float=1.2, a_nested=AnotherInput(a_str='hi'))
+
+        >>> value = TheInput(a_int=1, a_float=1.2,
+        ...                  a_nested=AnotherInput(a_str='hi'),
+        ...                  a_nested_list=[AnotherInput(a_str='there')])
+        >>> print(TheInput.__to_graphql_input__(value))
+        {aInt: 1, aFloat: 1.2, aNested: {aStr: "hi"}, aNestedList: [{aStr: "there"}]}
+        >>> value = TheInput({'aInt': 1, 'aFloat': 1.2, 'aNested': {'aStr': 'hi'},
+        ...           'aNestedList': [{'aStr': 'there'}]})
+        >>> print(TheInput.__to_graphql_input__(value))
+        {aInt: 1, aFloat: 1.2, aNested: {aStr: "hi"}, aNestedList: [{aStr: "there"}]}
+
+        .. note::
+
+            ``selection_list`` parameter makes no sense and is ignored,
+            it's only provided to cope with the ``ContainerType`` interface.
+
+        '''  # noqa: E501
+        if _json_obj is None:
+            _json_obj = {}
+        super().__init__(_json_obj, _selection_list)
+        cls = type(self)
+        for k, v in kwargs.items():
+            f = cls[k]
+            if not isinstance(v, (f.type, Variable, list)):
+                v = f.type(v)
+            setattr(self, k, v)
+
     @classmethod
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
         args = []
-        for k, v in value.items():
-            f = cls[k]
+        if isinstance(value, Input):
+            value = value.__json_data__
+
+        for f in cls:
+            try:
+                v = value[f.graphql_name]
+            except KeyError:
+                try:
+                    # previous versions allowed Python name as dict keys
+                    v = value[f.name]
+                except KeyError:  # pragma: no cover
+                    continue
+
             vs = f.type.__to_graphql_input__(v, indent, indent_string)
             args.append('%s: %s' % (f.graphql_name, vs))
 
@@ -2327,6 +2498,11 @@ class Boolean(Scalar):
 class ID(Scalar):
     'Maps GraphQL ``ID`` to Python ``str``.'
     converter = str
+
+
+class UnknownType(Type):
+    'Type found in the response that was not present in schema'
+    __auto_register = False  # do not expose this in Schema, just subclasses
 
 
 map_python_to_graphql = {

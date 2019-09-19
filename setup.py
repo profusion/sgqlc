@@ -6,7 +6,7 @@ import re
 from setuptools import setup, find_packages
 
 name = 'sgqlc'
-version = 7
+version = 8
 release = 0
 
 
@@ -35,6 +35,7 @@ setup(
     install_requires=['graphql-core'],
     extras_require={
         'sphinx': ['sphinx'],
+        'websocket': ['websocket-client'],
     },
     zip_safe=True,
     keywords='graphql client http endpoint',
