@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 sgqlc = {editable = true,path = "."}
 graphql-core = "*"
+websocket-client = "==0.56.0"
 
 [dev-packages]
 "flake8" = "*"

@@ -1,7 +1,4 @@
 '''
-sgqlc - Simple GraphQL Client
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 Generate Operations (Query and Mutations) using Python
 ======================================================
 
@@ -66,6 +63,7 @@ Examples
 Let's start defining the types, including the schema root ``Query``:
 
 >>> from sgqlc.types import *
+>>> from datetime import datetime
 >>> class Actor(Interface):
 ...    login = non_null(str)
 ...
@@ -74,6 +72,9 @@ Let's start defining the types, including the schema root ``Query``:
 ...
 >>> class Organization(Type, Actor):
 ...    location = str
+...
+>>> class ActorConnection(Type):
+...    actors = Field(list_of(non_null(Actor)), args={'login': non_null(str)})
 ...
 >>> class Assignee(Type):
 ...    email = non_null(str)
@@ -87,6 +88,15 @@ Let's start defining the types, including the schema root ``Query``:
 ...     body = str
 ...     reporter = non_null(User)
 ...     assigned = UserOrAssignee
+...     commenters = ActorConnection
+...
+>>> class ReporterFilterInput(Input):
+...     name_contains = str
+...
+>>> class IssuesFilter(Input):
+...     reporter = list_of(ReporterFilterInput)
+...     start_date = non_null(datetime)
+...     end_date = datetime
 ...
 >>> class Repository(Type):
 ...     id = ID
@@ -95,6 +105,7 @@ Let's start defining the types, including the schema root ``Query``:
 ...     issues = Field(list_of(non_null(Issue)), args={
 ...         'title_contains': str,
 ...         'reporter_login': str,
+...         'filter': IssuesFilter,
 ...     })
 ...
 >>> class Query(Type):
@@ -121,6 +132,9 @@ schema {
     login: String!
     location: String
   }
+  type ActorConnection {
+    actors(login: String!): [Actor!]
+  }
   type Assignee {
     email: String!
   }
@@ -131,12 +145,21 @@ schema {
     body: String
     reporter: User!
     assigned: UserOrAssignee
+    commenters: ActorConnection
+  }
+  input ReporterFilterInput {
+    nameContains: String
+  }
+  input IssuesFilter {
+    reporter: [ReporterFilterInput]
+    startDate: DateTime!
+    endDate: DateTime
   }
   type Repository {
     id: ID
     name: String!
     owner: Actor!
-    issues(titleContains: String, reporterLogin: String): [Issue!]
+    issues(titleContains: String, reporterLogin: String, filter: IssuesFilter): [Issue!]
   }
   type Query {
     repository(id: ID!): Repository
@@ -299,7 +322,7 @@ Which also allows to include all but some fields:
 
 >>> op = Operation(Query)
 >>> op.repository(id='repo1').issues.__fields__(
-...     __exclude__=('body', 'reporter'),
+...     __exclude__=('body', 'reporter', 'commenters'),
 ... )
 >>> op
 query {
@@ -327,6 +350,7 @@ Or using named arguments:
 >>> op.repository(id='repo1').issues.__fields__(
 ...     body=False,
 ...     reporter=False,
+...     commenters=False,
 ... )
 >>> op
 query {
@@ -372,6 +396,11 @@ query {
         }
         ... on Assignee {
           email
+        }
+      }
+      commenters {
+        actors {
+          login
         }
       }
     }
@@ -518,6 +547,11 @@ query {
           email
         }
       }
+      commenters {
+        actors {
+          login
+        }
+      }
     }
   }
 }
@@ -657,6 +691,11 @@ mutation {
         email
       }
     }
+    commenters {
+      actors {
+        login
+      }
+    }
   }
 }
 
@@ -684,6 +723,12 @@ name
 email
 >>> repo.issues().assigned.__as__(User).login()
 login
+>>> repo.issues().commenters().actors().login()
+login
+>>> repo.issues().commenters().actors().__as__(Organization).location()
+location
+>>> repo.issues().commenters().actors().__as__(User).name()
+name
 >>> op
 query {
   repository(id: "repo1") {
@@ -707,6 +752,18 @@ query {
           login
         }
       }
+      commenters {
+        actors {
+          login
+          __typename
+          ... on Organization {
+            location
+          }
+          ... on User {
+            name
+          }
+        }
+      }
     }
   }
 }
@@ -720,8 +777,24 @@ proper type when interprets the results:
 ...    'name': 'User Name',
 ...    },
 ...    'issues': [
-...      {'assigned': {'__typename': 'Assignee', 'email': 'e@mail.com'}},
-...      {'assigned': {'__typename': 'User', 'login': 'xpto'}},
+...      {
+...          'assigned': {'__typename': 'Assignee', 'email': 'e@mail.com'},
+...          'commenters': {
+...              'actors': [
+...                  {'login': 'user', '__typename': 'User', 'name': 'User Name'},
+...                  {'login': 'a-company', '__typename': 'Organization', 'location': 'that place'}
+...              ]
+...          }
+...      },
+...      {
+...          'assigned': {'__typename': 'User', 'login': 'xpto'},
+...          'commenters': {
+...              'actors': [
+...                  {'login': 'user', '__typename': 'User', 'name': 'User Name'},
+...                  {'login': 'xpto', '__typename': 'User'}
+...              ]
+...          }
+...      },
 ...    ],
 ... }}}
 >>> obj = op + json_data
@@ -729,8 +802,8 @@ proper type when interprets the results:
 User(login='user', __typename__='User', name='User Name')
 >>> for i in obj.repository.issues:
 ...     print(i)
-Issue(assigned=Assignee(__typename__=Assignee, email=e@mail.com))
-Issue(assigned=User(__typename__=User, login=xpto))
+Issue(assigned=Assignee(__typename__=Assignee, email=e@mail.com), commenters=ActorConnection(actors=[User(login='user', __typename__='User', name='User Name'), Organization(login='a-company', __typename__='Organization', location='that place')]))
+Issue(assigned=User(__typename__=User, login=xpto), commenters=ActorConnection(actors=[User(login='user', __typename__='User', name='User Name'), User(login='xpto', __typename__='User')]))
 
 >>> json_data = {'data': {'repository': {'owner': {
 ...    '__typename': 'Organization',
@@ -844,6 +917,7 @@ also list fields:
 ...         print(name)
 assigned
 body
+commenters
 number
 reporter
 title
@@ -852,6 +926,7 @@ title
 ...         print(name)
 assigned
 body
+commenters
 number
 reporter
 title
@@ -921,8 +996,13 @@ Which is useful to query the selection alias and arguments:
 >>> op['repository'].__selection__().__args__
 {'id': 'repo1'}
 
+To get the arguments of the default (non-aliased) one can use the shortcut:
+
+>>> op['repository'].__args__
+{'id': 'repo1'}
+
 :license: ISC
-'''
+'''  # noqa: E501
 
 __docformat__ = 'reStructuredText en'
 
@@ -1276,12 +1356,12 @@ class Selector:
     '''
 
     __slots__ = (
-        '__parent', '__field', '__selections',
+        '__parent__', '__field__', '__selections',
     )
 
     def __init__(self, parent, field):
-        self.__parent = parent
-        self.__field = field
+        self.__parent__ = parent
+        self.__field__ = field
         self.__selections = {}
 
     def __call__(self, **args):
@@ -1299,10 +1379,10 @@ class Selector:
                 return s
             raise ValueError(
                 ('%s already have a selection %s. '
-                 'Maybe use __alias__ as param?') % (self.__field, s))
+                 'Maybe use __alias__ as param?') % (self.__field__, s))
 
-        s = self.__selections[alias] = Selection(alias, self.__field, args)
-        self.__parent += s
+        s = self.__selections[alias] = Selection(alias, self.__field__, args)
+        self.__parent__ += s
         return s
 
     def __as__(self, typ):
@@ -1317,7 +1397,7 @@ class Selector:
 
     def __dir__(self):
         original_dir = super(Selector, self).__dir__()
-        t = self.__field.type
+        t = self.__field__.type
         if not issubclass(t, ContainerType):
             return original_dir
         fields = [f.name for f in t]
@@ -1328,6 +1408,9 @@ class Selector:
         '''Calls the selector without arguments, creating a
         :class:`Selection` instance and return
         :func:`Selection.__fields__` method, ready to be called.
+
+        To query the actual field this selector operates, use
+        ``self.__field__``
         '''
         return self().__fields__
 
@@ -1347,7 +1430,7 @@ class Selector:
         return self()[name]
 
     def __str__(self):
-        return '%s(field=%s)' % (self.__class__.__name__, self.__field)
+        return '%s(field=%s)' % (self.__class__.__name__, self.__field__)
 
     def __repr__(self):
         return str(self)
@@ -1355,6 +1438,11 @@ class Selector:
     def __selection__(self, alias=None):
         'Return the selection given its alias'
         return self.__selections[alias]
+
+    @property
+    def __args__(self):
+        'Shortcut for self.__selection__().__args__'
+        return self.__selection__().__args__
 
 
 class SelectionList:
@@ -1406,10 +1494,10 @@ class SelectionList:
       id: ID
       name: String!
       owner: Actor!
-      issues(titleContains: String, reporterLogin: String): [Issue!]
+      issues(titleContains: String, reporterLogin: String, filter: IssuesFilter): [Issue!]
     }
 
-    '''
+    '''  # noqa: E501
 
     __slots__ = ('__type', '__selectors', '__selections', '__casts')
 
@@ -1515,7 +1603,8 @@ class Operation:
     '''GraphQL Operation: query or mutation.
 
     The given type must be one of ``schema.Query`` or
-    ``schema.Mutation``, defaults to ``global_schema.Query``.
+    ``schema.Mutation``, defaults to ``global_schema.Query`` or
+    whatever is defined as ``global_schema.query_type``.
 
     The operation has an internal
     :class:`sgqlc.operation.SelectionList` and will proxy attributes
@@ -1564,7 +1653,8 @@ class Operation:
       }
     }
 
-    The root type can be omitted, then ``global_schema.Query`` is used:
+    The root type can be omitted, then ``global_schema.Query`` or
+    whatever is defined as ```global_schema.query_type`` is used:
 
     >>> op = Operation()  # same as Operation(global_schema.Query)
     >>> op.repository
@@ -1607,6 +1697,45 @@ class Operation:
       }
     }
 
+    Complex argument types are also supported as JSON object (GraphQL names
+    and raw types) or actual types:
+
+    >>> op = Operation()
+    >>> repository = op.repository(id='sgqlc')
+    >>> issues = repository.issues(filter={
+    ...     'reporter': [{'nameContains': 'Gustavo'}],
+    ...     'startDate': '2019-01-01T00:00:00+00:00',
+    ... })
+    >>> issues.__fields__('number', 'title')
+    >>> op # or repr(), prints out GraphQL!
+    query {
+      repository(id: "sgqlc") {
+        issues(filter: {reporter: [{nameContains: "Gustavo"}], startDate: "2019-01-01T00:00:00+00:00"}) {
+          number
+          title
+        }
+      }
+    }
+
+    >>> from datetime import datetime, timezone
+    >>> from sgqlc.types import global_schema
+    >>> op = Operation()
+    >>> repository = op.repository(id='sgqlc')
+    >>> issues = repository.issues(filter=global_schema.IssuesFilter(
+    ...     reporter=[global_schema.ReporterFilterInput(name_contains='Gustavo')],
+    ...     start_date=datetime(2019, 1, 1, tzinfo=timezone.utc),
+    ... ))
+    >>> issues.__fields__('number', 'title')
+    >>> op # or repr(), prints out GraphQL!
+    query {
+      repository(id: "sgqlc") {
+        issues(filter: {reporter: [{nameContains: "Gustavo"}], startDate: "2019-01-01T00:00:00+00:00"}) {
+          number
+          title
+        }
+      }
+    }
+
     Selectors can be acquired as attributes or items, but they must
     exist in the target type:
 
@@ -1625,10 +1754,11 @@ class Operation:
       ...
     KeyError: 'Query has no field does_not_exist'
 
-    '''
+    '''  # noqa: E501
+
     def __init__(self, typ=None, name=None, **args):
         if typ is None:
-            typ = global_schema.Query
+            typ = global_schema.query_type
 
         variable_args = OrderedDict()
         for k, v in args.items():
@@ -1638,11 +1768,27 @@ class Operation:
             name = typ.__name__
 
         self.__type = typ
-        self.__kind = typ.__name__.lower()
+        self.__kind = self._get_kind()
         self.__name = name
         self.__args = ArgDict(variable_args)
         self.__args._set_container(typ.__schema__, self)
         self.__selection_list = SelectionList(typ)
+
+    def _get_kind(self):
+        typ = self.__type
+        schema = typ.__schema__
+        if schema.query_type is typ:
+            return 'query'
+        elif schema.mutation_type is typ:
+            return 'mutation'
+        elif schema.subscription_type is typ:  # pragma: no cover
+            return 'subscription'
+        else:  # pragma: no cover
+            raise ValueError(
+                "schema doesn't define %s as query, mutation "
+                "or subscription type"
+                % (typ.__name__,)
+            )
 
     def __to_graphql__(self, indent=0, indent_string='  ',
                        auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):

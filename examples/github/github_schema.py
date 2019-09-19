@@ -5362,3 +5362,11 @@ class SearchResultItem(sgqlc.types.Union):
     __types__ = (Issue, PullRequest, Repository, User, Organization, MarketplaceListing)
 
 
+
+########################################################################
+# Schema Entry Points
+########################################################################
+github_schema.query_type = Query
+github_schema.mutation_type = Mutation
+github_schema.subscription_type = None
+
