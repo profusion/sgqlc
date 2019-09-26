@@ -1309,9 +1309,7 @@ class Enum(BaseType, metaclass=EnumMeta):
     'RED'
     >>> Colors(None) # returns None
     >>> Colors('MAGENTA')
-    Traceback (most recent call last):
-      ...
-    ValueError: Colors does not accept value MAGENTA
+    'MAGENTA'
 
     Using a string will automatically split and convert to tuple:
 
@@ -1349,7 +1347,7 @@ class Enum(BaseType, metaclass=EnumMeta):
         if json_data is None:
             return None
         if json_data not in cls:
-            raise ValueError('%s does not accept value %s' % (cls, json_data))
+            return json_data
         return json_data
 
 
