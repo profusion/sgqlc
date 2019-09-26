@@ -398,11 +398,6 @@ query {
           email
         }
       }
-      commenters {
-        actors {
-          login
-        }
-      }
     }
   }
 }
@@ -547,11 +542,6 @@ query {
           email
         }
       }
-      commenters {
-        actors {
-          login
-        }
-      }
     }
   }
 }
@@ -691,11 +681,6 @@ mutation {
         email
       }
     }
-    commenters {
-      actors {
-        login
-      }
-    }
   }
 }
 
@@ -723,7 +708,7 @@ name
 email
 >>> repo.issues().assigned.__as__(User).login()
 login
->>> repo.issues().commenters().actors().login()
+>>> repo.issues().commenters().actors(login='login').login()
 login
 >>> repo.issues().commenters().actors().__as__(Organization).location()
 location
@@ -753,7 +738,7 @@ query {
         }
       }
       commenters {
-        actors {
+        actors(login: "login") {
           login
           __typename
           ... on Organization {
@@ -1013,7 +998,6 @@ from collections import OrderedDict
 from ..types import BaseTypeWithTypename, Union, ContainerType, ArgDict, \
     global_schema
 
-
 DEFAULT_AUTO_SELECT_DEPTH = 2
 
 
@@ -1240,14 +1224,23 @@ class Selection:
         args = self.__field__.args.__to_graphql_input__(
             self.__args__, indent, indent_string)
 
+        required = {k for k, v in self.__field__.args.items()
+                    if v.type.__name__.endswith('!')}
+
+        if not set(self.__args__) >= required:
+            return ''
+
         query = ''
         if self.__selection_list is not None:
             selections = self.__selection_list
             if not selections:
                 selections = self.__get_all_fields_selection_list(
                     auto_select_depth, [])
-            query = ' ' + selections.__to_graphql__(
+            child = selections.__to_graphql__(
                 indent, indent_string, auto_select_depth)
+            if not child.strip('{}').strip():
+                return ''
+            query = ' ' + child
         return prefix + alias + self.__field__.graphql_name + args + query
 
     def __dir__(self):
@@ -1525,9 +1518,11 @@ class SelectionList:
 
         s = ['{']
         for v in self.__selections:
-            s.append(v.__to_graphql__(
+            selection = v.__to_graphql__(
                 next_indent, indent_string, auto_select_depth,
-            ))
+            )
+            if selection:
+                s.append(selection)
 
         next_prefix = prefix + indent_string
         for v in self.__casts.values():
