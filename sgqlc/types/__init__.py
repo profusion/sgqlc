@@ -2399,6 +2399,10 @@ class Input(ContainerType):
     >>> print(MyInput.__to_graphql_input__({'a_int': 1, 'a_float': 2.2}))
     {aInt: 1, aFloat: 2.2}
 
+    >>> a_var = Variable('input')
+    >>> print(MyInput.__to_graphql_input__(a_var))
+    $input
+
     '''
     __kind__ = 'input'
 
@@ -2450,7 +2454,9 @@ class Input(ContainerType):
     @classmethod
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
         args = []
-        if isinstance(value, Input):
+        if isinstance(value, Variable):
+            return Variable.__to_graphql_input__(value, indent, indent_string)
+        elif isinstance(value, Input):
             value = value.__json_data__
 
         for f in cls:
