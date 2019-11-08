@@ -12,6 +12,10 @@ This package provide the following modules:
    :class:`sgqlc.endpoint.http.HTTPEndpoint` using
    :func:`urllib.request.urlopen()`.
 
+ - :mod:`sgqlc.endpoint.requests`: concrete
+   :class:`sgqlc.endpoint.requests.RequestsEndpoint` using
+   :mod:`requests` .
+
 :license: ISC
 '''
 

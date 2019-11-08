@@ -11,3 +11,4 @@ Sub Modules
 
 * :doc:`sgqlc.endpoint.base`
 * :doc:`sgqlc.endpoint.http`
+* :doc:`sgqlc.endpoint.requests`

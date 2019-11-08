@@ -2,32 +2,30 @@
 Synchronous HTTP Endpoint
 =========================
 
-This endpoint implements GraphQL client using
-:func:`urllib.request.urlopen()` or compatible function.
+This endpoint implements GraphQL client using the requests library.
 
 This module provides command line utility:
 
 .. code-block:: console
 
-   $ python3 -m sgqlc.endpoint.http http://server.com/ '{ queryHere { ... } }'
+   $ python3 -m sgqlc.endpoint.requests http://server.com/ '{ query { ... } }'
 
 :license: ISC
 '''
 
 __docformat__ = 'reStructuredText en'
 
-__all__ = ('HTTPEndpoint',)
+__all__ = ('RequestsEndpoint',)
 
 import json
 import logging
-import urllib.error
-import urllib.parse
-import urllib.request
+import requests
+
 
 from .base import BaseEndpoint, add_query_to_url
 
 
-class HTTPEndpoint(BaseEndpoint):
+class RequestsEndpoint(BaseEndpoint):
     '''GraphQL access over HTTP.
 
     This helper is very thin, just setups the correct HTTP request to
@@ -44,7 +42,7 @@ class HTTPEndpoint(BaseEndpoint):
     :errors: list of errors, which are objects with the key "message" and
        optionally others, such as "location" (for errors matching GraphQL
        input). Instead of raising exceptions, such as
-       :exc:`urllib.error.HTTPError` or
+       :exc:`requests.exceptions.HTTPError` or
        :exc:`json.JSONDecodeError` those are stored in the
        "exception" key.
 
@@ -57,7 +55,7 @@ class HTTPEndpoint(BaseEndpoint):
     The class has its own :class:`logging.Logger` which is used to
     debug, info, warning and errors. Error logging and conversion to
     uniform data structure similar to GraphQL, with ``{"errors": [...]}``
-    is done by :func:`HTTPEndpoint._log_http_error()` own method,
+    is done by :func:`RequestsEndpoint._log_http_error()` own method,
     ``BaseEndpoint._log_json_error()`` and
     ``BaseEndpoint._log_graphql_error()``. This last one will show the
     snippets of GraphQL that failed execution.
@@ -65,8 +63,8 @@ class HTTPEndpoint(BaseEndpoint):
 
     logger = logging.getLogger(__name__)
 
-    def __init__(self, url, base_headers=None, timeout=None, urlopen=None,
-                 method='POST'):
+    def __init__(self, url, base_headers=None, timeout=None, method='POST',
+                 auth=None):
         '''
         :param url: the default GraphQL endpoint url.
         :type url: str
@@ -79,19 +77,23 @@ class HTTPEndpoint(BaseEndpoint):
           default timeout).
         :type timeout: float
 
-        :param urlopen: function that implements the same interface as
-          :func:`urllib.request.urlopen`, which is used by default.
+        :param method: HTTP Method to use for the request,
+                       `POST` is used by default
+
+        :param auth: requests.auth compatible authentication option. Optional.
         '''
         self.url = url
         self.base_headers = base_headers or {}
         self.timeout = timeout
-        self.urlopen = urlopen or urllib.request.urlopen
         self.method = method
+        self.auth = auth
 
     def __str__(self):
-        return '%s(url=%s, base_headers=%r, timeout=%r, method=%s)' % (
+        return ('%s(url=%s, base_headers=%r, timeout=%r, '
+                'method=%s, auth=%s)') % (
             self.__class__.__name__, self.url, self.base_headers, self.timeout,
-            self.method)
+            self.method, 
+            self.auth.__class__ if self.auth is not None else None)
 
     def __call__(self, query, variables=None,  # noqa: C901
                  operation_name=None, extra_headers=None, timeout=None):
@@ -147,16 +149,19 @@ class HTTPEndpoint(BaseEndpoint):
         self.logger.debug('Query:\n%s', query)
 
         try:
-            with self.urlopen(req, timeout=timeout or self.timeout) as f:
-                body = f.read().decode('utf-8')
-                try:
-                    data = json.loads(body)
-                    if data and data.get('errors'):
-                        return self._log_graphql_error(query, data)
-                    return data
-                except json.JSONDecodeError as exc:
-                    return self._log_json_error(body, exc)
-        except urllib.error.HTTPError as exc:
+            with requests.Session() as session:
+                prepped = session.prepare_request(req)
+                with session.send(prepped,
+                                  timeout=timeout or self.timeout) as f:
+                    try:
+                        f.raise_for_status()
+                        data = f.json()
+                        if data and data.get('errors'):
+                            return self._log_graphql_error(query, data)
+                        return data
+                    except json.JSONDecodeError as exc:
+                        return self._log_json_error(f.text, exc)
+        except requests.exceptions.HTTPError as exc:
             return self._log_http_error(query, req, exc)
 
     def get_http_post_request(self, query, variables, operation_name, headers):
@@ -166,11 +171,12 @@ class HTTPEndpoint(BaseEndpoint):
             'operationName': operation_name,
         }).encode('utf-8')
         headers.update({
-            'Content-Type': 'application/json; charset=utf-8',
-            'Content-Length': len(post_data),
+            'Content-Type': 'application/json; charset=utf-8'
         })
-        return urllib.request.Request(
-            url=self.url, data=post_data, headers=headers, method='POST')
+        return requests.Request(
+            url=self.url, auth=self.auth, data=post_data,
+            headers=headers,
+            method='POST')
 
     def get_http_get_request(self, query, variables, operation_name, headers):
         params = {'query': query}
@@ -181,37 +187,39 @@ class HTTPEndpoint(BaseEndpoint):
             params['variables'] = json.dumps(variables)
 
         url = add_query_to_url(self.url, params)
-        return urllib.request.Request(url=url, headers=headers, method='GET')
+        return requests.Request(url=url, auth=self.auth, headers=headers,
+                                method='GET')
 
     def _log_http_error(self, query, req, exc):
-        '''Log :exc:`urllib.error.HTTPError`, converting to
+        '''Log :exc:`requests.exceptions.HTTPError`, converting to
         GraphQL's ``{"data": null, "errors": [{"message": str(exc)...}]}``
 
         :param query: the GraphQL query that triggered the result.
         :type query: str
 
-        :param req: :class:`urllib.request.Request` instance that was opened.
-        :type req: :class:`urllib.request.Request`
+        :param req: :class:`requests.Request` instance that was opened.
+        :type req: :class:`requests.Request`
 
-        :param exc: :exc:`urllib.error.HTTPError` instance
-        :type exc: :exc:`urllib.error.HTTPError`
+        :param exc: :exc:`requests.exceptions.HTTPError` instance
+        :type exc: :exc:`requests.exceptions.HTTPError`
 
         :return: GraphQL-compliant dict with keys ``data`` and ``errors``.
         :rtype: dict
         '''
-        self.logger.error('%s: %s', req.get_full_url(), exc)
-        for h in sorted(exc.headers):
-            self.logger.info('Response header: %s: %s', h, exc.headers[h])
+        self.logger.error('log_error - %s: %s', req.url, exc)
+        for h in sorted(exc.response.headers):
+            self.logger.info('Response header: %s: %s', h,
+                             exc.response.headers[h])
 
-        body = exc.read().decode('utf-8')
-        content_type = exc.headers.get('Content-Type', '')
+        body = exc.response.text
+        content_type = exc.response.headers.get('Content-Type', '')
         self.logger.info('Response [%s]:\n%s', content_type, body)
         if not content_type.startswith('application/json'):
             return {'data': None, 'errors': [{
                 'message': str(exc),
                 'exception': exc,
-                'status': exc.code,
-                'headers': exc.headers,
+                'status': exc.response.status_code,
+                'headers': exc.response.headers,
                 'body': body,
             }]}
         else:
@@ -225,15 +233,15 @@ class HTTPEndpoint(BaseEndpoint):
             if isinstance(data, dict) and data.get('errors'):
                 data.update({
                     'exception': exc,
-                    'status': exc.code,
-                    'headers': exc.headers,
+                    'status': exc.response.status_code,
+                    'headers': exc.response.headers,
                 })
                 return self._log_graphql_error(query, data)
             return {'data': None, 'errors': [{
                 'message': str(exc),
                 'exception': exc,
-                'status': exc.code,
-                'headers': exc.headers,
+                'status': exc.response.status_code,
+                'headers': exc.response.headers,
                 'body': body,
             }]}
 
@@ -283,8 +291,8 @@ if __name__ == '__main__':  # pragma: no cover
     logfmt = '%(levelname)s: %(message)s'
     logging.basicConfig(format=logfmt, level=max(10, 40 - (args.verbose * 10)))
 
-    endpoint = HTTPEndpoint(args.url, dict(args.header), args.timeout,
-                            method=args.method)
+    endpoint = RequestsEndpoint(args.url, dict(args.header), args.timeout,
+                                method=args.method)
     data = endpoint(args.query, dict(args.var))
 
     json.dump(data, sys.stdout, sort_keys=True, indent=2, default=str)

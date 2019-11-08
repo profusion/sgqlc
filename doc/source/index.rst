@@ -23,6 +23,7 @@ Table of Contents
    sgqlc.endpoint
    sgqlc.endpoint.base
    sgqlc.endpoint.http
+   sgqlc.endpoint.requests
 
 
 Indices and tables

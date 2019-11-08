@@ -12,6 +12,36 @@ __docformat__ = 'reStructuredText en'
 __all__ = ('BaseEndpoint',)
 
 import logging
+import urllib.parse
+
+
+def add_query_to_url(url, extra_query):
+    '''Adds an extra query to URL, returning the new URL.
+
+    Extra query may be a dict or a list as returned by
+    :func:`urllib.parse.parse_qsl()` and :func:`urllib.parse.parse_qs()`.
+
+    '''
+    split = urllib.parse.urlsplit(url)
+    merged_query = urllib.parse.parse_qsl(split.query)
+    if isinstance(extra_query, dict):
+        for k, v in extra_query.items():
+            if not isinstance(v, (tuple, list)):
+                merged_query.append((k, v))
+            else:
+                for cv in v:
+                    merged_query.append((k, cv))
+    else:
+        merged_query.extend(extra_query)
+
+    merged_split = urllib.parse.SplitResult(
+        split.scheme,
+        split.netloc,
+        split.path,
+        urllib.parse.urlencode(merged_query),
+        split.fragment,
+    )
+    return merged_split.geturl()
 
 
 class BaseEndpoint:
