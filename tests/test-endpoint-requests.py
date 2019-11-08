@@ -217,22 +217,24 @@ def test_basic(mock_requests_send):
         + 'url={}, '.format(test_url)
         + 'base_headers={}, timeout=None, method=POST, auth=None)')
 
+
 @patch('requests.sessions.Session.send')
 def test_basic_auth(mock_requests_send):
     '[Requests] - Test if basic usage with only auth works'
 
     configure_mock_requests_send(mock_requests_send, graphql_response_ok)
 
-    endpoint = RequestsEndpoint(test_url, 
-               auth=requests.auth.HTTPBasicAuth("user", "password"))
+    endpoint = RequestsEndpoint(test_url,
+                                auth=requests.auth.HTTPBasicAuth("user",
+                                                                 "password"))
     data = endpoint(graphql_query)
     eq_(data, json.loads(graphql_response_ok))
     check_mock_requests_send(mock_requests_send)
     eq_(str(endpoint),
         'RequestsEndpoint('
         + 'url={}, '.format(test_url)
-        + 'base_headers={}, timeout=None, method=POST, auth=<class \'requests.auth.HTTPBasicAuth\'>)')
-
+        + 'base_headers={}, timeout=None, method=POST, '
+        + 'auth=<class \'requests.auth.HTTPBasicAuth\'>)')
 
 
 @patch('requests.sessions.Session.send')
@@ -361,7 +363,7 @@ def test_operation_name(mock_requests_send):
 def test_json_error(mock_requests_send):
     '[Requests] - Test if broken server responses (invalid JSON) is handled'
 
-    configure_mock_requests_send(mock_requests_send, 
+    configure_mock_requests_send(mock_requests_send,
                                  graphql_response_json_error)
 
     endpoint = RequestsEndpoint(test_url)

@@ -92,7 +92,7 @@ class RequestsEndpoint(BaseEndpoint):
         return ('%s(url=%s, base_headers=%r, timeout=%r, '
                 'method=%s, auth=%s)') % (
             self.__class__.__name__, self.url, self.base_headers, self.timeout,
-            self.method, 
+            self.method,
             self.auth.__class__ if self.auth is not None else None)
 
     def __call__(self, query, variables=None,  # noqa: C901
