@@ -15,6 +15,16 @@ github_schema -= sgqlc.types.relay.PageInfo
 ########################################################################
 # Scalars and Enumerations
 ########################################################################
+class ActionExecutionCapabilitySetting(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('DISABLED', 'ALL_ACTIONS', 'LOCAL_ACTIONS_ONLY', 'NO_POLICY')
+
+
+class AuditLogOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('CREATED_AT',)
+
+
 Boolean = sgqlc.types.Boolean
 
 class CollaboratorAffiliation(sgqlc.types.Enum):
@@ -29,7 +39,17 @@ class CommentAuthorAssociation(sgqlc.types.Enum):
 
 class CommentCannotUpdateReason(sgqlc.types.Enum):
     __schema__ = github_schema
-    __choices__ = ('INSUFFICIENT_ACCESS', 'LOCKED', 'LOGIN_REQUIRED', 'MAINTENANCE', 'VERIFIED_EMAIL_REQUIRED', 'DENIED')
+    __choices__ = ('ARCHIVED', 'INSUFFICIENT_ACCESS', 'LOCKED', 'LOGIN_REQUIRED', 'MAINTENANCE', 'VERIFIED_EMAIL_REQUIRED', 'DENIED')
+
+
+class CommitContributionOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('OCCURRED_AT', 'COMMIT_COUNT')
+
+
+class ContributionOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('OCCURRED_AT',)
 
 
 Date = sgqlc.types.datetime.Date
@@ -48,7 +68,7 @@ class DeploymentOrderField(sgqlc.types.Enum):
 
 class DeploymentState(sgqlc.types.Enum):
     __schema__ = github_schema
-    __choices__ = ('ABANDONED', 'ACTIVE', 'DESTROYED', 'ERROR', 'FAILURE', 'INACTIVE', 'PENDING')
+    __choices__ = ('ABANDONED', 'ACTIVE', 'DESTROYED', 'ERROR', 'FAILURE', 'INACTIVE', 'PENDING', 'QUEUED', 'IN_PROGRESS')
 
 
 class DeploymentStatusState(sgqlc.types.Enum):
@@ -56,7 +76,97 @@ class DeploymentStatusState(sgqlc.types.Enum):
     __choices__ = ('PENDING', 'SUCCESS', 'FAILURE', 'INACTIVE', 'ERROR', 'QUEUED', 'IN_PROGRESS')
 
 
+class EnterpriseAdministratorInvitationOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('CREATED_AT',)
+
+
+class EnterpriseAdministratorRole(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('OWNER', 'BILLING_MANAGER')
+
+
+class EnterpriseDefaultRepositoryPermissionSettingValue(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('NO_POLICY', 'ADMIN', 'WRITE', 'READ', 'NONE')
+
+
+class EnterpriseEnabledDisabledSettingValue(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ENABLED', 'DISABLED', 'NO_POLICY')
+
+
+class EnterpriseEnabledSettingValue(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ENABLED', 'NO_POLICY')
+
+
+class EnterpriseMemberOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('LOGIN', 'CREATED_AT')
+
+
+class EnterpriseMembersCanCreateRepositoriesSettingValue(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('NO_POLICY', 'ALL', 'PUBLIC', 'PRIVATE', 'DISABLED')
+
+
+class EnterpriseMembersCanMakePurchasesSettingValue(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ENABLED', 'DISABLED')
+
+
+class EnterpriseMembershipType(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ALL', 'ADMIN', 'BILLING_MANAGER', 'ORG_MEMBERSHIP')
+
+
+class EnterpriseOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('NAME',)
+
+
+class EnterpriseServerInstallationOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('HOST_NAME', 'CUSTOMER_NAME', 'CREATED_AT')
+
+
+class EnterpriseServerUserAccountEmailOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('EMAIL',)
+
+
+class EnterpriseServerUserAccountOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('LOGIN', 'REMOTE_CREATED_AT')
+
+
+class EnterpriseServerUserAccountsUploadOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('CREATED_AT',)
+
+
+class EnterpriseServerUserAccountsUploadSyncState(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('PENDING', 'SUCCESS', 'FAILURE')
+
+
+class EnterpriseUserAccountMembershipRole(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('MEMBER', 'OWNER')
+
+
+class EnterpriseUserDeployment(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('CLOUD', 'SERVER')
+
+
 Float = sgqlc.types.Float
+
+class FundingPlatform(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('GITHUB', 'PATREON', 'OPEN_COLLECTIVE', 'KO_FI', 'TIDELIFT', 'COMMUNITY_BRIDGE', 'LIBERAPAY', 'ISSUEHUNT', 'OTECHIE', 'CUSTOM')
+
 
 class GistOrderField(sgqlc.types.Enum):
     __schema__ = github_schema
@@ -91,6 +201,11 @@ class HTML(sgqlc.types.Scalar):
 
 ID = sgqlc.types.ID
 
+class IdentityProviderConfigurationState(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ENFORCED', 'CONFIGURED', 'UNCONFIGURED')
+
+
 Int = sgqlc.types.Int
 
 class IssueOrderField(sgqlc.types.Enum):
@@ -110,7 +225,7 @@ class IssueState(sgqlc.types.Enum):
 
 class IssueTimelineItemsItemType(sgqlc.types.Enum):
     __schema__ = github_schema
-    __choices__ = ('ISSUE_COMMENT', 'CROSS_REFERENCED_EVENT', 'ADDED_TO_PROJECT_EVENT', 'ASSIGNED_EVENT', 'CLOSED_EVENT', 'COMMENT_DELETED_EVENT', 'CONVERTED_NOTE_TO_ISSUE_EVENT', 'DEMILESTONED_EVENT', 'LABELED_EVENT', 'LOCKED_EVENT', 'MENTIONED_EVENT', 'MILESTONED_EVENT', 'MOVED_COLUMNS_IN_PROJECT_EVENT', 'PINNED_EVENT', 'REFERENCED_EVENT', 'REMOVED_FROM_PROJECT_EVENT', 'RENAMED_TITLE_EVENT', 'REOPENED_EVENT', 'SUBSCRIBED_EVENT', 'TRANSFERRED_EVENT', 'UNASSIGNED_EVENT', 'UNLABELED_EVENT', 'UNLOCKED_EVENT', 'UNPINNED_EVENT', 'UNSUBSCRIBED_EVENT')
+    __choices__ = ('ISSUE_COMMENT', 'CROSS_REFERENCED_EVENT', 'ADDED_TO_PROJECT_EVENT', 'ASSIGNED_EVENT', 'CLOSED_EVENT', 'COMMENT_DELETED_EVENT', 'CONVERTED_NOTE_TO_ISSUE_EVENT', 'DEMILESTONED_EVENT', 'LABELED_EVENT', 'LOCKED_EVENT', 'MARKED_AS_DUPLICATE_EVENT', 'MENTIONED_EVENT', 'MILESTONED_EVENT', 'MOVED_COLUMNS_IN_PROJECT_EVENT', 'PINNED_EVENT', 'REFERENCED_EVENT', 'REMOVED_FROM_PROJECT_EVENT', 'RENAMED_TITLE_EVENT', 'REOPENED_EVENT', 'SUBSCRIBED_EVENT', 'TRANSFERRED_EVENT', 'UNASSIGNED_EVENT', 'UNLABELED_EVENT', 'UNLOCKED_EVENT', 'USER_BLOCKED_EVENT', 'UNPINNED_EVENT', 'UNSUBSCRIBED_EVENT')
 
 
 class LanguageOrderField(sgqlc.types.Enum):
@@ -138,9 +253,74 @@ class MilestoneState(sgqlc.types.Enum):
     __choices__ = ('OPEN', 'CLOSED')
 
 
+class OauthApplicationCreateAuditEntryState(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ACTIVE', 'SUSPENDED', 'PENDING_DELETION')
+
+
+class OauthApplicationRevokeTokensAuditEntryState(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ACTIVE', 'SUSPENDED', 'PENDING_DELETION')
+
+
+class OperationType(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ACCESS', 'AUTHENTICATION', 'CREATE', 'MODIFY', 'REMOVE', 'RESTORE', 'TRANSFER')
+
+
 class OrderDirection(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('ASC', 'DESC')
+
+
+class OrgAddMemberAuditEntryPermission(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('READ', 'ADMIN')
+
+
+class OrgCreateAuditEntryBillingPlan(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('FREE', 'BUSINESS', 'BUSINESS_PLUS', 'UNLIMITED', 'TIERED_PER_SEAT')
+
+
+class OrgRemoveBillingManagerAuditEntryReason(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE', 'SAML_EXTERNAL_IDENTITY_MISSING', 'SAML_SSO_ENFORCEMENT_REQUIRES_EXTERNAL_IDENTITY')
+
+
+class OrgRemoveMemberAuditEntryMembershipType(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('DIRECT_MEMBER', 'ADMIN', 'BILLING_MANAGER', 'UNAFFILIATED', 'OUTSIDE_COLLABORATOR')
+
+
+class OrgRemoveMemberAuditEntryReason(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE', 'SAML_EXTERNAL_IDENTITY_MISSING', 'SAML_SSO_ENFORCEMENT_REQUIRES_EXTERNAL_IDENTITY')
+
+
+class OrgRemoveOutsideCollaboratorAuditEntryMembershipType(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('OUTSIDE_COLLABORATOR', 'UNAFFILIATED', 'BILLING_MANAGER')
+
+
+class OrgRemoveOutsideCollaboratorAuditEntryReason(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE', 'SAML_EXTERNAL_IDENTITY_MISSING')
+
+
+class OrgUpdateDefaultRepositoryPermissionAuditEntryPermission(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('READ', 'WRITE', 'ADMIN', 'NONE')
+
+
+class OrgUpdateMemberAuditEntryPermission(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('READ', 'ADMIN')
+
+
+class OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ALL', 'PUBLIC')
 
 
 class OrganizationInvitationRole(sgqlc.types.Enum):
@@ -156,6 +336,25 @@ class OrganizationInvitationType(sgqlc.types.Enum):
 class OrganizationMemberRole(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('MEMBER', 'ADMIN')
+
+
+class OrganizationMembersCanCreateRepositoriesSettingValue(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ALL', 'PRIVATE', 'DISABLED')
+
+
+class OrganizationOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('CREATED_AT', 'LOGIN')
+
+
+class PinnableItemType(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('REPOSITORY', 'GIST', 'ISSUE', 'PROJECT', 'PULL_REQUEST', 'USER', 'ORGANIZATION', 'TEAM')
+
+
+class PreciseDateTime(sgqlc.types.Scalar):
+    __schema__ = github_schema
 
 
 class ProjectCardArchivedState(sgqlc.types.Enum):
@@ -181,6 +380,16 @@ class ProjectOrderField(sgqlc.types.Enum):
 class ProjectState(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('OPEN', 'CLOSED')
+
+
+class ProjectTemplate(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('BASIC_KANBAN', 'AUTOMATED_KANBAN_V2', 'AUTOMATED_REVIEWS_KANBAN', 'BUG_TRIAGE')
+
+
+class PullRequestMergeMethod(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('MERGE', 'SQUASH', 'REBASE')
 
 
 class PullRequestOrderField(sgqlc.types.Enum):
@@ -215,7 +424,12 @@ class PullRequestState(sgqlc.types.Enum):
 
 class PullRequestTimelineItemsItemType(sgqlc.types.Enum):
     __schema__ = github_schema
-    __choices__ = ('PULL_REQUEST_COMMIT', 'PULL_REQUEST_COMMIT_COMMENT_THREAD', 'PULL_REQUEST_REVIEW', 'PULL_REQUEST_REVIEW_THREAD', 'PULL_REQUEST_REVISION_MARKER', 'BASE_REF_CHANGED_EVENT', 'BASE_REF_FORCE_PUSHED_EVENT', 'DEPLOYED_EVENT', 'DEPLOYMENT_ENVIRONMENT_CHANGED_EVENT', 'HEAD_REF_DELETED_EVENT', 'HEAD_REF_FORCE_PUSHED_EVENT', 'HEAD_REF_RESTORED_EVENT', 'MERGED_EVENT', 'REVIEW_DISMISSED_EVENT', 'REVIEW_REQUESTED_EVENT', 'REVIEW_REQUEST_REMOVED_EVENT', 'ISSUE_COMMENT', 'CROSS_REFERENCED_EVENT', 'ADDED_TO_PROJECT_EVENT', 'ASSIGNED_EVENT', 'CLOSED_EVENT', 'COMMENT_DELETED_EVENT', 'CONVERTED_NOTE_TO_ISSUE_EVENT', 'DEMILESTONED_EVENT', 'LABELED_EVENT', 'LOCKED_EVENT', 'MENTIONED_EVENT', 'MILESTONED_EVENT', 'MOVED_COLUMNS_IN_PROJECT_EVENT', 'PINNED_EVENT', 'REFERENCED_EVENT', 'REMOVED_FROM_PROJECT_EVENT', 'RENAMED_TITLE_EVENT', 'REOPENED_EVENT', 'SUBSCRIBED_EVENT', 'TRANSFERRED_EVENT', 'UNASSIGNED_EVENT', 'UNLABELED_EVENT', 'UNLOCKED_EVENT', 'UNPINNED_EVENT', 'UNSUBSCRIBED_EVENT')
+    __choices__ = ('PULL_REQUEST_COMMIT', 'PULL_REQUEST_COMMIT_COMMENT_THREAD', 'PULL_REQUEST_REVIEW', 'PULL_REQUEST_REVIEW_THREAD', 'PULL_REQUEST_REVISION_MARKER', 'BASE_REF_CHANGED_EVENT', 'BASE_REF_FORCE_PUSHED_EVENT', 'DEPLOYED_EVENT', 'DEPLOYMENT_ENVIRONMENT_CHANGED_EVENT', 'HEAD_REF_DELETED_EVENT', 'HEAD_REF_FORCE_PUSHED_EVENT', 'HEAD_REF_RESTORED_EVENT', 'MERGED_EVENT', 'REVIEW_DISMISSED_EVENT', 'REVIEW_REQUESTED_EVENT', 'REVIEW_REQUEST_REMOVED_EVENT', 'READY_FOR_REVIEW_EVENT', 'ISSUE_COMMENT', 'CROSS_REFERENCED_EVENT', 'ADDED_TO_PROJECT_EVENT', 'ASSIGNED_EVENT', 'CLOSED_EVENT', 'COMMENT_DELETED_EVENT', 'CONVERTED_NOTE_TO_ISSUE_EVENT', 'DEMILESTONED_EVENT', 'LABELED_EVENT', 'LOCKED_EVENT', 'MARKED_AS_DUPLICATE_EVENT', 'MENTIONED_EVENT', 'MILESTONED_EVENT', 'MOVED_COLUMNS_IN_PROJECT_EVENT', 'PINNED_EVENT', 'REFERENCED_EVENT', 'REMOVED_FROM_PROJECT_EVENT', 'RENAMED_TITLE_EVENT', 'REOPENED_EVENT', 'SUBSCRIBED_EVENT', 'TRANSFERRED_EVENT', 'UNASSIGNED_EVENT', 'UNLABELED_EVENT', 'UNLOCKED_EVENT', 'USER_BLOCKED_EVENT', 'UNPINNED_EVENT', 'UNSUBSCRIBED_EVENT')
+
+
+class PullRequestUpdateState(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('OPEN', 'CLOSED')
 
 
 class ReactionContent(sgqlc.types.Enum):
@@ -233,9 +447,59 @@ class RefOrderField(sgqlc.types.Enum):
     __choices__ = ('TAG_COMMIT_DATE', 'ALPHABETICAL')
 
 
+class RegistryPackageDependencyType(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('DEFAULT', 'DEV', 'TEST', 'PEER', 'OPTIONAL', 'BUNDLED')
+
+
+class RegistryPackageFileState(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('NEW', 'UPLOADED')
+
+
+class RegistryPackageType(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('NPM', 'RUBYGEMS', 'MAVEN', 'DOCKER', 'DEBIAN', 'NUGET', 'PYTHON')
+
+
 class ReleaseOrderField(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'NAME')
+
+
+class RepoAccessAuditEntryVisibility(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('INTERNAL', 'PRIVATE', 'PUBLIC')
+
+
+class RepoAddMemberAuditEntryVisibility(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('INTERNAL', 'PRIVATE', 'PUBLIC')
+
+
+class RepoArchivedAuditEntryVisibility(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('INTERNAL', 'PRIVATE', 'PUBLIC')
+
+
+class RepoChangeMergeSettingAuditEntryMergeType(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('MERGE', 'REBASE', 'SQUASH')
+
+
+class RepoCreateAuditEntryVisibility(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('INTERNAL', 'PRIVATE', 'PUBLIC')
+
+
+class RepoDestroyAuditEntryVisibility(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('INTERNAL', 'PRIVATE', 'PUBLIC')
+
+
+class RepoRemoveMemberAuditEntryVisibility(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('INTERNAL', 'PRIVATE', 'PUBLIC')
 
 
 class ReportedContentClassifiers(sgqlc.types.Enum):
@@ -258,6 +522,11 @@ class RepositoryContributionType(sgqlc.types.Enum):
     __choices__ = ('COMMIT', 'ISSUE', 'PULL_REQUEST', 'REPOSITORY', 'PULL_REQUEST_REVIEW')
 
 
+class RepositoryInvitationOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('CREATED_AT', 'INVITEE_LOGIN')
+
+
 class RepositoryLockReason(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('MOVING', 'BILLING', 'RENAME', 'MIGRATING')
@@ -270,12 +539,32 @@ class RepositoryOrderField(sgqlc.types.Enum):
 
 class RepositoryPermission(sgqlc.types.Enum):
     __schema__ = github_schema
-    __choices__ = ('ADMIN', 'WRITE', 'READ')
+    __choices__ = ('ADMIN', 'MAINTAIN', 'WRITE', 'TRIAGE', 'READ')
 
 
 class RepositoryPrivacy(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('PUBLIC', 'PRIVATE')
+
+
+class RepositoryVisibility(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('PRIVATE', 'PUBLIC', 'INTERNAL')
+
+
+class SamlDigestAlgorithm(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('SHA1', 'SHA256', 'SHA384', 'SHA512')
+
+
+class SamlSignatureAlgorithm(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('RSA_SHA1', 'RSA_SHA256', 'RSA_SHA384', 'RSA_SHA512')
+
+
+class SavedReplyOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('UPDATED_AT',)
 
 
 class SearchType(sgqlc.types.Enum):
@@ -285,7 +574,7 @@ class SearchType(sgqlc.types.Enum):
 
 class SecurityAdvisoryEcosystem(sgqlc.types.Enum):
     __schema__ = github_schema
-    __choices__ = ('RUBYGEMS', 'NPM', 'PIP', 'MAVEN', 'NUGET')
+    __choices__ = ('RUBYGEMS', 'NPM', 'PIP', 'MAVEN', 'NUGET', 'COMPOSER')
 
 
 class SecurityAdvisoryIdentifierType(sgqlc.types.Enum):
@@ -308,6 +597,21 @@ class SecurityVulnerabilityOrderField(sgqlc.types.Enum):
     __choices__ = ('UPDATED_AT',)
 
 
+class SponsorsTierOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('CREATED_AT', 'MONTHLY_PRICE_IN_CENTS')
+
+
+class SponsorshipOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('CREATED_AT',)
+
+
+class SponsorshipPrivacy(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('PUBLIC', 'PRIVATE')
+
+
 class StarOrderField(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('STARRED_AT',)
@@ -323,6 +627,16 @@ String = sgqlc.types.String
 class SubscriptionState(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('UNSUBSCRIBED', 'SUBSCRIBED', 'IGNORED')
+
+
+class TeamDiscussionCommentOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('NUMBER',)
+
+
+class TeamDiscussionOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('CREATED_AT',)
 
 
 class TeamMemberOrderField(sgqlc.types.Enum):
@@ -369,6 +683,11 @@ class URI(sgqlc.types.Scalar):
     __schema__ = github_schema
 
 
+class UserBlockDuration(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('ONE_DAY', 'THREE_DAYS', 'ONE_WEEK', 'ONE_MONTH', 'PERMANENT')
+
+
 class UserStatusOrderField(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('UPDATED_AT',)
@@ -382,7 +701,7 @@ class X509Certificate(sgqlc.types.Scalar):
 ########################################################################
 # Input Objects
 ########################################################################
-class AcceptBusinessMemberInvitationInput(sgqlc.types.Input):
+class AcceptEnterpriseAdministratorInvitationInput(sgqlc.types.Input):
     __schema__ = github_schema
     invitation_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='invitationId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
@@ -395,10 +714,24 @@ class AcceptTopicSuggestionInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class AddAssigneesToAssignableInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    assignable_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='assignableId')
+    assignee_ids = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(ID))), graphql_name='assigneeIds')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class AddCommentInput(sgqlc.types.Input):
     __schema__ = github_schema
     subject_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='subjectId')
     body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class AddLabelsToLabelableInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    labelable_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='labelableId')
+    label_ids = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(ID))), graphql_name='labelIds')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -451,13 +784,19 @@ class AddStarInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class CancelBusinessAdminInvitationInput(sgqlc.types.Input):
+class ArchiveRepositoryInput(sgqlc.types.Input):
     __schema__ = github_schema
-    invitation_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='invitationId')
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class CancelBusinessBillingManagerInvitationInput(sgqlc.types.Input):
+class AuditLogOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(AuditLogOrderField, graphql_name='field')
+    direction = sgqlc.types.Field(OrderDirection, graphql_name='direction')
+
+
+class CancelEnterpriseAdminInvitationInput(sgqlc.types.Input):
     __schema__ = github_schema
     invitation_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='invitationId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
@@ -469,6 +808,46 @@ class ChangeUserStatusInput(sgqlc.types.Input):
     message = sgqlc.types.Field(String, graphql_name='message')
     organization_id = sgqlc.types.Field(ID, graphql_name='organizationId')
     limited_availability = sgqlc.types.Field(Boolean, graphql_name='limitedAvailability')
+    expires_at = sgqlc.types.Field(DateTime, graphql_name='expiresAt')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class ClearLabelsFromLabelableInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    labelable_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='labelableId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class CloneProjectInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    target_owner_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='targetOwnerId')
+    source_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='sourceId')
+    include_workflows = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='includeWorkflows')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    body = sgqlc.types.Field(String, graphql_name='body')
+    public = sgqlc.types.Field(Boolean, graphql_name='public')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class CloneTemplateRepositoryInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    owner_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='ownerId')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    visibility = sgqlc.types.Field(sgqlc.types.non_null(RepositoryVisibility), graphql_name='visibility')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class CloseIssueInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    issue_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='issueId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class ClosePullRequestInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    pull_request_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='pullRequestId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -476,6 +855,27 @@ class CommitAuthor(sgqlc.types.Input):
     __schema__ = github_schema
     id = sgqlc.types.Field(ID, graphql_name='id')
     emails = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='emails')
+
+
+class CommitContributionOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(CommitContributionOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class ContributionOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(ContributionOrderField, graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class ConvertProjectCardNoteToIssueInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    project_card_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='projectCardId')
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    title = sgqlc.types.Field(String, graphql_name='title')
+    body = sgqlc.types.Field(String, graphql_name='body')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
 class CreateBranchProtectionRuleInput(sgqlc.types.Input):
@@ -506,11 +906,84 @@ class CreateContentAttachmentInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class CreateEnterpriseOrganizationInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    profile_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='profileName')
+    billing_email = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='billingEmail')
+    admin_logins = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(String))), graphql_name='adminLogins')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class CreateIssueInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    title = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='title')
+    body = sgqlc.types.Field(String, graphql_name='body')
+    assignee_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='assigneeIds')
+    milestone_id = sgqlc.types.Field(ID, graphql_name='milestoneId')
+    label_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='labelIds')
+    project_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='projectIds')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class CreateProjectInput(sgqlc.types.Input):
     __schema__ = github_schema
     owner_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='ownerId')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     body = sgqlc.types.Field(String, graphql_name='body')
+    template = sgqlc.types.Field(ProjectTemplate, graphql_name='template')
+    repository_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='repositoryIds')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class CreatePullRequestInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    base_ref_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='baseRefName')
+    head_ref_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='headRefName')
+    title = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='title')
+    body = sgqlc.types.Field(String, graphql_name='body')
+    maintainer_can_modify = sgqlc.types.Field(Boolean, graphql_name='maintainerCanModify')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class CreateRefInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    oid = sgqlc.types.Field(sgqlc.types.non_null(GitObjectID), graphql_name='oid')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class CreateRepositoryInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    owner_id = sgqlc.types.Field(ID, graphql_name='ownerId')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    visibility = sgqlc.types.Field(sgqlc.types.non_null(RepositoryVisibility), graphql_name='visibility')
+    template = sgqlc.types.Field(Boolean, graphql_name='template')
+    homepage_url = sgqlc.types.Field(URI, graphql_name='homepageUrl')
+    has_wiki_enabled = sgqlc.types.Field(Boolean, graphql_name='hasWikiEnabled')
+    has_issues_enabled = sgqlc.types.Field(Boolean, graphql_name='hasIssuesEnabled')
+    team_id = sgqlc.types.Field(ID, graphql_name='teamId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class CreateTeamDiscussionCommentInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    discussion_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='discussionId')
+    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class CreateTeamDiscussionInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    team_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='teamId')
+    title = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='title')
+    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
+    private = sgqlc.types.Field(Boolean, graphql_name='private')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -528,9 +1001,21 @@ class DeleteBranchProtectionRuleInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class DeleteIssueCommentInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class DeleteIssueInput(sgqlc.types.Input):
     __schema__ = github_schema
     issue_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='issueId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class DeletePackageVersionInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    package_version_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='packageVersionId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -552,9 +1037,33 @@ class DeleteProjectInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class DeletePullRequestReviewCommentInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class DeletePullRequestReviewInput(sgqlc.types.Input):
     __schema__ = github_schema
     pull_request_review_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='pullRequestReviewId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class DeleteRefInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    ref_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='refId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class DeleteTeamDiscussionCommentInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class DeleteTeamDiscussionInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -578,26 +1087,89 @@ class DraftPullRequestReviewComment(sgqlc.types.Input):
     body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
 
 
+class EnterpriseAdministratorInvitationOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseAdministratorInvitationOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class EnterpriseMemberOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseMemberOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class EnterpriseOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class EnterpriseServerInstallationOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerInstallationOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class EnterpriseServerUserAccountEmailOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerUserAccountEmailOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class EnterpriseServerUserAccountOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerUserAccountOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class EnterpriseServerUserAccountsUploadOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerUserAccountsUploadOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class FollowUserInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    user_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='userId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class GistOrder(sgqlc.types.Input):
     __schema__ = github_schema
     field = sgqlc.types.Field(sgqlc.types.non_null(GistOrderField), graphql_name='field')
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
-class InviteBusinessAdminInput(sgqlc.types.Input):
+class ImportProjectInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
-    invitee = sgqlc.types.Field(String, graphql_name='invitee')
-    email = sgqlc.types.Field(String, graphql_name='email')
+    owner_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='ownerName')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    body = sgqlc.types.Field(String, graphql_name='body')
+    public = sgqlc.types.Field(Boolean, graphql_name='public')
+    column_imports = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('ProjectColumnImport'))), graphql_name='columnImports')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class InviteBusinessBillingManagerInput(sgqlc.types.Input):
+class InviteEnterpriseAdminInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
     invitee = sgqlc.types.Field(String, graphql_name='invitee')
     email = sgqlc.types.Field(String, graphql_name='email')
+    role = sgqlc.types.Field(EnterpriseAdministratorRole, graphql_name='role')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class IssueFilters(sgqlc.types.Input):
+    __schema__ = github_schema
+    assignee = sgqlc.types.Field(String, graphql_name='assignee')
+    created_by = sgqlc.types.Field(String, graphql_name='createdBy')
+    labels = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='labels')
+    mentioned = sgqlc.types.Field(String, graphql_name='mentioned')
+    milestone = sgqlc.types.Field(String, graphql_name='milestone')
+    since = sgqlc.types.Field(DateTime, graphql_name='since')
+    states = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(IssueState)), graphql_name='states')
+    viewer_subscribed = sgqlc.types.Field(Boolean, graphql_name='viewerSubscribed')
 
 
 class IssueOrder(sgqlc.types.Input):
@@ -612,10 +1184,36 @@ class LanguageOrder(sgqlc.types.Input):
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
+class LinkRepositoryToProjectInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    project_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='projectId')
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class LockLockableInput(sgqlc.types.Input):
     __schema__ = github_schema
     lockable_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='lockableId')
     lock_reason = sgqlc.types.Field(LockReason, graphql_name='lockReason')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class MergeBranchInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    base = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='base')
+    head = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='head')
+    commit_message = sgqlc.types.Field(String, graphql_name='commitMessage')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class MergePullRequestInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    pull_request_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='pullRequestId')
+    commit_headline = sgqlc.types.Field(String, graphql_name='commitHeadline')
+    commit_body = sgqlc.types.Field(String, graphql_name='commitBody')
+    expected_head_oid = sgqlc.types.Field(GitObjectID, graphql_name='expectedHeadOid')
+    merge_method = sgqlc.types.Field(PullRequestMergeMethod, graphql_name='mergeMethod')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -647,10 +1245,29 @@ class MoveProjectColumnInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class OrganizationOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(OrganizationOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
 class PinIssueInput(sgqlc.types.Input):
     __schema__ = github_schema
     issue_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='issueId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class ProjectCardImport(sgqlc.types.Input):
+    __schema__ = github_schema
+    repository = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='repository')
+    number = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='number')
+
+
+class ProjectColumnImport(sgqlc.types.Input):
+    __schema__ = github_schema
+    column_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='columnName')
+    position = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='position')
+    issues = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ProjectCardImport)), graphql_name='issues')
 
 
 class ProjectOrder(sgqlc.types.Input):
@@ -677,10 +1294,17 @@ class RefOrder(sgqlc.types.Input):
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
-class RegenerateBusinessIdentityProviderRecoveryCodesInput(sgqlc.types.Input):
+class RegenerateEnterpriseIdentityProviderRecoveryCodesInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class RegistryPackageMetadatum(sgqlc.types.Input):
+    __schema__ = github_schema
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    value = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='value')
+    update = sgqlc.types.Field(Boolean, graphql_name='update')
 
 
 class ReleaseOrder(sgqlc.types.Input):
@@ -689,23 +1313,31 @@ class ReleaseOrder(sgqlc.types.Input):
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
-class RemoveBusinessAdminInput(sgqlc.types.Input):
+class RemoveAssigneesFromAssignableInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    assignable_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='assignableId')
+    assignee_ids = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(ID))), graphql_name='assigneeIds')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class RemoveEnterpriseAdminInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
     login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class RemoveBusinessBillingManagerInput(sgqlc.types.Input):
+class RemoveEnterpriseOrganizationInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
-    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    organization_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='organizationId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class RemoveBusinessIdentityProviderInput(sgqlc.types.Input):
+class RemoveLabelsFromLabelableInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    labelable_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='labelableId')
+    label_ids = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(ID))), graphql_name='labelIds')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -729,6 +1361,24 @@ class RemoveStarInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class ReopenIssueInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    issue_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='issueId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class ReopenPullRequestInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    pull_request_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='pullRequestId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class RepositoryInvitationOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(RepositoryInvitationOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
 class RepositoryOrder(sgqlc.types.Input):
     __schema__ = github_schema
     field = sgqlc.types.Field(sgqlc.types.non_null(RepositoryOrderField), graphql_name='field')
@@ -750,6 +1400,12 @@ class ResolveReviewThreadInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class SavedReplyOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(SavedReplyOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
 class SecurityAdvisoryIdentifierFilter(sgqlc.types.Input):
     __schema__ = github_schema
     type = sgqlc.types.Field(sgqlc.types.non_null(SecurityAdvisoryIdentifierType), graphql_name='type')
@@ -768,13 +1424,16 @@ class SecurityVulnerabilityOrder(sgqlc.types.Input):
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
-class SetBusinessIdentityProviderInput(sgqlc.types.Input):
+class SponsorsTierOrder(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
-    sso_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='ssoUrl')
-    issuer = sgqlc.types.Field(String, graphql_name='issuer')
-    idp_certificate = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='idpCertificate')
-    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    field = sgqlc.types.Field(sgqlc.types.non_null(SponsorsTierOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class SponsorshipOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(SponsorshipOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
 class StarOrder(sgqlc.types.Input):
@@ -789,6 +1448,18 @@ class SubmitPullRequestReviewInput(sgqlc.types.Input):
     event = sgqlc.types.Field(sgqlc.types.non_null(PullRequestReviewEvent), graphql_name='event')
     body = sgqlc.types.Field(String, graphql_name='body')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class TeamDiscussionCommentOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(TeamDiscussionCommentOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class TeamDiscussionOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    field = sgqlc.types.Field(sgqlc.types.non_null(TeamDiscussionOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
 class TeamMemberOrder(sgqlc.types.Input):
@@ -809,9 +1480,42 @@ class TeamRepositoryOrder(sgqlc.types.Input):
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
+class TransferIssueInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    issue_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='issueId')
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UnarchiveRepositoryInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UnfollowUserInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    user_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='userId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UnlinkRepositoryFromProjectInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    project_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='projectId')
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class UnlockLockableInput(sgqlc.types.Input):
     __schema__ = github_schema
     lockable_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='lockableId')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UnmarkIssueAsDuplicateInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    duplicate_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='duplicateId')
+    canonical_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='canonicalId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -853,63 +1557,105 @@ class UpdateBranchProtectionRuleInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessAllowPrivateRepositoryForkingSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseActionExecutionCapabilitySettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    capability = sgqlc.types.Field(sgqlc.types.non_null(ActionExecutionCapabilitySetting), graphql_name='capability')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessDefaultRepositoryPermissionSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseAdministratorRoleInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    role = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseAdministratorRole), graphql_name='role')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessMembersCanChangeRepositoryVisibilitySettingInput(sgqlc.types.Input):
+class UpdateEnterpriseAllowPrivateRepositoryForkingSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessMembersCanCreateRepositoriesSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseDefaultRepositoryPermissionSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseDefaultRepositoryPermissionSettingValue), graphql_name='settingValue')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessMembersCanDeleteIssuesSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseMembersCanChangeRepositoryVisibilitySettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessMembersCanDeleteRepositoriesSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseMembersCanCreateRepositoriesSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(EnterpriseMembersCanCreateRepositoriesSettingValue, graphql_name='settingValue')
+    members_can_create_repositories_policy_enabled = sgqlc.types.Field(Boolean, graphql_name='membersCanCreateRepositoriesPolicyEnabled')
+    members_can_create_public_repositories = sgqlc.types.Field(Boolean, graphql_name='membersCanCreatePublicRepositories')
+    members_can_create_private_repositories = sgqlc.types.Field(Boolean, graphql_name='membersCanCreatePrivateRepositories')
+    members_can_create_internal_repositories = sgqlc.types.Field(Boolean, graphql_name='membersCanCreateInternalRepositories')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessMembersCanInviteCollaboratorsSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseMembersCanDeleteIssuesSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessMembersCanUpdateProtectedBranchesSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseMembersCanDeleteRepositoriesSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessOrganizationProjectsSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseMembersCanInviteCollaboratorsSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessProfileInput(sgqlc.types.Input):
+class UpdateEnterpriseMembersCanMakePurchasesSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseMembersCanMakePurchasesSettingValue), graphql_name='settingValue')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateEnterpriseMembersCanUpdateProtectedBranchesSettingInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateEnterpriseMembersCanViewDependencyInsightsSettingInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateEnterpriseOrganizationProjectsSettingInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateEnterpriseProfileInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
     name = sgqlc.types.Field(String, graphql_name='name')
     description = sgqlc.types.Field(String, graphql_name='description')
     website_url = sgqlc.types.Field(String, graphql_name='websiteUrl')
@@ -917,21 +1663,44 @@ class UpdateBusinessProfileInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessRepositoryProjectsSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseRepositoryProjectsSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessTeamDiscussionsSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseTeamDiscussionsSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='settingValue')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class UpdateBusinessTwoFactorAuthenticationRequiredSettingInput(sgqlc.types.Input):
+class UpdateEnterpriseTwoFactorAuthenticationRequiredSettingInput(sgqlc.types.Input):
     __schema__ = github_schema
-    business_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='businessId')
+    enterprise_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='enterpriseId')
+    setting_value = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledSettingValue), graphql_name='settingValue')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateIssueCommentInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateIssueInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    title = sgqlc.types.Field(String, graphql_name='title')
+    body = sgqlc.types.Field(String, graphql_name='body')
+    assignee_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='assigneeIds')
+    milestone_id = sgqlc.types.Field(ID, graphql_name='milestoneId')
+    label_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='labelIds')
+    state = sgqlc.types.Field(IssueState, graphql_name='state')
+    project_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='projectIds')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -960,6 +1729,21 @@ class UpdateProjectInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class UpdatePullRequestInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    pull_request_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='pullRequestId')
+    base_ref_name = sgqlc.types.Field(String, graphql_name='baseRefName')
+    title = sgqlc.types.Field(String, graphql_name='title')
+    body = sgqlc.types.Field(String, graphql_name='body')
+    state = sgqlc.types.Field(PullRequestUpdateState, graphql_name='state')
+    maintainer_can_modify = sgqlc.types.Field(Boolean, graphql_name='maintainerCanModify')
+    assignee_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='assigneeIds')
+    milestone_id = sgqlc.types.Field(ID, graphql_name='milestoneId')
+    label_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='labelIds')
+    project_ids = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ID)), graphql_name='projectIds')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class UpdatePullRequestReviewCommentInput(sgqlc.types.Input):
     __schema__ = github_schema
     pull_request_review_comment_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='pullRequestReviewCommentId')
@@ -974,10 +1758,49 @@ class UpdatePullRequestReviewInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class UpdateRefInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    ref_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='refId')
+    oid = sgqlc.types.Field(sgqlc.types.non_null(GitObjectID), graphql_name='oid')
+    force = sgqlc.types.Field(Boolean, graphql_name='force')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateRepositoryInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    repository_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='repositoryId')
+    name = sgqlc.types.Field(String, graphql_name='name')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    template = sgqlc.types.Field(Boolean, graphql_name='template')
+    homepage_url = sgqlc.types.Field(URI, graphql_name='homepageUrl')
+    has_wiki_enabled = sgqlc.types.Field(Boolean, graphql_name='hasWikiEnabled')
+    has_issues_enabled = sgqlc.types.Field(Boolean, graphql_name='hasIssuesEnabled')
+    has_projects_enabled = sgqlc.types.Field(Boolean, graphql_name='hasProjectsEnabled')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class UpdateSubscriptionInput(sgqlc.types.Input):
     __schema__ = github_schema
     subscribable_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='subscribableId')
     state = sgqlc.types.Field(sgqlc.types.non_null(SubscriptionState), graphql_name='state')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateTeamDiscussionCommentInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
+    body_version = sgqlc.types.Field(String, graphql_name='bodyVersion')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateTeamDiscussionInput(sgqlc.types.Input):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    title = sgqlc.types.Field(String, graphql_name='title')
+    body = sgqlc.types.Field(String, graphql_name='body')
+    body_version = sgqlc.types.Field(String, graphql_name='bodyVersion')
+    pinned = sgqlc.types.Field(Boolean, graphql_name='pinned')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -998,6 +1821,13 @@ class UserStatusOrder(sgqlc.types.Input):
 ########################################################################
 # Output Objects and Interfaces
 ########################################################################
+class AcceptEnterpriseAdministratorInvitationPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    invitation = sgqlc.types.Field('EnterpriseAdministratorInvitation', graphql_name='invitation')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
 class AcceptTopicSuggestionPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
@@ -1015,12 +1845,33 @@ class Actor(sgqlc.types.Interface):
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
 
 
+class ActorLocation(sgqlc.types.Type):
+    __schema__ = github_schema
+    city = sgqlc.types.Field(String, graphql_name='city')
+    country = sgqlc.types.Field(String, graphql_name='country')
+    country_code = sgqlc.types.Field(String, graphql_name='countryCode')
+    region = sgqlc.types.Field(String, graphql_name='region')
+    region_code = sgqlc.types.Field(String, graphql_name='regionCode')
+
+
+class AddAssigneesToAssignablePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    assignable = sgqlc.types.Field('Assignable', graphql_name='assignable')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
 class AddCommentPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     comment_edge = sgqlc.types.Field('IssueCommentEdge', graphql_name='commentEdge')
     subject = sgqlc.types.Field('Node', graphql_name='subject')
     timeline_edge = sgqlc.types.Field('IssueTimelineItemEdge', graphql_name='timelineEdge')
+
+
+class AddLabelsToLabelablePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    labelable = sgqlc.types.Field('Labelable', graphql_name='labelable')
 
 
 class AddProjectCardPayload(sgqlc.types.Type):
@@ -1070,6 +1921,12 @@ class AppEdge(sgqlc.types.Type):
     node = sgqlc.types.Field('App', graphql_name='node')
 
 
+class ArchiveRepositoryPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+
+
 class Assignable(sgqlc.types.Interface):
     __schema__ = github_schema
     assignees = sgqlc.types.Field(sgqlc.types.non_null('UserConnection'), graphql_name='assignees', args=sgqlc.types.ArgDict((
@@ -1079,6 +1936,23 @@ class Assignable(sgqlc.types.Interface):
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
+
+
+class AuditEntry(sgqlc.types.Interface):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
 
 
 class Blame(sgqlc.types.Type):
@@ -1129,16 +2003,54 @@ class BranchProtectionRuleEdge(sgqlc.types.Type):
     node = sgqlc.types.Field('BranchProtectionRule', graphql_name='node')
 
 
+class CancelEnterpriseAdminInvitationPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    invitation = sgqlc.types.Field('EnterpriseAdministratorInvitation', graphql_name='invitation')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
 class ChangeUserStatusPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     status = sgqlc.types.Field('UserStatus', graphql_name='status')
 
 
+class ClearLabelsFromLabelablePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    labelable = sgqlc.types.Field('Labelable', graphql_name='labelable')
+
+
+class CloneProjectPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    job_status_id = sgqlc.types.Field(String, graphql_name='jobStatusId')
+    project = sgqlc.types.Field('Project', graphql_name='project')
+
+
+class CloneTemplateRepositoryPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+
+
 class Closable(sgqlc.types.Interface):
     __schema__ = github_schema
     closed = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='closed')
     closed_at = sgqlc.types.Field(DateTime, graphql_name='closedAt')
+
+
+class CloseIssuePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    issue = sgqlc.types.Field('Issue', graphql_name='issue')
+
+
+class ClosePullRequestPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
 
 
 class Comment(sgqlc.types.Interface):
@@ -1186,6 +2098,21 @@ class CommitConnection(sgqlc.types.relay.Connection):
     nodes = sgqlc.types.Field(sgqlc.types.list_of('Commit'), graphql_name='nodes')
     page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class CommitContributionsByRepository(sgqlc.types.Type):
+    __schema__ = github_schema
+    contributions = sgqlc.types.Field(sgqlc.types.non_null('CreatedCommitContributionConnection'), graphql_name='contributions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(CommitContributionOrder, graphql_name='orderBy', default={'field': 'OCCURRED_AT', 'direction': 'DESC'})),
+))
+    )
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
 
 
 class CommitEdge(sgqlc.types.Type):
@@ -1260,18 +2187,18 @@ class ContributionCalendarWeek(sgqlc.types.Type):
 
 class ContributionsCollection(sgqlc.types.Type):
     __schema__ = github_schema
+    commit_contributions_by_repository = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(CommitContributionsByRepository))), graphql_name='commitContributionsByRepository', args=sgqlc.types.ArgDict((
+        ('max_repositories', sgqlc.types.Arg(Int, graphql_name='maxRepositories', default=25)),
+))
+    )
     contribution_calendar = sgqlc.types.Field(sgqlc.types.non_null(ContributionCalendar), graphql_name='contributionCalendar')
+    contribution_years = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(Int))), graphql_name='contributionYears')
     does_end_in_current_month = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='doesEndInCurrentMonth')
     earliest_restricted_contribution_date = sgqlc.types.Field(Date, graphql_name='earliestRestrictedContributionDate')
     ended_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='endedAt')
-    first_issue_contribution = sgqlc.types.Field('CreatedIssueOrRestrictedContribution', graphql_name='firstIssueContribution', args=sgqlc.types.ArgDict((
-        ('ignore_time_range', sgqlc.types.Arg(Boolean, graphql_name='ignoreTimeRange', default=False)),
-))
-    )
-    first_pull_request_contribution = sgqlc.types.Field('CreatedPullRequestOrRestrictedContribution', graphql_name='firstPullRequestContribution', args=sgqlc.types.ArgDict((
-        ('ignore_time_range', sgqlc.types.Arg(Boolean, graphql_name='ignoreTimeRange', default=False)),
-))
-    )
+    first_issue_contribution = sgqlc.types.Field('CreatedIssueOrRestrictedContribution', graphql_name='firstIssueContribution')
+    first_pull_request_contribution = sgqlc.types.Field('CreatedPullRequestOrRestrictedContribution', graphql_name='firstPullRequestContribution')
+    first_repository_contribution = sgqlc.types.Field('CreatedRepositoryOrRestrictedContribution', graphql_name='firstRepositoryContribution')
     has_activity_in_the_past = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasActivityInThePast')
     has_any_contributions = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasAnyContributions')
     has_any_restricted_contributions = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasAnyRestrictedContributions')
@@ -1283,17 +2210,58 @@ class ContributionsCollection(sgqlc.types.Type):
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
         ('exclude_first', sgqlc.types.Arg(Boolean, graphql_name='excludeFirst', default=False)),
         ('exclude_popular', sgqlc.types.Arg(Boolean, graphql_name='excludePopular', default=False)),
+        ('order_by', sgqlc.types.Arg(ContributionOrder, graphql_name='orderBy', default={'field': 'OCCURRED_AT', 'direction': 'DESC'})),
 ))
     )
-    joined_git_hub_contribution = sgqlc.types.Field('JoinedGitHubContribution', graphql_name='joinedGitHubContribution', args=sgqlc.types.ArgDict((
-        ('ignore_time_range', sgqlc.types.Arg(Boolean, graphql_name='ignoreTimeRange', default=False)),
+    issue_contributions_by_repository = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('IssueContributionsByRepository'))), graphql_name='issueContributionsByRepository', args=sgqlc.types.ArgDict((
+        ('max_repositories', sgqlc.types.Arg(Int, graphql_name='maxRepositories', default=25)),
+        ('exclude_first', sgqlc.types.Arg(Boolean, graphql_name='excludeFirst', default=False)),
+        ('exclude_popular', sgqlc.types.Arg(Boolean, graphql_name='excludePopular', default=False)),
 ))
     )
+    joined_git_hub_contribution = sgqlc.types.Field('JoinedGitHubContribution', graphql_name='joinedGitHubContribution')
     latest_restricted_contribution_date = sgqlc.types.Field(Date, graphql_name='latestRestrictedContributionDate')
     most_recent_collection_with_activity = sgqlc.types.Field('ContributionsCollection', graphql_name='mostRecentCollectionWithActivity')
     most_recent_collection_without_activity = sgqlc.types.Field('ContributionsCollection', graphql_name='mostRecentCollectionWithoutActivity')
     popular_issue_contribution = sgqlc.types.Field('CreatedIssueContribution', graphql_name='popularIssueContribution')
     popular_pull_request_contribution = sgqlc.types.Field('CreatedPullRequestContribution', graphql_name='popularPullRequestContribution')
+    pull_request_contributions = sgqlc.types.Field(sgqlc.types.non_null('CreatedPullRequestContributionConnection'), graphql_name='pullRequestContributions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('exclude_first', sgqlc.types.Arg(Boolean, graphql_name='excludeFirst', default=False)),
+        ('exclude_popular', sgqlc.types.Arg(Boolean, graphql_name='excludePopular', default=False)),
+        ('order_by', sgqlc.types.Arg(ContributionOrder, graphql_name='orderBy', default={'field': 'OCCURRED_AT', 'direction': 'DESC'})),
+))
+    )
+    pull_request_contributions_by_repository = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('PullRequestContributionsByRepository'))), graphql_name='pullRequestContributionsByRepository', args=sgqlc.types.ArgDict((
+        ('max_repositories', sgqlc.types.Arg(Int, graphql_name='maxRepositories', default=25)),
+        ('exclude_first', sgqlc.types.Arg(Boolean, graphql_name='excludeFirst', default=False)),
+        ('exclude_popular', sgqlc.types.Arg(Boolean, graphql_name='excludePopular', default=False)),
+))
+    )
+    pull_request_review_contributions = sgqlc.types.Field(sgqlc.types.non_null('CreatedPullRequestReviewContributionConnection'), graphql_name='pullRequestReviewContributions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(ContributionOrder, graphql_name='orderBy', default={'field': 'OCCURRED_AT', 'direction': 'DESC'})),
+))
+    )
+    pull_request_review_contributions_by_repository = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('PullRequestReviewContributionsByRepository'))), graphql_name='pullRequestReviewContributionsByRepository', args=sgqlc.types.ArgDict((
+        ('max_repositories', sgqlc.types.Arg(Int, graphql_name='maxRepositories', default=25)),
+))
+    )
+    repository_contributions = sgqlc.types.Field(sgqlc.types.non_null('CreatedRepositoryContributionConnection'), graphql_name='repositoryContributions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('exclude_first', sgqlc.types.Arg(Boolean, graphql_name='excludeFirst', default=False)),
+        ('order_by', sgqlc.types.Arg(ContributionOrder, graphql_name='orderBy', default={'field': 'OCCURRED_AT', 'direction': 'DESC'})),
+))
+    )
     restricted_contributions_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='restrictedContributionsCount')
     started_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='startedAt')
     total_commit_contributions = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCommitContributions')
@@ -1327,16 +2295,79 @@ class ContributionsCollection(sgqlc.types.Type):
     user = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='user')
 
 
+class ConvertProjectCardNoteToIssuePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    project_card = sgqlc.types.Field('ProjectCard', graphql_name='projectCard')
+
+
 class CreateBranchProtectionRulePayload(sgqlc.types.Type):
     __schema__ = github_schema
     branch_protection_rule = sgqlc.types.Field('BranchProtectionRule', graphql_name='branchProtectionRule')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
+class CreateEnterpriseOrganizationPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+
+
+class CreateIssuePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    issue = sgqlc.types.Field('Issue', graphql_name='issue')
+
+
 class CreateProjectPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     project = sgqlc.types.Field('Project', graphql_name='project')
+
+
+class CreatePullRequestPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
+
+
+class CreateRefPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    ref = sgqlc.types.Field('Ref', graphql_name='ref')
+
+
+class CreateRepositoryPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+
+
+class CreateTeamDiscussionCommentPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    team_discussion_comment = sgqlc.types.Field('TeamDiscussionComment', graphql_name='teamDiscussionComment')
+
+
+class CreateTeamDiscussionPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    team_discussion = sgqlc.types.Field('TeamDiscussion', graphql_name='teamDiscussion')
+
+
+class CreatedCommitContributionConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('CreatedCommitContributionEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('CreatedCommitContribution'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class CreatedCommitContributionEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('CreatedCommitContribution', graphql_name='node')
 
 
 class CreatedIssueContributionConnection(sgqlc.types.relay.Connection):
@@ -1367,6 +2398,34 @@ class CreatedPullRequestContributionEdge(sgqlc.types.Type):
     node = sgqlc.types.Field('CreatedPullRequestContribution', graphql_name='node')
 
 
+class CreatedPullRequestReviewContributionConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('CreatedPullRequestReviewContributionEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('CreatedPullRequestReviewContribution'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class CreatedPullRequestReviewContributionEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('CreatedPullRequestReviewContribution', graphql_name='node')
+
+
+class CreatedRepositoryContributionConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('CreatedRepositoryContributionEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('CreatedRepositoryContribution'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class CreatedRepositoryContributionEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('CreatedRepositoryContribution', graphql_name='node')
+
+
 class DeclineTopicSuggestionPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
@@ -1381,6 +2440,17 @@ class Deletable(sgqlc.types.Interface):
 class DeleteBranchProtectionRulePayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class DeleteIssueCommentPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class DeleteIssuePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
 
 
 class DeleteProjectCardPayload(sgqlc.types.Type):
@@ -1403,10 +2473,31 @@ class DeleteProjectPayload(sgqlc.types.Type):
     owner = sgqlc.types.Field('ProjectOwner', graphql_name='owner')
 
 
+class DeletePullRequestReviewCommentPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    pull_request_review = sgqlc.types.Field('PullRequestReview', graphql_name='pullRequestReview')
+
+
 class DeletePullRequestReviewPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     pull_request_review = sgqlc.types.Field('PullRequestReview', graphql_name='pullRequestReview')
+
+
+class DeleteRefPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class DeleteTeamDiscussionCommentPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class DeleteTeamDiscussionPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
 class DeployKeyConnection(sgqlc.types.relay.Connection):
@@ -1457,6 +2548,461 @@ class DismissPullRequestReviewPayload(sgqlc.types.Type):
     pull_request_review = sgqlc.types.Field('PullRequestReview', graphql_name='pullRequestReview')
 
 
+class EnterpriseAdministratorConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseAdministratorEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('User'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseAdministratorEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('User', graphql_name='node')
+    role = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseAdministratorRole), graphql_name='role')
+
+
+class EnterpriseAdministratorInvitationConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseAdministratorInvitationEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseAdministratorInvitation'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseAdministratorInvitationEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('EnterpriseAdministratorInvitation', graphql_name='node')
+
+
+class EnterpriseAuditEntryData(sgqlc.types.Interface):
+    __schema__ = github_schema
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+
+
+class EnterpriseBillingInfo(sgqlc.types.Type):
+    __schema__ = github_schema
+    all_licensable_users_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='allLicensableUsersCount')
+    asset_packs = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='assetPacks')
+    bandwidth_quota = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='bandwidthQuota')
+    bandwidth_usage = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='bandwidthUsage')
+    bandwidth_usage_percentage = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='bandwidthUsagePercentage')
+    storage_quota = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='storageQuota')
+    storage_usage = sgqlc.types.Field(sgqlc.types.non_null(Float), graphql_name='storageUsage')
+    storage_usage_percentage = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='storageUsagePercentage')
+    total_available_licenses = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalAvailableLicenses')
+    total_licenses = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalLicenses')
+
+
+class EnterpriseEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('Enterprise', graphql_name='node')
+
+
+class EnterpriseMemberConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseMemberEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseMember'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseMemberEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    is_unlicensed = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isUnlicensed')
+    node = sgqlc.types.Field('EnterpriseMember', graphql_name='node')
+
+
+class EnterpriseOrganizationMembershipConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseOrganizationMembershipEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('Organization'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseOrganizationMembershipEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('Organization', graphql_name='node')
+    role = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseUserAccountMembershipRole), graphql_name='role')
+
+
+class EnterpriseOutsideCollaboratorConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseOutsideCollaboratorEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('User'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseOutsideCollaboratorEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    is_unlicensed = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isUnlicensed')
+    node = sgqlc.types.Field('User', graphql_name='node')
+    repositories = sgqlc.types.Field(sgqlc.types.non_null('EnterpriseRepositoryInfoConnection'), graphql_name='repositories', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default={'field': 'NAME', 'direction': 'ASC'})),
+))
+    )
+
+
+class EnterpriseOwnerInfo(sgqlc.types.Type):
+    __schema__ = github_schema
+    action_execution_capability_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='actionExecutionCapabilitySettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    admins = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseAdministratorConnection), graphql_name='admins', args=sgqlc.types.ArgDict((
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+        ('role', sgqlc.types.Arg(EnterpriseAdministratorRole, graphql_name='role', default=None)),
+        ('order_by', sgqlc.types.Arg(EnterpriseMemberOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    affiliated_users_with_two_factor_disabled = sgqlc.types.Field(sgqlc.types.non_null('UserConnection'), graphql_name='affiliatedUsersWithTwoFactorDisabled', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    affiliated_users_with_two_factor_disabled_exist = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='affiliatedUsersWithTwoFactorDisabledExist')
+    allow_private_repository_forking_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='allowPrivateRepositoryForkingSetting')
+    allow_private_repository_forking_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='allowPrivateRepositoryForkingSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    default_repository_permission_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseDefaultRepositoryPermissionSettingValue), graphql_name='defaultRepositoryPermissionSetting')
+    default_repository_permission_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='defaultRepositoryPermissionSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(DefaultRepositoryPermissionField), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    enterprise_server_installations = sgqlc.types.Field(sgqlc.types.non_null('EnterpriseServerInstallationConnection'), graphql_name='enterpriseServerInstallations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('connected_only', sgqlc.types.Arg(Boolean, graphql_name='connectedOnly', default=False)),
+        ('order_by', sgqlc.types.Arg(EnterpriseServerInstallationOrder, graphql_name='orderBy', default={'field': 'HOST_NAME', 'direction': 'ASC'})),
+))
+    )
+    is_updating_default_repository_permission = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isUpdatingDefaultRepositoryPermission')
+    is_updating_two_factor_requirement = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isUpdatingTwoFactorRequirement')
+    members_can_change_repository_visibility_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='membersCanChangeRepositoryVisibilitySetting')
+    members_can_change_repository_visibility_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='membersCanChangeRepositoryVisibilitySettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    members_can_create_internal_repositories_setting = sgqlc.types.Field(Boolean, graphql_name='membersCanCreateInternalRepositoriesSetting')
+    members_can_create_private_repositories_setting = sgqlc.types.Field(Boolean, graphql_name='membersCanCreatePrivateRepositoriesSetting')
+    members_can_create_public_repositories_setting = sgqlc.types.Field(Boolean, graphql_name='membersCanCreatePublicRepositoriesSetting')
+    members_can_create_repositories_setting = sgqlc.types.Field(EnterpriseMembersCanCreateRepositoriesSettingValue, graphql_name='membersCanCreateRepositoriesSetting')
+    members_can_create_repositories_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='membersCanCreateRepositoriesSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(OrganizationMembersCanCreateRepositoriesSettingValue), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    members_can_delete_issues_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='membersCanDeleteIssuesSetting')
+    members_can_delete_issues_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='membersCanDeleteIssuesSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    members_can_delete_repositories_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='membersCanDeleteRepositoriesSetting')
+    members_can_delete_repositories_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='membersCanDeleteRepositoriesSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    members_can_invite_collaborators_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='membersCanInviteCollaboratorsSetting')
+    members_can_invite_collaborators_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='membersCanInviteCollaboratorsSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    members_can_make_purchases_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseMembersCanMakePurchasesSettingValue), graphql_name='membersCanMakePurchasesSetting')
+    members_can_update_protected_branches_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='membersCanUpdateProtectedBranchesSetting')
+    members_can_update_protected_branches_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='membersCanUpdateProtectedBranchesSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    members_can_view_dependency_insights_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='membersCanViewDependencyInsightsSetting')
+    members_can_view_dependency_insights_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='membersCanViewDependencyInsightsSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    organization_projects_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='organizationProjectsSetting')
+    organization_projects_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='organizationProjectsSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    outside_collaborators = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseOutsideCollaboratorConnection), graphql_name='outsideCollaborators', args=sgqlc.types.ArgDict((
+        ('login', sgqlc.types.Arg(String, graphql_name='login', default=None)),
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+        ('order_by', sgqlc.types.Arg(EnterpriseMemberOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+        ('visibility', sgqlc.types.Arg(RepositoryVisibility, graphql_name='visibility', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    pending_admin_invitations = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseAdministratorInvitationConnection), graphql_name='pendingAdminInvitations', args=sgqlc.types.ArgDict((
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+        ('order_by', sgqlc.types.Arg(EnterpriseAdministratorInvitationOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'DESC'})),
+        ('role', sgqlc.types.Arg(EnterpriseAdministratorRole, graphql_name='role', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    pending_collaborators = sgqlc.types.Field(sgqlc.types.non_null('EnterprisePendingCollaboratorConnection'), graphql_name='pendingCollaborators', args=sgqlc.types.ArgDict((
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+        ('order_by', sgqlc.types.Arg(RepositoryInvitationOrder, graphql_name='orderBy', default={'field': 'INVITEE_LOGIN', 'direction': 'ASC'})),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    pending_member_invitations = sgqlc.types.Field(sgqlc.types.non_null('EnterprisePendingMemberInvitationConnection'), graphql_name='pendingMemberInvitations', args=sgqlc.types.ArgDict((
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    repository_projects_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='repositoryProjectsSetting')
+    repository_projects_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='repositoryProjectsSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    saml_identity_provider = sgqlc.types.Field('EnterpriseIdentityProvider', graphql_name='samlIdentityProvider')
+    saml_identity_provider_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='samlIdentityProviderSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(IdentityProviderConfigurationState), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    team_discussions_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledDisabledSettingValue), graphql_name='teamDiscussionsSetting')
+    team_discussions_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='teamDiscussionsSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+    two_factor_required_setting = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseEnabledSettingValue), graphql_name='twoFactorRequiredSetting')
+    two_factor_required_setting_organizations = sgqlc.types.Field(sgqlc.types.non_null('OrganizationConnection'), graphql_name='twoFactorRequiredSettingOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('value', sgqlc.types.Arg(sgqlc.types.non_null(Boolean), graphql_name='value', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+))
+    )
+
+
+class EnterprisePendingCollaboratorConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterprisePendingCollaboratorEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('User'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterprisePendingCollaboratorEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    is_unlicensed = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isUnlicensed')
+    node = sgqlc.types.Field('User', graphql_name='node')
+    repositories = sgqlc.types.Field(sgqlc.types.non_null('EnterpriseRepositoryInfoConnection'), graphql_name='repositories', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default={'field': 'NAME', 'direction': 'ASC'})),
+))
+    )
+
+
+class EnterprisePendingMemberInvitationConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterprisePendingMemberInvitationEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('OrganizationInvitation'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+    total_unique_user_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalUniqueUserCount')
+
+
+class EnterprisePendingMemberInvitationEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    is_unlicensed = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isUnlicensed')
+    node = sgqlc.types.Field('OrganizationInvitation', graphql_name='node')
+
+
+class EnterpriseRepositoryInfoConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseRepositoryInfoEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseRepositoryInfo'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseRepositoryInfoEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('EnterpriseRepositoryInfo', graphql_name='node')
+
+
+class EnterpriseServerInstallationConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseServerInstallationEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseServerInstallation'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseServerInstallationEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('EnterpriseServerInstallation', graphql_name='node')
+
+
+class EnterpriseServerUserAccountConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseServerUserAccountEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseServerUserAccount'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseServerUserAccountEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('EnterpriseServerUserAccount', graphql_name='node')
+
+
+class EnterpriseServerUserAccountEmailConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseServerUserAccountEmailEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseServerUserAccountEmail'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseServerUserAccountEmailEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('EnterpriseServerUserAccountEmail', graphql_name='node')
+
+
+class EnterpriseServerUserAccountsUploadConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseServerUserAccountsUploadEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseServerUserAccountsUpload'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseServerUserAccountsUploadEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('EnterpriseServerUserAccountsUpload', graphql_name='node')
+
+
+class EnterpriseUserAccountConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseUserAccountEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('EnterpriseUserAccount'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class EnterpriseUserAccountEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('EnterpriseUserAccount', graphql_name='node')
+
+
 class ExternalIdentityConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     edges = sgqlc.types.Field(sgqlc.types.list_of('ExternalIdentityEdge'), graphql_name='edges')
@@ -1481,6 +3027,12 @@ class ExternalIdentityScimAttributes(sgqlc.types.Type):
     username = sgqlc.types.Field(String, graphql_name='username')
 
 
+class FollowUserPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    user = sgqlc.types.Field('User', graphql_name='user')
+
+
 class FollowerConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     edges = sgqlc.types.Field(sgqlc.types.list_of('UserEdge'), graphql_name='edges')
@@ -1495,6 +3047,12 @@ class FollowingConnection(sgqlc.types.relay.Connection):
     nodes = sgqlc.types.Field(sgqlc.types.list_of('User'), graphql_name='nodes')
     page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class FundingLink(sgqlc.types.Type):
+    __schema__ = github_schema
+    platform = sgqlc.types.Field(sgqlc.types.non_null(FundingPlatform), graphql_name='platform')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
 
 
 class GistCommentConnection(sgqlc.types.relay.Connection):
@@ -1523,6 +3081,22 @@ class GistEdge(sgqlc.types.Type):
     __schema__ = github_schema
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field('Gist', graphql_name='node')
+
+
+class GistFile(sgqlc.types.Type):
+    __schema__ = github_schema
+    encoded_name = sgqlc.types.Field(String, graphql_name='encodedName')
+    encoding = sgqlc.types.Field(String, graphql_name='encoding')
+    extension = sgqlc.types.Field(String, graphql_name='extension')
+    is_image = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isImage')
+    is_truncated = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isTruncated')
+    language = sgqlc.types.Field('Language', graphql_name='language')
+    name = sgqlc.types.Field(String, graphql_name='name')
+    size = sgqlc.types.Field(Int, graphql_name='size')
+    text = sgqlc.types.Field(String, graphql_name='text', args=sgqlc.types.ArgDict((
+        ('truncate', sgqlc.types.Arg(Int, graphql_name='truncate', default=None)),
+))
+    )
 
 
 class GitActor(sgqlc.types.Type):
@@ -1568,6 +3142,23 @@ class GitSignature(sgqlc.types.Interface):
     was_signed_by_git_hub = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='wasSignedByGitHub')
 
 
+class Hovercard(sgqlc.types.Type):
+    __schema__ = github_schema
+    contexts = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('HovercardContext'))), graphql_name='contexts')
+
+
+class HovercardContext(sgqlc.types.Interface):
+    __schema__ = github_schema
+    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
+    octicon = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='octicon')
+
+
+class InviteEnterpriseAdminPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    invitation = sgqlc.types.Field('EnterpriseAdministratorInvitation', graphql_name='invitation')
+
+
 class IssueCommentConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     edges = sgqlc.types.Field(sgqlc.types.list_of('IssueCommentEdge'), graphql_name='edges')
@@ -1590,10 +3181,29 @@ class IssueConnection(sgqlc.types.relay.Connection):
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
 
 
+class IssueContributionsByRepository(sgqlc.types.Type):
+    __schema__ = github_schema
+    contributions = sgqlc.types.Field(sgqlc.types.non_null(CreatedIssueContributionConnection), graphql_name='contributions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(ContributionOrder, graphql_name='orderBy', default={'field': 'OCCURRED_AT', 'direction': 'DESC'})),
+))
+    )
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
+
+
 class IssueEdge(sgqlc.types.Type):
     __schema__ = github_schema
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field('Issue', graphql_name='node')
+
+
+class IssueOrPullRequestEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('IssueOrPullRequest', graphql_name='node')
 
 
 class IssueTimelineConnection(sgqlc.types.relay.Connection):
@@ -1608,6 +3218,17 @@ class IssueTimelineItemEdge(sgqlc.types.Type):
     __schema__ = github_schema
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field('IssueTimelineItem', graphql_name='node')
+
+
+class IssueTimelineItemsConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('IssueTimelineItemsEdge'), graphql_name='edges')
+    filtered_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='filteredCount')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('IssueTimelineItems'), graphql_name='nodes')
+    page_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='pageCount')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
 
 
 class IssueTimelineItemsEdge(sgqlc.types.Type):
@@ -1664,6 +3285,13 @@ class LicenseRule(sgqlc.types.Type):
     label = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='label')
 
 
+class LinkRepositoryToProjectPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    project = sgqlc.types.Field('Project', graphql_name='project')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+
+
 class LockLockablePayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
@@ -1702,6 +3330,18 @@ class MemberStatusable(sgqlc.types.Interface):
     )
 
 
+class MergeBranchPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    merge_commit = sgqlc.types.Field('Commit', graphql_name='mergeCommit')
+
+
+class MergePullRequestPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
+
+
 class MilestoneConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     edges = sgqlc.types.Field(sgqlc.types.list_of('MilestoneEdge'), graphql_name='edges')
@@ -1730,12 +3370,24 @@ class MoveProjectColumnPayload(sgqlc.types.Type):
 
 class Mutation(sgqlc.types.Type):
     __schema__ = github_schema
+    accept_enterprise_administrator_invitation = sgqlc.types.Field(AcceptEnterpriseAdministratorInvitationPayload, graphql_name='acceptEnterpriseAdministratorInvitation', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(AcceptEnterpriseAdministratorInvitationInput), graphql_name='input', default=None)),
+))
+    )
     accept_topic_suggestion = sgqlc.types.Field(AcceptTopicSuggestionPayload, graphql_name='acceptTopicSuggestion', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(AcceptTopicSuggestionInput), graphql_name='input', default=None)),
 ))
     )
+    add_assignees_to_assignable = sgqlc.types.Field(AddAssigneesToAssignablePayload, graphql_name='addAssigneesToAssignable', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(AddAssigneesToAssignableInput), graphql_name='input', default=None)),
+))
+    )
     add_comment = sgqlc.types.Field(AddCommentPayload, graphql_name='addComment', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(AddCommentInput), graphql_name='input', default=None)),
+))
+    )
+    add_labels_to_labelable = sgqlc.types.Field(AddLabelsToLabelablePayload, graphql_name='addLabelsToLabelable', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(AddLabelsToLabelableInput), graphql_name='input', default=None)),
 ))
     )
     add_project_card = sgqlc.types.Field(AddProjectCardPayload, graphql_name='addProjectCard', args=sgqlc.types.ArgDict((
@@ -1762,16 +3414,76 @@ class Mutation(sgqlc.types.Type):
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(AddStarInput), graphql_name='input', default=None)),
 ))
     )
+    archive_repository = sgqlc.types.Field(ArchiveRepositoryPayload, graphql_name='archiveRepository', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(ArchiveRepositoryInput), graphql_name='input', default=None)),
+))
+    )
+    cancel_enterprise_admin_invitation = sgqlc.types.Field(CancelEnterpriseAdminInvitationPayload, graphql_name='cancelEnterpriseAdminInvitation', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CancelEnterpriseAdminInvitationInput), graphql_name='input', default=None)),
+))
+    )
     change_user_status = sgqlc.types.Field(ChangeUserStatusPayload, graphql_name='changeUserStatus', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(ChangeUserStatusInput), graphql_name='input', default=None)),
+))
+    )
+    clear_labels_from_labelable = sgqlc.types.Field(ClearLabelsFromLabelablePayload, graphql_name='clearLabelsFromLabelable', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(ClearLabelsFromLabelableInput), graphql_name='input', default=None)),
+))
+    )
+    clone_project = sgqlc.types.Field(CloneProjectPayload, graphql_name='cloneProject', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CloneProjectInput), graphql_name='input', default=None)),
+))
+    )
+    clone_template_repository = sgqlc.types.Field(CloneTemplateRepositoryPayload, graphql_name='cloneTemplateRepository', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CloneTemplateRepositoryInput), graphql_name='input', default=None)),
+))
+    )
+    close_issue = sgqlc.types.Field(CloseIssuePayload, graphql_name='closeIssue', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CloseIssueInput), graphql_name='input', default=None)),
+))
+    )
+    close_pull_request = sgqlc.types.Field(ClosePullRequestPayload, graphql_name='closePullRequest', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(ClosePullRequestInput), graphql_name='input', default=None)),
+))
+    )
+    convert_project_card_note_to_issue = sgqlc.types.Field(ConvertProjectCardNoteToIssuePayload, graphql_name='convertProjectCardNoteToIssue', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(ConvertProjectCardNoteToIssueInput), graphql_name='input', default=None)),
 ))
     )
     create_branch_protection_rule = sgqlc.types.Field(CreateBranchProtectionRulePayload, graphql_name='createBranchProtectionRule', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(CreateBranchProtectionRuleInput), graphql_name='input', default=None)),
 ))
     )
+    create_enterprise_organization = sgqlc.types.Field(CreateEnterpriseOrganizationPayload, graphql_name='createEnterpriseOrganization', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CreateEnterpriseOrganizationInput), graphql_name='input', default=None)),
+))
+    )
+    create_issue = sgqlc.types.Field(CreateIssuePayload, graphql_name='createIssue', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CreateIssueInput), graphql_name='input', default=None)),
+))
+    )
     create_project = sgqlc.types.Field(CreateProjectPayload, graphql_name='createProject', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(CreateProjectInput), graphql_name='input', default=None)),
+))
+    )
+    create_pull_request = sgqlc.types.Field(CreatePullRequestPayload, graphql_name='createPullRequest', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CreatePullRequestInput), graphql_name='input', default=None)),
+))
+    )
+    create_ref = sgqlc.types.Field(CreateRefPayload, graphql_name='createRef', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CreateRefInput), graphql_name='input', default=None)),
+))
+    )
+    create_repository = sgqlc.types.Field(CreateRepositoryPayload, graphql_name='createRepository', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CreateRepositoryInput), graphql_name='input', default=None)),
+))
+    )
+    create_team_discussion = sgqlc.types.Field(CreateTeamDiscussionPayload, graphql_name='createTeamDiscussion', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CreateTeamDiscussionInput), graphql_name='input', default=None)),
+))
+    )
+    create_team_discussion_comment = sgqlc.types.Field(CreateTeamDiscussionCommentPayload, graphql_name='createTeamDiscussionComment', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(CreateTeamDiscussionCommentInput), graphql_name='input', default=None)),
 ))
     )
     decline_topic_suggestion = sgqlc.types.Field(DeclineTopicSuggestionPayload, graphql_name='declineTopicSuggestion', args=sgqlc.types.ArgDict((
@@ -1780,6 +3492,14 @@ class Mutation(sgqlc.types.Type):
     )
     delete_branch_protection_rule = sgqlc.types.Field(DeleteBranchProtectionRulePayload, graphql_name='deleteBranchProtectionRule', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(DeleteBranchProtectionRuleInput), graphql_name='input', default=None)),
+))
+    )
+    delete_issue = sgqlc.types.Field(DeleteIssuePayload, graphql_name='deleteIssue', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(DeleteIssueInput), graphql_name='input', default=None)),
+))
+    )
+    delete_issue_comment = sgqlc.types.Field(DeleteIssueCommentPayload, graphql_name='deleteIssueComment', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(DeleteIssueCommentInput), graphql_name='input', default=None)),
 ))
     )
     delete_project = sgqlc.types.Field(DeleteProjectPayload, graphql_name='deleteProject', args=sgqlc.types.ArgDict((
@@ -1798,12 +3518,48 @@ class Mutation(sgqlc.types.Type):
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(DeletePullRequestReviewInput), graphql_name='input', default=None)),
 ))
     )
+    delete_pull_request_review_comment = sgqlc.types.Field(DeletePullRequestReviewCommentPayload, graphql_name='deletePullRequestReviewComment', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(DeletePullRequestReviewCommentInput), graphql_name='input', default=None)),
+))
+    )
+    delete_ref = sgqlc.types.Field(DeleteRefPayload, graphql_name='deleteRef', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(DeleteRefInput), graphql_name='input', default=None)),
+))
+    )
+    delete_team_discussion = sgqlc.types.Field(DeleteTeamDiscussionPayload, graphql_name='deleteTeamDiscussion', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(DeleteTeamDiscussionInput), graphql_name='input', default=None)),
+))
+    )
+    delete_team_discussion_comment = sgqlc.types.Field(DeleteTeamDiscussionCommentPayload, graphql_name='deleteTeamDiscussionComment', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(DeleteTeamDiscussionCommentInput), graphql_name='input', default=None)),
+))
+    )
     dismiss_pull_request_review = sgqlc.types.Field(DismissPullRequestReviewPayload, graphql_name='dismissPullRequestReview', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(DismissPullRequestReviewInput), graphql_name='input', default=None)),
 ))
     )
+    follow_user = sgqlc.types.Field(FollowUserPayload, graphql_name='followUser', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(FollowUserInput), graphql_name='input', default=None)),
+))
+    )
+    invite_enterprise_admin = sgqlc.types.Field(InviteEnterpriseAdminPayload, graphql_name='inviteEnterpriseAdmin', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(InviteEnterpriseAdminInput), graphql_name='input', default=None)),
+))
+    )
+    link_repository_to_project = sgqlc.types.Field(LinkRepositoryToProjectPayload, graphql_name='linkRepositoryToProject', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(LinkRepositoryToProjectInput), graphql_name='input', default=None)),
+))
+    )
     lock_lockable = sgqlc.types.Field(LockLockablePayload, graphql_name='lockLockable', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(LockLockableInput), graphql_name='input', default=None)),
+))
+    )
+    merge_branch = sgqlc.types.Field(MergeBranchPayload, graphql_name='mergeBranch', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(MergeBranchInput), graphql_name='input', default=None)),
+))
+    )
+    merge_pull_request = sgqlc.types.Field(MergePullRequestPayload, graphql_name='mergePullRequest', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(MergePullRequestInput), graphql_name='input', default=None)),
 ))
     )
     move_project_card = sgqlc.types.Field(MoveProjectCardPayload, graphql_name='moveProjectCard', args=sgqlc.types.ArgDict((
@@ -1812,6 +3568,26 @@ class Mutation(sgqlc.types.Type):
     )
     move_project_column = sgqlc.types.Field(MoveProjectColumnPayload, graphql_name='moveProjectColumn', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(MoveProjectColumnInput), graphql_name='input', default=None)),
+))
+    )
+    regenerate_enterprise_identity_provider_recovery_codes = sgqlc.types.Field('RegenerateEnterpriseIdentityProviderRecoveryCodesPayload', graphql_name='regenerateEnterpriseIdentityProviderRecoveryCodes', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(RegenerateEnterpriseIdentityProviderRecoveryCodesInput), graphql_name='input', default=None)),
+))
+    )
+    remove_assignees_from_assignable = sgqlc.types.Field('RemoveAssigneesFromAssignablePayload', graphql_name='removeAssigneesFromAssignable', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(RemoveAssigneesFromAssignableInput), graphql_name='input', default=None)),
+))
+    )
+    remove_enterprise_admin = sgqlc.types.Field('RemoveEnterpriseAdminPayload', graphql_name='removeEnterpriseAdmin', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(RemoveEnterpriseAdminInput), graphql_name='input', default=None)),
+))
+    )
+    remove_enterprise_organization = sgqlc.types.Field('RemoveEnterpriseOrganizationPayload', graphql_name='removeEnterpriseOrganization', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(RemoveEnterpriseOrganizationInput), graphql_name='input', default=None)),
+))
+    )
+    remove_labels_from_labelable = sgqlc.types.Field('RemoveLabelsFromLabelablePayload', graphql_name='removeLabelsFromLabelable', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(RemoveLabelsFromLabelableInput), graphql_name='input', default=None)),
 ))
     )
     remove_outside_collaborator = sgqlc.types.Field('RemoveOutsideCollaboratorPayload', graphql_name='removeOutsideCollaborator', args=sgqlc.types.ArgDict((
@@ -1826,20 +3602,132 @@ class Mutation(sgqlc.types.Type):
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(RemoveStarInput), graphql_name='input', default=None)),
 ))
     )
+    reopen_issue = sgqlc.types.Field('ReopenIssuePayload', graphql_name='reopenIssue', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(ReopenIssueInput), graphql_name='input', default=None)),
+))
+    )
+    reopen_pull_request = sgqlc.types.Field('ReopenPullRequestPayload', graphql_name='reopenPullRequest', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(ReopenPullRequestInput), graphql_name='input', default=None)),
+))
+    )
     request_reviews = sgqlc.types.Field('RequestReviewsPayload', graphql_name='requestReviews', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(RequestReviewsInput), graphql_name='input', default=None)),
+))
+    )
+    resolve_review_thread = sgqlc.types.Field('ResolveReviewThreadPayload', graphql_name='resolveReviewThread', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(ResolveReviewThreadInput), graphql_name='input', default=None)),
 ))
     )
     submit_pull_request_review = sgqlc.types.Field('SubmitPullRequestReviewPayload', graphql_name='submitPullRequestReview', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(SubmitPullRequestReviewInput), graphql_name='input', default=None)),
 ))
     )
+    transfer_issue = sgqlc.types.Field('TransferIssuePayload', graphql_name='transferIssue', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(TransferIssueInput), graphql_name='input', default=None)),
+))
+    )
+    unarchive_repository = sgqlc.types.Field('UnarchiveRepositoryPayload', graphql_name='unarchiveRepository', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UnarchiveRepositoryInput), graphql_name='input', default=None)),
+))
+    )
+    unfollow_user = sgqlc.types.Field('UnfollowUserPayload', graphql_name='unfollowUser', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UnfollowUserInput), graphql_name='input', default=None)),
+))
+    )
+    unlink_repository_from_project = sgqlc.types.Field('UnlinkRepositoryFromProjectPayload', graphql_name='unlinkRepositoryFromProject', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UnlinkRepositoryFromProjectInput), graphql_name='input', default=None)),
+))
+    )
     unlock_lockable = sgqlc.types.Field('UnlockLockablePayload', graphql_name='unlockLockable', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(UnlockLockableInput), graphql_name='input', default=None)),
 ))
     )
+    unmark_issue_as_duplicate = sgqlc.types.Field('UnmarkIssueAsDuplicatePayload', graphql_name='unmarkIssueAsDuplicate', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UnmarkIssueAsDuplicateInput), graphql_name='input', default=None)),
+))
+    )
+    unresolve_review_thread = sgqlc.types.Field('UnresolveReviewThreadPayload', graphql_name='unresolveReviewThread', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UnresolveReviewThreadInput), graphql_name='input', default=None)),
+))
+    )
     update_branch_protection_rule = sgqlc.types.Field('UpdateBranchProtectionRulePayload', graphql_name='updateBranchProtectionRule', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateBranchProtectionRuleInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_action_execution_capability_setting = sgqlc.types.Field('UpdateEnterpriseActionExecutionCapabilitySettingPayload', graphql_name='updateEnterpriseActionExecutionCapabilitySetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseActionExecutionCapabilitySettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_administrator_role = sgqlc.types.Field('UpdateEnterpriseAdministratorRolePayload', graphql_name='updateEnterpriseAdministratorRole', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseAdministratorRoleInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_allow_private_repository_forking_setting = sgqlc.types.Field('UpdateEnterpriseAllowPrivateRepositoryForkingSettingPayload', graphql_name='updateEnterpriseAllowPrivateRepositoryForkingSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseAllowPrivateRepositoryForkingSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_default_repository_permission_setting = sgqlc.types.Field('UpdateEnterpriseDefaultRepositoryPermissionSettingPayload', graphql_name='updateEnterpriseDefaultRepositoryPermissionSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseDefaultRepositoryPermissionSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_members_can_change_repository_visibility_setting = sgqlc.types.Field('UpdateEnterpriseMembersCanChangeRepositoryVisibilitySettingPayload', graphql_name='updateEnterpriseMembersCanChangeRepositoryVisibilitySetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseMembersCanChangeRepositoryVisibilitySettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_members_can_create_repositories_setting = sgqlc.types.Field('UpdateEnterpriseMembersCanCreateRepositoriesSettingPayload', graphql_name='updateEnterpriseMembersCanCreateRepositoriesSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseMembersCanCreateRepositoriesSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_members_can_delete_issues_setting = sgqlc.types.Field('UpdateEnterpriseMembersCanDeleteIssuesSettingPayload', graphql_name='updateEnterpriseMembersCanDeleteIssuesSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseMembersCanDeleteIssuesSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_members_can_delete_repositories_setting = sgqlc.types.Field('UpdateEnterpriseMembersCanDeleteRepositoriesSettingPayload', graphql_name='updateEnterpriseMembersCanDeleteRepositoriesSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseMembersCanDeleteRepositoriesSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_members_can_invite_collaborators_setting = sgqlc.types.Field('UpdateEnterpriseMembersCanInviteCollaboratorsSettingPayload', graphql_name='updateEnterpriseMembersCanInviteCollaboratorsSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseMembersCanInviteCollaboratorsSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_members_can_make_purchases_setting = sgqlc.types.Field('UpdateEnterpriseMembersCanMakePurchasesSettingPayload', graphql_name='updateEnterpriseMembersCanMakePurchasesSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseMembersCanMakePurchasesSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_members_can_update_protected_branches_setting = sgqlc.types.Field('UpdateEnterpriseMembersCanUpdateProtectedBranchesSettingPayload', graphql_name='updateEnterpriseMembersCanUpdateProtectedBranchesSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseMembersCanUpdateProtectedBranchesSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_members_can_view_dependency_insights_setting = sgqlc.types.Field('UpdateEnterpriseMembersCanViewDependencyInsightsSettingPayload', graphql_name='updateEnterpriseMembersCanViewDependencyInsightsSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseMembersCanViewDependencyInsightsSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_organization_projects_setting = sgqlc.types.Field('UpdateEnterpriseOrganizationProjectsSettingPayload', graphql_name='updateEnterpriseOrganizationProjectsSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseOrganizationProjectsSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_profile = sgqlc.types.Field('UpdateEnterpriseProfilePayload', graphql_name='updateEnterpriseProfile', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseProfileInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_repository_projects_setting = sgqlc.types.Field('UpdateEnterpriseRepositoryProjectsSettingPayload', graphql_name='updateEnterpriseRepositoryProjectsSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseRepositoryProjectsSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_team_discussions_setting = sgqlc.types.Field('UpdateEnterpriseTeamDiscussionsSettingPayload', graphql_name='updateEnterpriseTeamDiscussionsSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseTeamDiscussionsSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_enterprise_two_factor_authentication_required_setting = sgqlc.types.Field('UpdateEnterpriseTwoFactorAuthenticationRequiredSettingPayload', graphql_name='updateEnterpriseTwoFactorAuthenticationRequiredSetting', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateEnterpriseTwoFactorAuthenticationRequiredSettingInput), graphql_name='input', default=None)),
+))
+    )
+    update_issue = sgqlc.types.Field('UpdateIssuePayload', graphql_name='updateIssue', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateIssueInput), graphql_name='input', default=None)),
+))
+    )
+    update_issue_comment = sgqlc.types.Field('UpdateIssueCommentPayload', graphql_name='updateIssueComment', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateIssueCommentInput), graphql_name='input', default=None)),
 ))
     )
     update_project = sgqlc.types.Field('UpdateProjectPayload', graphql_name='updateProject', args=sgqlc.types.ArgDict((
@@ -1854,6 +3742,10 @@ class Mutation(sgqlc.types.Type):
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateProjectColumnInput), graphql_name='input', default=None)),
 ))
     )
+    update_pull_request = sgqlc.types.Field('UpdatePullRequestPayload', graphql_name='updatePullRequest', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdatePullRequestInput), graphql_name='input', default=None)),
+))
+    )
     update_pull_request_review = sgqlc.types.Field('UpdatePullRequestReviewPayload', graphql_name='updatePullRequestReview', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdatePullRequestReviewInput), graphql_name='input', default=None)),
 ))
@@ -1862,8 +3754,24 @@ class Mutation(sgqlc.types.Type):
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdatePullRequestReviewCommentInput), graphql_name='input', default=None)),
 ))
     )
+    update_ref = sgqlc.types.Field('UpdateRefPayload', graphql_name='updateRef', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateRefInput), graphql_name='input', default=None)),
+))
+    )
+    update_repository = sgqlc.types.Field('UpdateRepositoryPayload', graphql_name='updateRepository', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateRepositoryInput), graphql_name='input', default=None)),
+))
+    )
     update_subscription = sgqlc.types.Field('UpdateSubscriptionPayload', graphql_name='updateSubscription', args=sgqlc.types.ArgDict((
         ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateSubscriptionInput), graphql_name='input', default=None)),
+))
+    )
+    update_team_discussion = sgqlc.types.Field('UpdateTeamDiscussionPayload', graphql_name='updateTeamDiscussion', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateTeamDiscussionInput), graphql_name='input', default=None)),
+))
+    )
+    update_team_discussion_comment = sgqlc.types.Field('UpdateTeamDiscussionCommentPayload', graphql_name='updateTeamDiscussionComment', args=sgqlc.types.ArgDict((
+        ('input', sgqlc.types.Arg(sgqlc.types.non_null(UpdateTeamDiscussionCommentInput), graphql_name='input', default=None)),
 ))
     )
     update_topics = sgqlc.types.Field('UpdateTopicsPayload', graphql_name='updateTopics', args=sgqlc.types.ArgDict((
@@ -1875,6 +3783,35 @@ class Mutation(sgqlc.types.Type):
 class Node(sgqlc.types.Interface):
     __schema__ = github_schema
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
+class OauthApplicationAuditEntryData(sgqlc.types.Interface):
+    __schema__ = github_schema
+    oauth_application_name = sgqlc.types.Field(String, graphql_name='oauthApplicationName')
+    oauth_application_resource_path = sgqlc.types.Field(URI, graphql_name='oauthApplicationResourcePath')
+    oauth_application_url = sgqlc.types.Field(URI, graphql_name='oauthApplicationUrl')
+
+
+class OrganizationAuditEntryConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('OrganizationAuditEntryEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('OrganizationAuditEntry'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class OrganizationAuditEntryData(sgqlc.types.Interface):
+    __schema__ = github_schema
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+
+
+class OrganizationAuditEntryEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('OrganizationAuditEntry', graphql_name='node')
 
 
 class OrganizationConnection(sgqlc.types.relay.Connection):
@@ -1916,7 +3853,7 @@ class OrganizationMemberConnection(sgqlc.types.relay.Connection):
 class OrganizationMemberEdge(sgqlc.types.Type):
     __schema__ = github_schema
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
-    has_two_factor_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasTwoFactorEnabled')
+    has_two_factor_enabled = sgqlc.types.Field(Boolean, graphql_name='hasTwoFactorEnabled')
     node = sgqlc.types.Field('User', graphql_name='node')
     role = sgqlc.types.Field(OrganizationMemberRole, graphql_name='role')
 
@@ -1927,6 +3864,72 @@ class PageInfo(sgqlc.types.Type):
     has_next_page = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasNextPage')
     has_previous_page = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasPreviousPage')
     start_cursor = sgqlc.types.Field(String, graphql_name='startCursor')
+
+
+class PermissionSource(sgqlc.types.Type):
+    __schema__ = github_schema
+    organization = sgqlc.types.Field(sgqlc.types.non_null('Organization'), graphql_name='organization')
+    permission = sgqlc.types.Field(sgqlc.types.non_null(DefaultRepositoryPermissionField), graphql_name='permission')
+    source = sgqlc.types.Field(sgqlc.types.non_null('PermissionGranter'), graphql_name='source')
+
+
+class PinnableItemConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('PinnableItemEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('PinnableItem'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class PinnableItemEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('PinnableItem', graphql_name='node')
+
+
+class ProfileItemShowcase(sgqlc.types.Type):
+    __schema__ = github_schema
+    has_pinned_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasPinnedItems')
+    items = sgqlc.types.Field(sgqlc.types.non_null(PinnableItemConnection), graphql_name='items', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+
+
+class ProfileOwner(sgqlc.types.Interface):
+    __schema__ = github_schema
+    any_pinnable_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='anyPinnableItems', args=sgqlc.types.ArgDict((
+        ('type', sgqlc.types.Arg(PinnableItemType, graphql_name='type', default=None)),
+))
+    )
+    email = sgqlc.types.Field(String, graphql_name='email')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    item_showcase = sgqlc.types.Field(sgqlc.types.non_null(ProfileItemShowcase), graphql_name='itemShowcase')
+    location = sgqlc.types.Field(String, graphql_name='location')
+    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    name = sgqlc.types.Field(String, graphql_name='name')
+    pinnable_items = sgqlc.types.Field(sgqlc.types.non_null(PinnableItemConnection), graphql_name='pinnableItems', args=sgqlc.types.ArgDict((
+        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    pinned_items = sgqlc.types.Field(sgqlc.types.non_null(PinnableItemConnection), graphql_name='pinnedItems', args=sgqlc.types.ArgDict((
+        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    pinned_items_remaining = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='pinnedItemsRemaining')
+    viewer_can_change_pinned_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanChangePinnedItems')
+    website_url = sgqlc.types.Field(URI, graphql_name='websiteUrl')
 
 
 class ProjectCardConnection(sgqlc.types.relay.Connection):
@@ -1993,20 +3996,6 @@ class ProjectOwner(sgqlc.types.Interface):
     viewer_can_create_projects = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanCreateProjects')
 
 
-class ProtectedBranchConnection(sgqlc.types.relay.Connection):
-    __schema__ = github_schema
-    edges = sgqlc.types.Field(sgqlc.types.list_of('ProtectedBranchEdge'), graphql_name='edges')
-    nodes = sgqlc.types.Field(sgqlc.types.list_of('ProtectedBranch'), graphql_name='nodes')
-    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
-    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
-
-
-class ProtectedBranchEdge(sgqlc.types.Type):
-    __schema__ = github_schema
-    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
-    node = sgqlc.types.Field('ProtectedBranch', graphql_name='node')
-
-
 class PublicKeyConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     edges = sgqlc.types.Field(sgqlc.types.list_of('PublicKeyEdge'), graphql_name='edges')
@@ -2019,6 +4008,27 @@ class PublicKeyEdge(sgqlc.types.Type):
     __schema__ = github_schema
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field('PublicKey', graphql_name='node')
+
+
+class PullRequestChangedFile(sgqlc.types.Type):
+    __schema__ = github_schema
+    additions = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='additions')
+    deletions = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='deletions')
+    path = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='path')
+
+
+class PullRequestChangedFileConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('PullRequestChangedFileEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of(PullRequestChangedFile), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class PullRequestChangedFileEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field(PullRequestChangedFile, graphql_name='node')
 
 
 class PullRequestCommitConnection(sgqlc.types.relay.Connection):
@@ -2041,6 +4051,19 @@ class PullRequestConnection(sgqlc.types.relay.Connection):
     nodes = sgqlc.types.Field(sgqlc.types.list_of('PullRequest'), graphql_name='nodes')
     page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class PullRequestContributionsByRepository(sgqlc.types.Type):
+    __schema__ = github_schema
+    contributions = sgqlc.types.Field(sgqlc.types.non_null(CreatedPullRequestContributionConnection), graphql_name='contributions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(ContributionOrder, graphql_name='orderBy', default={'field': 'OCCURRED_AT', 'direction': 'DESC'})),
+))
+    )
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
 
 
 class PullRequestEdge(sgqlc.types.Type):
@@ -2071,16 +4094,44 @@ class PullRequestReviewConnection(sgqlc.types.relay.Connection):
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
 
 
+class PullRequestReviewContributionsByRepository(sgqlc.types.Type):
+    __schema__ = github_schema
+    contributions = sgqlc.types.Field(sgqlc.types.non_null(CreatedPullRequestReviewContributionConnection), graphql_name='contributions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(ContributionOrder, graphql_name='orderBy', default={'field': 'OCCURRED_AT', 'direction': 'DESC'})),
+))
+    )
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
+
+
 class PullRequestReviewEdge(sgqlc.types.Type):
     __schema__ = github_schema
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field('PullRequestReview', graphql_name='node')
 
 
+class PullRequestReviewThreadConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('PullRequestReviewThreadEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('PullRequestReviewThread'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
 class PullRequestReviewThreadEdge(sgqlc.types.Type):
     __schema__ = github_schema
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field('PullRequestReviewThread', graphql_name='node')
+
+
+class PullRequestRevisionMarker(sgqlc.types.Type):
+    __schema__ = github_schema
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    last_seen_commit = sgqlc.types.Field(sgqlc.types.non_null('Commit'), graphql_name='lastSeenCommit')
+    pull_request = sgqlc.types.Field(sgqlc.types.non_null('PullRequest'), graphql_name='pullRequest')
 
 
 class PullRequestTimelineConnection(sgqlc.types.relay.Connection):
@@ -2095,6 +4146,17 @@ class PullRequestTimelineItemEdge(sgqlc.types.Type):
     __schema__ = github_schema
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field('PullRequestTimelineItem', graphql_name='node')
+
+
+class PullRequestTimelineItemsConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('PullRequestTimelineItemsEdge'), graphql_name='edges')
+    filtered_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='filteredCount')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('PullRequestTimelineItems'), graphql_name='nodes')
+    page_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='pageCount')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
 
 
 class PullRequestTimelineItemsEdge(sgqlc.types.Type):
@@ -2124,6 +4186,21 @@ class Query(sgqlc.types.Type):
 ))
     )
     codes_of_conduct = sgqlc.types.Field(sgqlc.types.list_of('CodeOfConduct'), graphql_name='codesOfConduct')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise', args=sgqlc.types.ArgDict((
+        ('slug', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='slug', default=None)),
+        ('invitation_token', sgqlc.types.Arg(String, graphql_name='invitationToken', default=None)),
+))
+    )
+    enterprise_administrator_invitation = sgqlc.types.Field('EnterpriseAdministratorInvitation', graphql_name='enterpriseAdministratorInvitation', args=sgqlc.types.ArgDict((
+        ('user_login', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='userLogin', default=None)),
+        ('enterprise_slug', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='enterpriseSlug', default=None)),
+        ('role', sgqlc.types.Arg(sgqlc.types.non_null(EnterpriseAdministratorRole), graphql_name='role', default=None)),
+))
+    )
+    enterprise_administrator_invitation_by_token = sgqlc.types.Field('EnterpriseAdministratorInvitation', graphql_name='enterpriseAdministratorInvitationByToken', args=sgqlc.types.ArgDict((
+        ('invitation_token', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='invitationToken', default=None)),
+))
+    )
     license = sgqlc.types.Field('License', graphql_name='license', args=sgqlc.types.ArgDict((
         ('key', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='key', default=None)),
 ))
@@ -2322,6 +4399,54 @@ class RefEdge(sgqlc.types.Type):
     node = sgqlc.types.Field('Ref', graphql_name='node')
 
 
+class RegenerateEnterpriseIdentityProviderRecoveryCodesPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    identity_provider = sgqlc.types.Field('EnterpriseIdentityProvider', graphql_name='identityProvider')
+
+
+class RegistryPackageConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackageEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackage'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class RegistryPackageDependencyConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackageDependencyEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackageDependency'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class RegistryPackageDependencyEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('RegistryPackageDependency', graphql_name='node')
+
+
+class RegistryPackageEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('RegistryPackage', graphql_name='node')
+
+
+class RegistryPackageFileConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackageFileEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackageFile'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class RegistryPackageFileEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('RegistryPackageFile', graphql_name='node')
+
+
 class RegistryPackageOwner(sgqlc.types.Interface):
     __schema__ = github_schema
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
@@ -2330,6 +4455,42 @@ class RegistryPackageOwner(sgqlc.types.Interface):
 class RegistryPackageSearch(sgqlc.types.Interface):
     __schema__ = github_schema
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
+class RegistryPackageStatistics(sgqlc.types.Type):
+    __schema__ = github_schema
+
+
+class RegistryPackageTagConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackageTagEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackageTag'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class RegistryPackageTagEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('RegistryPackageTag', graphql_name='node')
+
+
+class RegistryPackageVersionConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackageVersionEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('RegistryPackageVersion'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class RegistryPackageVersionEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('RegistryPackageVersion', graphql_name='node')
+
+
+class RegistryPackageVersionStatistics(sgqlc.types.Type):
+    __schema__ = github_schema
 
 
 class ReleaseAssetConnection(sgqlc.types.relay.Connection):
@@ -2360,6 +4521,35 @@ class ReleaseEdge(sgqlc.types.Type):
     node = sgqlc.types.Field('Release', graphql_name='node')
 
 
+class RemoveAssigneesFromAssignablePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    assignable = sgqlc.types.Field(Assignable, graphql_name='assignable')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class RemoveEnterpriseAdminPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    admin = sgqlc.types.Field('User', graphql_name='admin')
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+    viewer = sgqlc.types.Field('User', graphql_name='viewer')
+
+
+class RemoveEnterpriseOrganizationPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    viewer = sgqlc.types.Field('User', graphql_name='viewer')
+
+
+class RemoveLabelsFromLabelablePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    labelable = sgqlc.types.Field(Labelable, graphql_name='labelable')
+
+
 class RemoveOutsideCollaboratorPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
@@ -2379,6 +4569,26 @@ class RemoveStarPayload(sgqlc.types.Type):
     starrable = sgqlc.types.Field('Starrable', graphql_name='starrable')
 
 
+class ReopenIssuePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    issue = sgqlc.types.Field('Issue', graphql_name='issue')
+
+
+class ReopenPullRequestPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
+
+
+class RepositoryAuditEntryData(sgqlc.types.Interface):
+    __schema__ = github_schema
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+
+
 class RepositoryCollaboratorConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     edges = sgqlc.types.Field(sgqlc.types.list_of('RepositoryCollaboratorEdge'), graphql_name='edges')
@@ -2392,6 +4602,7 @@ class RepositoryCollaboratorEdge(sgqlc.types.Type):
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='node')
     permission = sgqlc.types.Field(sgqlc.types.non_null(RepositoryPermission), graphql_name='permission')
+    permission_sources = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(PermissionSource)), graphql_name='permissionSources')
 
 
 class RepositoryConnection(sgqlc.types.relay.Connection):
@@ -2416,6 +4627,7 @@ class RepositoryInfo(sgqlc.types.Interface):
     description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='descriptionHTML')
     fork_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='forkCount')
     has_issues_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasIssuesEnabled')
+    has_projects_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasProjectsEnabled')
     has_wiki_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasWikiEnabled')
     homepage_url = sgqlc.types.Field(URI, graphql_name='homepageUrl')
     is_archived = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isArchived')
@@ -2423,11 +4635,13 @@ class RepositoryInfo(sgqlc.types.Interface):
     is_locked = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isLocked')
     is_mirror = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isMirror')
     is_private = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPrivate')
+    is_template = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isTemplate')
     license_info = sgqlc.types.Field('License', graphql_name='licenseInfo')
     lock_reason = sgqlc.types.Field(RepositoryLockReason, graphql_name='lockReason')
     mirror_url = sgqlc.types.Field(URI, graphql_name='mirrorUrl')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     name_with_owner = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='nameWithOwner')
+    open_graph_image_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='openGraphImageUrl')
     owner = sgqlc.types.Field(sgqlc.types.non_null('RepositoryOwner'), graphql_name='owner')
     pushed_at = sgqlc.types.Field(DateTime, graphql_name='pushedAt')
     resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
@@ -2437,6 +4651,7 @@ class RepositoryInfo(sgqlc.types.Interface):
     )
     updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    uses_custom_open_graph_image = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='usesCustomOpenGraphImage')
 
 
 class RepositoryInvitationEdge(sgqlc.types.Type):
@@ -2458,18 +4673,6 @@ class RepositoryOwner(sgqlc.types.Interface):
     )
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
-    pinned_repositories = sgqlc.types.Field(sgqlc.types.non_null(RepositoryConnection), graphql_name='pinnedRepositories', args=sgqlc.types.ArgDict((
-        ('privacy', sgqlc.types.Arg(RepositoryPrivacy, graphql_name='privacy', default=None)),
-        ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default=None)),
-        ('affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='affiliations', default=['OWNER', 'COLLABORATOR'])),
-        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=['OWNER', 'COLLABORATOR'])),
-        ('is_locked', sgqlc.types.Arg(Boolean, graphql_name='isLocked', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-))
-    )
     repositories = sgqlc.types.Field(sgqlc.types.non_null(RepositoryConnection), graphql_name='repositories', args=sgqlc.types.ArgDict((
         ('privacy', sgqlc.types.Arg(RepositoryPrivacy, graphql_name='privacy', default=None)),
         ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default=None)),
@@ -2505,11 +4708,31 @@ class RepositoryTopicEdge(sgqlc.types.Type):
     node = sgqlc.types.Field('RepositoryTopic', graphql_name='node')
 
 
+class RepositoryVulnerabilityAlertConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('RepositoryVulnerabilityAlertEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('RepositoryVulnerabilityAlert'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class RepositoryVulnerabilityAlertEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('RepositoryVulnerabilityAlert', graphql_name='node')
+
+
 class RequestReviewsPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
     requested_reviewers_edge = sgqlc.types.Field('UserEdge', graphql_name='requestedReviewersEdge')
+
+
+class ResolveReviewThreadPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    thread = sgqlc.types.Field('PullRequestReviewThread', graphql_name='thread')
 
 
 class ReviewDismissalAllowanceConnection(sgqlc.types.relay.Connection):
@@ -2538,6 +4761,20 @@ class ReviewRequestEdge(sgqlc.types.Type):
     __schema__ = github_schema
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field('ReviewRequest', graphql_name='node')
+
+
+class SavedReplyConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('SavedReplyEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('SavedReply'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class SavedReplyEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('SavedReply', graphql_name='node')
 
 
 class SearchResultItemConnection(sgqlc.types.relay.Connection):
@@ -2619,6 +4856,69 @@ class SecurityVulnerabilityEdge(sgqlc.types.Type):
     node = sgqlc.types.Field(SecurityVulnerability, graphql_name='node')
 
 
+class Sponsorable(sgqlc.types.Interface):
+    __schema__ = github_schema
+    sponsors_listing = sgqlc.types.Field('SponsorsListing', graphql_name='sponsorsListing')
+    sponsorships_as_maintainer = sgqlc.types.Field(sgqlc.types.non_null('SponsorshipConnection'), graphql_name='sponsorshipsAsMaintainer', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('include_private', sgqlc.types.Arg(Boolean, graphql_name='includePrivate', default=False)),
+        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    sponsorships_as_sponsor = sgqlc.types.Field(sgqlc.types.non_null('SponsorshipConnection'), graphql_name='sponsorshipsAsSponsor', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
+))
+    )
+
+
+class SponsorsTierAdminInfo(sgqlc.types.Type):
+    __schema__ = github_schema
+    sponsorships = sgqlc.types.Field(sgqlc.types.non_null('SponsorshipConnection'), graphql_name='sponsorships', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('include_private', sgqlc.types.Arg(Boolean, graphql_name='includePrivate', default=False)),
+        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
+))
+    )
+
+
+class SponsorsTierConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('SponsorsTierEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('SponsorsTier'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class SponsorsTierEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('SponsorsTier', graphql_name='node')
+
+
+class SponsorshipConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('SponsorshipEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('Sponsorship'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class SponsorshipEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('Sponsorship', graphql_name='node')
+
+
 class StargazerConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     edges = sgqlc.types.Field(sgqlc.types.list_of('StargazerEdge'), graphql_name='edges')
@@ -2683,12 +4983,48 @@ class SuggestedReviewer(sgqlc.types.Type):
     reviewer = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='reviewer')
 
 
+class TeamAuditEntryData(sgqlc.types.Interface):
+    __schema__ = github_schema
+    team = sgqlc.types.Field('Team', graphql_name='team')
+    team_name = sgqlc.types.Field(String, graphql_name='teamName')
+    team_resource_path = sgqlc.types.Field(URI, graphql_name='teamResourcePath')
+    team_url = sgqlc.types.Field(URI, graphql_name='teamUrl')
+
+
 class TeamConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     edges = sgqlc.types.Field(sgqlc.types.list_of('TeamEdge'), graphql_name='edges')
     nodes = sgqlc.types.Field(sgqlc.types.list_of('Team'), graphql_name='nodes')
     page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class TeamDiscussionCommentConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('TeamDiscussionCommentEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('TeamDiscussionComment'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class TeamDiscussionCommentEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('TeamDiscussionComment', graphql_name='node')
+
+
+class TeamDiscussionConnection(sgqlc.types.relay.Connection):
+    __schema__ = github_schema
+    edges = sgqlc.types.Field(sgqlc.types.list_of('TeamDiscussionEdge'), graphql_name='edges')
+    nodes = sgqlc.types.Field(sgqlc.types.list_of('TeamDiscussion'), graphql_name='nodes')
+    page_info = sgqlc.types.Field(sgqlc.types.non_null(PageInfo), graphql_name='pageInfo')
+    total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
+
+
+class TeamDiscussionEdge(sgqlc.types.Type):
+    __schema__ = github_schema
+    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
+    node = sgqlc.types.Field('TeamDiscussion', graphql_name='node')
 
 
 class TeamEdge(sgqlc.types.Type):
@@ -2743,6 +5079,12 @@ class TextMatchHighlight(sgqlc.types.Type):
     text = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='text')
 
 
+class TopicAuditEntryData(sgqlc.types.Interface):
+    __schema__ = github_schema
+    topic = sgqlc.types.Field('Topic', graphql_name='topic')
+    topic_name = sgqlc.types.Field(String, graphql_name='topicName')
+
+
 class TopicConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     edges = sgqlc.types.Field(sgqlc.types.list_of('TopicEdge'), graphql_name='edges')
@@ -2757,6 +5099,12 @@ class TopicEdge(sgqlc.types.Type):
     node = sgqlc.types.Field('Topic', graphql_name='node')
 
 
+class TransferIssuePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    issue = sgqlc.types.Field('Issue', graphql_name='issue')
+
+
 class TreeEntry(sgqlc.types.Type):
     __schema__ = github_schema
     mode = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='mode')
@@ -2767,16 +5115,47 @@ class TreeEntry(sgqlc.types.Type):
     type = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='type')
 
 
+class UnarchiveRepositoryPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+
+
+class UnfollowUserPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    user = sgqlc.types.Field('User', graphql_name='user')
+
+
 class UniformResourceLocatable(sgqlc.types.Interface):
     __schema__ = github_schema
     resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
 
 
+class UnlinkRepositoryFromProjectPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    project = sgqlc.types.Field('Project', graphql_name='project')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+
+
 class UnlockLockablePayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     unlocked_record = sgqlc.types.Field(Lockable, graphql_name='unlockedRecord')
+
+
+class UnmarkIssueAsDuplicatePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    duplicate = sgqlc.types.Field('IssueOrPullRequest', graphql_name='duplicate')
+
+
+class UnresolveReviewThreadPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    thread = sgqlc.types.Field('PullRequestReviewThread', graphql_name='thread')
 
 
 class Updatable(sgqlc.types.Interface):
@@ -2793,6 +5172,135 @@ class UpdateBranchProtectionRulePayload(sgqlc.types.Type):
     __schema__ = github_schema
     branch_protection_rule = sgqlc.types.Field('BranchProtectionRule', graphql_name='branchProtectionRule')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+
+
+class UpdateEnterpriseActionExecutionCapabilitySettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseAdministratorRolePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseAllowPrivateRepositoryForkingSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseDefaultRepositoryPermissionSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseMembersCanChangeRepositoryVisibilitySettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseMembersCanCreateRepositoriesSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseMembersCanDeleteIssuesSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseMembersCanDeleteRepositoriesSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseMembersCanInviteCollaboratorsSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseMembersCanMakePurchasesSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseMembersCanUpdateProtectedBranchesSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseMembersCanViewDependencyInsightsSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseOrganizationProjectsSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseProfilePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+
+
+class UpdateEnterpriseRepositoryProjectsSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseTeamDiscussionsSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateEnterpriseTwoFactorAuthenticationRequiredSettingPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    enterprise = sgqlc.types.Field('Enterprise', graphql_name='enterprise')
+    message = sgqlc.types.Field(String, graphql_name='message')
+
+
+class UpdateIssueCommentPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    issue_comment = sgqlc.types.Field('IssueComment', graphql_name='issueComment')
+
+
+class UpdateIssuePayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    issue = sgqlc.types.Field('Issue', graphql_name='issue')
 
 
 class UpdateProjectCardPayload(sgqlc.types.Type):
@@ -2813,6 +5321,12 @@ class UpdateProjectPayload(sgqlc.types.Type):
     project = sgqlc.types.Field('Project', graphql_name='project')
 
 
+class UpdatePullRequestPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
+
+
 class UpdatePullRequestReviewCommentPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
@@ -2825,10 +5339,34 @@ class UpdatePullRequestReviewPayload(sgqlc.types.Type):
     pull_request_review = sgqlc.types.Field('PullRequestReview', graphql_name='pullRequestReview')
 
 
+class UpdateRefPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    ref = sgqlc.types.Field('Ref', graphql_name='ref')
+
+
+class UpdateRepositoryPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+
+
 class UpdateSubscriptionPayload(sgqlc.types.Type):
     __schema__ = github_schema
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     subscribable = sgqlc.types.Field(Subscribable, graphql_name='subscribable')
+
+
+class UpdateTeamDiscussionCommentPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    team_discussion_comment = sgqlc.types.Field('TeamDiscussionComment', graphql_name='teamDiscussionComment')
+
+
+class UpdateTeamDiscussionPayload(sgqlc.types.Type):
+    __schema__ = github_schema
+    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
+    team_discussion = sgqlc.types.Field('TeamDiscussion', graphql_name='teamDiscussion')
 
 
 class UpdateTopicsPayload(sgqlc.types.Type):
@@ -2909,9 +5447,9 @@ class AssignedEvent(sgqlc.types.Type, Node):
     __schema__ = github_schema
     actor = sgqlc.types.Field(Actor, graphql_name='actor')
     assignable = sgqlc.types.Field(sgqlc.types.non_null(Assignable), graphql_name='assignable')
+    assignee = sgqlc.types.Field('Assignee', graphql_name='assignee')
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-    user = sgqlc.types.Field('User', graphql_name='user')
 
 
 class BaseRefChangedEvent(sgqlc.types.Type, Node):
@@ -2995,6 +5533,7 @@ class BranchProtectionRule(sgqlc.types.Type, Node):
     required_approving_review_count = sgqlc.types.Field(Int, graphql_name='requiredApprovingReviewCount')
     required_status_check_contexts = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='requiredStatusCheckContexts')
     requires_approving_reviews = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='requiresApprovingReviews')
+    requires_code_owner_reviews = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='requiresCodeOwnerReviews')
     requires_commit_signatures = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='requiresCommitSignatures')
     requires_status_checks = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='requiresStatusChecks')
     requires_strict_status_checks = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='requiresStrictStatusChecks')
@@ -3042,6 +5581,14 @@ class Commit(sgqlc.types.Type, Node, GitObject, Subscribable, UniformResourceLoc
     __schema__ = github_schema
     abbreviated_oid = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='abbreviatedOid')
     additions = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='additions')
+    associated_pull_requests = sgqlc.types.Field(PullRequestConnection, graphql_name='associatedPullRequests', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(PullRequestOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'ASC'})),
+))
+    )
     author = sgqlc.types.Field(GitActor, graphql_name='author')
     authored_by_committer = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='authoredByCommitter')
     authored_date = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='authoredDate')
@@ -3170,7 +5717,7 @@ class CommitCommentThread(sgqlc.types.Type, Node, RepositoryNode):
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
-    commit = sgqlc.types.Field(sgqlc.types.non_null(Commit), graphql_name='commit')
+    commit = sgqlc.types.Field(Commit, graphql_name='commit')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     path = sgqlc.types.Field(String, graphql_name='path')
     position = sgqlc.types.Field(Int, graphql_name='position')
@@ -3183,6 +5730,17 @@ class ConvertedNoteToIssueEvent(sgqlc.types.Type, Node):
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
+class CreatedCommitContribution(sgqlc.types.Type, Contribution):
+    __schema__ = github_schema
+    commit_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='commitCount')
+    is_restricted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRestricted')
+    occurred_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='occurredAt')
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    user = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='user')
 
 
 class CreatedIssueContribution(sgqlc.types.Type, Contribution):
@@ -3200,6 +5758,28 @@ class CreatedPullRequestContribution(sgqlc.types.Type, Contribution):
     is_restricted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRestricted')
     occurred_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='occurredAt')
     pull_request = sgqlc.types.Field(sgqlc.types.non_null('PullRequest'), graphql_name='pullRequest')
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    user = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='user')
+
+
+class CreatedPullRequestReviewContribution(sgqlc.types.Type, Contribution):
+    __schema__ = github_schema
+    is_restricted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRestricted')
+    occurred_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='occurredAt')
+    pull_request = sgqlc.types.Field(sgqlc.types.non_null('PullRequest'), graphql_name='pullRequest')
+    pull_request_review = sgqlc.types.Field(sgqlc.types.non_null('PullRequestReview'), graphql_name='pullRequestReview')
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    user = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='user')
+
+
+class CreatedRepositoryContribution(sgqlc.types.Type, Contribution):
+    __schema__ = github_schema
+    is_restricted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRestricted')
+    occurred_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='occurredAt')
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
     resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
     user = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='user')
@@ -3297,6 +5877,188 @@ class DeploymentStatus(sgqlc.types.Type, Node):
     updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
 
 
+class Enterprise(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    avatar_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
+        ('size', sgqlc.types.Arg(Int, graphql_name='size', default=None)),
+))
+    )
+    billing_info = sgqlc.types.Field(EnterpriseBillingInfo, graphql_name='billingInfo')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='descriptionHTML')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    location = sgqlc.types.Field(String, graphql_name='location')
+    members = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseMemberConnection), graphql_name='members', args=sgqlc.types.ArgDict((
+        ('organization_logins', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='organizationLogins', default=None)),
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+        ('order_by', sgqlc.types.Arg(EnterpriseMemberOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+        ('role', sgqlc.types.Arg(EnterpriseUserAccountMembershipRole, graphql_name='role', default=None)),
+        ('deployment', sgqlc.types.Arg(EnterpriseUserDeployment, graphql_name='deployment', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    organizations = sgqlc.types.Field(sgqlc.types.non_null(OrganizationConnection), graphql_name='organizations', args=sgqlc.types.ArgDict((
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    owner_info = sgqlc.types.Field(EnterpriseOwnerInfo, graphql_name='ownerInfo')
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    user_accounts = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseUserAccountConnection), graphql_name='userAccounts', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    viewer_is_admin = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerIsAdmin')
+    website_url = sgqlc.types.Field(URI, graphql_name='websiteUrl')
+
+
+class EnterpriseAdministratorInvitation(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    email = sgqlc.types.Field(String, graphql_name='email')
+    enterprise = sgqlc.types.Field(sgqlc.types.non_null(Enterprise), graphql_name='enterprise')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    invitee = sgqlc.types.Field('User', graphql_name='invitee')
+    inviter = sgqlc.types.Field('User', graphql_name='inviter')
+    role = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseAdministratorRole), graphql_name='role')
+
+
+class EnterpriseIdentityProvider(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    digest_method = sgqlc.types.Field(SamlDigestAlgorithm, graphql_name='digestMethod')
+    enterprise = sgqlc.types.Field(Enterprise, graphql_name='enterprise')
+    external_identities = sgqlc.types.Field(sgqlc.types.non_null(ExternalIdentityConnection), graphql_name='externalIdentities', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    idp_certificate = sgqlc.types.Field(X509Certificate, graphql_name='idpCertificate')
+    issuer = sgqlc.types.Field(String, graphql_name='issuer')
+    recovery_codes = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='recoveryCodes')
+    signature_method = sgqlc.types.Field(SamlSignatureAlgorithm, graphql_name='signatureMethod')
+    sso_url = sgqlc.types.Field(URI, graphql_name='ssoUrl')
+
+
+class EnterpriseRepositoryInfo(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_private = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPrivate')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    name_with_owner = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='nameWithOwner')
+
+
+class EnterpriseServerInstallation(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    customer_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='customerName')
+    host_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='hostName')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_connected = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isConnected')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    user_accounts = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerUserAccountConnection), graphql_name='userAccounts', args=sgqlc.types.ArgDict((
+        ('order_by', sgqlc.types.Arg(EnterpriseServerUserAccountOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    user_accounts_uploads = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerUserAccountsUploadConnection), graphql_name='userAccountsUploads', args=sgqlc.types.ArgDict((
+        ('order_by', sgqlc.types.Arg(EnterpriseServerUserAccountsUploadOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'DESC'})),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+
+
+class EnterpriseServerUserAccount(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    emails = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerUserAccountEmailConnection), graphql_name='emails', args=sgqlc.types.ArgDict((
+        ('order_by', sgqlc.types.Arg(EnterpriseServerUserAccountEmailOrder, graphql_name='orderBy', default={'field': 'EMAIL', 'direction': 'ASC'})),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    enterprise_server_installation = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerInstallation), graphql_name='enterpriseServerInstallation')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_site_admin = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isSiteAdmin')
+    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    profile_name = sgqlc.types.Field(String, graphql_name='profileName')
+    remote_created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='remoteCreatedAt')
+    remote_user_id = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='remoteUserId')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+
+
+class EnterpriseServerUserAccountEmail(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    email = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='email')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_primary = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPrimary')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    user_account = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerUserAccount), graphql_name='userAccount')
+
+
+class EnterpriseServerUserAccountsUpload(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    enterprise = sgqlc.types.Field(sgqlc.types.non_null(Enterprise), graphql_name='enterprise')
+    enterprise_server_installation = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerInstallation), graphql_name='enterpriseServerInstallation')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    sync_state = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseServerUserAccountsUploadSyncState), graphql_name='syncState')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+
+
+class EnterpriseUserAccount(sgqlc.types.Type, Node, Actor):
+    __schema__ = github_schema
+    avatar_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
+        ('size', sgqlc.types.Arg(Int, graphql_name='size', default=None)),
+))
+    )
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    enterprise = sgqlc.types.Field(sgqlc.types.non_null(Enterprise), graphql_name='enterprise')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    name = sgqlc.types.Field(String, graphql_name='name')
+    organizations = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseOrganizationMembershipConnection), graphql_name='organizations', args=sgqlc.types.ArgDict((
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+        ('order_by', sgqlc.types.Arg(OrganizationOrder, graphql_name='orderBy', default={'field': 'LOGIN', 'direction': 'ASC'})),
+        ('role', sgqlc.types.Arg(EnterpriseUserAccountMembershipRole, graphql_name='role', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    user = sgqlc.types.Field('User', graphql_name='user')
+
+
 class ExternalIdentity(sgqlc.types.Type, Node):
     __schema__ = github_schema
     guid = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='guid')
@@ -3307,7 +6069,13 @@ class ExternalIdentity(sgqlc.types.Type, Node):
     user = sgqlc.types.Field('User', graphql_name='user')
 
 
-class Gist(sgqlc.types.Type, Node, Starrable):
+class GenericHovercardContext(sgqlc.types.Type, HovercardContext):
+    __schema__ = github_schema
+    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
+    octicon = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='octicon')
+
+
+class Gist(sgqlc.types.Type, Node, Starrable, UniformResourceLocatable):
     __schema__ = github_schema
     comments = sgqlc.types.Field(sgqlc.types.non_null(GistCommentConnection), graphql_name='comments', args=sgqlc.types.ArgDict((
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
@@ -3318,11 +6086,26 @@ class Gist(sgqlc.types.Type, Node, Starrable):
     )
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     description = sgqlc.types.Field(String, graphql_name='description')
+    files = sgqlc.types.Field(sgqlc.types.list_of(GistFile), graphql_name='files', args=sgqlc.types.ArgDict((
+        ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=10)),
+        ('oid', sgqlc.types.Arg(GitObjectID, graphql_name='oid', default=None)),
+))
+    )
+    forks = sgqlc.types.Field(sgqlc.types.non_null(GistConnection), graphql_name='forks', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(GistOrder, graphql_name='orderBy', default=None)),
+))
+    )
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_fork = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFork')
     is_public = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPublic')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
     owner = sgqlc.types.Field(RepositoryOwner, graphql_name='owner')
     pushed_at = sgqlc.types.Field(DateTime, graphql_name='pushedAt')
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
     stargazers = sgqlc.types.Field(sgqlc.types.non_null(StargazerConnection), graphql_name='stargazers', args=sgqlc.types.ArgDict((
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
@@ -3332,6 +6115,7 @@ class Gist(sgqlc.types.Type, Node, Starrable):
 ))
     )
     updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
     viewer_has_starred = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerHasStarred')
 
 
@@ -3437,6 +6221,10 @@ class Issue(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatable, Up
     created_via_email = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='createdViaEmail')
     database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
     editor = sgqlc.types.Field(Actor, graphql_name='editor')
+    hovercard = sgqlc.types.Field(sgqlc.types.non_null(Hovercard), graphql_name='hovercard', args=sgqlc.types.ArgDict((
+        ('include_notification_contexts', sgqlc.types.Arg(Boolean, graphql_name='includeNotificationContexts', default=True)),
+))
+    )
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     includes_created_edit = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='includesCreatedEdit')
     labels = sgqlc.types.Field(LabelConnection, graphql_name='labels', args=sgqlc.types.ArgDict((
@@ -3479,8 +6267,10 @@ class Issue(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatable, Up
     repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
     resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
     state = sgqlc.types.Field(sgqlc.types.non_null(IssueState), graphql_name='state')
-    timeline = sgqlc.types.Field(sgqlc.types.non_null(IssueTimelineConnection), graphql_name='timeline', args=sgqlc.types.ArgDict((
+    timeline_items = sgqlc.types.Field(sgqlc.types.non_null(IssueTimelineItemsConnection), graphql_name='timelineItems', args=sgqlc.types.ArgDict((
         ('since', sgqlc.types.Arg(DateTime, graphql_name='since', default=None)),
+        ('skip', sgqlc.types.Arg(Int, graphql_name='skip', default=None)),
+        ('item_types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(IssueTimelineItemsItemType)), graphql_name='itemTypes', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -3573,6 +6363,7 @@ class Label(sgqlc.types.Type, Node):
         ('order_by', sgqlc.types.Arg(IssueOrder, graphql_name='orderBy', default=None)),
         ('labels', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='labels', default=None)),
         ('states', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(IssueState)), graphql_name='states', default=None)),
+        ('filter_by', sgqlc.types.Arg(IssueFilters, graphql_name='filterBy', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -3642,6 +6433,29 @@ class LockedEvent(sgqlc.types.Type, Node):
     lockable = sgqlc.types.Field(sgqlc.types.non_null(Lockable), graphql_name='lockable')
 
 
+class Mannequin(sgqlc.types.Type, Node, Actor, UniformResourceLocatable):
+    __schema__ = github_schema
+    avatar_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
+        ('size', sgqlc.types.Arg(Int, graphql_name='size', default=None)),
+))
+    )
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
+    email = sgqlc.types.Field(String, graphql_name='email')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+
+
+class MarkedAsDuplicateEvent(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    actor = sgqlc.types.Field(Actor, graphql_name='actor')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
 class MarketplaceCategory(sgqlc.types.Type, Node):
     __schema__ = github_schema
     description = sgqlc.types.Field(String, graphql_name='description')
@@ -3666,7 +6480,6 @@ class MarketplaceListing(sgqlc.types.Type, Node):
     extended_description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='extendedDescriptionHTML')
     full_description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='fullDescription')
     full_description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='fullDescriptionHTML')
-    has_approval_been_requested = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasApprovalBeenRequested')
     has_published_free_trial_plans = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasPublishedFreeTrialPlans')
     has_terms_of_service = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasTermsOfService')
     how_it_works = sgqlc.types.Field(String, graphql_name='howItWorks')
@@ -3674,11 +6487,16 @@ class MarketplaceListing(sgqlc.types.Type, Node):
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     installation_url = sgqlc.types.Field(URI, graphql_name='installationUrl')
     installed_for_viewer = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='installedForViewer')
-    is_approved = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isApproved')
-    is_delisted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDelisted')
+    is_archived = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isArchived')
     is_draft = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDraft')
     is_paid = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPaid')
+    is_public = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPublic')
     is_rejected = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRejected')
+    is_unverified = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isUnverified')
+    is_unverified_pending = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isUnverifiedPending')
+    is_verification_pending_from_draft = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isVerificationPendingFromDraft')
+    is_verification_pending_from_unverified = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isVerificationPendingFromUnverified')
+    is_verified = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isVerified')
     logo_background_color = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='logoBackgroundColor')
     logo_url = sgqlc.types.Field(URI, graphql_name='logoUrl', args=sgqlc.types.ArgDict((
         ('size', sgqlc.types.Arg(Int, graphql_name='size', default=400)),
@@ -3713,6 +6531,81 @@ class MarketplaceListing(sgqlc.types.Type, Node):
     viewer_is_listing_admin = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerIsListingAdmin')
 
 
+class MembersCanDeleteReposClearAuditEntry(sgqlc.types.Type, Node, AuditEntry, EnterpriseAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class MembersCanDeleteReposDisableAuditEntry(sgqlc.types.Type, Node, AuditEntry, EnterpriseAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class MembersCanDeleteReposEnableAuditEntry(sgqlc.types.Type, Node, AuditEntry, EnterpriseAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
 class MentionedEvent(sgqlc.types.Type, Node):
     __schema__ = github_schema
     actor = sgqlc.types.Field(Actor, graphql_name='actor')
@@ -3743,10 +6636,12 @@ class Milestone(sgqlc.types.Type, Node, Closable, UniformResourceLocatable):
     description = sgqlc.types.Field(String, graphql_name='description')
     due_on = sgqlc.types.Field(DateTime, graphql_name='dueOn')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    issue_priorities_debug = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='issuePrioritiesDebug')
     issues = sgqlc.types.Field(sgqlc.types.non_null(IssueConnection), graphql_name='issues', args=sgqlc.types.ArgDict((
         ('order_by', sgqlc.types.Arg(IssueOrder, graphql_name='orderBy', default=None)),
         ('labels', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='labels', default=None)),
         ('states', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(IssueState)), graphql_name='states', default=None)),
+        ('filter_by', sgqlc.types.Arg(IssueFilters, graphql_name='filterBy', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -3791,17 +6686,710 @@ class MovedColumnsInProjectEvent(sgqlc.types.Type, Node):
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
 
 
-class Organization(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageSearch, ProjectOwner, RepositoryOwner, UniformResourceLocatable, MemberStatusable):
+class OauthApplicationCreateAuditEntry(sgqlc.types.Type, Node, AuditEntry, OauthApplicationAuditEntryData, OrganizationAuditEntryData):
     __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    application_url = sgqlc.types.Field(URI, graphql_name='applicationUrl')
+    callback_url = sgqlc.types.Field(URI, graphql_name='callbackUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    oauth_application_name = sgqlc.types.Field(String, graphql_name='oauthApplicationName')
+    oauth_application_resource_path = sgqlc.types.Field(URI, graphql_name='oauthApplicationResourcePath')
+    oauth_application_url = sgqlc.types.Field(URI, graphql_name='oauthApplicationUrl')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    rate_limit = sgqlc.types.Field(Int, graphql_name='rateLimit')
+    state = sgqlc.types.Field(OauthApplicationCreateAuditEntryState, graphql_name='state')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgAddBillingManagerAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    invitation_email = sgqlc.types.Field(String, graphql_name='invitationEmail')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgAddMemberAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    permission = sgqlc.types.Field(OrgAddMemberAuditEntryPermission, graphql_name='permission')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgBlockUserAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    blocked_user = sgqlc.types.Field('User', graphql_name='blockedUser')
+    blocked_user_name = sgqlc.types.Field(String, graphql_name='blockedUserName')
+    blocked_user_resource_path = sgqlc.types.Field(URI, graphql_name='blockedUserResourcePath')
+    blocked_user_url = sgqlc.types.Field(URI, graphql_name='blockedUserUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgConfigDisableCollaboratorsOnlyAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgConfigEnableCollaboratorsOnlyAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgCreateAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    billing_plan = sgqlc.types.Field(OrgCreateAuditEntryBillingPlan, graphql_name='billingPlan')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgDisableOauthAppRestrictionsAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgDisableSamlAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    digest_method_url = sgqlc.types.Field(URI, graphql_name='digestMethodUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    issuer_url = sgqlc.types.Field(URI, graphql_name='issuerUrl')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    signature_method_url = sgqlc.types.Field(URI, graphql_name='signatureMethodUrl')
+    single_sign_on_url = sgqlc.types.Field(URI, graphql_name='singleSignOnUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgDisableTwoFactorRequirementAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgEnableOauthAppRestrictionsAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgEnableSamlAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    digest_method_url = sgqlc.types.Field(URI, graphql_name='digestMethodUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    issuer_url = sgqlc.types.Field(URI, graphql_name='issuerUrl')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    signature_method_url = sgqlc.types.Field(URI, graphql_name='signatureMethodUrl')
+    single_sign_on_url = sgqlc.types.Field(URI, graphql_name='singleSignOnUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgEnableTwoFactorRequirementAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgInviteMemberAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    email = sgqlc.types.Field(String, graphql_name='email')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_invitation = sgqlc.types.Field('OrganizationInvitation', graphql_name='organizationInvitation')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgInviteToBusinessAuditEntry(sgqlc.types.Type, Node, AuditEntry, EnterpriseAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgOauthAppAccessApprovedAuditEntry(sgqlc.types.Type, Node, AuditEntry, OauthApplicationAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    oauth_application_name = sgqlc.types.Field(String, graphql_name='oauthApplicationName')
+    oauth_application_resource_path = sgqlc.types.Field(URI, graphql_name='oauthApplicationResourcePath')
+    oauth_application_url = sgqlc.types.Field(URI, graphql_name='oauthApplicationUrl')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgOauthAppAccessDeniedAuditEntry(sgqlc.types.Type, Node, AuditEntry, OauthApplicationAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    oauth_application_name = sgqlc.types.Field(String, graphql_name='oauthApplicationName')
+    oauth_application_resource_path = sgqlc.types.Field(URI, graphql_name='oauthApplicationResourcePath')
+    oauth_application_url = sgqlc.types.Field(URI, graphql_name='oauthApplicationUrl')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgOauthAppAccessRequestedAuditEntry(sgqlc.types.Type, Node, AuditEntry, OauthApplicationAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    oauth_application_name = sgqlc.types.Field(String, graphql_name='oauthApplicationName')
+    oauth_application_resource_path = sgqlc.types.Field(URI, graphql_name='oauthApplicationResourcePath')
+    oauth_application_url = sgqlc.types.Field(URI, graphql_name='oauthApplicationUrl')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgRemoveBillingManagerAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    reason = sgqlc.types.Field(OrgRemoveBillingManagerAuditEntryReason, graphql_name='reason')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgRemoveMemberAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    membership_types = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(OrgRemoveMemberAuditEntryMembershipType)), graphql_name='membershipTypes')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    reason = sgqlc.types.Field(OrgRemoveMemberAuditEntryReason, graphql_name='reason')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgRemoveOutsideCollaboratorAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    membership_types = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(OrgRemoveOutsideCollaboratorAuditEntryMembershipType)), graphql_name='membershipTypes')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    reason = sgqlc.types.Field(OrgRemoveOutsideCollaboratorAuditEntryReason, graphql_name='reason')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgRestoreMemberAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    restored_custom_email_routings_count = sgqlc.types.Field(Int, graphql_name='restoredCustomEmailRoutingsCount')
+    restored_issue_assignments_count = sgqlc.types.Field(Int, graphql_name='restoredIssueAssignmentsCount')
+    restored_memberships = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('OrgRestoreMemberAuditEntryMembership')), graphql_name='restoredMemberships')
+    restored_memberships_count = sgqlc.types.Field(Int, graphql_name='restoredMembershipsCount')
+    restored_repositories_count = sgqlc.types.Field(Int, graphql_name='restoredRepositoriesCount')
+    restored_repository_stars_count = sgqlc.types.Field(Int, graphql_name='restoredRepositoryStarsCount')
+    restored_repository_watches_count = sgqlc.types.Field(Int, graphql_name='restoredRepositoryWatchesCount')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgRestoreMemberMembershipOrganizationAuditEntryData(sgqlc.types.Type, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+
+
+class OrgRestoreMemberMembershipRepositoryAuditEntryData(sgqlc.types.Type, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+
+
+class OrgRestoreMemberMembershipTeamAuditEntryData(sgqlc.types.Type, TeamAuditEntryData):
+    __schema__ = github_schema
+    team = sgqlc.types.Field('Team', graphql_name='team')
+    team_name = sgqlc.types.Field(String, graphql_name='teamName')
+    team_resource_path = sgqlc.types.Field(URI, graphql_name='teamResourcePath')
+    team_url = sgqlc.types.Field(URI, graphql_name='teamUrl')
+
+
+class OrgUnblockUserAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    blocked_user = sgqlc.types.Field('User', graphql_name='blockedUser')
+    blocked_user_name = sgqlc.types.Field(String, graphql_name='blockedUserName')
+    blocked_user_resource_path = sgqlc.types.Field(URI, graphql_name='blockedUserResourcePath')
+    blocked_user_url = sgqlc.types.Field(URI, graphql_name='blockedUserUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgUpdateDefaultRepositoryPermissionAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    permission = sgqlc.types.Field(OrgUpdateDefaultRepositoryPermissionAuditEntryPermission, graphql_name='permission')
+    permission_was = sgqlc.types.Field(OrgUpdateDefaultRepositoryPermissionAuditEntryPermission, graphql_name='permissionWas')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgUpdateMemberAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    permission = sgqlc.types.Field(OrgUpdateMemberAuditEntryPermission, graphql_name='permission')
+    permission_was = sgqlc.types.Field(OrgUpdateMemberAuditEntryPermission, graphql_name='permissionWas')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class OrgUpdateMemberRepositoryCreationPermissionAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    can_create_repositories = sgqlc.types.Field(Boolean, graphql_name='canCreateRepositories')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+    visibility = sgqlc.types.Field(OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility, graphql_name='visibility')
+
+
+class OrgUpdateMemberRepositoryInvitationPermissionAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    can_invite_outside_collaborators_to_repositories = sgqlc.types.Field(Boolean, graphql_name='canInviteOutsideCollaboratorsToRepositories')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class Organization(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageSearch, ProjectOwner, RepositoryOwner, UniformResourceLocatable, MemberStatusable, ProfileOwner, Sponsorable):
+    __schema__ = github_schema
+    any_pinnable_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='anyPinnableItems', args=sgqlc.types.ArgDict((
+        ('type', sgqlc.types.Arg(PinnableItemType, graphql_name='type', default=None)),
+))
+    )
+    audit_log = sgqlc.types.Field(sgqlc.types.non_null(OrganizationAuditEntryConnection), graphql_name='auditLog', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+        ('order_by', sgqlc.types.Arg(AuditLogOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'DESC'})),
+))
+    )
     avatar_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
         ('size', sgqlc.types.Arg(Int, graphql_name='size', default=None)),
 ))
     )
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
     description = sgqlc.types.Field(String, graphql_name='description')
+    description_html = sgqlc.types.Field(String, graphql_name='descriptionHTML')
     email = sgqlc.types.Field(String, graphql_name='email')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     is_verified = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isVerified')
+    item_showcase = sgqlc.types.Field(sgqlc.types.non_null(ProfileItemShowcase), graphql_name='itemShowcase')
     location = sgqlc.types.Field(String, graphql_name='location')
     login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
     member_statuses = sgqlc.types.Field(sgqlc.types.non_null(UserStatusConnection), graphql_name='memberStatuses', args=sgqlc.types.ArgDict((
@@ -3830,18 +7418,23 @@ class Organization(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, Registry
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
-    pinned_repositories = sgqlc.types.Field(sgqlc.types.non_null(RepositoryConnection), graphql_name='pinnedRepositories', args=sgqlc.types.ArgDict((
-        ('privacy', sgqlc.types.Arg(RepositoryPrivacy, graphql_name='privacy', default=None)),
-        ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default=None)),
-        ('affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='affiliations', default=['OWNER', 'COLLABORATOR'])),
-        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=['OWNER', 'COLLABORATOR'])),
-        ('is_locked', sgqlc.types.Arg(Boolean, graphql_name='isLocked', default=None)),
+    pinnable_items = sgqlc.types.Field(sgqlc.types.non_null(PinnableItemConnection), graphql_name='pinnableItems', args=sgqlc.types.ArgDict((
+        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
+    pinned_items = sgqlc.types.Field(sgqlc.types.non_null(PinnableItemConnection), graphql_name='pinnedItems', args=sgqlc.types.ArgDict((
+        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    pinned_items_remaining = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='pinnedItemsRemaining')
     project = sgqlc.types.Field('Project', graphql_name='project', args=sgqlc.types.ArgDict((
         ('number', sgqlc.types.Arg(sgqlc.types.non_null(Int), graphql_name='number', default=None)),
 ))
@@ -3878,6 +7471,24 @@ class Organization(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, Registry
     requires_two_factor_authentication = sgqlc.types.Field(Boolean, graphql_name='requiresTwoFactorAuthentication')
     resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
     saml_identity_provider = sgqlc.types.Field('OrganizationIdentityProvider', graphql_name='samlIdentityProvider')
+    sponsors_listing = sgqlc.types.Field('SponsorsListing', graphql_name='sponsorsListing')
+    sponsorships_as_maintainer = sgqlc.types.Field(sgqlc.types.non_null(SponsorshipConnection), graphql_name='sponsorshipsAsMaintainer', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('include_private', sgqlc.types.Arg(Boolean, graphql_name='includePrivate', default=False)),
+        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    sponsorships_as_sponsor = sgqlc.types.Field(sgqlc.types.non_null(SponsorshipConnection), graphql_name='sponsorshipsAsSponsor', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
+))
+    )
     team = sgqlc.types.Field('Team', graphql_name='team', args=sgqlc.types.ArgDict((
         ('slug', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='slug', default=None)),
 ))
@@ -3898,8 +7509,10 @@ class Organization(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, Registry
     )
     teams_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='teamsResourcePath')
     teams_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='teamsUrl')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
     viewer_can_administer = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanAdminister')
+    viewer_can_change_pinned_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanChangePinnedItems')
     viewer_can_create_projects = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanCreateProjects')
     viewer_can_create_repositories = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanCreateRepositories')
     viewer_can_create_teams = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanCreateTeams')
@@ -3937,12 +7550,100 @@ class OrganizationInvitation(sgqlc.types.Type, Node):
     role = sgqlc.types.Field(sgqlc.types.non_null(OrganizationInvitationRole), graphql_name='role')
 
 
+class OrganizationTeamsHovercardContext(sgqlc.types.Type, HovercardContext):
+    __schema__ = github_schema
+    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
+    octicon = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='octicon')
+    relevant_teams = sgqlc.types.Field(sgqlc.types.non_null(TeamConnection), graphql_name='relevantTeams', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    teams_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='teamsResourcePath')
+    teams_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='teamsUrl')
+    total_team_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalTeamCount')
+
+
+class OrganizationsHovercardContext(sgqlc.types.Type, HovercardContext):
+    __schema__ = github_schema
+    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
+    octicon = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='octicon')
+    relevant_organizations = sgqlc.types.Field(sgqlc.types.non_null(OrganizationConnection), graphql_name='relevantOrganizations', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    total_organization_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalOrganizationCount')
+
+
 class PinnedEvent(sgqlc.types.Type, Node):
     __schema__ = github_schema
     actor = sgqlc.types.Field(Actor, graphql_name='actor')
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     issue = sgqlc.types.Field(sgqlc.types.non_null(Issue), graphql_name='issue')
+
+
+class PrivateRepositoryForkingDisableAuditEntry(sgqlc.types.Type, Node, AuditEntry, EnterpriseAuditEntryData, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class PrivateRepositoryForkingEnableAuditEntry(sgqlc.types.Type, Node, AuditEntry, EnterpriseAuditEntryData, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
 
 
 class Project(sgqlc.types.Type, Node, Closable, Updatable):
@@ -4018,45 +7719,15 @@ class ProjectColumn(sgqlc.types.Type, Node):
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
 
 
-class ProtectedBranch(sgqlc.types.Type, Node):
-    __schema__ = github_schema
-    creator = sgqlc.types.Field(Actor, graphql_name='creator')
-    has_dismissable_stale_reviews = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasDismissableStaleReviews')
-    has_required_reviews = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasRequiredReviews')
-    has_required_status_checks = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasRequiredStatusChecks')
-    has_restricted_pushes = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasRestrictedPushes')
-    has_restricted_review_dismissals = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasRestrictedReviewDismissals')
-    has_strict_required_status_checks = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasStrictRequiredStatusChecks')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-    is_admin_enforced = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isAdminEnforced')
-    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
-    push_allowances = sgqlc.types.Field(sgqlc.types.non_null(PushAllowanceConnection), graphql_name='pushAllowances', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-))
-    )
-    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
-    required_status_check_contexts = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='requiredStatusCheckContexts')
-    review_dismissal_allowances = sgqlc.types.Field(sgqlc.types.non_null(ReviewDismissalAllowanceConnection), graphql_name='reviewDismissalAllowances', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-))
-    )
-
-
 class PublicKey(sgqlc.types.Type, Node):
     __schema__ = github_schema
     accessed_at = sgqlc.types.Field(DateTime, graphql_name='accessedAt')
-    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
-    fingerprint = sgqlc.types.Field(String, graphql_name='fingerprint')
+    created_at = sgqlc.types.Field(DateTime, graphql_name='createdAt')
+    fingerprint = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='fingerprint')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-    is_read_only = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isReadOnly')
+    is_read_only = sgqlc.types.Field(Boolean, graphql_name='isReadOnly')
     key = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='key')
-    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    updated_at = sgqlc.types.Field(DateTime, graphql_name='updatedAt')
 
 
 class PullRequest(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatable, UpdatableComment, Labelable, Lockable, Reactable, RepositoryNode, Subscribable, UniformResourceLocatable):
@@ -4075,6 +7746,7 @@ class PullRequest(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatab
     base_ref = sgqlc.types.Field('Ref', graphql_name='baseRef')
     base_ref_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='baseRefName')
     base_ref_oid = sgqlc.types.Field(sgqlc.types.non_null(GitObjectID), graphql_name='baseRefOid')
+    base_repository = sgqlc.types.Field('Repository', graphql_name='baseRepository')
     body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
     body_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='bodyHTML')
     body_text = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='bodyText')
@@ -4100,11 +7772,22 @@ class PullRequest(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatab
     database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
     deletions = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='deletions')
     editor = sgqlc.types.Field(Actor, graphql_name='editor')
+    files = sgqlc.types.Field(PullRequestChangedFileConnection, graphql_name='files', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
     head_ref = sgqlc.types.Field('Ref', graphql_name='headRef')
     head_ref_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='headRefName')
     head_ref_oid = sgqlc.types.Field(sgqlc.types.non_null(GitObjectID), graphql_name='headRefOid')
     head_repository = sgqlc.types.Field('Repository', graphql_name='headRepository')
     head_repository_owner = sgqlc.types.Field(RepositoryOwner, graphql_name='headRepositoryOwner')
+    hovercard = sgqlc.types.Field(sgqlc.types.non_null(Hovercard), graphql_name='hovercard', args=sgqlc.types.ArgDict((
+        ('include_notification_contexts', sgqlc.types.Arg(Boolean, graphql_name='includeNotificationContexts', default=True)),
+))
+    )
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     includes_created_edit = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='includesCreatedEdit')
     is_cross_repository = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isCrossRepository')
@@ -4164,6 +7847,13 @@ class PullRequest(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatab
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
+    review_threads = sgqlc.types.Field(sgqlc.types.non_null(PullRequestReviewThreadConnection), graphql_name='reviewThreads', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
     reviews = sgqlc.types.Field(PullRequestReviewConnection, graphql_name='reviews', args=sgqlc.types.ArgDict((
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
@@ -4175,8 +7865,10 @@ class PullRequest(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatab
     )
     state = sgqlc.types.Field(sgqlc.types.non_null(PullRequestState), graphql_name='state')
     suggested_reviewers = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(SuggestedReviewer)), graphql_name='suggestedReviewers')
-    timeline = sgqlc.types.Field(sgqlc.types.non_null(PullRequestTimelineConnection), graphql_name='timeline', args=sgqlc.types.ArgDict((
+    timeline_items = sgqlc.types.Field(sgqlc.types.non_null(PullRequestTimelineItemsConnection), graphql_name='timelineItems', args=sgqlc.types.ArgDict((
         ('since', sgqlc.types.Arg(DateTime, graphql_name='since', default=None)),
+        ('skip', sgqlc.types.Arg(Int, graphql_name='skip', default=None)),
+        ('item_types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PullRequestTimelineItemsItemType)), graphql_name='itemTypes', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -4209,6 +7901,23 @@ class PullRequestCommit(sgqlc.types.Type, Node, UniformResourceLocatable):
     pull_request = sgqlc.types.Field(sgqlc.types.non_null(PullRequest), graphql_name='pullRequest')
     resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+
+
+class PullRequestCommitCommentThread(sgqlc.types.Type, Node, RepositoryNode):
+    __schema__ = github_schema
+    comments = sgqlc.types.Field(sgqlc.types.non_null(CommitCommentConnection), graphql_name='comments', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    commit = sgqlc.types.Field(sgqlc.types.non_null(Commit), graphql_name='commit')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    path = sgqlc.types.Field(String, graphql_name='path')
+    position = sgqlc.types.Field(Int, graphql_name='position')
+    pull_request = sgqlc.types.Field(sgqlc.types.non_null(PullRequest), graphql_name='pullRequest')
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
 
 
 class PullRequestReview(sgqlc.types.Type, Node, Comment, Deletable, Updatable, UpdatableComment, Reactable, RepositoryNode):
@@ -4279,7 +7988,7 @@ class PullRequestReviewComment(sgqlc.types.Type, Node, Comment, Deletable, Updat
     body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
     body_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='bodyHTML')
     body_text = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='bodyText')
-    commit = sgqlc.types.Field(sgqlc.types.non_null(Commit), graphql_name='commit')
+    commit = sgqlc.types.Field(Commit, graphql_name='commit')
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     created_via_email = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='createdViaEmail')
     database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
@@ -4337,11 +8046,16 @@ class PullRequestReviewThread(sgqlc.types.Type, Node):
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('skip', sgqlc.types.Arg(Int, graphql_name='skip', default=None)),
 ))
     )
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_resolved = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isResolved')
     pull_request = sgqlc.types.Field(sgqlc.types.non_null(PullRequest), graphql_name='pullRequest')
     repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
+    resolved_by = sgqlc.types.Field('User', graphql_name='resolvedBy')
+    viewer_can_resolve = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanResolve')
+    viewer_can_unresolve = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanUnresolve')
 
 
 class PushAllowance(sgqlc.types.Type, Node):
@@ -4359,6 +8073,16 @@ class Reaction(sgqlc.types.Type, Node):
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     reactable = sgqlc.types.Field(sgqlc.types.non_null(Reactable), graphql_name='reactable')
     user = sgqlc.types.Field('User', graphql_name='user')
+
+
+class ReadyForReviewEvent(sgqlc.types.Type, Node, UniformResourceLocatable):
+    __schema__ = github_schema
+    actor = sgqlc.types.Field(Actor, graphql_name='actor')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    pull_request = sgqlc.types.Field(sgqlc.types.non_null(PullRequest), graphql_name='pullRequest')
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
 
 
 class Ref(sgqlc.types.Type, Node):
@@ -4394,11 +8118,38 @@ class ReferencedEvent(sgqlc.types.Type, Node):
     subject = sgqlc.types.Field(sgqlc.types.non_null('ReferencedSubject'), graphql_name='subject')
 
 
+class RegistryPackage(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
+class RegistryPackageDependency(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
+class RegistryPackageFile(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+
+
+class RegistryPackageTag(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
+class RegistryPackageVersion(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
 class Release(sgqlc.types.Type, Node, UniformResourceLocatable):
     __schema__ = github_schema
     author = sgqlc.types.Field('User', graphql_name='author')
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     description = sgqlc.types.Field(String, graphql_name='description')
+    description_html = sgqlc.types.Field(HTML, graphql_name='descriptionHTML')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     is_draft = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDraft')
     is_prerelease = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPrerelease')
@@ -4413,6 +8164,10 @@ class Release(sgqlc.types.Type, Node, UniformResourceLocatable):
 ))
     )
     resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    short_description_html = sgqlc.types.Field(HTML, graphql_name='shortDescriptionHTML', args=sgqlc.types.ArgDict((
+        ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=200)),
+))
+    )
     tag = sgqlc.types.Field(Ref, graphql_name='tag')
     tag_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='tagName')
     updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
@@ -4460,9 +8215,518 @@ class ReopenedEvent(sgqlc.types.Type, Node):
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
 
 
-class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Subscribable, Starrable, UniformResourceLocatable, RepositoryInfo):
+class RepoAccessAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+    visibility = sgqlc.types.Field(RepoAccessAuditEntryVisibility, graphql_name='visibility')
+
+
+class RepoAddMemberAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+    visibility = sgqlc.types.Field(RepoAddMemberAuditEntryVisibility, graphql_name='visibility')
+
+
+class RepoAddTopicAuditEntry(sgqlc.types.Type, Node, AuditEntry, RepositoryAuditEntryData, OrganizationAuditEntryData, TopicAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    topic = sgqlc.types.Field('Topic', graphql_name='topic')
+    topic_name = sgqlc.types.Field(String, graphql_name='topicName')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoArchivedAuditEntry(sgqlc.types.Type, Node, AuditEntry, RepositoryAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+    visibility = sgqlc.types.Field(RepoArchivedAuditEntryVisibility, graphql_name='visibility')
+
+
+class RepoChangeMergeSettingAuditEntry(sgqlc.types.Type, Node, AuditEntry, RepositoryAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_enabled = sgqlc.types.Field(Boolean, graphql_name='isEnabled')
+    merge_type = sgqlc.types.Field(RepoChangeMergeSettingAuditEntryMergeType, graphql_name='mergeType')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigDisableAnonymousGitAccessAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigDisableCollaboratorsOnlyAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigDisableContributorsOnlyAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigDisableSockpuppetDisallowedAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigEnableAnonymousGitAccessAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigEnableCollaboratorsOnlyAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigEnableContributorsOnlyAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigEnableSockpuppetDisallowedAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigLockAnonymousGitAccessAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoConfigUnlockAnonymousGitAccessAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepoCreateAuditEntry(sgqlc.types.Type, Node, AuditEntry, RepositoryAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    fork_parent_name = sgqlc.types.Field(String, graphql_name='forkParentName')
+    fork_source_name = sgqlc.types.Field(String, graphql_name='forkSourceName')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+    visibility = sgqlc.types.Field(RepoCreateAuditEntryVisibility, graphql_name='visibility')
+
+
+class RepoDestroyAuditEntry(sgqlc.types.Type, Node, AuditEntry, RepositoryAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+    visibility = sgqlc.types.Field(RepoDestroyAuditEntryVisibility, graphql_name='visibility')
+
+
+class RepoRemoveMemberAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+    visibility = sgqlc.types.Field(RepoRemoveMemberAuditEntryVisibility, graphql_name='visibility')
+
+
+class RepoRemoveTopicAuditEntry(sgqlc.types.Type, Node, AuditEntry, RepositoryAuditEntryData, OrganizationAuditEntryData, TopicAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    topic = sgqlc.types.Field('Topic', graphql_name='topic')
+    topic_name = sgqlc.types.Field(String, graphql_name='topicName')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, RegistryPackageSearch, Subscribable, Starrable, UniformResourceLocatable, RepositoryInfo):
     __schema__ = github_schema
     assignable_users = sgqlc.types.Field(sgqlc.types.non_null(UserConnection), graphql_name='assignableUsers', args=sgqlc.types.ArgDict((
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -4479,6 +8743,7 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Sub
     code_of_conduct = sgqlc.types.Field(CodeOfConduct, graphql_name='codeOfConduct')
     collaborators = sgqlc.types.Field(RepositoryCollaboratorConnection, graphql_name='collaborators', args=sgqlc.types.ArgDict((
         ('affiliation', sgqlc.types.Arg(CollaboratorAffiliation, graphql_name='affiliation', default=None)),
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -4527,15 +8792,19 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Sub
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
+    funding_links = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(FundingLink))), graphql_name='fundingLinks')
     has_issues_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasIssuesEnabled')
+    has_projects_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasProjectsEnabled')
     has_wiki_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasWikiEnabled')
     homepage_url = sgqlc.types.Field(URI, graphql_name='homepageUrl')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     is_archived = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isArchived')
+    is_disabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isDisabled')
     is_fork = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFork')
     is_locked = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isLocked')
     is_mirror = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isMirror')
     is_private = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPrivate')
+    is_template = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isTemplate')
     issue = sgqlc.types.Field(Issue, graphql_name='issue', args=sgqlc.types.ArgDict((
         ('number', sgqlc.types.Arg(sgqlc.types.non_null(Int), graphql_name='number', default=None)),
 ))
@@ -4548,6 +8817,7 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Sub
         ('order_by', sgqlc.types.Arg(IssueOrder, graphql_name='orderBy', default=None)),
         ('labels', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='labels', default=None)),
         ('states', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(IssueState)), graphql_name='states', default=None)),
+        ('filter_by', sgqlc.types.Arg(IssueFilters, graphql_name='filterBy', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -4577,6 +8847,7 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Sub
     license_info = sgqlc.types.Field(License, graphql_name='licenseInfo')
     lock_reason = sgqlc.types.Field(RepositoryLockReason, graphql_name='lockReason')
     mentionable_users = sgqlc.types.Field(sgqlc.types.non_null(UserConnection), graphql_name='mentionableUsers', args=sgqlc.types.ArgDict((
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -4605,6 +8876,7 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Sub
         ('expression', sgqlc.types.Arg(String, graphql_name='expression', default=None)),
 ))
     )
+    open_graph_image_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='openGraphImageUrl')
     owner = sgqlc.types.Field(sgqlc.types.non_null(RepositoryOwner), graphql_name='owner')
     parent = sgqlc.types.Field('Repository', graphql_name='parent')
     primary_language = sgqlc.types.Field(Language, graphql_name='primaryLanguage')
@@ -4690,8 +8962,10 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Sub
         ('order_by', sgqlc.types.Arg(StarOrder, graphql_name='orderBy', default=None)),
 ))
     )
+    template_repository = sgqlc.types.Field('Repository', graphql_name='templateRepository')
     updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    uses_custom_open_graph_image = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='usesCustomOpenGraphImage')
     viewer_can_administer = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanAdminister')
     viewer_can_create_projects = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanCreateProjects')
     viewer_can_subscribe = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanSubscribe')
@@ -4699,6 +8973,13 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Sub
     viewer_has_starred = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerHasStarred')
     viewer_permission = sgqlc.types.Field(RepositoryPermission, graphql_name='viewerPermission')
     viewer_subscription = sgqlc.types.Field(SubscriptionState, graphql_name='viewerSubscription')
+    vulnerability_alerts = sgqlc.types.Field(RepositoryVulnerabilityAlertConnection, graphql_name='vulnerabilityAlerts', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
     watchers = sgqlc.types.Field(sgqlc.types.non_null(UserConnection), graphql_name='watchers', args=sgqlc.types.ArgDict((
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
@@ -4723,6 +9004,70 @@ class RepositoryTopic(sgqlc.types.Type, Node, UniformResourceLocatable):
     resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
     topic = sgqlc.types.Field(sgqlc.types.non_null('Topic'), graphql_name='topic')
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+
+
+class RepositoryVisibilityChangeDisableAuditEntry(sgqlc.types.Type, Node, AuditEntry, EnterpriseAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepositoryVisibilityChangeEnableAuditEntry(sgqlc.types.Type, Node, AuditEntry, EnterpriseAuditEntryData, OrganizationAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class RepositoryVulnerabilityAlert(sgqlc.types.Type, Node, RepositoryNode):
+    __schema__ = github_schema
+    dismiss_reason = sgqlc.types.Field(String, graphql_name='dismissReason')
+    dismissed_at = sgqlc.types.Field(DateTime, graphql_name='dismissedAt')
+    dismisser = sgqlc.types.Field('User', graphql_name='dismisser')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    repository = sgqlc.types.Field(sgqlc.types.non_null(Repository), graphql_name='repository')
+    security_advisory = sgqlc.types.Field('SecurityAdvisory', graphql_name='securityAdvisory')
+    security_vulnerability = sgqlc.types.Field(SecurityVulnerability, graphql_name='securityVulnerability')
+    vulnerable_manifest_filename = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='vulnerableManifestFilename')
+    vulnerable_manifest_path = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='vulnerableManifestPath')
+    vulnerable_requirements = sgqlc.types.Field(String, graphql_name='vulnerableRequirements')
 
 
 class RestrictedContribution(sgqlc.types.Type, Contribution):
@@ -4783,6 +9128,22 @@ class ReviewRequestedEvent(sgqlc.types.Type, Node):
     requested_reviewer = sgqlc.types.Field('RequestedReviewer', graphql_name='requestedReviewer')
 
 
+class ReviewStatusHovercardContext(sgqlc.types.Type, HovercardContext):
+    __schema__ = github_schema
+    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
+    octicon = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='octicon')
+
+
+class SavedReply(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
+    body_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='bodyHTML')
+    database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    title = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='title')
+    user = sgqlc.types.Field(Actor, graphql_name='user')
+
+
 class SecurityAdvisory(sgqlc.types.Type, Node):
     __schema__ = github_schema
     database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
@@ -4790,6 +9151,7 @@ class SecurityAdvisory(sgqlc.types.Type, Node):
     ghsa_id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='ghsaId')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     identifiers = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(SecurityAdvisoryIdentifier))), graphql_name='identifiers')
+    origin = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='origin')
     published_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='publishedAt')
     references = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(SecurityAdvisoryReference))), graphql_name='references')
     severity = sgqlc.types.Field(sgqlc.types.non_null(SecurityAdvisorySeverity), graphql_name='severity')
@@ -4820,6 +9182,48 @@ class SmimeSignature(sgqlc.types.Type, GitSignature):
     was_signed_by_git_hub = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='wasSignedByGitHub')
 
 
+class SponsorsListing(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    full_description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='fullDescription')
+    full_description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='fullDescriptionHTML')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    short_description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='shortDescription')
+    slug = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='slug')
+    tiers = sgqlc.types.Field(SponsorsTierConnection, graphql_name='tiers', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(SponsorsTierOrder, graphql_name='orderBy', default={'field': 'MONTHLY_PRICE_IN_CENTS', 'direction': 'ASC'})),
+))
+    )
+
+
+class SponsorsTier(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    admin_info = sgqlc.types.Field(SponsorsTierAdminInfo, graphql_name='adminInfo')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='description')
+    description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='descriptionHTML')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    monthly_price_in_cents = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='monthlyPriceInCents')
+    monthly_price_in_dollars = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='monthlyPriceInDollars')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    sponsors_listing = sgqlc.types.Field(sgqlc.types.non_null(SponsorsListing), graphql_name='sponsorsListing')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+
+
+class Sponsorship(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    maintainer = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='maintainer')
+    privacy_level = sgqlc.types.Field(sgqlc.types.non_null(SponsorshipPrivacy), graphql_name='privacyLevel')
+    sponsor = sgqlc.types.Field('User', graphql_name='sponsor')
+    tier = sgqlc.types.Field(SponsorsTier, graphql_name='tier')
+
+
 class Status(sgqlc.types.Type, Node):
     __schema__ = github_schema
     commit = sgqlc.types.Field(Commit, graphql_name='commit')
@@ -4834,6 +9238,10 @@ class Status(sgqlc.types.Type, Node):
 
 class StatusContext(sgqlc.types.Type, Node):
     __schema__ = github_schema
+    avatar_url = sgqlc.types.Field(URI, graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
+        ('size', sgqlc.types.Arg(Int, graphql_name='size', default=40)),
+))
+    )
     commit = sgqlc.types.Field(Commit, graphql_name='commit')
     context = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='context')
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
@@ -4892,6 +9300,21 @@ class Team(sgqlc.types.Type, Node, Subscribable, MemberStatusable):
     combined_slug = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='combinedSlug')
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     description = sgqlc.types.Field(String, graphql_name='description')
+    discussion = sgqlc.types.Field('TeamDiscussion', graphql_name='discussion', args=sgqlc.types.ArgDict((
+        ('number', sgqlc.types.Arg(sgqlc.types.non_null(Int), graphql_name='number', default=None)),
+))
+    )
+    discussions = sgqlc.types.Field(sgqlc.types.non_null(TeamDiscussionConnection), graphql_name='discussions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('is_pinned', sgqlc.types.Arg(Boolean, graphql_name='isPinned', default=None)),
+        ('order_by', sgqlc.types.Arg(TeamDiscussionOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    discussions_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='discussionsResourcePath')
+    discussions_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='discussionsUrl')
     edit_team_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='editTeamResourcePath')
     edit_team_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='editTeamUrl')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
@@ -4951,6 +9374,264 @@ class Team(sgqlc.types.Type, Node, Subscribable, MemberStatusable):
     viewer_subscription = sgqlc.types.Field(SubscriptionState, graphql_name='viewerSubscription')
 
 
+class TeamAddMemberAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, TeamAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_ldap_mapped = sgqlc.types.Field(Boolean, graphql_name='isLdapMapped')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    team = sgqlc.types.Field(Team, graphql_name='team')
+    team_name = sgqlc.types.Field(String, graphql_name='teamName')
+    team_resource_path = sgqlc.types.Field(URI, graphql_name='teamResourcePath')
+    team_url = sgqlc.types.Field(URI, graphql_name='teamUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class TeamAddRepositoryAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData, TeamAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_ldap_mapped = sgqlc.types.Field(Boolean, graphql_name='isLdapMapped')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field(Repository, graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    team = sgqlc.types.Field(Team, graphql_name='team')
+    team_name = sgqlc.types.Field(String, graphql_name='teamName')
+    team_resource_path = sgqlc.types.Field(URI, graphql_name='teamResourcePath')
+    team_url = sgqlc.types.Field(URI, graphql_name='teamUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class TeamChangeParentTeamAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, TeamAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_ldap_mapped = sgqlc.types.Field(Boolean, graphql_name='isLdapMapped')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    parent_team = sgqlc.types.Field(Team, graphql_name='parentTeam')
+    parent_team_name = sgqlc.types.Field(String, graphql_name='parentTeamName')
+    parent_team_name_was = sgqlc.types.Field(String, graphql_name='parentTeamNameWas')
+    parent_team_resource_path = sgqlc.types.Field(URI, graphql_name='parentTeamResourcePath')
+    parent_team_url = sgqlc.types.Field(URI, graphql_name='parentTeamUrl')
+    parent_team_was = sgqlc.types.Field(Team, graphql_name='parentTeamWas')
+    parent_team_was_resource_path = sgqlc.types.Field(URI, graphql_name='parentTeamWasResourcePath')
+    parent_team_was_url = sgqlc.types.Field(URI, graphql_name='parentTeamWasUrl')
+    team = sgqlc.types.Field(Team, graphql_name='team')
+    team_name = sgqlc.types.Field(String, graphql_name='teamName')
+    team_resource_path = sgqlc.types.Field(URI, graphql_name='teamResourcePath')
+    team_url = sgqlc.types.Field(URI, graphql_name='teamUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class TeamDiscussion(sgqlc.types.Type, Node, Comment, Deletable, Reactable, Subscribable, UniformResourceLocatable, Updatable, UpdatableComment):
+    __schema__ = github_schema
+    author = sgqlc.types.Field(Actor, graphql_name='author')
+    author_association = sgqlc.types.Field(sgqlc.types.non_null(CommentAuthorAssociation), graphql_name='authorAssociation')
+    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
+    body_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='bodyHTML')
+    body_text = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='bodyText')
+    body_version = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='bodyVersion')
+    comments = sgqlc.types.Field(sgqlc.types.non_null(TeamDiscussionCommentConnection), graphql_name='comments', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(TeamDiscussionCommentOrder, graphql_name='orderBy', default=None)),
+        ('from_comment', sgqlc.types.Arg(Int, graphql_name='fromComment', default=None)),
+))
+    )
+    comments_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='commentsResourcePath')
+    comments_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='commentsUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    created_via_email = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='createdViaEmail')
+    database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
+    editor = sgqlc.types.Field(Actor, graphql_name='editor')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    includes_created_edit = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='includesCreatedEdit')
+    is_pinned = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPinned')
+    is_private = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPrivate')
+    last_edited_at = sgqlc.types.Field(DateTime, graphql_name='lastEditedAt')
+    number = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='number')
+    published_at = sgqlc.types.Field(DateTime, graphql_name='publishedAt')
+    reaction_groups = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ReactionGroup)), graphql_name='reactionGroups')
+    reactions = sgqlc.types.Field(sgqlc.types.non_null(ReactionConnection), graphql_name='reactions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('content', sgqlc.types.Arg(ReactionContent, graphql_name='content', default=None)),
+        ('order_by', sgqlc.types.Arg(ReactionOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    team = sgqlc.types.Field(sgqlc.types.non_null(Team), graphql_name='team')
+    title = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='title')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    user_content_edits = sgqlc.types.Field(UserContentEditConnection, graphql_name='userContentEdits', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    viewer_can_delete = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanDelete')
+    viewer_can_pin = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanPin')
+    viewer_can_react = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanReact')
+    viewer_can_subscribe = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanSubscribe')
+    viewer_can_update = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanUpdate')
+    viewer_cannot_update_reasons = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(CommentCannotUpdateReason))), graphql_name='viewerCannotUpdateReasons')
+    viewer_did_author = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerDidAuthor')
+    viewer_subscription = sgqlc.types.Field(SubscriptionState, graphql_name='viewerSubscription')
+
+
+class TeamDiscussionComment(sgqlc.types.Type, Node, Comment, Deletable, Reactable, UniformResourceLocatable, Updatable, UpdatableComment):
+    __schema__ = github_schema
+    author = sgqlc.types.Field(Actor, graphql_name='author')
+    author_association = sgqlc.types.Field(sgqlc.types.non_null(CommentAuthorAssociation), graphql_name='authorAssociation')
+    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
+    body_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='bodyHTML')
+    body_text = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='bodyText')
+    body_version = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='bodyVersion')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    created_via_email = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='createdViaEmail')
+    database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
+    discussion = sgqlc.types.Field(sgqlc.types.non_null(TeamDiscussion), graphql_name='discussion')
+    editor = sgqlc.types.Field(Actor, graphql_name='editor')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    includes_created_edit = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='includesCreatedEdit')
+    last_edited_at = sgqlc.types.Field(DateTime, graphql_name='lastEditedAt')
+    number = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='number')
+    published_at = sgqlc.types.Field(DateTime, graphql_name='publishedAt')
+    reaction_groups = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ReactionGroup)), graphql_name='reactionGroups')
+    reactions = sgqlc.types.Field(sgqlc.types.non_null(ReactionConnection), graphql_name='reactions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('content', sgqlc.types.Arg(ReactionContent, graphql_name='content', default=None)),
+        ('order_by', sgqlc.types.Arg(ReactionOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    user_content_edits = sgqlc.types.Field(UserContentEditConnection, graphql_name='userContentEdits', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    viewer_can_delete = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanDelete')
+    viewer_can_react = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanReact')
+    viewer_can_update = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanUpdate')
+    viewer_cannot_update_reasons = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(CommentCannotUpdateReason))), graphql_name='viewerCannotUpdateReasons')
+    viewer_did_author = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerDidAuthor')
+
+
+class TeamRemoveMemberAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, TeamAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_ldap_mapped = sgqlc.types.Field(Boolean, graphql_name='isLdapMapped')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    team = sgqlc.types.Field(Team, graphql_name='team')
+    team_name = sgqlc.types.Field(String, graphql_name='teamName')
+    team_resource_path = sgqlc.types.Field(URI, graphql_name='teamResourcePath')
+    team_url = sgqlc.types.Field(URI, graphql_name='teamUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
+class TeamRemoveRepositoryAuditEntry(sgqlc.types.Type, Node, AuditEntry, OrganizationAuditEntryData, RepositoryAuditEntryData, TeamAuditEntryData):
+    __schema__ = github_schema
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    is_ldap_mapped = sgqlc.types.Field(Boolean, graphql_name='isLdapMapped')
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    organization = sgqlc.types.Field(Organization, graphql_name='organization')
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    repository = sgqlc.types.Field(Repository, graphql_name='repository')
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    team = sgqlc.types.Field(Team, graphql_name='team')
+    team_name = sgqlc.types.Field(String, graphql_name='teamName')
+    team_resource_path = sgqlc.types.Field(URI, graphql_name='teamResourcePath')
+    team_url = sgqlc.types.Field(URI, graphql_name='teamUrl')
+    user = sgqlc.types.Field('User', graphql_name='user')
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+
+
 class Topic(sgqlc.types.Type, Node, Starrable):
     __schema__ = github_schema
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
@@ -4994,9 +9675,9 @@ class UnassignedEvent(sgqlc.types.Type, Node):
     __schema__ = github_schema
     actor = sgqlc.types.Field(Actor, graphql_name='actor')
     assignable = sgqlc.types.Field(sgqlc.types.non_null(Assignable), graphql_name='assignable')
+    assignee = sgqlc.types.Field('Assignee', graphql_name='assignee')
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-    user = sgqlc.types.Field('User', graphql_name='user')
 
 
 class UnknownSignature(sgqlc.types.Type, GitSignature):
@@ -5043,8 +9724,12 @@ class UnsubscribedEvent(sgqlc.types.Type, Node):
     subscribable = sgqlc.types.Field(sgqlc.types.non_null(Subscribable), graphql_name='subscribable')
 
 
-class User(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageSearch, ProjectOwner, RepositoryOwner, UniformResourceLocatable):
+class User(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageSearch, ProjectOwner, RepositoryOwner, UniformResourceLocatable, ProfileOwner, Sponsorable):
     __schema__ = github_schema
+    any_pinnable_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='anyPinnableItems', args=sgqlc.types.ArgDict((
+        ('type', sgqlc.types.Arg(PinnableItemType, graphql_name='type', default=None)),
+))
+    )
     avatar_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
         ('size', sgqlc.types.Arg(Int, graphql_name='size', default=None)),
 ))
@@ -5103,6 +9788,10 @@ class User(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageS
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
+    hovercard = sgqlc.types.Field(sgqlc.types.non_null(Hovercard), graphql_name='hovercard', args=sgqlc.types.ArgDict((
+        ('primary_subject_id', sgqlc.types.Arg(ID, graphql_name='primarySubjectId', default=None)),
+))
+    )
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     is_bounty_hunter = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isBountyHunter')
     is_campus_expert = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isCampusExpert')
@@ -5122,12 +9811,14 @@ class User(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageS
         ('order_by', sgqlc.types.Arg(IssueOrder, graphql_name='orderBy', default=None)),
         ('labels', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='labels', default=None)),
         ('states', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(IssueState)), graphql_name='states', default=None)),
+        ('filter_by', sgqlc.types.Arg(IssueFilters, graphql_name='filterBy', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
+    item_showcase = sgqlc.types.Field(sgqlc.types.non_null(ProfileItemShowcase), graphql_name='itemShowcase')
     location = sgqlc.types.Field(String, graphql_name='location')
     login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
     name = sgqlc.types.Field(String, graphql_name='name')
@@ -5142,18 +9833,23 @@ class User(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageS
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
-    pinned_repositories = sgqlc.types.Field(sgqlc.types.non_null(RepositoryConnection), graphql_name='pinnedRepositories', args=sgqlc.types.ArgDict((
-        ('privacy', sgqlc.types.Arg(RepositoryPrivacy, graphql_name='privacy', default=None)),
-        ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default=None)),
-        ('affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='affiliations', default=['OWNER', 'COLLABORATOR'])),
-        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=['OWNER', 'COLLABORATOR'])),
-        ('is_locked', sgqlc.types.Arg(Boolean, graphql_name='isLocked', default=None)),
+    pinnable_items = sgqlc.types.Field(sgqlc.types.non_null(PinnableItemConnection), graphql_name='pinnableItems', args=sgqlc.types.ArgDict((
+        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
 ))
     )
+    pinned_items = sgqlc.types.Field(sgqlc.types.non_null(PinnableItemConnection), graphql_name='pinnedItems', args=sgqlc.types.ArgDict((
+        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    pinned_items_remaining = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='pinnedItemsRemaining')
     project = sgqlc.types.Field(Project, graphql_name='project', args=sgqlc.types.ArgDict((
         ('number', sgqlc.types.Arg(sgqlc.types.non_null(Int), graphql_name='number', default=None)),
 ))
@@ -5219,6 +9915,32 @@ class User(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageS
 ))
     )
     resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    saved_replies = sgqlc.types.Field(SavedReplyConnection, graphql_name='savedReplies', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(SavedReplyOrder, graphql_name='orderBy', default={'field': 'UPDATED_AT', 'direction': 'DESC'})),
+))
+    )
+    sponsors_listing = sgqlc.types.Field(SponsorsListing, graphql_name='sponsorsListing')
+    sponsorships_as_maintainer = sgqlc.types.Field(sgqlc.types.non_null(SponsorshipConnection), graphql_name='sponsorshipsAsMaintainer', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('include_private', sgqlc.types.Arg(Boolean, graphql_name='includePrivate', default=False)),
+        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    sponsorships_as_sponsor = sgqlc.types.Field(sgqlc.types.non_null(SponsorshipConnection), graphql_name='sponsorshipsAsSponsor', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
+))
+    )
     starred_repositories = sgqlc.types.Field(sgqlc.types.non_null(StarredRepositoryConnection), graphql_name='starredRepositories', args=sgqlc.types.ArgDict((
         ('owned_by_viewer', sgqlc.types.Arg(Boolean, graphql_name='ownedByViewer', default=None)),
         ('order_by', sgqlc.types.Arg(StarOrder, graphql_name='orderBy', default=None)),
@@ -5229,8 +9951,18 @@ class User(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageS
 ))
     )
     status = sgqlc.types.Field('UserStatus', graphql_name='status')
+    top_repositories = sgqlc.types.Field(sgqlc.types.non_null(RepositoryConnection), graphql_name='topRepositories', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(sgqlc.types.non_null(RepositoryOrder), graphql_name='orderBy', default=None)),
+        ('since', sgqlc.types.Arg(DateTime, graphql_name='since', default=None)),
+))
+    )
     updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
     url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    viewer_can_change_pinned_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanChangePinnedItems')
     viewer_can_create_projects = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanCreateProjects')
     viewer_can_follow = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanFollow')
     viewer_is_following = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerIsFollowing')
@@ -5249,6 +9981,15 @@ class User(sgqlc.types.Type, Node, Actor, RegistryPackageOwner, RegistryPackageS
     website_url = sgqlc.types.Field(URI, graphql_name='websiteUrl')
 
 
+class UserBlockedEvent(sgqlc.types.Type, Node):
+    __schema__ = github_schema
+    actor = sgqlc.types.Field(Actor, graphql_name='actor')
+    block_duration = sgqlc.types.Field(sgqlc.types.non_null(UserBlockDuration), graphql_name='blockDuration')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    subject = sgqlc.types.Field(User, graphql_name='subject')
+
+
 class UserContentEdit(sgqlc.types.Type, Node):
     __schema__ = github_schema
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
@@ -5265,6 +10006,8 @@ class UserStatus(sgqlc.types.Type, Node):
     __schema__ = github_schema
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     emoji = sgqlc.types.Field(String, graphql_name='emoji')
+    emoji_html = sgqlc.types.Field(HTML, graphql_name='emojiHTML')
+    expires_at = sgqlc.types.Field(DateTime, graphql_name='expiresAt')
     id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     indicates_limited_availability = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='indicatesLimitedAvailability')
     message = sgqlc.types.Field(String, graphql_name='message')
@@ -5273,10 +10016,27 @@ class UserStatus(sgqlc.types.Type, Node):
     user = sgqlc.types.Field(sgqlc.types.non_null(User), graphql_name='user')
 
 
+class ViewerHovercardContext(sgqlc.types.Type, HovercardContext):
+    __schema__ = github_schema
+    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
+    octicon = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='octicon')
+    viewer = sgqlc.types.Field(sgqlc.types.non_null(User), graphql_name='viewer')
+
+
 
 ########################################################################
 # Unions
 ########################################################################
+class Assignee(sgqlc.types.Union):
+    __schema__ = github_schema
+    __types__ = (Bot, Mannequin, Organization, User)
+
+
+class AuditEntryActor(sgqlc.types.Union):
+    __schema__ = github_schema
+    __types__ = (Bot, Organization, User)
+
+
 class Closer(sgqlc.types.Union):
     __schema__ = github_schema
     __types__ = (Commit, PullRequest)
@@ -5297,6 +10057,16 @@ class CreatedPullRequestOrRestrictedContribution(sgqlc.types.Union):
     __types__ = (CreatedPullRequestContribution, RestrictedContribution)
 
 
+class CreatedRepositoryOrRestrictedContribution(sgqlc.types.Union):
+    __schema__ = github_schema
+    __types__ = (CreatedRepositoryContribution, RestrictedContribution)
+
+
+class EnterpriseMember(sgqlc.types.Union):
+    __schema__ = github_schema
+    __types__ = (User, EnterpriseUserAccount)
+
+
 class IssueOrPullRequest(sgqlc.types.Union):
     __schema__ = github_schema
     __types__ = (Issue, PullRequest)
@@ -5304,17 +10074,37 @@ class IssueOrPullRequest(sgqlc.types.Union):
 
 class IssueTimelineItem(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (Commit, IssueComment, CrossReferencedEvent, ClosedEvent, ReopenedEvent, SubscribedEvent, UnsubscribedEvent, ReferencedEvent, AssignedEvent, UnassignedEvent, LabeledEvent, UnlabeledEvent, MilestonedEvent, DemilestonedEvent, RenamedTitleEvent, LockedEvent, UnlockedEvent, TransferredEvent)
+    __types__ = (Commit, IssueComment, CrossReferencedEvent, ClosedEvent, ReopenedEvent, SubscribedEvent, UnsubscribedEvent, ReferencedEvent, AssignedEvent, UnassignedEvent, LabeledEvent, UnlabeledEvent, UserBlockedEvent, MilestonedEvent, DemilestonedEvent, RenamedTitleEvent, LockedEvent, UnlockedEvent, TransferredEvent)
 
 
 class IssueTimelineItems(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (IssueComment, CrossReferencedEvent, AddedToProjectEvent, AssignedEvent, ClosedEvent, CommentDeletedEvent, ConvertedNoteToIssueEvent, DemilestonedEvent, LabeledEvent, LockedEvent, MentionedEvent, MilestonedEvent, MovedColumnsInProjectEvent, PinnedEvent, ReferencedEvent, RemovedFromProjectEvent, RenamedTitleEvent, ReopenedEvent, SubscribedEvent, TransferredEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UnpinnedEvent, UnsubscribedEvent)
+    __types__ = (IssueComment, CrossReferencedEvent, AddedToProjectEvent, AssignedEvent, ClosedEvent, CommentDeletedEvent, ConvertedNoteToIssueEvent, DemilestonedEvent, LabeledEvent, LockedEvent, MarkedAsDuplicateEvent, MentionedEvent, MilestonedEvent, MovedColumnsInProjectEvent, PinnedEvent, ReferencedEvent, RemovedFromProjectEvent, RenamedTitleEvent, ReopenedEvent, SubscribedEvent, TransferredEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UserBlockedEvent, UnpinnedEvent, UnsubscribedEvent)
 
 
 class MilestoneItem(sgqlc.types.Union):
     __schema__ = github_schema
     __types__ = (Issue, PullRequest)
+
+
+class OrgRestoreMemberAuditEntryMembership(sgqlc.types.Union):
+    __schema__ = github_schema
+    __types__ = (OrgRestoreMemberMembershipOrganizationAuditEntryData, OrgRestoreMemberMembershipRepositoryAuditEntryData, OrgRestoreMemberMembershipTeamAuditEntryData)
+
+
+class OrganizationAuditEntry(sgqlc.types.Union):
+    __schema__ = github_schema
+    __types__ = (MembersCanDeleteReposClearAuditEntry, MembersCanDeleteReposDisableAuditEntry, MembersCanDeleteReposEnableAuditEntry, OauthApplicationCreateAuditEntry, OrgAddBillingManagerAuditEntry, OrgAddMemberAuditEntry, OrgBlockUserAuditEntry, OrgConfigDisableCollaboratorsOnlyAuditEntry, OrgConfigEnableCollaboratorsOnlyAuditEntry, OrgCreateAuditEntry, OrgDisableOauthAppRestrictionsAuditEntry, OrgDisableSamlAuditEntry, OrgDisableTwoFactorRequirementAuditEntry, OrgEnableOauthAppRestrictionsAuditEntry, OrgEnableSamlAuditEntry, OrgEnableTwoFactorRequirementAuditEntry, OrgInviteMemberAuditEntry, OrgInviteToBusinessAuditEntry, OrgOauthAppAccessApprovedAuditEntry, OrgOauthAppAccessDeniedAuditEntry, OrgOauthAppAccessRequestedAuditEntry, OrgRemoveBillingManagerAuditEntry, OrgRemoveMemberAuditEntry, OrgRemoveOutsideCollaboratorAuditEntry, OrgRestoreMemberAuditEntry, OrgUnblockUserAuditEntry, OrgUpdateDefaultRepositoryPermissionAuditEntry, OrgUpdateMemberAuditEntry, OrgUpdateMemberRepositoryCreationPermissionAuditEntry, OrgUpdateMemberRepositoryInvitationPermissionAuditEntry, PrivateRepositoryForkingDisableAuditEntry, PrivateRepositoryForkingEnableAuditEntry, RepoAccessAuditEntry, RepoAddMemberAuditEntry, RepoAddTopicAuditEntry, RepoArchivedAuditEntry, RepoChangeMergeSettingAuditEntry, RepoConfigDisableAnonymousGitAccessAuditEntry, RepoConfigDisableCollaboratorsOnlyAuditEntry, RepoConfigDisableContributorsOnlyAuditEntry, RepoConfigDisableSockpuppetDisallowedAuditEntry, RepoConfigEnableAnonymousGitAccessAuditEntry, RepoConfigEnableCollaboratorsOnlyAuditEntry, RepoConfigEnableContributorsOnlyAuditEntry, RepoConfigEnableSockpuppetDisallowedAuditEntry, RepoConfigLockAnonymousGitAccessAuditEntry, RepoConfigUnlockAnonymousGitAccessAuditEntry, RepoCreateAuditEntry, RepoDestroyAuditEntry, RepoRemoveMemberAuditEntry, RepoRemoveTopicAuditEntry, RepositoryVisibilityChangeDisableAuditEntry, RepositoryVisibilityChangeEnableAuditEntry, TeamAddMemberAuditEntry, TeamAddRepositoryAuditEntry, TeamChangeParentTeamAuditEntry, TeamRemoveMemberAuditEntry, TeamRemoveRepositoryAuditEntry)
+
+
+class PermissionGranter(sgqlc.types.Union):
+    __schema__ = github_schema
+    __types__ = (Organization, Repository, Team)
+
+
+class PinnableItem(sgqlc.types.Union):
+    __schema__ = github_schema
+    __types__ = (Gist, Repository)
 
 
 class ProjectCardItem(sgqlc.types.Union):
@@ -5324,17 +10114,17 @@ class ProjectCardItem(sgqlc.types.Union):
 
 class PullRequestTimelineItem(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (Commit, CommitCommentThread, PullRequestReview, PullRequestReviewThread, PullRequestReviewComment, IssueComment, ClosedEvent, ReopenedEvent, SubscribedEvent, UnsubscribedEvent, MergedEvent, ReferencedEvent, CrossReferencedEvent, AssignedEvent, UnassignedEvent, LabeledEvent, UnlabeledEvent, MilestonedEvent, DemilestonedEvent, RenamedTitleEvent, LockedEvent, UnlockedEvent, DeployedEvent, DeploymentEnvironmentChangedEvent, HeadRefDeletedEvent, HeadRefRestoredEvent, HeadRefForcePushedEvent, BaseRefForcePushedEvent, ReviewRequestedEvent, ReviewRequestRemovedEvent, ReviewDismissedEvent)
+    __types__ = (Commit, CommitCommentThread, PullRequestReview, PullRequestReviewThread, PullRequestReviewComment, IssueComment, ClosedEvent, ReopenedEvent, SubscribedEvent, UnsubscribedEvent, MergedEvent, ReferencedEvent, CrossReferencedEvent, AssignedEvent, UnassignedEvent, LabeledEvent, UnlabeledEvent, MilestonedEvent, DemilestonedEvent, RenamedTitleEvent, LockedEvent, UnlockedEvent, DeployedEvent, DeploymentEnvironmentChangedEvent, HeadRefDeletedEvent, HeadRefRestoredEvent, HeadRefForcePushedEvent, BaseRefForcePushedEvent, ReviewRequestedEvent, ReviewRequestRemovedEvent, ReviewDismissedEvent, UserBlockedEvent)
 
 
 class PullRequestTimelineItems(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (PullRequestCommit, PullRequestReview, PullRequestReviewThread, BaseRefChangedEvent, BaseRefForcePushedEvent, DeployedEvent, DeploymentEnvironmentChangedEvent, HeadRefDeletedEvent, HeadRefForcePushedEvent, HeadRefRestoredEvent, MergedEvent, ReviewDismissedEvent, ReviewRequestedEvent, ReviewRequestRemovedEvent, IssueComment, CrossReferencedEvent, AddedToProjectEvent, AssignedEvent, ClosedEvent, CommentDeletedEvent, ConvertedNoteToIssueEvent, DemilestonedEvent, LabeledEvent, LockedEvent, MentionedEvent, MilestonedEvent, MovedColumnsInProjectEvent, PinnedEvent, ReferencedEvent, RemovedFromProjectEvent, RenamedTitleEvent, ReopenedEvent, SubscribedEvent, TransferredEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UnpinnedEvent, UnsubscribedEvent)
+    __types__ = (PullRequestCommit, PullRequestCommitCommentThread, PullRequestReview, PullRequestReviewThread, PullRequestRevisionMarker, BaseRefChangedEvent, BaseRefForcePushedEvent, DeployedEvent, DeploymentEnvironmentChangedEvent, HeadRefDeletedEvent, HeadRefForcePushedEvent, HeadRefRestoredEvent, MergedEvent, ReviewDismissedEvent, ReviewRequestedEvent, ReviewRequestRemovedEvent, ReadyForReviewEvent, IssueComment, CrossReferencedEvent, AddedToProjectEvent, AssignedEvent, ClosedEvent, CommentDeletedEvent, ConvertedNoteToIssueEvent, DemilestonedEvent, LabeledEvent, LockedEvent, MarkedAsDuplicateEvent, MentionedEvent, MilestonedEvent, MovedColumnsInProjectEvent, PinnedEvent, ReferencedEvent, RemovedFromProjectEvent, RenamedTitleEvent, ReopenedEvent, SubscribedEvent, TransferredEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UserBlockedEvent, UnpinnedEvent, UnsubscribedEvent)
 
 
 class PushAllowanceActor(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (User, Team)
+    __types__ = (User, Team, App)
 
 
 class ReferencedSubject(sgqlc.types.Union):
@@ -5349,7 +10139,7 @@ class RenamedTitleSubject(sgqlc.types.Union):
 
 class RequestedReviewer(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (User, Team)
+    __types__ = (User, Team, Mannequin)
 
 
 class ReviewDismissalAllowanceActor(sgqlc.types.Union):
@@ -5359,7 +10149,7 @@ class ReviewDismissalAllowanceActor(sgqlc.types.Union):
 
 class SearchResultItem(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (Issue, PullRequest, Repository, User, Organization, MarketplaceListing)
+    __types__ = (Issue, PullRequest, Repository, User, Organization, MarketplaceListing, App)
 
 
 
