@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 sgqlc = {editable = true,path = "."}
-graphql-core = "*"
+graphql-core = ">=3.0"
 websocket-client = "==0.56.0"
 requests = "*"
 

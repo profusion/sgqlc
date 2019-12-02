@@ -9,7 +9,7 @@ import sys
 import re
 import functools
 
-from graphql.language.ast import Value as GraphQLASTValue
+from graphql.language.ast import ValueNode as GraphQLASTValue
 from graphql.language.parser import parse_value as parse_graphql_value
 from graphql.language.visitor import Visitor, visit
 
