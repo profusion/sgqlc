@@ -9,7 +9,12 @@ import sys
 import re
 import functools
 
-from graphql.language.ast import Value as GraphQLASTValue
+try:
+    # graphql >= 3.0
+    from graphql.language.ast import ValueNode as GraphQLASTValue
+except ImportError:
+    # graphql < 3.0 (ex: 2.2)
+    from graphql.language.ast import Value as GraphQLASTValue
 from graphql.language.parser import parse_value as parse_graphql_value
 from graphql.language.visitor import Visitor, visit
 
@@ -38,6 +43,19 @@ class JSONOutputVisitor(Visitor):
 
     def leave_ObjectField(self, node, *args):
         return (node.name.value, node.value)
+
+    def leave_NullValue(self, _node, *_args):
+        return None
+
+    leave_int_value = leave_IntValue
+    leave_float_value = leave_FloatValue
+    leave_string_value = leave_StringValue
+    leave_boolean_value = leave_BooleanValue
+    leave_enum_value = leave_EnumValue
+    leave_list_value = leave_ListValue
+    leave_object_value = leave_ObjectValue
+    leave_object_field = leave_ObjectField
+    leave_null_value = leave_NullValue
 
 
 def parse_graphql_value_to_json(source):
