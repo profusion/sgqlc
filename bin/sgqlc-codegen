@@ -79,6 +79,7 @@ class CodeGen:
         self.analyze()
         self.writer = writer
         self.written_types = set()
+        self.field_names = set()
 
     def get_path(self, *path, fallback=None):
         d = self.schema
@@ -267,7 +268,7 @@ class %(name)s(sgqlc.types.Enum):
             return 'sgqlc.types.list_of(%s)' % self.get_type_ref(of_type)
 
         name = t['name']
-        if name in self.written_types:
+        if name in (self.written_types - self.field_names):
             return name
         else:
             return repr(name)
@@ -282,6 +283,7 @@ class %(name)s(sgqlc.types.Enum):
             'gql_name': name,
             'type': tref,
         })
+        self.field_names.add(self.graphql_to_python(name))
 
     def write_arg(self, arg):
         name = arg['name']
@@ -321,6 +323,7 @@ default=%(default)s)),
             self.writer('))\n    ')
 
         self.writer(')\n')
+        self.field_names.add(self.graphql_to_python(name))
 
     def write_type_input_object(self, t):
         name = t['name']
@@ -335,6 +338,7 @@ class %(name)s(sgqlc.types.Input):
             self.write_field_input(field)
         self.writer('\n\n')
         self.written_types.add(name)
+        self.field_names = set()
 
     def write_type_interface(self, t):
         name = t['name']
@@ -384,6 +388,7 @@ class %(name)s(%(bases)s):
             self.write_field_output(field)
         self.writer('\n\n')
         self.written_types.add(name)
+        self.field_names = set()
 
     def write_type_scalar(self, t):
         name = t['name']
