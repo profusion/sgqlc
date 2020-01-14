@@ -257,24 +257,26 @@ class %(name)s(sgqlc.types.Enum):
             return name + '_'
         return name
 
-    def get_type_ref(self, t):
+    def get_type_ref(self, t, siblings):
         kind = t['kind']
         if kind == 'NON_NULL':
             of_type = t['ofType']
-            return 'sgqlc.types.non_null(%s)' % self.get_type_ref(of_type)
+            return 'sgqlc.types.non_null(%s)' % self.get_type_ref(
+                of_type, siblings)
         elif kind == 'LIST':
             of_type = t['ofType']
-            return 'sgqlc.types.list_of(%s)' % self.get_type_ref(of_type)
+            return 'sgqlc.types.list_of(%s)' % self.get_type_ref(
+                of_type, siblings)
 
         name = t['name']
-        if name in self.written_types:
+        if name in self.written_types and name not in siblings:
             return name
         else:
             return repr(name)
 
-    def write_field_input(self, field):
+    def write_field_input(self, field, siblings):
         name = field['name']
-        tref = self.get_type_ref(field['type'])
+        tref = self.get_type_ref(field['type'], siblings)
         self.writer('''\
     %(py_name)s = sgqlc.types.Field(%(type)s, graphql_name=%(gql_name)r)
 ''' % {
@@ -283,9 +285,9 @@ class %(name)s(sgqlc.types.Enum):
             'type': tref,
         })
 
-    def write_arg(self, arg):
+    def write_arg(self, arg, siblings):
         name = arg['name']
-        tref = self.get_type_ref(arg['type'])
+        tref = self.get_type_ref(arg['type'], siblings)
         defval = arg['defaultValue']
         if defval:
             if defval.startswith('$'):
@@ -303,9 +305,9 @@ default=%(default)s)),
             'default': defval,
         })
 
-    def write_field_output(self, field):
+    def write_field_output(self, field, siblings):
         name = field['name']
-        tref = self.get_type_ref(field['type'])
+        tref = self.get_type_ref(field['type'], siblings)
         self.writer('''\
     %(py_name)s = sgqlc.types.Field(%(type)s, graphql_name=%(gql_name)r\
 ''' % {
@@ -317,7 +319,7 @@ default=%(default)s)),
         if args:
             self.writer(', args=sgqlc.types.ArgDict((\n')
             for a in args:
-                self.write_arg(a)
+                self.write_arg(a, siblings)
             self.writer('))\n    ')
 
         self.writer(')\n')
@@ -331,8 +333,9 @@ class %(name)s(sgqlc.types.Input):
             'name': name,
             'schema_name': self.schema_name,
         })
+        siblings = set(field['name'] for field in t['inputFields'])
         for field in t['inputFields']:
-            self.write_field_input(field)
+            self.write_field_input(field, siblings)
         self.writer('\n\n')
         self.written_types.add(name)
 
@@ -345,8 +348,9 @@ class %(name)s(sgqlc.types.Interface):
             'name': name,
             'schema_name': self.schema_name,
         })
+        siblings = set(field['name'] for field in t['fields'])
         for field in t['fields']:
-            self.write_field_output(field)
+            self.write_field_output(field, siblings)
         self.writer('\n\n')
         self.written_types.add(name)
 
@@ -380,8 +384,9 @@ class %(name)s(%(bases)s):
             'schema_name': self.schema_name,
             'bases': ', '.join(bases),
         })
+        siblings = set(field['name'] for field in t['fields'])
         for field in t['fields']:
-            self.write_field_output(field)
+            self.write_field_output(field, siblings)
         self.writer('\n\n')
         self.written_types.add(name)
 
