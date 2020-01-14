@@ -1524,16 +1524,20 @@ class ContainerTypeMeta(BaseMetaWithTypename):
         for b in bases:
             cls.__fields.update(b.__fields)
 
+    def __get_field_names(cls):
+        implicit_members = super(ContainerTypeMeta, cls).__dir__()
+        explicit_members = getattr(cls, "__field_names__", tuple())
+        return (
+            name
+            for name in implicit_members
+            if not name.startswith("_")
+            or (name in getattr(cls, "__field_names__", []))
+        )
+
     def __create_own_fields(cls):
         # call the parent __dir__(), we don't want our overridden version
         # that reports fields we're just deleting
-        members = super(ContainerTypeMeta, cls).__dir__()
-        for name in members:
-            if name.startswith("_") and (
-                name not in getattr(cls, "__field_names__", [])
-            ):
-                continue
-
+        for name in cls.__get_field_names():
             field = getattr(cls, name)
             if not isinstance(field, Field):
                 if not isinstance(field, Lazy):

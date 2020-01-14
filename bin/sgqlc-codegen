@@ -326,7 +326,7 @@ default=%(default)s)),
 
     def write_type_input_object(self, t):
         name = t['name']
-        field_names = [self.graphql_to_python(f['name']) for f in t['inputFields']]
+        field_names = tuple(self.graphql_to_python(f['name']) for f in t['inputFields'])
         self.writer('''\
 class %(name)s(sgqlc.types.Input):
     __schema__ = %(schema_name)s
