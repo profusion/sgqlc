@@ -1529,7 +1529,7 @@ class ContainerTypeMeta(BaseMetaWithTypename):
         # that reports fields we're just deleting
         members = super(ContainerTypeMeta, cls).__dir__()
         for name in members:
-            if name.startswith('_') and (name not in ["_and" ,"_or" ,"_not" , "_eq" ,"_gt" ,"_gte" ,"_ilike" ,"_in" ,"_is_null" ,"_like" ,"_lt" ,"_lte" ,"_neq" ,"_nilike" ,"_nin" ,"_nlike" ,"_nsimilar" ,"_similar"]):
+            if name.startswith('_') and (name not in getattr(cls, '__field_names__', [])):
                 continue
 
             field = getattr(cls, name)
