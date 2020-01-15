@@ -1526,7 +1526,7 @@ class ContainerTypeMeta(BaseMetaWithTypename):
 
     def __get_field_names(cls):
         implicit_members = super(ContainerTypeMeta, cls).__dir__()
-        explicit_members = getattr(cls, "__field_names__", tuple())
+        explicit_members = getattr(cls, "__field_names__", ())
         return (
             name
             for name in implicit_members
