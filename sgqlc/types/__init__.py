@@ -1531,7 +1531,7 @@ class ContainerTypeMeta(BaseMetaWithTypename):
             name
             for name in implicit_members
             if not name.startswith("_")
-            or (name in getattr(cls, "__field_names__", []))
+            or (name in explicit_members)
         )
 
     def __create_own_fields(cls):
