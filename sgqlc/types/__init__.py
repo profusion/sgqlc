@@ -411,6 +411,61 @@ type CrossLinkA {
   nonNullListOtherNonNull: [CrossLinkB!]!
 }
 
+Special Attribute Names
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Attributes starting with ``_`` are ignored, however if for some reason
+you must use such attribute name, then declare **ALL** attributes
+in that class (no need to repeat inherited attributes from interfaces)
+using the ``__field_names__``, which should have a tuple of strings:
+
+>>> class TypeUsingSpecialAttributes(Type):
+...     __field_names__ = ('_int', '_two_words')
+...     _int = int
+...     _two_words = str
+...     not_handled = float # not declared!
+...
+>>> TypeUsingSpecialAttributes  # or repr(TypeUsingSpecialAttributes)
+type TypeUsingSpecialAttributes {
+  _int: Int
+  _twoWords: String
+}
+>>> TypeUsingSpecialAttributes._int  # or repr(Field), prints out GraphQL!
+_int: Int
+>>> TypeUsingSpecialAttributes._int.name
+'_int'
+>>> TypeUsingSpecialAttributes._int.graphql_name  # auto-generated from name
+'_int'
+
+Note that while the leading underscores (``_``) are preserved, the rest of
+internal underscores are converted to camel case:
+
+>>> TypeUsingSpecialAttributes._two_words
+_twoWords: String
+>>> TypeUsingSpecialAttributes._two_words.name
+'_two_words'
+>>> TypeUsingSpecialAttributes._two_words.graphql_name
+'_twoWords'
+
+    .. note::
+
+        Take care with the double underscores ``__`` as Python mangles
+        the name with the class name in order to "protect" and it will
+        result in ``AttributeError``
+
+Note that undeclared fields won't be handled, but they still exist as regular
+python attributes, in this case it references the ``float`` class:
+
+>>> TypeUsingSpecialAttributes.not_handled
+<class 'float'>
+
+Non GraphQL Attributes
+~~~~~~~~~~~~~~~~~~~~~~
+
+The ``__field_names__`` may also be used to allow non-GraphQL
+attributes that would otherwise be handled as such, this
+explicitly limits the scope where SGQLC will handle.
+
 Utilities
 ~~~~~~~~~
 
@@ -1524,14 +1579,21 @@ class ContainerTypeMeta(BaseMetaWithTypename):
         for b in bases:
             cls.__fields.update(b.__fields)
 
+    def __get_field_names(cls):
+        try:
+            return getattr(cls, "__field_names__")
+        except AttributeError:
+            all_fields = super(ContainerTypeMeta, cls).__dir__()
+            return (
+                name
+                for name in all_fields
+                if not name.startswith("_")
+            )
+
     def __create_own_fields(cls):
         # call the parent __dir__(), we don't want our overridden version
         # that reports fields we're just deleting
-        members = super(ContainerTypeMeta, cls).__dir__()
-        for name in members:
-            if name.startswith('_'):
-                continue
-
+        for name in cls.__get_field_names():
             field = getattr(cls, name)
             if not isinstance(field, Field):
                 if not isinstance(field, Lazy):
@@ -1544,7 +1606,11 @@ class ContainerTypeMeta(BaseMetaWithTypename):
 
             field._set_container(cls.__schema__, cls, name)
             cls.__fields[name] = field
-            delattr(cls, name)  # let fallback to cls.__fields using getitem
+            try:
+                # let fallback to cls.__fields using getitem
+                delattr(cls, name)
+            except AttributeError:  # pragma: no cover
+                pass  # if may be defined in a parent class and already deleted
 
     def __getitem__(cls, key):
         if key.startswith('_'):
@@ -1953,9 +2019,15 @@ class BaseItem:
     @staticmethod
     def _to_graphql_name(name):
         '''Converts a Python name, ``a_name`` to GraphQL: ``aName``.
+
+        Note that leading underscores (``_``) are preserved.
         '''
+        prefix = ''
+        while name.startswith('_'):
+            prefix += '_'
+            name = name[1:]
         parts = name.split('_')
-        return ''.join(parts[:1] + [p.title() for p in parts[1:]])
+        return prefix + ''.join(parts[:1] + [p.title() for p in parts[1:]])
 
     def __str__(self):
         return self.name
