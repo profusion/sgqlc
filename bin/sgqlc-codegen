@@ -332,41 +332,35 @@ default=%(default)s)),
 
         self.writer(')\n')
 
-    def write_type_input_object(self, t):
+    def write_type_container(self, t, bases, own_fields, write_field):
         name = t['name']
-        own_fields = t['inputFields']
         py_fields, siblings = self.get_py_fields_and_siblings(own_fields)
         self.writer('''\
-class %(name)s(sgqlc.types.Input):
+class %(name)s(%(bases)s):
     __schema__ = %(schema_name)s
     __field_names__ = %(field_names)s
 ''' % {
             'name': name,
+            'bases': bases,
             'schema_name': self.schema_name,
             'field_names': py_fields,
         })
         for field in own_fields:
-            self.write_field_input(field, siblings)
+            write_field(field, siblings)
         self.writer('\n\n')
         self.written_types.add(name)
 
+    def write_type_input_object(self, t):
+        own_fields = t['inputFields']
+        bases = 'sgqlc.types.Input'
+        write_field = self.write_field_input
+        self.write_type_container(t, bases, own_fields, write_field)
+
     def write_type_interface(self, t):
-        name = t['name']
         own_fields = t['fields']
-        py_fields, siblings = self.get_py_fields_and_siblings(own_fields)
-        self.writer('''\
-class %(name)s(sgqlc.types.Interface):
-    __schema__ = %(schema_name)s
-    __field_names__ = %(field_names)s
-''' % {
-            'name': name,
-            'schema_name': self.schema_name,
-            'field_names': py_fields,
-        })
-        for field in own_fields:
-            self.write_field_output(field, siblings)
-        self.writer('\n\n')
-        self.written_types.add(name)
+        bases = 'sgqlc.types.Interface'
+        write_field = self.write_field_output
+        self.write_type_container(t, bases, own_fields, write_field)
 
     builtin_object_names = (
         '__Schema',
@@ -399,21 +393,9 @@ class %(name)s(sgqlc.types.Interface):
             for field in t['fields']
             if field['name'] not in inherited_fields
         )
-        py_fields, siblings = self.get_py_fields_and_siblings(own_fields)
-        self.writer('''\
-class %(name)s(%(bases)s):
-    __schema__ = %(schema_name)s
-    __field_names__ = %(field_names)s
-''' % {
-            'name': name,
-            'schema_name': self.schema_name,
-            'bases': ', '.join(bases),
-            'field_names': py_fields,
-        })
-        for field in own_fields:
-            self.write_field_output(field, siblings)
-        self.writer('\n\n')
-        self.written_types.add(name)
+        bases = ', '.join(bases)
+        write_field = self.write_field_output
+        self.write_type_container(t, bases, own_fields, write_field)
 
     def write_type_scalar(self, t):
         name = t['name']
