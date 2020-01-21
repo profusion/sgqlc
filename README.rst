@@ -227,7 +227,7 @@ Usage
 -----
 
 To reach a GraphQL endpoint using synchronous `HTTPEndpoint` with a
-hand-written query (see more at ``examples/basic/http-endpoint.py``):
+hand-written query (see more at ``examples/basic/01_http_endpoint.py``):
 
 .. code-block:: python
 
@@ -246,7 +246,7 @@ hand-written query (see more at ``examples/basic/http-endpoint.py``):
 However, writing GraphQL queries and later interpreting the results
 may be cumbersome, that's solved with our ``sgqlc.types``, that is
 usually paired with ``sgqlc.operation`` to generate queries and then
-interpret results (see more at ``examples/basic/types.py``). The
+interpret results (see more at ``examples/basic/02_schema_types.py``). The
 example below matches a subset of `GitHub API v4
 <https://developer.github.com/v4/query/>`_, in GraphQL syntax it would
 be::
