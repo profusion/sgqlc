@@ -21,8 +21,8 @@ __docformat__ = 'reStructuredText en'
 #  - includeDeprecated: if deprecated fields should be included
 query = '''
 query IntrospectionQuery(
-  $includeDescription: Boolean! = true,
-  $includeDeprecated: Boolean! = true,
+  $includeDescription: Boolean!,
+  $includeDeprecated: Boolean!,
 ) {
   __schema {
     queryType { name }
