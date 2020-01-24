@@ -116,16 +116,6 @@ class EnterpriseMembersCanMakePurchasesSettingValue(sgqlc.types.Enum):
     __choices__ = ('ENABLED', 'DISABLED')
 
 
-class EnterpriseMembershipType(sgqlc.types.Enum):
-    __schema__ = github_schema
-    __choices__ = ('ALL', 'ADMIN', 'BILLING_MANAGER', 'ORG_MEMBERSHIP')
-
-
-class EnterpriseOrderField(sgqlc.types.Enum):
-    __schema__ = github_schema
-    __choices__ = ('NAME',)
-
-
 class EnterpriseServerInstallationOrderField(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('HOST_NAME', 'CUSTOMER_NAME', 'CREATED_AT')
@@ -213,11 +203,6 @@ class IssueOrderField(sgqlc.types.Enum):
     __choices__ = ('CREATED_AT', 'UPDATED_AT', 'COMMENTS')
 
 
-class IssuePubSubTopic(sgqlc.types.Enum):
-    __schema__ = github_schema
-    __choices__ = ('UPDATED', 'MARKASREAD', 'TIMELINE', 'STATE')
-
-
 class IssueState(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('OPEN', 'CLOSED')
@@ -226,6 +211,11 @@ class IssueState(sgqlc.types.Enum):
 class IssueTimelineItemsItemType(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('ISSUE_COMMENT', 'CROSS_REFERENCED_EVENT', 'ADDED_TO_PROJECT_EVENT', 'ASSIGNED_EVENT', 'CLOSED_EVENT', 'COMMENT_DELETED_EVENT', 'CONVERTED_NOTE_TO_ISSUE_EVENT', 'DEMILESTONED_EVENT', 'LABELED_EVENT', 'LOCKED_EVENT', 'MARKED_AS_DUPLICATE_EVENT', 'MENTIONED_EVENT', 'MILESTONED_EVENT', 'MOVED_COLUMNS_IN_PROJECT_EVENT', 'PINNED_EVENT', 'REFERENCED_EVENT', 'REMOVED_FROM_PROJECT_EVENT', 'RENAMED_TITLE_EVENT', 'REOPENED_EVENT', 'SUBSCRIBED_EVENT', 'TRANSFERRED_EVENT', 'UNASSIGNED_EVENT', 'UNLABELED_EVENT', 'UNLOCKED_EVENT', 'USER_BLOCKED_EVENT', 'UNPINNED_EVENT', 'UNSUBSCRIBED_EVENT')
+
+
+class LabelOrderField(sgqlc.types.Enum):
+    __schema__ = github_schema
+    __choices__ = ('NAME', 'CREATED_AT')
 
 
 class LanguageOrderField(sgqlc.types.Enum):
@@ -254,11 +244,6 @@ class MilestoneState(sgqlc.types.Enum):
 
 
 class OauthApplicationCreateAuditEntryState(sgqlc.types.Enum):
-    __schema__ = github_schema
-    __choices__ = ('ACTIVE', 'SUSPENDED', 'PENDING_DELETION')
-
-
-class OauthApplicationRevokeTokensAuditEntryState(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('ACTIVE', 'SUSPENDED', 'PENDING_DELETION')
 
@@ -397,11 +382,6 @@ class PullRequestOrderField(sgqlc.types.Enum):
     __choices__ = ('CREATED_AT', 'UPDATED_AT')
 
 
-class PullRequestPubSubTopic(sgqlc.types.Enum):
-    __schema__ = github_schema
-    __choices__ = ('UPDATED', 'MARKASREAD', 'HEAD_REF', 'TIMELINE', 'STATE')
-
-
 class PullRequestReviewCommentState(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('PENDING', 'SUBMITTED')
@@ -452,11 +432,6 @@ class RegistryPackageDependencyType(sgqlc.types.Enum):
     __choices__ = ('DEFAULT', 'DEV', 'TEST', 'PEER', 'OPTIONAL', 'BUNDLED')
 
 
-class RegistryPackageFileState(sgqlc.types.Enum):
-    __schema__ = github_schema
-    __choices__ = ('NEW', 'UPLOADED')
-
-
 class RegistryPackageType(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('NPM', 'RUBYGEMS', 'MAVEN', 'DOCKER', 'DEBIAN', 'NUGET', 'PYTHON')
@@ -502,19 +477,9 @@ class RepoRemoveMemberAuditEntryVisibility(sgqlc.types.Enum):
     __choices__ = ('INTERNAL', 'PRIVATE', 'PUBLIC')
 
 
-class ReportedContentClassifiers(sgqlc.types.Enum):
-    __schema__ = github_schema
-    __choices__ = ('SPAM', 'ABUSE', 'OFF_TOPIC', 'OUTDATED', 'RESOLVED')
-
-
 class RepositoryAffiliation(sgqlc.types.Enum):
     __schema__ = github_schema
     __choices__ = ('OWNER', 'COLLABORATOR', 'ORGANIZATION_MEMBER')
-
-
-class RepositoryCollaboratorAffiliation(sgqlc.types.Enum):
-    __schema__ = github_schema
-    __choices__ = ('ALL', 'OUTSIDE')
 
 
 class RepositoryContributionType(sgqlc.types.Enum):
@@ -923,15 +888,6 @@ class CreateBranchProtectionRuleInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class CreateContentAttachmentInput(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('content_reference_id', 'title', 'body', 'client_mutation_id')
-    content_reference_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='contentReferenceId')
-    title = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='title')
-    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
-    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
-
-
 class CreateEnterpriseOrganizationInput(sgqlc.types.Input):
     __schema__ = github_schema
     __field_names__ = ('enterprise_id', 'login', 'profile_name', 'billing_email', 'admin_logins', 'client_mutation_id')
@@ -1051,13 +1007,6 @@ class DeleteIssueInput(sgqlc.types.Input):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
-class DeletePackageVersionInput(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('package_version_id', 'client_mutation_id')
-    package_version_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='packageVersionId')
-    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
-
-
 class DeleteProjectCardInput(sgqlc.types.Input):
     __schema__ = github_schema
     __field_names__ = ('card_id', 'client_mutation_id')
@@ -1151,13 +1100,6 @@ class EnterpriseMemberOrder(sgqlc.types.Input):
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
-class EnterpriseOrder(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('field', 'direction')
-    field = sgqlc.types.Field(sgqlc.types.non_null(EnterpriseOrderField), graphql_name='field')
-    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
-
-
 class EnterpriseServerInstallationOrder(sgqlc.types.Input):
     __schema__ = github_schema
     __field_names__ = ('field', 'direction')
@@ -1200,17 +1142,6 @@ class GistOrder(sgqlc.types.Input):
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
-class ImportProjectInput(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('owner_name', 'name', 'body', 'public', 'column_imports', 'client_mutation_id')
-    owner_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='ownerName')
-    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
-    body = sgqlc.types.Field(String, graphql_name='body')
-    public = sgqlc.types.Field(Boolean, graphql_name='public')
-    column_imports = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('ProjectColumnImport'))), graphql_name='columnImports')
-    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
-
-
 class InviteEnterpriseAdminInput(sgqlc.types.Input):
     __schema__ = github_schema
     __field_names__ = ('enterprise_id', 'invitee', 'email', 'role', 'client_mutation_id')
@@ -1238,6 +1169,13 @@ class IssueOrder(sgqlc.types.Input):
     __schema__ = github_schema
     __field_names__ = ('field', 'direction')
     field = sgqlc.types.Field(sgqlc.types.non_null(IssueOrderField), graphql_name='field')
+    direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
+
+
+class LabelOrder(sgqlc.types.Input):
+    __schema__ = github_schema
+    __field_names__ = ('field', 'direction')
+    field = sgqlc.types.Field(sgqlc.types.non_null(LabelOrderField), graphql_name='field')
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
@@ -1292,14 +1230,6 @@ class MilestoneOrder(sgqlc.types.Input):
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
 
 
-class MinimizeCommentInput(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('subject_id', 'classifier', 'client_mutation_id')
-    subject_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='subjectId')
-    classifier = sgqlc.types.Field(sgqlc.types.non_null(ReportedContentClassifiers), graphql_name='classifier')
-    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
-
-
 class MoveProjectCardInput(sgqlc.types.Input):
     __schema__ = github_schema
     __field_names__ = ('card_id', 'column_id', 'after_card_id', 'client_mutation_id')
@@ -1322,28 +1252,6 @@ class OrganizationOrder(sgqlc.types.Input):
     __field_names__ = ('field', 'direction')
     field = sgqlc.types.Field(sgqlc.types.non_null(OrganizationOrderField), graphql_name='field')
     direction = sgqlc.types.Field(sgqlc.types.non_null(OrderDirection), graphql_name='direction')
-
-
-class PinIssueInput(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('issue_id', 'client_mutation_id')
-    issue_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='issueId')
-    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
-
-
-class ProjectCardImport(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('repository', 'number')
-    repository = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='repository')
-    number = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='number')
-
-
-class ProjectColumnImport(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('column_name', 'position', 'issues')
-    column_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='columnName')
-    position = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='position')
-    issues = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(ProjectCardImport)), graphql_name='issues')
 
 
 class ProjectOrder(sgqlc.types.Input):
@@ -1631,20 +1539,6 @@ class UnmarkIssueAsDuplicateInput(sgqlc.types.Input):
     __field_names__ = ('duplicate_id', 'canonical_id', 'client_mutation_id')
     duplicate_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='duplicateId')
     canonical_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='canonicalId')
-    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
-
-
-class UnminimizeCommentInput(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('subject_id', 'client_mutation_id')
-    subject_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='subjectId')
-    client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
-
-
-class UnpinIssueInput(sgqlc.types.Input):
-    __schema__ = github_schema
-    __field_names__ = ('issue_id', 'client_mutation_id')
-    issue_id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='issueId')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
 
 
@@ -2079,13 +1973,6 @@ class AddStarPayload(sgqlc.types.Type):
     starrable = sgqlc.types.Field('Starrable', graphql_name='starrable')
 
 
-class AppEdge(sgqlc.types.Type):
-    __schema__ = github_schema
-    __field_names__ = ('cursor', 'node')
-    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
-    node = sgqlc.types.Field('App', graphql_name='node')
-
-
 class ArchiveRepositoryPayload(sgqlc.types.Type):
     __schema__ = github_schema
     __field_names__ = ('client_mutation_id', 'repository')
@@ -2317,24 +2204,6 @@ class CommitHistoryConnection(sgqlc.types.relay.Connection):
     nodes = sgqlc.types.Field(sgqlc.types.list_of('Commit'), graphql_name='nodes')
     page_info = sgqlc.types.Field(sgqlc.types.non_null('PageInfo'), graphql_name='pageInfo')
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
-
-
-class ContentAttachment(sgqlc.types.Type):
-    __schema__ = github_schema
-    __field_names__ = ('body', 'content_reference', 'database_id', 'id', 'title')
-    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
-    content_reference = sgqlc.types.Field(sgqlc.types.non_null('ContentReference'), graphql_name='contentReference')
-    database_id = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='databaseId')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-    title = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='title')
-
-
-class ContentReference(sgqlc.types.Type):
-    __schema__ = github_schema
-    __field_names__ = ('database_id', 'id', 'reference')
-    database_id = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='databaseId')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-    reference = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='reference')
 
 
 class Contribution(sgqlc.types.Interface):
@@ -2840,13 +2709,6 @@ class EnterpriseBillingInfo(sgqlc.types.Type):
     storage_usage_percentage = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='storageUsagePercentage')
     total_available_licenses = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalAvailableLicenses')
     total_licenses = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalLicenses')
-
-
-class EnterpriseEdge(sgqlc.types.Type):
-    __schema__ = github_schema
-    __field_names__ = ('cursor', 'node')
-    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
-    node = sgqlc.types.Field('Enterprise', graphql_name='node')
 
 
 class EnterpriseMemberConnection(sgqlc.types.relay.Connection):
@@ -3493,13 +3355,6 @@ class IssueEdge(sgqlc.types.Type):
     node = sgqlc.types.Field('Issue', graphql_name='node')
 
 
-class IssueOrPullRequestEdge(sgqlc.types.Type):
-    __schema__ = github_schema
-    __field_names__ = ('cursor', 'node')
-    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
-    node = sgqlc.types.Field('IssueOrPullRequest', graphql_name='node')
-
-
 class IssueTimelineConnection(sgqlc.types.relay.Connection):
     __schema__ = github_schema
     __field_names__ = ('edges', 'nodes', 'page_info', 'total_count')
@@ -3555,6 +3410,7 @@ class Labelable(sgqlc.types.Interface):
     __schema__ = github_schema
     __field_names__ = ('labels',)
     labels = sgqlc.types.Field(LabelConnection, graphql_name='labels', args=sgqlc.types.ArgDict((
+        ('order_by', sgqlc.types.Arg(LabelOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'ASC'})),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -3599,7 +3455,8 @@ class LinkRepositoryToProjectPayload(sgqlc.types.Type):
 
 class LockLockablePayload(sgqlc.types.Type):
     __schema__ = github_schema
-    __field_names__ = ('client_mutation_id', 'locked_record')
+    __field_names__ = ('actor', 'client_mutation_id', 'locked_record')
+    actor = sgqlc.types.Field(Actor, graphql_name='actor')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     locked_record = sgqlc.types.Field('Lockable', graphql_name='lockedRecord')
 
@@ -3649,7 +3506,8 @@ class MergeBranchPayload(sgqlc.types.Type):
 
 class MergePullRequestPayload(sgqlc.types.Type):
     __schema__ = github_schema
-    __field_names__ = ('client_mutation_id', 'pull_request')
+    __field_names__ = ('actor', 'client_mutation_id', 'pull_request')
+    actor = sgqlc.types.Field(Actor, graphql_name='actor')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
 
@@ -5063,13 +4921,6 @@ class RepositoryInfo(sgqlc.types.Interface):
     uses_custom_open_graph_image = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='usesCustomOpenGraphImage')
 
 
-class RepositoryInvitationEdge(sgqlc.types.Type):
-    __schema__ = github_schema
-    __field_names__ = ('cursor', 'node')
-    cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
-    node = sgqlc.types.Field('RepositoryInvitation', graphql_name='node')
-
-
 class RepositoryNode(sgqlc.types.Interface):
     __schema__ = github_schema
     __field_names__ = ('repository',)
@@ -5613,7 +5464,8 @@ class UnlinkRepositoryFromProjectPayload(sgqlc.types.Type):
 
 class UnlockLockablePayload(sgqlc.types.Type):
     __schema__ = github_schema
-    __field_names__ = ('client_mutation_id', 'unlocked_record')
+    __field_names__ = ('actor', 'client_mutation_id', 'unlocked_record')
+    actor = sgqlc.types.Field(Actor, graphql_name='actor')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     unlocked_record = sgqlc.types.Field(Lockable, graphql_name='unlockedRecord')
 
@@ -5794,7 +5646,8 @@ class UpdateIssueCommentPayload(sgqlc.types.Type):
 
 class UpdateIssuePayload(sgqlc.types.Type):
     __schema__ = github_schema
-    __field_names__ = ('client_mutation_id', 'issue')
+    __field_names__ = ('actor', 'client_mutation_id', 'issue')
+    actor = sgqlc.types.Field(Actor, graphql_name='actor')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     issue = sgqlc.types.Field('Issue', graphql_name='issue')
 
@@ -5822,7 +5675,8 @@ class UpdateProjectPayload(sgqlc.types.Type):
 
 class UpdatePullRequestPayload(sgqlc.types.Type):
     __schema__ = github_schema
-    __field_names__ = ('client_mutation_id', 'pull_request')
+    __field_names__ = ('actor', 'client_mutation_id', 'pull_request')
+    actor = sgqlc.types.Field(Actor, graphql_name='actor')
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
 
@@ -7316,13 +7170,15 @@ class PublicKey(sgqlc.types.Type, Node):
 
 class PullRequest(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatable, UpdatableComment, Labelable, Lockable, Reactable, RepositoryNode, Subscribable, UniformResourceLocatable):
     __schema__ = github_schema
-    __field_names__ = ('additions', 'base_ref', 'base_ref_name', 'base_ref_oid', 'base_repository', 'changed_files', 'comments', 'commits', 'deletions', 'files', 'head_ref', 'head_ref_name', 'head_ref_oid', 'head_repository', 'head_repository_owner', 'hovercard', 'is_cross_repository', 'maintainer_can_modify', 'merge_commit', 'mergeable', 'merged', 'merged_at', 'merged_by', 'milestone', 'number', 'participants', 'permalink', 'potential_merge_commit', 'project_cards', 'revert_resource_path', 'revert_url', 'review_requests', 'review_threads', 'reviews', 'state', 'suggested_reviewers', 'timeline_items', 'title', 'viewer_can_apply_suggestion')
+    __field_names__ = ('additions', 'base_ref', 'base_ref_name', 'base_ref_oid', 'base_repository', 'changed_files', 'checks_resource_path', 'checks_url', 'comments', 'commits', 'deletions', 'files', 'head_ref', 'head_ref_name', 'head_ref_oid', 'head_repository', 'head_repository_owner', 'hovercard', 'is_cross_repository', 'maintainer_can_modify', 'merge_commit', 'mergeable', 'merged', 'merged_at', 'merged_by', 'milestone', 'number', 'participants', 'permalink', 'potential_merge_commit', 'project_cards', 'revert_resource_path', 'revert_url', 'review_requests', 'review_threads', 'reviews', 'state', 'suggested_reviewers', 'timeline_items', 'title', 'viewer_can_apply_suggestion')
     additions = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='additions')
     base_ref = sgqlc.types.Field('Ref', graphql_name='baseRef')
     base_ref_name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='baseRefName')
     base_ref_oid = sgqlc.types.Field(sgqlc.types.non_null(GitObjectID), graphql_name='baseRefOid')
     base_repository = sgqlc.types.Field('Repository', graphql_name='baseRepository')
     changed_files = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='changedFiles')
+    checks_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='checksResourcePath')
+    checks_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='checksUrl')
     comments = sgqlc.types.Field(sgqlc.types.non_null(IssueCommentConnection), graphql_name='comments', args=sgqlc.types.ArgDict((
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
@@ -7770,7 +7626,7 @@ class RepoRemoveTopicAuditEntry(sgqlc.types.Type, Node, AuditEntry, RepositoryAu
 
 class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, RegistryPackageSearch, Subscribable, Starrable, UniformResourceLocatable, RepositoryInfo):
     __schema__ = github_schema
-    __field_names__ = ('assignable_users', 'branch_protection_rules', 'code_of_conduct', 'collaborators', 'commit_comments', 'database_id', 'default_branch_ref', 'deploy_keys', 'deployments', 'disk_usage', 'forks', 'funding_links', 'is_disabled', 'issue', 'issue_or_pull_request', 'issues', 'label', 'labels', 'languages', 'mentionable_users', 'merge_commit_allowed', 'milestone', 'milestones', 'object', 'parent', 'primary_language', 'pull_request', 'pull_requests', 'rebase_merge_allowed', 'ref', 'refs', 'release', 'releases', 'repository_topics', 'squash_merge_allowed', 'ssh_url', 'template_repository', 'viewer_can_administer', 'viewer_can_update_topics', 'viewer_permission', 'vulnerability_alerts', 'watchers')
+    __field_names__ = ('assignable_users', 'branch_protection_rules', 'code_of_conduct', 'collaborators', 'commit_comments', 'database_id', 'default_branch_ref', 'delete_branch_on_merge', 'deploy_keys', 'deployments', 'disk_usage', 'forks', 'funding_links', 'is_disabled', 'issue', 'issue_or_pull_request', 'issues', 'label', 'labels', 'languages', 'mentionable_users', 'merge_commit_allowed', 'milestone', 'milestones', 'object', 'parent', 'primary_language', 'pull_request', 'pull_requests', 'rebase_merge_allowed', 'ref', 'refs', 'release', 'releases', 'repository_topics', 'squash_merge_allowed', 'ssh_url', 'temp_clone_token', 'template_repository', 'viewer_can_administer', 'viewer_can_update_topics', 'viewer_permission', 'vulnerability_alerts', 'watchers')
     assignable_users = sgqlc.types.Field(sgqlc.types.non_null(UserConnection), graphql_name='assignableUsers', args=sgqlc.types.ArgDict((
         ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
@@ -7805,6 +7661,7 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Reg
     )
     database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
     default_branch_ref = sgqlc.types.Field(Ref, graphql_name='defaultBranchRef')
+    delete_branch_on_merge = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='deleteBranchOnMerge')
     deploy_keys = sgqlc.types.Field(sgqlc.types.non_null(DeployKeyConnection), graphql_name='deployKeys', args=sgqlc.types.ArgDict((
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
@@ -7860,6 +7717,7 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Reg
 ))
     )
     labels = sgqlc.types.Field(LabelConnection, graphql_name='labels', args=sgqlc.types.ArgDict((
+        ('order_by', sgqlc.types.Arg(LabelOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'ASC'})),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
@@ -7956,6 +7814,7 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, RegistryPackageOwner, Reg
     )
     squash_merge_allowed = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='squashMergeAllowed')
     ssh_url = sgqlc.types.Field(sgqlc.types.non_null(GitSSHRemote), graphql_name='sshUrl')
+    temp_clone_token = sgqlc.types.Field(String, graphql_name='tempCloneToken')
     template_repository = sgqlc.types.Field('Repository', graphql_name='templateRepository')
     viewer_can_administer = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanAdminister')
     viewer_can_update_topics = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanUpdateTopics')
@@ -8003,7 +7862,8 @@ class RepositoryVisibilityChangeEnableAuditEntry(sgqlc.types.Type, Node, AuditEn
 
 class RepositoryVulnerabilityAlert(sgqlc.types.Type, Node, RepositoryNode):
     __schema__ = github_schema
-    __field_names__ = ('dismiss_reason', 'dismissed_at', 'dismisser', 'security_advisory', 'security_vulnerability', 'vulnerable_manifest_filename', 'vulnerable_manifest_path', 'vulnerable_requirements')
+    __field_names__ = ('created_at', 'dismiss_reason', 'dismissed_at', 'dismisser', 'security_advisory', 'security_vulnerability', 'vulnerable_manifest_filename', 'vulnerable_manifest_path', 'vulnerable_requirements')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     dismiss_reason = sgqlc.types.Field(String, graphql_name='dismissReason')
     dismissed_at = sgqlc.types.Field(DateTime, graphql_name='dismissedAt')
     dismisser = sgqlc.types.Field('User', graphql_name='dismisser')
@@ -8115,7 +7975,8 @@ class SmimeSignature(sgqlc.types.Type, GitSignature):
 
 class SponsorsListing(sgqlc.types.Type, Node):
     __schema__ = github_schema
-    __field_names__ = ('full_description', 'full_description_html', 'name', 'short_description', 'slug', 'tiers')
+    __field_names__ = ('created_at', 'full_description', 'full_description_html', 'name', 'short_description', 'slug', 'tiers')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
     full_description = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='fullDescription')
     full_description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='fullDescriptionHTML')
     name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
@@ -8147,11 +8008,11 @@ class SponsorsTier(sgqlc.types.Type, Node):
 
 class Sponsorship(sgqlc.types.Type, Node):
     __schema__ = github_schema
-    __field_names__ = ('created_at', 'maintainer', 'privacy_level', 'sponsor', 'tier')
+    __field_names__ = ('created_at', 'privacy_level', 'sponsor', 'sponsorable', 'tier')
     created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
-    maintainer = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='maintainer')
     privacy_level = sgqlc.types.Field(sgqlc.types.non_null(SponsorshipPrivacy), graphql_name='privacyLevel')
     sponsor = sgqlc.types.Field('User', graphql_name='sponsor')
+    sponsorable = sgqlc.types.Field(sgqlc.types.non_null(Sponsorable), graphql_name='sponsorable')
     tier = sgqlc.types.Field(SponsorsTier, graphql_name='tier')
 
 
@@ -8662,11 +8523,6 @@ class Closer(sgqlc.types.Union):
     __types__ = (Commit, PullRequest)
 
 
-class CollectionItemContent(sgqlc.types.Union):
-    __schema__ = github_schema
-    __types__ = (Repository, Organization, User)
-
-
 class CreatedIssueOrRestrictedContribution(sgqlc.types.Union):
     __schema__ = github_schema
     __types__ = (CreatedIssueContribution, RestrictedContribution)
@@ -8684,7 +8540,7 @@ class CreatedRepositoryOrRestrictedContribution(sgqlc.types.Union):
 
 class EnterpriseMember(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (User, EnterpriseUserAccount)
+    __types__ = (EnterpriseUserAccount, User)
 
 
 class IssueOrPullRequest(sgqlc.types.Union):
@@ -8694,12 +8550,12 @@ class IssueOrPullRequest(sgqlc.types.Union):
 
 class IssueTimelineItem(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (Commit, IssueComment, CrossReferencedEvent, ClosedEvent, ReopenedEvent, SubscribedEvent, UnsubscribedEvent, ReferencedEvent, AssignedEvent, UnassignedEvent, LabeledEvent, UnlabeledEvent, UserBlockedEvent, MilestonedEvent, DemilestonedEvent, RenamedTitleEvent, LockedEvent, UnlockedEvent, TransferredEvent)
+    __types__ = (AssignedEvent, ClosedEvent, Commit, CrossReferencedEvent, DemilestonedEvent, IssueComment, LabeledEvent, LockedEvent, MilestonedEvent, ReferencedEvent, RenamedTitleEvent, ReopenedEvent, SubscribedEvent, TransferredEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UnsubscribedEvent, UserBlockedEvent)
 
 
 class IssueTimelineItems(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (IssueComment, CrossReferencedEvent, AddedToProjectEvent, AssignedEvent, ClosedEvent, CommentDeletedEvent, ConvertedNoteToIssueEvent, DemilestonedEvent, LabeledEvent, LockedEvent, MarkedAsDuplicateEvent, MentionedEvent, MilestonedEvent, MovedColumnsInProjectEvent, PinnedEvent, ReferencedEvent, RemovedFromProjectEvent, RenamedTitleEvent, ReopenedEvent, SubscribedEvent, TransferredEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UserBlockedEvent, UnpinnedEvent, UnsubscribedEvent)
+    __types__ = (AddedToProjectEvent, AssignedEvent, ClosedEvent, CommentDeletedEvent, ConvertedNoteToIssueEvent, CrossReferencedEvent, DemilestonedEvent, IssueComment, LabeledEvent, LockedEvent, MarkedAsDuplicateEvent, MentionedEvent, MilestonedEvent, MovedColumnsInProjectEvent, PinnedEvent, ReferencedEvent, RemovedFromProjectEvent, RenamedTitleEvent, ReopenedEvent, SubscribedEvent, TransferredEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UnpinnedEvent, UnsubscribedEvent, UserBlockedEvent)
 
 
 class MilestoneItem(sgqlc.types.Union):
@@ -8734,17 +8590,17 @@ class ProjectCardItem(sgqlc.types.Union):
 
 class PullRequestTimelineItem(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (Commit, CommitCommentThread, PullRequestReview, PullRequestReviewThread, PullRequestReviewComment, IssueComment, ClosedEvent, ReopenedEvent, SubscribedEvent, UnsubscribedEvent, MergedEvent, ReferencedEvent, CrossReferencedEvent, AssignedEvent, UnassignedEvent, LabeledEvent, UnlabeledEvent, MilestonedEvent, DemilestonedEvent, RenamedTitleEvent, LockedEvent, UnlockedEvent, DeployedEvent, DeploymentEnvironmentChangedEvent, HeadRefDeletedEvent, HeadRefRestoredEvent, HeadRefForcePushedEvent, BaseRefForcePushedEvent, ReviewRequestedEvent, ReviewRequestRemovedEvent, ReviewDismissedEvent, UserBlockedEvent)
+    __types__ = (AssignedEvent, BaseRefForcePushedEvent, ClosedEvent, Commit, CommitCommentThread, CrossReferencedEvent, DemilestonedEvent, DeployedEvent, DeploymentEnvironmentChangedEvent, HeadRefDeletedEvent, HeadRefForcePushedEvent, HeadRefRestoredEvent, IssueComment, LabeledEvent, LockedEvent, MergedEvent, MilestonedEvent, PullRequestReview, PullRequestReviewComment, PullRequestReviewThread, ReferencedEvent, RenamedTitleEvent, ReopenedEvent, ReviewDismissedEvent, ReviewRequestRemovedEvent, ReviewRequestedEvent, SubscribedEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UnsubscribedEvent, UserBlockedEvent)
 
 
 class PullRequestTimelineItems(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (PullRequestCommit, PullRequestCommitCommentThread, PullRequestReview, PullRequestReviewThread, PullRequestRevisionMarker, BaseRefChangedEvent, BaseRefForcePushedEvent, DeployedEvent, DeploymentEnvironmentChangedEvent, HeadRefDeletedEvent, HeadRefForcePushedEvent, HeadRefRestoredEvent, MergedEvent, ReviewDismissedEvent, ReviewRequestedEvent, ReviewRequestRemovedEvent, ReadyForReviewEvent, IssueComment, CrossReferencedEvent, AddedToProjectEvent, AssignedEvent, ClosedEvent, CommentDeletedEvent, ConvertedNoteToIssueEvent, DemilestonedEvent, LabeledEvent, LockedEvent, MarkedAsDuplicateEvent, MentionedEvent, MilestonedEvent, MovedColumnsInProjectEvent, PinnedEvent, ReferencedEvent, RemovedFromProjectEvent, RenamedTitleEvent, ReopenedEvent, SubscribedEvent, TransferredEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UserBlockedEvent, UnpinnedEvent, UnsubscribedEvent)
+    __types__ = (AddedToProjectEvent, AssignedEvent, BaseRefChangedEvent, BaseRefForcePushedEvent, ClosedEvent, CommentDeletedEvent, ConvertedNoteToIssueEvent, CrossReferencedEvent, DemilestonedEvent, DeployedEvent, DeploymentEnvironmentChangedEvent, HeadRefDeletedEvent, HeadRefForcePushedEvent, HeadRefRestoredEvent, IssueComment, LabeledEvent, LockedEvent, MarkedAsDuplicateEvent, MentionedEvent, MergedEvent, MilestonedEvent, MovedColumnsInProjectEvent, PinnedEvent, PullRequestCommit, PullRequestCommitCommentThread, PullRequestReview, PullRequestReviewThread, PullRequestRevisionMarker, ReadyForReviewEvent, ReferencedEvent, RemovedFromProjectEvent, RenamedTitleEvent, ReopenedEvent, ReviewDismissedEvent, ReviewRequestRemovedEvent, ReviewRequestedEvent, SubscribedEvent, TransferredEvent, UnassignedEvent, UnlabeledEvent, UnlockedEvent, UnpinnedEvent, UnsubscribedEvent, UserBlockedEvent)
 
 
 class PushAllowanceActor(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (User, Team, App)
+    __types__ = (App, Team, User)
 
 
 class ReferencedSubject(sgqlc.types.Union):
@@ -8759,17 +8615,17 @@ class RenamedTitleSubject(sgqlc.types.Union):
 
 class RequestedReviewer(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (User, Team, Mannequin)
+    __types__ = (Mannequin, Team, User)
 
 
 class ReviewDismissalAllowanceActor(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (User, Team)
+    __types__ = (Team, User)
 
 
 class SearchResultItem(sgqlc.types.Union):
     __schema__ = github_schema
-    __types__ = (Issue, PullRequest, Repository, User, Organization, MarketplaceListing, App)
+    __types__ = (App, Issue, MarketplaceListing, Organization, PullRequest, Repository, User)
 
 
 
