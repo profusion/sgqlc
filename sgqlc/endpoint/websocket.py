@@ -5,18 +5,22 @@ import json
 
 
 class WebSocketEndpoint(BaseEndpoint):
-    '''
+    """
     A synchronous websocket endpoint for graphql queries or subscriptions
-    '''
-    def __init__(self, url, **ws_options):
-        '''
+    """
+    def __init__(self, url, connection_params=None, **ws_options):
+        """
         :param url: ws:// or wss:// url to connect to
         :type url: str
 
+        :param connection_params: data to pass during initiation of the WebSocket connection.
+        :type connection_params: dict
+
         :param ws_options: options to pass to websocket.create_connection
         :type ws_options: dict
-        '''
+        """
         self.url = url
+        self.connection_params = connection_params
         self.ws_options = ws_options
         self.keep_alives = ['ka']
 
@@ -25,7 +29,7 @@ class WebSocketEndpoint(BaseEndpoint):
             self.__class__.__name__, self.url, self.ws_options)
 
     def __call__(self, query, variables=None, operation_name=None):
-        '''
+        """
         Makes a single query over the websocket
 
         :param query: the GraphQL query or mutation to execute. Note
@@ -53,7 +57,7 @@ class WebSocketEndpoint(BaseEndpoint):
           subscription notification.
 
         :rtype: generator
-        '''
+        """
         if isinstance(query, bytes):
             query = query.decode('utf-8')
         elif not isinstance(query, str):
@@ -65,7 +69,10 @@ class WebSocketEndpoint(BaseEndpoint):
                                          **self.ws_options)
         try:
             init_id = self.generate_id()
-            ws.send(json.dumps({'type': 'connection_init', 'id': init_id}))
+            connection_setup_dict = {'type': 'connection_init', 'id': init_id}
+            if self.connection_params:
+                connection_setup_dict['payload'] = self.connection_params
+            ws.send(json.dumps(connection_setup_dict))
             response = self._get_response(ws)
             if response['type'] != 'connection_ack':
                 raise ValueError(

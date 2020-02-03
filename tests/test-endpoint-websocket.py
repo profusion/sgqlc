@@ -14,7 +14,7 @@ endpoint.generate_id = lambda: '123'
 
 
 def test_endpoint_str():
-    'Test websocket str() implementation'
+    """Test websocket str() implementation"""
     eq_(str(endpoint),
         'WebSocketEndpoint('
         + 'url={}'.format(test_url)
@@ -23,7 +23,7 @@ def test_endpoint_str():
 
 
 def test_endpoint_id():
-    'Test websocket uuid generation'
+    """Test websocket uuid generation"""
     generated_id = WebSocketEndpoint('').generate_id()
     eq_(
         re.match(
@@ -36,7 +36,7 @@ def test_endpoint_id():
 
 @patch('sgqlc.endpoint.websocket.websocket')
 def test_basic_query(mock_websocket):
-    'Test websocket endpoint against simple query'
+    """Test websocket endpoint against simple query"""
     mock_connection = Mock()
     mock_websocket.create_connection.return_value = mock_connection
     mock_connection.recv.side_effect = [
@@ -67,8 +67,8 @@ def test_basic_query(mock_websocket):
 
 @patch('sgqlc.endpoint.websocket.websocket')
 def test_basic_query_apollo(mock_websocket):
-    '''Test websocket endpoint against simple apollo query with keepalive
-    and no id in connection_ack'''
+    """Test websocket endpoint against simple apollo query with keepalive
+    and no id in connection_ack"""
     mock_connection = Mock()
     mock_websocket.create_connection.return_value = mock_connection
     mock_connection.recv.side_effect = [
@@ -118,7 +118,7 @@ def test_basic_query_apollo(mock_websocket):
 
 @patch('sgqlc.endpoint.websocket.websocket')
 def test_operation_query(mock_websocket):
-    'Test if query with type sgqlc.operation.Operation() or raw bytes works'
+    """Test if query with type sgqlc.operation.Operation() or raw bytes works"""
 
     schema = Schema()
 
@@ -182,7 +182,7 @@ def test_operation_query(mock_websocket):
 
 @patch('sgqlc.endpoint.websocket.websocket')
 def test_basic_subscription(mock_websocket):
-    'Test websocket endpoint against simple subscription query'
+    """Test websocket endpoint against simple subscription query"""
     mock_connection = Mock()
     mock_websocket.create_connection.return_value = mock_connection
     mock_connection.recv.side_effect = [
@@ -224,8 +224,43 @@ def test_basic_subscription(mock_websocket):
 
 
 @patch('sgqlc.endpoint.websocket.websocket')
+def test_authenticated_subscription(mock_websocket):
+    """Test websocket endpoint against subscription with authentication token"""
+    mock_connection = Mock()
+    mock_websocket.create_connection.return_value = mock_connection
+    mock_connection.recv.side_effect = [
+        """
+        {
+            "type": "connection_ack",
+            "id": "123"
+        }
+        """,
+        """
+        {
+            "type": "complete",
+            "id": "123"
+        }
+        """,
+    ]
+
+    authenticated_endpoint = WebSocketEndpoint(test_url, connection_params={'authToken': 'MyAuthTokenForSubscription'})
+    authenticated_endpoint.generate_id = lambda: '123'
+    list(authenticated_endpoint('subscription {test}'))
+
+    authenticate_call_args = json.loads(mock_connection.send.call_args_list[0][0][0])
+    eq_(
+        authenticate_call_args,
+        {
+            'type': 'connection_init',
+            'id': '123',
+            'payload': {'authToken': 'MyAuthTokenForSubscription'}
+        }
+    )
+
+
+@patch('sgqlc.endpoint.websocket.websocket')
 def test_unexpected_ack(mock_websocket):
-    'Test bad message type when waiting for ack'
+    """Test bad message type when waiting for ack"""
     mock_connection = Mock()
     mock_websocket.create_connection.return_value = mock_connection
     mock_connection.recv.side_effect = [
@@ -248,7 +283,7 @@ def test_unexpected_ack(mock_websocket):
 
 @patch('sgqlc.endpoint.websocket.websocket')
 def test_unexpected_ack_id(mock_websocket):
-    'Test bad message id when waiting for ack'
+    """Test bad message id when waiting for ack"""
     mock_connection = Mock()
     mock_websocket.create_connection.return_value = mock_connection
     mock_connection.recv.side_effect = [
@@ -271,7 +306,7 @@ def test_unexpected_ack_id(mock_websocket):
 
 @patch('sgqlc.endpoint.websocket.websocket')
 def test_query_bad_message(mock_websocket):
-    'Test bad message type when waiting for query'
+    """Test bad message type when waiting for query"""
     mock_connection = Mock()
     mock_websocket.create_connection.return_value = mock_connection
     mock_connection.recv.side_effect = [
@@ -301,7 +336,7 @@ def test_query_bad_message(mock_websocket):
 
 @patch('sgqlc.endpoint.websocket.websocket')
 def test_query_bad_message_id(mock_websocket):
-    'Test bad message id when waiting for query'
+    """Test bad message id when waiting for query"""
     mock_connection = Mock()
     mock_websocket.create_connection.return_value = mock_connection
     mock_connection.recv.side_effect = [
