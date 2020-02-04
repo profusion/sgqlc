@@ -10,8 +10,8 @@
 Introduction
 ------------
 
-This package offers easy to use `GraphQL <http://graphql.org>`_
-client. It's composed by the following modules:
+This package offers an easy to use `GraphQL <http://graphql.org>`_
+client. It's composed of the following modules:
 
 - :mod:`sgqlc.types`: declare GraphQL in Python, base to generate and
   interpret queries. Submodule :mod:`sgqlc.types.datetime` will
@@ -53,7 +53,7 @@ transitioning from REST to GraphQL:
 and `GitHub <https://developer.github.com/v4/>`_, that did an
 excellent
 `post <https://githubengineering.com/the-github-graphql-api/>`_
-to explain why they did change.
+to explain why they changed.
 
 A short list of advantages over REST:
 
@@ -63,23 +63,23 @@ A short list of advantages over REST:
   with it. Actually GraphQL provides a standard in-browser IDE for
   exploring GraphQL endpoints: https://github.com/graphql/graphiql;
 
-- Only fields you want. The queries must explicitly select which
+- Only the fields that you want. The queries must explicitly select which
   fields are required, and that's all you're getting. If more fields
   are added to the type, they **won't break** the API, since the new
   fields won't be returned to old clients, as they didn't ask for such
   fields. This makes much easier to keep APIs stable and **avoids
   versioning**. Standard REST usually delivers all available fields in
   the results, and when new fields are to be included, a new API
-  version is added (reflected in the URL path);
+  version is added (reflected in the URL path, or in an HTTP header);
 
 - All data in one request. Instead of navigating hypermedia-driven
   RESTful services, like  discovering new ``"_links": {"href"...`` and
   executing a new HTTP request, with GraphQL you specify nested
-  queries and let the whole navigation to be done by the server. This
+  queries and let the whole navigation be done by the server. This
   reduces latency **a lot**;
 
-- Resulting JSON object matches exactly the given query selections, if
-  you requested for ``{ parent { child { info } } }``, you're going to
+- The resulting JSON object matches the given query exactly; if
+  you requested ``{ parent { child { info } } }``, you're going to
   receive the JSON object ``{"parent": {"child": {"info": value }}}``.
 
 From GitHub's
@@ -163,8 +163,8 @@ needed information::
 Motivation to create `sgqlc`
 ============================
 
-As seen above, writing GraphQL queries is very easy and equally easy
-to interpret the results, **what was the rationale to create sgqlc?**
+As seen above, writing GraphQL queries is very easy, and it is equally easy to
+interpret the results. So **what was the rationale to create sgqlc?**
 
 - GraphQL has its domain-specific language (DSL), and mixing two
   languages is always painful, as seen with SQL + Python, HTML +
@@ -173,12 +173,12 @@ to interpret the results, **what was the rationale to create sgqlc?**
   Java/JavaScript, using ``aNameFormat`` instead of Python's
   ``a_name_format``.
 
-- Navigating dict-of-stuff is bit painful:
+- Navigating dict-of-stuff is a bit painful:
   ``d["repository"]["pullRequest"]["commits"]["edges"]["node"]``,
   since these are valid Python identifiers, we better write:
   ``repository.pull_request.commits.edges.node``.
 
-- Handling new ``scalar``. GraphQL allows one to define new scalar
+- Handling new ``scalar`` types. GraphQL allows one to define new scalar
   types, such as ``Date``, ``Time`` and ``DateTime``. Often these are
   serialized as ISO 8601 strings and the user must parse them in their
   application. We offer ``sgqlc.types.datetime`` to automatically
@@ -186,12 +186,12 @@ to interpret the results, **what was the rationale to create sgqlc?**
   :class:`datetime.datetime`.
 
 - Make it easy to write dynamic queries, including nested. As seen,
-  GraphQL can be used to fetch lots of information in one go, however
+  GraphQL can be used to fetch lots of information in one go; however
   if what you need (arguments and fields) changes based on some
   variable, such as user input or cached data, then you need to
   concatenate strings to compose the final query. This can be error
-  prone and servers may block you due invalid queries. Some tools
-  "solve" this by parsing the query locally before sending to
+  prone and servers may block you due to invalid queries. Some tools
+  "solve" this by parsing the query locally before sending it to
   server. However usually the indentation is screwed and reviewing it
   is painful. We change that approach: use
   :class:`sgqlc.operation.Operation` and it will always generate valid
@@ -207,7 +207,7 @@ to interpret the results, **what was the rationale to create sgqlc?**
   nodes and edges, but also page information. This is done
   automatically by :class:`sgqlc.types.relay.Connection`.
 
-Future plans include to generate the Python classes from GraphQL
+Future plans include generating the Python classes from the GraphQL
 schema, which can be automatically fetched from an endpoint using
 the introspection query.
 
@@ -244,12 +244,12 @@ hand-written query (see more at ``examples/basic/01_http_endpoint.py``):
 
 
 However, writing GraphQL queries and later interpreting the results
-may be cumbersome, that's solved with our ``sgqlc.types``, that is
+may be cumbersome. That's solved by our ``sgqlc.types``, which is
 usually paired with ``sgqlc.operation`` to generate queries and then
 interpret results (see more at ``examples/basic/02_schema_types.py``). The
-example below matches a subset of `GitHub API v4
-<https://developer.github.com/v4/query/>`_, in GraphQL syntax it would
-be::
+example below matches a subset of 
+`GitHub API v4 <https://developer.github.com/v4/query/>`_.
+In GraphQL syntax it would be::
 
    query {
      repository(owner: "profusion", name: "sgqlc") {
@@ -335,12 +335,12 @@ The output JSON object is:
 Why double-underscore and overloaded arithmetic methods?
 ========================================================
 
-Since we don't want to cobbler GraphQL fields, we cannot provide
-nicely named methods. Then we use overloaded methods such as
+Since we don't want to clobber GraphQL fields, we cannot provide
+nicely named methods. Therefore we use overloaded methods such as
 ``__iadd__``, ``__add__``, ``__bytes__`` (compressed GraphQL
 representation) and ``__str__`` (indented GraphQL representation).
 
-To select fields by name ``__fields__(*names, **names_and_args)``.
+To select fields by name, use ``__fields__(*names, **names_and_args)``.
 This helps with repetitive situations and can be used to "include all
 fields", or "include all except...":
 
@@ -382,8 +382,9 @@ introspection call:
    user@host$ sgqlc-codegen github_schema.json github_schema.py
 
 This generates ``github_schema`` that provides the
-:class:`sgqlc.types.Schema` instance of the same name
-``github_schema``. Then it's a matter of using that in your Python code, as in the example below from ``examples/github/github-agile-dashboard.py``:
+:class:`sgqlc.types.Schema` instance of the same name ``github_schema``.
+Then it's a matter of using that in your Python code, as in the example below
+from ``examples/github/github-agile-dashboard.py``:
 
 .. code-block:: python
 
@@ -452,14 +453,15 @@ Run the tests (one of the below):
     ./setup.py nosetests         # only nose (unit/doc tests)
     flake8 --config setup.cfg .  # style checks
 
-Keep 100% coverage, you can look at coverage report at
-``cover/index.html``.  To do that, prefer `doctest
-<https://docs.python.org/3.7/library/doctest.html>`_ so it serves as
-both documentation and test. However we use `nose
-<https://nose.readthedocs.io>`_ to write explicit tests that would be
+Keep 100% coverage. You can look at the coverage report at
+``cover/index.html``.  To do that, prefer 
+`doctest <https://docs.python.org/3.7/library/doctest.html>`_
+so it serves as
+both documentation and test. However we use 
+`nose <https://nose.readthedocs.io>`_ to write explicit tests that would be
 hard to express using ``doctest``.
 
-Build and review the generated Sphinx documentation, validate if your
+Build and review the generated Sphinx documentation, and validate if your
 changes look right:
 
 ::
@@ -469,5 +471,5 @@ changes look right:
 
 
 To integrate changes from another branch, please **rebase** instead of
-creating merge commits (`read more
-<https://git-scm.com/book/en/v2/Git-Branching-Rebasing>`_).
+creating merge commits (
+`read more <https://git-scm.com/book/en/v2/Git-Branching-Rebasing>`_).
