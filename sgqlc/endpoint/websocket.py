@@ -8,15 +8,21 @@ class WebSocketEndpoint(BaseEndpoint):
     '''
     A synchronous websocket endpoint for graphql queries or subscriptions
     '''
-    def __init__(self, url, **ws_options):
+    def __init__(self, url, connection_payload=None, **ws_options):
         '''
         :param url: ws:// or wss:// url to connect to
         :type url: str
+
+        :param connection_payload: data to pass during initiation of the
+          WebSocket connection. It's passed as ``"payload"`` key of the
+          ``connection_init`` type message.
+        :type connection_payload: dict
 
         :param ws_options: options to pass to websocket.create_connection
         :type ws_options: dict
         '''
         self.url = url
+        self.connection_payload = connection_payload
         self.ws_options = ws_options
         self.keep_alives = ['ka']
 
@@ -65,7 +71,11 @@ class WebSocketEndpoint(BaseEndpoint):
                                          **self.ws_options)
         try:
             init_id = self.generate_id()
-            ws.send(json.dumps({'type': 'connection_init', 'id': init_id}))
+            connection_setup_dict = {'type': 'connection_init', 'id': init_id}
+            if self.connection_payload:
+                connection_setup_dict['payload'] = self.connection_payload
+            ws.send(json.dumps(connection_setup_dict))
+
             response = self._get_response(ws)
             if response['type'] != 'connection_ack':
                 raise ValueError(

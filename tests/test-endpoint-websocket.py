@@ -224,6 +224,47 @@ def test_basic_subscription(mock_websocket):
 
 
 @patch('sgqlc.endpoint.websocket.websocket')
+def test_authenticated_subscription(mock_websocket):
+    'Test websocket endpoint against subscription with authentication token'
+    mock_connection = Mock()
+    mock_websocket.create_connection.return_value = mock_connection
+    mock_connection.recv.side_effect = [
+        """
+        {
+            "type": "connection_ack",
+            "id": "123"
+        }
+        """,
+        """
+        {
+            "type": "complete",
+            "id": "123"
+        }
+        """,
+    ]
+    connection_payload = {'authToken': 'MyAuthTokenForSubscription'}
+
+    authenticated_endpoint = WebSocketEndpoint(
+        test_url,
+        connection_payload=connection_payload,
+    )
+    authenticated_endpoint.generate_id = endpoint.generate_id
+    list(authenticated_endpoint('subscription {test}'))
+
+    authenticate_call_args = json.loads(
+        mock_connection.send.call_args_list[0][0][0]
+    )
+    eq_(
+        authenticate_call_args,
+        {
+            'type': 'connection_init',
+            'id': '123',
+            'payload': connection_payload
+        }
+    )
+
+
+@patch('sgqlc.endpoint.websocket.websocket')
 def test_unexpected_ack(mock_websocket):
     'Test bad message type when waiting for ack'
     mock_connection = Mock()
