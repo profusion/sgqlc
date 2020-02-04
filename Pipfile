@@ -11,7 +11,7 @@ requests = "*"
 
 [dev-packages]
 "flake8" = "*"
-"pep8" = "*"
+"pycodestyle" = "*"
 "flake8-builtins" = "*"
 "flake8-colors" = "*"
 "flake8-comprehensions" = "*"
