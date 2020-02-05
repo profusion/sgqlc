@@ -79,14 +79,14 @@ class WebSocketEndpoint(BaseEndpoint):
             response = self._get_response(ws)
             if response['type'] != 'connection_ack':
                 raise ValueError(
-                    f'Unexpected {response["type"]} '
-                    f'when waiting for connection ack'
+                    'Unexpected {} '
+                    'when waiting for connection ack'.format(response["type"])
                 )
             # response does not always have an id
             if response.get('id', init_id) != init_id:
                 raise ValueError(
-                    f'Unexpected id {response["id"]} '
-                    f'when waiting for connection ack'
+                    'Unexpected id {} '
+                    'when waiting for connection ack'.format(response["id"])
                 )
 
             query_id = self.generate_id()
@@ -99,14 +99,16 @@ class WebSocketEndpoint(BaseEndpoint):
             while response['type'] != 'complete':
                 if response['id'] != query_id:
                     raise ValueError(
-                        f'Unexpected id {response["id"]} '
-                        f'when waiting for query results'
+                        'Unexpected id {} '
+                        'when waiting for query results'.format(response["id"])
                     )
                 if response['type'] == 'data':
                     yield response['payload']
                 else:
-                    raise ValueError(f'Unexpected message {response} '
-                                     f'when waiting for query results')
+                    raise ValueError(
+                        'Unexpected message {} '
+                        'when waiting for query results'.format(response)
+                    )
                 response = self._get_response(ws)
 
         finally:
