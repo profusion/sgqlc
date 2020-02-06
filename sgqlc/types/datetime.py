@@ -143,15 +143,18 @@ class Time(Scalar):
         if not m:
             raise ValueError('not in ISO 8601 format HH:MM:SS: %s' % s)
 
-        hour = int(m['H'])
-        minute = int(m['M'])
-        second = int(m['S'])
-        microsecond = int(m['MS'][1:] or 0)
+        hour = int(m.group('H'))
+        minute = int(m.group('M'))
+        second = int(m.group('S'))
+        microsecond = int(m.group('MS')[1:] or 0)
         tzinfo = None
-        if m['TZ'] == 'Z':
+        if m.group('TZ') == 'Z':
             tzinfo = datetime.timezone.utc
-        elif m['TZ']:
-            d = datetime.timedelta(hours=int(m['TZH']), minutes=int(m['TZM']))
+        elif m.group('TZ'):
+            d = datetime.timedelta(
+                hours=int(m.group('TZH')),
+                minutes=int(m.group('TZM')),
+            )
             tzinfo = datetime.timezone(d)
 
         return datetime.time(hour, minute, second, microsecond, tzinfo)
@@ -201,9 +204,9 @@ class Date(Scalar):
         if not m:
             raise ValueError('not in ISO 8601 format YYYY-MM-DD: %s' % s)
 
-        year = int(m['Y'])
-        month = int(m['m'])
-        day = int(m['d'])
+        year = int(m.group('Y'))
+        month = int(m.group('m'))
+        day = int(m.group('d'))
         return datetime.date(year, month, day)
 
     @classmethod
@@ -272,18 +275,21 @@ class DateTime(Scalar):
             raise ValueError('not in ISO 8601 format YYYY-MM-DDTHH:MM:SS: %s'
                              % s)
 
-        year = int(m['Y'])
-        month = int(m['m'])
-        day = int(m['d'])
-        hour = int(m['H'])
-        minute = int(m['M'])
-        second = int(m['S'])
-        microsecond = int(m['MS'][1:] or 0)
+        year = int(m.group('Y'))
+        month = int(m.group('m'))
+        day = int(m.group('d'))
+        hour = int(m.group('H'))
+        minute = int(m.group('M'))
+        second = int(m.group('S'))
+        microsecond = int(m.group('MS')[1:] or 0)
         tzinfo = None
-        if m['TZ'] == 'Z':
+        if m.group('TZ') == 'Z':
             tzinfo = datetime.timezone.utc
-        elif m['TZ']:
-            d = datetime.timedelta(hours=int(m['TZH']), minutes=int(m['TZM']))
+        elif m.group('TZ'):
+            d = datetime.timedelta(
+                hours=int(m.group('TZH')),
+                minutes=int(m.group('TZM')),
+            )
             tzinfo = datetime.timezone(d)
 
         return datetime.datetime(year, month, day,
