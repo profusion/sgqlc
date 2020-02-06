@@ -22,7 +22,7 @@ def read(fname):
 
 setup(
     name=name,
-    version=f'{version}.{release}',
+    version='{}.{}'.format(version, release),
     description='Simple GraphQL Client',
     long_description=read('README.rst'),
     long_description_content_type='text/x-rst',
