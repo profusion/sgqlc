@@ -1744,7 +1744,7 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
                 self.__class__, name, value, exc)) from exc
 
     def __populate_fields_from_selection_list(self, sl, json_data):
-        for sel in sl:
+        for sel in sl.__get_selections_or_auto_select__():
             field = sel.__field__
             ftype = self.__get_type_for_selection(sel, json_data)
             if sel.__alias__ is not None:

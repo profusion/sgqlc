@@ -663,6 +663,29 @@ Updating also reflects on the correct backing store:
 >>> json_data['data']['r_name2']['name']
 'repo2 name'
 
+It also works with auto selection:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1')
+repository(id: "repo1") {
+  id
+  name
+  owner {
+    login
+  }
+  issues {
+    number
+    title
+    body
+  }
+}
+>>> json_data = {'data': {
+...     'repository': {'id': 'repo1', 'name': 'Repo #1'},
+... }}
+>>> obj = op + json_data
+>>> obj.repository.name
+'Repo #1'
+
 Mutations
 ~~~~~~~~~
 
@@ -1094,6 +1117,14 @@ class Selection:
         self.__selection_list = None
         if issubclass(field.type, BaseTypeWithTypename):
             self.__selection_list = SelectionList(field.type)
+
+    def __get_selections_or_auto_select__(
+            self, auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
+        selections = self.__selection_list
+        if selections is None or selections:
+            return selections
+        return self.__get_all_fields_selection_list(
+            auto_select_depth, [])
 
     def __len__(self):
         if self.__selection_list is not None:
@@ -1537,6 +1568,9 @@ class SelectionList:
 
         s.append(prefix + '}')
         return '\n'.join(s)
+
+    def __get_selections_or_auto_select__(self):
+        return self.__selections
 
     def __iter__(self):
         return iter(self.__selections)
