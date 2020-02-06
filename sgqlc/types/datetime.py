@@ -50,7 +50,7 @@ time2 datetime.time(12, 34, 56, tzinfo=...(days=-1, seconds=75600)))
 date1 datetime.date(2018, 1, 2)
 date2 datetime.date(2018, 1, 2)
 datetime1 datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=....utc)
-datetime2 datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...seconds=75600)))
+datetime2 datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...75600)))
 
 Pre-converted types are allowed:
 
@@ -101,17 +101,17 @@ class Time(Scalar):
     >>> Time('12:34:56Z') # Z = GMT/UTC
     datetime.time(12, 34, 56, tzinfo=datetime.timezone.utc)
     >>> Time('12:34:56-05:30') # doctest: +ELLIPSIS
-    datetime.time(12, 34, 56, tzinfo=...(days=-1, seconds=70200)))
+    datetime.time(12, 34, 56, tzinfo=...(...-1, ...70200)))
     >>> Time('12:34:56+05:30') # doctest: +ELLIPSIS
-    datetime.time(12, 34, 56, tzinfo=...(seconds=19800)))
+    datetime.time(12, 34, 56, tzinfo=...(...19800)))
     >>> Time('123456') # compact form
     datetime.time(12, 34, 56)
     >>> Time('123456Z') # compact form, GMT/UTC
     datetime.time(12, 34, 56, tzinfo=datetime.timezone.utc)
     >>> Time('123456-0530') # doctest: +ELLIPSIS
-    datetime.time(12, 34, 56, tzinfo=...(days=-1, seconds=70200)))
+    datetime.time(12, 34, 56, tzinfo=...(...-1, ...70200)))
     >>> Time('123456+0530') # doctest: +ELLIPSIS
-    datetime.time(12, 34, 56, tzinfo=...(seconds=19800)))
+    datetime.time(12, 34, 56, tzinfo=...(...19800)))
 
     Pre-converted values are allowed:
 
@@ -230,17 +230,17 @@ class DateTime(Scalar):
     >>> DateTime('2018-01-02T12:34:56Z') # Z = GMT/UTC
     datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=datetime.timezone.utc)
     >>> DateTime('2018-01-02T12:34:56-05:30') # doctest: +ELLIPSIS
-    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=..., seconds=70200)))
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...70200)))
     >>> DateTime('2018-01-02T12:34:56+05:30') # doctest: +ELLIPSIS
-    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(seconds=19800)))
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(...19800)))
     >>> DateTime('20180102T123456') # compact form
     datetime.datetime(2018, 1, 2, 12, 34, 56)
     >>> DateTime('20180102T123456Z') # compact form, GMT/UTC
     datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=datetime.timezone.utc)
     >>> DateTime('20180102T123456-0530') # doctest: +ELLIPSIS
-    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=..., seconds=70200)))
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...70200)))
     >>> DateTime('20180102T123456+0530') # doctest: +ELLIPSIS
-    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(seconds=19800)))
+    datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(...19800)))
 
     Pre-converted values are allowed:
 
