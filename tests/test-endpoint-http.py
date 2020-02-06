@@ -29,7 +29,7 @@ query GitHubRepoIssues($repoOwner: String!, $repoName: String!) {
 }
 '''
 
-graphql_response_ok = b'''
+graphql_response_ok = '''
 {
   "data": {
     "repository": {
@@ -45,7 +45,7 @@ graphql_response_ok = b'''
   }
 }'''
 
-graphql_response_error = b'''
+graphql_response_error = '''
 {
   "errors": [{
     "message": "Server Reported Error",
@@ -57,7 +57,7 @@ graphql_response_error = b'''
 }
 '''
 
-graphql_response_json_error = b'''
+graphql_response_json_error = '''
 {
   "data": {
 '''
@@ -77,7 +77,7 @@ def configure_mock_urlopen(mock_urlopen, payload):
     if isinstance(payload, Exception):
         mock_urlopen.side_effect = payload
     else:
-        mock_urlopen.return_value = io.BytesIO(payload)
+        mock_urlopen.return_value = io.BytesIO(payload.encode('utf-8'))
 
 
 def check_request_url(req, expected):
@@ -124,7 +124,7 @@ def get_request_url_query(req):
 
 def check_request_variables(req, variables):
     if req.method == 'POST':
-        post_data = json.loads(req.data)
+        post_data = json.loads(req.data.decode('utf-8'))
         received = post_data.get('variables')
     else:
         query = get_request_url_query(req)
@@ -135,7 +135,7 @@ def check_request_variables(req, variables):
 
 def check_request_operation_name(req, operation_name):
     if req.method == 'POST':
-        post_data = json.loads(req.data)
+        post_data = json.loads(req.data.decode('utf-8'))
         received = post_data.get('operationName')
     else:
         query = get_request_url_query(req)
@@ -146,7 +146,7 @@ def check_request_operation_name(req, operation_name):
 
 def check_request_query(req, query):
     if req.method == 'POST':
-        post_data = json.loads(req.data)
+        post_data = json.loads(req.data.decode('utf-8'))
         received = post_data.get('query')
     else:
         query_data = get_request_url_query(req)
@@ -337,7 +337,7 @@ def test_json_error(mock_urlopen):
     eq_(data, {
         'errors': [{
             'message': str(exc),
-            'body': graphql_response_json_error.decode('utf-8'),
+            'body': graphql_response_json_error,
         }],
         'data': None,
     })
@@ -488,7 +488,7 @@ def test_server_http_graphql_error(mock_urlopen):
         500,
         'Some Error',
         {'Content-Type': 'application/json'},
-        io.BytesIO(graphql_response_error),
+        io.BytesIO(graphql_response_error.encode('utf-8')),
     )
     configure_mock_urlopen(mock_urlopen, err)
 

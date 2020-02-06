@@ -144,7 +144,7 @@ def get_request_url_query(req):
 
 def check_request_variables(req, variables):
     if req.method == 'POST':
-        post_data = json.loads(req.body)
+        post_data = json.loads(req.body.decode('utf-8'))
         received = post_data.get('variables')
     else:
         query = get_request_url_query(req)
@@ -155,7 +155,7 @@ def check_request_variables(req, variables):
 
 def check_request_operation_name(req, operation_name):
     if req.method == 'POST':
-        post_data = json.loads(req.body)
+        post_data = json.loads(req.body.decode('utf-8'))
         received = post_data.get('operationName')
     else:
         query = get_request_url_query(req)
@@ -166,7 +166,7 @@ def check_request_operation_name(req, operation_name):
 
 def check_request_query(req, query):
     if req.method == 'POST':
-        post_data = json.loads(req.body)
+        post_data = json.loads(req.body.decode('utf-8'))
         received = post_data.get('query')
     else:
         query_data = get_request_url_query(req)
