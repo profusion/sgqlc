@@ -30,7 +30,7 @@ setup(
     author_email='barbieri@profusion.mobi',
     url='http://github.com/profusion/sgqlc',
     license='ISCL',
-    python_requires='>=3.6',
+    python_requires='>=3.5',
     requires=[],
     install_requires=['graphql-core'],
     extras_require={
