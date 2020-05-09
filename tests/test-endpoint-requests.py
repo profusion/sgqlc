@@ -215,7 +215,8 @@ def test_basic(mock_requests_send):
     eq_(str(endpoint),
         'RequestsEndpoint('
         + 'url={}, '.format(test_url)
-        + 'base_headers={}, timeout=None, method=POST, auth=None)')
+        + 'base_headers={}, timeout=None, method=POST, auth=None, '
+        + 'session=None)')
 
 
 @patch('requests.sessions.Session.send')
@@ -234,7 +235,25 @@ def test_basic_auth(mock_requests_send):
         'RequestsEndpoint('
         + 'url={}, '.format(test_url)
         + 'base_headers={}, timeout=None, method=POST, '
-        + 'auth=<class \'requests.auth.HTTPBasicAuth\'>)')
+        + 'auth=<class \'requests.auth.HTTPBasicAuth\'>, '
+        + 'session=None)')
+
+
+@patch('requests.sessions.Session.send')
+def test_basic_session(mock_requests_send):
+    '[Requests] - Test if basic usage with session works'
+
+    configure_mock_requests_send(mock_requests_send, graphql_response_ok)
+
+    endpoint = RequestsEndpoint(test_url, session=requests.Session())
+    data = endpoint(graphql_query)
+    eq_(data, json.loads(graphql_response_ok))
+    check_mock_requests_send(mock_requests_send)
+    eq_(str(endpoint),
+        'RequestsEndpoint('
+        + 'url={}, '.format(test_url)
+        + 'base_headers={}, timeout=None, method=POST, auth=None, '
+        + 'session=<class \'requests.sessions.Session\'>)')
 
 
 @patch('requests.sessions.Session.send')
@@ -420,7 +439,7 @@ def test_get(mock_requests_send):
         'RequestsEndpoint('
         + 'url={}, '.format(test_url)
         + 'base_headers={}, '.format(base_headers)
-        + 'timeout=None, method=GET, auth=None)',
+        + 'timeout=None, method=GET, auth=None, session=None)',
         )
 
 

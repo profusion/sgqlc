@@ -64,7 +64,7 @@ class RequestsEndpoint(BaseEndpoint):
     logger = logging.getLogger(__name__)
 
     def __init__(self, url, base_headers=None, timeout=None, method='POST',
-                 auth=None):
+                 auth=None, session=None):
         '''
         :param url: the default GraphQL endpoint url.
         :type url: str
@@ -81,19 +81,23 @@ class RequestsEndpoint(BaseEndpoint):
                        `POST` is used by default
 
         :param auth: requests.auth compatible authentication option. Optional.
+
+        :param session: requests.Session object. Optional.
         '''
         self.url = url
         self.base_headers = base_headers or {}
         self.timeout = timeout
         self.method = method
         self.auth = auth
+        self.session = session
 
     def __str__(self):
         return ('%s(url=%s, base_headers=%r, timeout=%r, '
-                'method=%s, auth=%s)') % (
+                'method=%s, auth=%s, session=%s)') % (
             self.__class__.__name__, self.url, self.base_headers, self.timeout,
             self.method,
-            self.auth.__class__ if self.auth is not None else None)
+            self.auth.__class__ if self.auth is not None else None,
+            self.session.__class__ if self.session is not None else None)
 
     def __call__(self, query, variables=None,  # noqa: C901
                  operation_name=None, extra_headers=None, timeout=None):
@@ -149,7 +153,8 @@ class RequestsEndpoint(BaseEndpoint):
         self.logger.debug('Query:\n%s', query)
 
         try:
-            with requests.Session() as session:
+            with self.session if self.session is not None \
+                    else requests.Session() as session:
                 prepped = session.prepare_request(req)
                 with session.send(prepped,
                                   timeout=timeout or self.timeout) as f:
