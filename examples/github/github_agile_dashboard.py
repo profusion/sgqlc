@@ -699,7 +699,7 @@ def cmd_dashboard_text(endpoint, args):  # noqa: C901
                     is_red, is_green, is_blue, is_bright)]
                 return '%s%s%s' % (color, n.name, colors['clear'])
 
-            return ', '.join(fmt_label(l) for l in node.labels.nodes)
+            return ', '.join(fmt_label(n) for n in node.labels.nodes)
 
         today = datetime.datetime.now(datetime.timezone.utc)
 
