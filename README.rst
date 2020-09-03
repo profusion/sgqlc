@@ -473,3 +473,10 @@ changes look right:
 To integrate changes from another branch, please **rebase** instead of
 creating merge commits (
 `read more <https://git-scm.com/book/en/v2/Git-Branching-Rebasing>`_).
+
+Public Schemas
+--------------
+
+The following repositories provides public schemas generated using ``sgqlc-codegen``:
+
+- `Mogost/sgqlc-schemas <https://github.com/Mogost/sgqlc-schemas>`_ GitHub, Monday.com
