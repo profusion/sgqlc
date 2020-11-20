@@ -560,6 +560,8 @@ TypeUsingPython(a_int=3, a_float=3.3)
 __docformat__ = 'reStructuredText en'
 
 import json
+import keyword
+import re
 from collections import OrderedDict
 
 __all__ = (
@@ -2015,6 +2017,21 @@ class BaseItem:
             return self._type
         self._type = self._type.resolve(self.schema)
         return self._type
+
+    @staticmethod
+    def _to_python_name(graphql_name):
+        '''Converts a GraphQL name, ``aName`` to Python: ``a_name``.
+
+        Note that an underscore is appended if the name is a Python keyword.
+        '''
+        s = []
+        rgx = re.compile('([^A-Z]+|[A-Z]+[^A-Z]*)')
+        for w in rgx.findall(graphql_name):
+            s.append(w.lower())
+        name = '_'.join(s)
+        if keyword.iskeyword(name):
+            return name + '_'
+        return name
 
     @staticmethod
     def _to_graphql_name(name):
