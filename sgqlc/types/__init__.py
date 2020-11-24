@@ -2023,10 +2023,11 @@ class BaseItem:
         '''Converts a GraphQL name, ``aName`` to Python: ``a_name``.
 
         Note that an underscore is appended if the name is a Python keyword.
-        >>> BaseItem. _to_python_name('aName')
-        a_name
-        >>> BaseItem. _to_python_name('for')
-        for_
+
+        >>> BaseItem._to_python_name('aName')
+        'a_name'
+        >>> BaseItem._to_python_name('for')
+        'for_'
         '''
         s = []
         rgx = re.compile('([^A-Z]+|[A-Z]+[^A-Z]*)')
