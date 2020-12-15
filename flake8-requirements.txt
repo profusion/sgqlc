@@ -7,7 +7,6 @@ flake8-deprecated
 flake8-rst-docstrings
 flake8-requirements
 flake8-single-quotes
-flake8-regex
 flake8-module-name
 flake8-tidy-imports
 flake8-print
