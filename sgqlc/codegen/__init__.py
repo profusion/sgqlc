@@ -2,7 +2,6 @@
 
 import argparse
 import json
-import keyword
 import os
 import os.path
 import sys
@@ -62,7 +61,6 @@ class JSONOutputVisitor(Visitor):
 
 def parse_graphql_value_to_json(source):
     value = parse_graphql_value(source)
-    visitor = JSONOutputVisitor()
     v = visit(value, JSONOutputVisitor())
     if isinstance(v, GraphQLASTValue):
         v = v.value
@@ -471,6 +469,56 @@ def get_basename_noext(path):
     return os.path.splitext(os.path.basename(path))[0]
 
 
+def gen_schema_name(out_file, in_fname):
+    if out_file:
+        if out_file.name != '<stdout>':
+            return get_basename_noext(out_file.name)
+        elif in_fname != '<stdin>':
+            return get_basename_noext(in_fname)
+        else:
+            return 'generated_schema'
+    else:
+        if in_fname == '<stdin>':
+            return 'generated_schema'
+        else:
+            return get_basename_noext(in_fname)
+
+
+def cleanup_schema_name(schema_name):
+    schema_name = re.sub('[^A-Za-z0-9_]+', '_', schema_name)
+    schema_name = re.sub('(^_+|_+$)', '', schema_name)
+    if re.match('^[0-9]', schema_name):
+        schema_name = '_' + schema_name
+
+    return schema_name
+
+
+def gen_out_file(schema_name, in_fname):
+    if in_fname == '<stdin>':
+        return sys.stdout
+    else:
+        wd = os.path.dirname(in_fname)
+        out_fname = os.path.join(wd, schema_name + '.py')
+        sys.stdout.write('Writing to: %s\n' % (out_fname,))
+        return open(out_fname, 'w')
+
+
+def load_schema(in_file):
+    schema = json.load(in_file)
+    if not isinstance(schema, dict):
+        raise SystemExit('schema must be a JSON object')
+
+    if schema.get('types'):
+        return schema
+    elif schema.get('data', {}).get('__schema', None):
+        return schema['data']['__schema']  # plain HTTP endpoint result
+    elif schema.get('__schema'):
+        return schema['__schema']  # introspection field
+    else:
+        raise SystemExit(
+            'schema must be introspection object or query result')
+
+
 ap = argparse.ArgumentParser(
     description='Generate sgqlc types using GraphQL introspection data',
 )
@@ -493,55 +541,30 @@ ap.add_argument('--schema-name', '-s',
                       ' with "_".'),
                 default=None)
 
-args = vars(ap.parse_args())  # vars: schema.json and schema.py
 
-in_file = args['schema.json']
-out_file = args['schema.py']
+def main():
+    args = vars(ap.parse_args())  # vars: schema.json and schema.py
 
-in_fname = args['schema.json'].name
+    in_file = args['schema.json']
+    out_file = args['schema.py']
 
-schema_name = args['schema_name']
-if not schema_name:
-    if out_file:
-        if out_file.name != '<stdout>':
-            schema_name = get_basename_noext(out_file.name)
-        elif in_fname != '<stdin>':
-            schema_name = get_basename_noext(in_fname)
-        else:
-            schema_name = 'generated_schema'
-    else:
-        if in_fname == '<stdin>':
-            schema_name = 'generated_schema'
-        else:
-            schema_name = get_basename_noext(in_fname)
+    in_fname = args['schema.json'].name
+
+    schema_name = args['schema_name']
+    if not schema_name:
+        schema_name = gen_schema_name(out_file, in_fname)
+
+    schema_name = cleanup_schema_name(schema_name)
+
+    if not out_file:
+        out_file = gen_out_file(schema_name, in_fname)
+
+    schema = load_schema(in_file)
+
+    gen = CodeGen(schema_name, schema, out_file.write)
+    gen.write()
+    out_file.close()
 
 
-schema_name = re.sub('[^A-Za-z0-9_]+', '_', schema_name)
-schema_name = re.sub('(^_+|_+$)', '', schema_name)
-if re.match('^[0-9]', schema_name):
-    schema_name = '_' + schema_name
-
-if not out_file:
-    if in_fname == '<stdin>':
-        out_file = sys.stdout
-    else:
-        wd = os.path.dirname(in_fname)
-        out_fname = os.path.join(wd, schema_name + '.py')
-        out_file = open(out_fname, 'w')
-        sys.stdout.write('Writing to: %s\n' % (out_fname,))
-
-schema = json.load(in_file)
-if not isinstance(schema, dict):
-    raise SystemExit('schema must be a JSON object')
-
-if not schema.get('types'):
-    if schema.get('data', {}).get('__schema', None):
-        schema = schema['data']['__schema']  # plain HTTP endpoint result
-    elif schema.get('__schema'):
-        schema = schema['__schema']  # introspection field
-    else:
-        raise SystemExit('schema must be introspection object or query result')
-
-gen = CodeGen(schema_name, schema, out_file.write)
-gen.write()
-out_file.close()
+if __name__ == '__main__':
+    main()
