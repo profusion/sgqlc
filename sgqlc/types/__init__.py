@@ -2012,7 +2012,7 @@ class BaseItem:
             self.graphql_name = self._to_graphql_name(name)
 
     @property  # noqa: A003
-    def type(self):
+    def type(self):  # noqa: A003
         if not isinstance(self._type, Lazy):
             return self._type
         self._type = self._type.resolve(self.schema)
