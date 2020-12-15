@@ -16,6 +16,7 @@ Table of Contents
 
 .. toctree::
 
+   sgqlc
    sgqlc.types
    sgqlc.types.datetime
    sgqlc.types.relay
