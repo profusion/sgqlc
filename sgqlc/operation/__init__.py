@@ -1302,6 +1302,9 @@ class Selection:
             return self[name]
         except KeyError as exc:
             raise AttributeError('%s has no field %s' % (self, name)) from exc
+        except ValueError as exc:
+            raise AttributeError('%s failed to get field %s' %
+                                 (self, name)) from exc
 
     def __getitem__(self, name):
         if self.__selection_list is None:
@@ -1456,6 +1459,9 @@ class Selector:
             return self[name]
         except KeyError as exc:
             raise AttributeError('%s has no field %s' % (self, name)) from exc
+        except ValueError as exc:
+            raise AttributeError('%s failed to get field %s' %
+                                 (self, name)) from exc
 
     def __getitem__(self, name):
         return self()[name]
