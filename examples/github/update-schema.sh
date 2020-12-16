@@ -14,4 +14,4 @@ python3 \
     https://api.github.com/graphql \
     github_schema.json || exit 1
 
-sgqlc-codegen github_schema.json github_schema.py
+sgqlc-codegen schema github_schema.json github_schema.py

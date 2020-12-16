@@ -15,4 +15,4 @@ python3 \
     https://${SHOP_STORE}.myshopify.com/admin/api/2020-10/graphql.json \
     shopify_schema.json || exit 1
 
-sgqlc-codegen shopify_schema.json shopify_schema.py
+sgqlc-codegen schema shopify_schema.json shopify_schema.py
