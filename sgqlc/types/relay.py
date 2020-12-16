@@ -370,7 +370,8 @@ class Connection(Type):
         has_other_page_info = hasattr(other, 'page_info') and \
             other.page_info is not None
         if has_self_page_info and has_other_page_info:
-            self.page_info.end_cursor = other.page_info.end_cursor
+            if hasattr(other.page_info, 'end_cursor'):
+                self.page_info.end_cursor = other.page_info.end_cursor
             self.page_info.has_next_page = other.page_info.has_next_page
         elif has_other_page_info:
             self.page_info = other.page_info
