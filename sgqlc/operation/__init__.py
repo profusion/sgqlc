@@ -861,6 +861,152 @@ it's going to behave as the interface type as well:
 Actor(login='user')
 
 
+Named Fragments
+~~~~~~~~~~~~~~~
+
+Named fragments are a way to reuse selection blocks and allow
+optimizations to be employed. They also allow shorter documents
+if the fragment is used more than once.
+
+They are similar to Inline Fragments described above as they
+allow selecting on interfaces and unions.
+
+>>> org_loc_frag = Fragment(Organization, 'OrganizationLocationFragment')
+>>> org_loc_frag.location()
+location
+>>> org_login_frag = Fragment(Organization, 'OrganizationLoginFragment')
+>>> org_login_frag.login()
+login
+>>> user_frag = Fragment(User, 'UserFragment')
+>>> user_frag.name()
+name
+>>> assignee_frag = Fragment(Assignee, 'AssigneeFragment')
+>>> assignee_frag.email()
+email
+>>> op = Operation(Query)
+>>> repo = op.repository(id='repo1')
+>>> repo.owner.login() # interface fields can be declared as usual
+login
+>>> repo.owner().__fragment__(org_loc_frag)
+>>> repo.owner().__fragment__(org_login_frag)  # can do many on the same type
+>>> repo.owner.__fragment__(user_frag)
+>>> repo.issues().assigned.__fragment__(assignee_frag)
+>>> repo.issues().assigned.__fragment__(user_frag)
+>>> repo.issues().commenters().actors().login()
+login
+>>> repo.issues().commenters().actors().__fragment__(org_loc_frag)
+>>> repo.issues().commenters().actors().__fragment__(user_frag)
+>>> op
+query {
+  repository(id: "repo1") {
+    owner {
+      login
+      __typename
+      ...OrganizationLocationFragment
+      ...OrganizationLoginFragment
+      ...UserFragment
+    }
+    issues {
+      assigned {
+        __typename
+        ...AssigneeFragment
+        ...UserFragment
+      }
+      commenters {
+        actors {
+          login
+          __typename
+          ...OrganizationLocationFragment
+          ...UserFragment
+        }
+      }
+    }
+  }
+}
+fragment OrganizationLocationFragment on Organization {
+  location
+}
+fragment OrganizationLoginFragment on Organization {
+  login
+}
+fragment UserFragment on User {
+  name
+}
+fragment AssigneeFragment on Assignee {
+  email
+}
+
+Note that ``__typename`` is automatically selected so it can create the
+proper type when interprets the results:
+
+>>> json_data = {'data': {'repository': {'owner': {
+...    '__typename': 'User',
+...    'login': 'user',
+...    'name': 'User Name',
+...    },
+...    'issues': [
+...      {
+...          'assigned': {'__typename': 'Assignee', 'email': 'e@mail.com'},
+...          'commenters': {
+...              'actors': [
+...                  {'login': 'user', '__typename': 'User', 'name': 'User Name'},
+...                  {'login': 'a-company', '__typename': 'Organization', 'location': 'that place'}
+...              ]
+...          }
+...      },
+...      {
+...          'assigned': {'__typename': 'User', 'name': 'User'},
+...          'commenters': {
+...              'actors': [
+...                  {'login': 'user', '__typename': 'User', 'name': 'User Name'},
+...                  {'login': 'xpto', '__typename': 'User'}
+...              ]
+...          }
+...      },
+...    ],
+... }}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+User(login='user', __typename__='User', name='User Name')
+>>> for i in obj.repository.issues:
+...     print(i)
+Issue(assigned=Assignee(__typename__=Assignee, email=e@mail.com), commenters=ActorConnection(actors=[User(login='user', __typename__='User', name='User Name'), Organization(login='a-company', __typename__='Organization', location='that place')]))
+Issue(assigned=User(__typename__=User, name=User), commenters=ActorConnection(actors=[User(login='user', __typename__='User', name='User Name'), User(login='xpto', __typename__='User')]))
+
+>>> json_data = {'data': {'repository': {'owner': {
+...    '__typename': 'Organization',
+...    'login': 'a-company',
+...    'location': 'somewhere',
+...    'name': 'A Company',
+... }}}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+Organization(login='a-company', __typename__='Organization', location='somewhere')
+
+If the returned type doesn't have an explicit type fields, the
+Interface field is returned:
+
+>>> json_data = {'data': {'repository': {'owner': {
+...    '__typename': 'SomethingElse',
+...    'login': 'something-else',
+...    'field': 'value',
+... }}}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+Actor(login='something-else', __typename__='SomethingElse')
+
+In the unusual situation where ``__typename`` is not returned,
+it's going to behave as the interface type as well:
+
+>>> json_data = {'data': {'repository': {'owner': {
+...    'login': 'user',
+...    'name': 'User Name',
+... }}}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+Actor(login='user')
+
+
 Utilities
 ~~~~~~~~~
 
@@ -1038,6 +1184,9 @@ from ..types import BaseTypeWithTypename, Union, ContainerType, ArgDict, \
 
 
 DEFAULT_AUTO_SELECT_DEPTH = 2
+PROXIED_FIELDS = {
+    '__type__', '__casts__', '__as__', '__fragment__', '__fragments__',
+}
 
 
 class Selection:
@@ -1281,6 +1430,10 @@ class Selection:
                 indent, indent_string, auto_select_depth)
         return prefix + alias + self.__field__.graphql_name + args + query
 
+    def __collect_fragments__(self, fragments):
+        if self.__selection_list:
+            self.__selection_list.__collect_fragments__(fragments)
+
     def __dir__(self):
         original_dir = super(Selection, self).__dir__()
         t = self.__field__.type
@@ -1292,8 +1445,7 @@ class Selection:
     def __getattr__(self, name):
         if name.startswith('_'):
             sl = self.__selection_list
-            proxied_fields = ('__type__', '__casts__', '__as__')
-            if name in proxied_fields:
+            if name in PROXIED_FIELDS:
                 if sl is None:
                     return None
                 return getattr(sl, name)
@@ -1429,6 +1581,11 @@ class Selector:
         '''
         return self().__as__(typ)
 
+    def __fragment__(self, fragment):
+        '''Spread the given fragment in the selection list.
+        '''
+        return self().__fragment__(fragment)
+
     def __dir__(self):
         original_dir = super(Selector, self).__dir__()
         t = self.__field__.type
@@ -1536,7 +1693,8 @@ class SelectionList:
 
     '''  # noqa: E501
 
-    __slots__ = ('__type', '__selectors', '__selections', '__casts')
+    __slots__ = ('__type', '__selectors', '__selections', '__casts',
+                 '__fragments')
 
     def __init__(self, typ):
         assert issubclass(typ, BaseTypeWithTypename), \
@@ -1545,6 +1703,7 @@ class SelectionList:
         self.__selectors = {}
         self.__selections = []
         self.__casts = OrderedDict()
+        self.__fragments = OrderedDict()
 
     def __str__(self):
         return self.__to_graphql__()
@@ -1571,6 +1730,9 @@ class SelectionList:
             s.append(next_prefix + v.__to_graphql__(
                 next_indent, indent_string, auto_select_depth,
             ))
+        for lst in self.__fragments.values():
+            for v in lst:
+                s.append(next_prefix + v.__spread__())
 
         s.append(prefix + '}')
         return '\n'.join(s)
@@ -1609,6 +1771,24 @@ class SelectionList:
     def __casts__(self):
         return self.__casts
 
+    @property
+    def __fragments__(self):
+        return self.__fragments
+
+    def __collect_fragments__(self, fragments=None):
+        if fragments is None:
+            fragments = OrderedDict()
+
+        for lst in self.__fragments.values():
+            for frag in lst:
+                fragments.setdefault(frag.__name__, frag)
+                frag.__collect_fragments__(fragments)
+
+        for sel in self.__selections:
+            sel.__collect_fragments__(fragments)
+
+        return fragments
+
     def __as__(self, typ):
         '''Create a child selection list on the given type.
 
@@ -1630,6 +1810,13 @@ class SelectionList:
         self['__typename__']()
         return sl
 
+    def __fragment__(self, fragment):
+        assert isinstance(fragment, Fragment)
+        self.__fragments.setdefault(
+            fragment.__type__.__name__, []
+        ).append(fragment)
+        self['__typename__']()
+
 
 class InlineFragmentSelectionList(SelectionList):
     def __to_graphql__(self, indent=0, indent_string='  ',
@@ -1637,6 +1824,28 @@ class InlineFragmentSelectionList(SelectionList):
         selection = SelectionList.__to_graphql__(
             self, indent, indent_string, auto_select_depth)
         return '... on %s %s' % (self.__type__, selection)
+
+
+class Fragment(SelectionList):
+    __slots__ = ('__name',)
+
+    def __init__(self, typ, name):
+        super(Fragment, self).__init__(typ)
+        self.__name = name
+
+    @property
+    def __name__(self):
+        return self.__name
+
+    def __spread__(self):
+        return '...%s' % (self.__name,)
+
+    def __to_graphql__(self, indent=0, indent_string='  ',
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
+        selection = SelectionList.__to_graphql__(
+            self, indent, indent_string, auto_select_depth)
+        return 'fragment %s on %s %s' % (
+            self.__name, self.__type__, selection)
 
 
 class Operation:
@@ -1857,7 +2066,17 @@ class Operation:
         args = self.__args.__to_graphql__(indent, indent_string)
         selections = self.__selection_list.__to_graphql__(
             indent, indent_string, auto_select_depth)
-        return prefix + kind + name + args + ' ' + selections
+
+        frags_gql = []
+        fragments = self.__selection_list.__collect_fragments__()
+        for fragment in fragments.values():
+            frags_gql.append(fragment.__to_graphql__(indent, indent_string,
+                             auto_select_depth))
+
+        frags = ''
+        if frags_gql:
+            frags = '\n' + '\n'.join(frags_gql)
+        return prefix + kind + name + args + ' ' + selections + frags
 
     def __iter__(self):
         return iter(self.__selection_list)

@@ -1762,6 +1762,14 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
             if csl:
                 self.__populate_fields_from_selection_list(csl, json_data)
 
+        fragments = sl.__fragments__
+        if fragments:
+            tname = json_data.get('__typename')
+            fl = fragments.get(tname)
+            if fl:
+                for f in fl:
+                    self.__populate_fields_from_selection_list(f, json_data)
+
     @staticmethod
     def __get_type_for_selection(sel, json_data):
         field = sel.__field__
