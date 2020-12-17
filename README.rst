@@ -379,7 +379,7 @@ introspection call:
         -H "Authorization: bearer ${GH_TOKEN}" \
         https://api.github.com/graphql \
         github_schema.json
-   user@host$ sgqlc-codegen github_schema.json github_schema.py
+   user@host$ sgqlc-codegen schema github_schema.json github_schema.py
 
 This generates ``github_schema`` that provides the
 :class:`sgqlc.types.Schema` instance of the same name ``github_schema``.
