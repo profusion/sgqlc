@@ -420,7 +420,7 @@ from ``examples/github/github_agile_dashboard.py``:
 You can also generate these operations given a GraphQL Domain Specific
 Language (DSL) operation:
 
-.. code-block:: graphql
+.. code-block::
 
    query ListIssues($owner: String!, $name: String!) {
        repository(owner: $owner, name: $name) {
