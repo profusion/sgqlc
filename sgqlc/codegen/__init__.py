@@ -2,6 +2,7 @@ import argparse
 import sys
 
 from . import schema
+from . import operation
 
 
 __all__ = ('SchemaCodeGen',)
@@ -22,6 +23,13 @@ def main():
     )
     sp.set_defaults(func=schema.handle_command)
     schema.add_arguments(sp)
+
+    sp = subparsers.add_parser(
+        'operation',
+        help='Generate sgqlc operations using GraphQL (DSL)',
+    )
+    sp.set_defaults(func=operation.handle_command)
+    operation.add_arguments(sp)
 
     # default to 'schema' for backward compatibility
     subcommands = subparsers.choices.keys()

@@ -1,0 +1,14 @@
+query ListIssues($owner: String!, $name: String!) {
+    repository(owner: $owner, name: $name) {
+        issues(first: 100) {
+            nodes {
+                number
+                title
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+        }
+    }
+}

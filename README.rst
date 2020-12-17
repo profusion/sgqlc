@@ -384,7 +384,7 @@ introspection call:
 This generates ``github_schema`` that provides the
 :class:`sgqlc.types.Schema` instance of the same name ``github_schema``.
 Then it's a matter of using that in your Python code, as in the example below
-from ``examples/github/github-agile-dashboard.py``:
+from ``examples/github/github_agile_dashboard.py``:
 
 .. code-block:: python
 
@@ -416,6 +416,55 @@ from ``examples/github/github-agile-dashboard.py``:
    for issue in repo.issues.nodes:
        print(issue)
 
+
+You can also generate these operations given a GraphQL Domain Specific
+Language (DSL) operation:
+
+.. code-block:: graphql
+
+   query ListIssues($owner: String!, $name: String!) {
+       repository(owner: $owner, name: $name) {
+           issues(first: 100) {
+               nodes {
+                   number
+                   title
+               }
+               pageInfo {
+                   hasNextPage
+                   endCursor
+               }
+           }
+       }
+   }
+
+.. code-block:: console
+
+   user@host$ sgqlc-codegen operation \
+      --schema github_schema.json \
+      github_schema \
+      sample_operations.py \
+      sample_operations.gql
+
+This generates ``sample_operations.py`` that provides the ``Operation``.
+Then it's a matter of using that in your Python code, as in the example below
+from ``examples/github/github-agile-dashboard.py``:
+
+.. code-block:: python
+
+   from sample_operations import Operations
+
+   op = Operations.query.list_issues
+
+   # you can print the resulting GraphQL
+   print(op)
+
+   # Call the endpoint:
+   data = endpoint(op, {'owner': owner, 'name': name})
+
+   # Interpret results into native objects
+   repo = (op + data).repository
+   for issue in repo.issues.nodes:
+       print(issue)
 
 Authors
 -------

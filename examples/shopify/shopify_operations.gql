@@ -1,0 +1,43 @@
+query InitialQuery($first: Int!, $after: String=null) {
+    shop {
+        name
+        description
+        url
+    }
+    products(first: $first, after: $after) {
+        ...SelectProducts
+    }
+}
+
+query LoadProducts($first: Int!, $after: String!) {
+    products(first: $first, after: $after) {
+        ...SelectProducts
+    }
+}
+
+fragment SelectProducts on ProductConnection {
+    pageInfo { hasNextPage }
+    edges {
+        cursor
+        node {
+            id
+            handle
+            description
+            title
+            totalInventory
+            priceRangeV2 {
+                minVariantPrice {
+                    ...Money
+                }
+                maxVariantPrice {
+                    ...Money
+                }
+            }
+        }
+    }
+}
+
+fragment Money on MoneyV2 {
+    amount
+    currencyCode
+}

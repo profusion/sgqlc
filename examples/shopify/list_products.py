@@ -4,10 +4,8 @@ import argparse
 import logging
 import sys
 
-from sgqlc.operation import Operation  # noqa: I900
 from sgqlc.endpoint.http import HTTPEndpoint  # noqa: I900
-from shopify_schema import shopify_schema as schema  # noqa: I900
-
+from shopify_operations import Operations  # noqa: I900
 
 logger = logging.getLogger(__name__)
 
@@ -22,19 +20,6 @@ def price_range_to_text(price_range):
     if min_range == max_range:
         return min_range
     return '%s...%s' % (min_range, max_range)
-
-
-def select_products(op, first, after):
-    products = op.products(first=first, after=after)
-    edges = products.edges
-    edges.cursor()
-    edges.node.__fields__(
-        'id', 'handle', 'description', 'title', 'total_inventory',
-    )
-    price_range = edges.node.price_range_v2()
-    price_range.min_variant_price.__fields__('amount', 'currency_code')
-    price_range.max_variant_price.__fields__('amount', 'currency_code')
-    products.page_info.has_next_page()
 
 
 def print_product(product):
@@ -77,15 +62,12 @@ endpoint = HTTPEndpoint(url, {'X-Shopify-Access-Token': args.token})
 page_size = args.page_size
 
 
-op = Operation(schema.QueryRoot)
-shop = op.shop
-shop.__fields__('name', 'description', 'url')
-select_products(op, page_size, None)
+op = Operations.query.initial_query
 
 logger.info('Endpoint %s', endpoint)
 logger.debug('Operation:\n%s', op)
 
-d = endpoint(op)
+d = endpoint(op, {'first': page_size})
 errors = d.get('errors')
 if errors:
     raise SystemExit(errors)
@@ -100,19 +82,17 @@ if not data.products.edges:
     raise SystemExit()
 
 
-# NOTE: Shopify doesn't expose page_info.end_cursor,
-# then we must get the last one:
-last_edge = data.products.edges[-1]
-
-while data.products.page_info.has_next_page and last_edge:
+op = Operations.query.load_products
+while data.products.page_info.has_next_page:
+    # NOTE: Shopify doesn't expose page_info.end_cursor,
+    # then we must get the last one:
+    last_edge = data.products.edges[-1]
     after = last_edge.cursor
-    op = Operation(schema.QueryRoot)
-    select_products(op, page_size, after)
 
     logger.info('Downloading next page after: %s', after)
     logger.debug('Operation:\n%s', op)
 
-    d = endpoint(op)
+    d = endpoint(op, {'first': page_size, 'after': after})
     errors = d.get('errors')
     if errors:
         raise SystemExit(errors)
