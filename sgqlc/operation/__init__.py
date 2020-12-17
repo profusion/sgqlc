@@ -1737,6 +1737,20 @@ class Operation:
       }
     }
 
+    If variable name conflicts with the parameter, you can pass
+    them as a single ``variables`` parameter containing a dict.
+
+    >>> from sgqlc.types import Variable
+    >>> op = Operation(name='MyOperation', variables={'name': str})
+    >>> op.repository(id=Variable('name')).name()
+    name
+    >>> op # or repr(), prints out GraphQL!
+    query MyOperation($name: String) {
+      repository(id: $name) {
+        name
+      }
+    }
+
     Complex argument types are also supported as JSON object (GraphQL names
     and raw types) or actual types:
 
@@ -1801,6 +1815,8 @@ class Operation:
             typ = global_schema.query_type
 
         variable_args = OrderedDict()
+        if len(args) == 1 and 'variables' in args:
+            args = args['variables']
         for k, v in args.items():
             variable_args['$' + k] = v
 
