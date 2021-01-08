@@ -20,6 +20,13 @@ from graphql.language.parser import parse_value as parse_graphql_value
 from graphql.language.visitor import Visitor, visit
 
 
+# Use Null instead of None as Visitor.leave_* understands None as IDLE,
+# which keeps the original node.
+class Null:
+    def __repr__(self):
+        return 'None'
+
+
 class JSONOutputVisitor(Visitor):
     def leave_IntValue(self, node, *args):
         return int(node.value)
@@ -46,7 +53,7 @@ class JSONOutputVisitor(Visitor):
         return (node.name.value, node.value)
 
     def leave_NullValue(self, _node, *_args):
-        return None
+        return Null()
 
     leave_int_value = leave_IntValue
     leave_float_value = leave_FloatValue
