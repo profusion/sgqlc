@@ -207,9 +207,11 @@ interpret the results. So **what was the rationale to create sgqlc?**
   nodes and edges, but also page information. This is done
   automatically by :class:`sgqlc.types.relay.Connection`.
 
-Future plans include generating the Python classes from the GraphQL
-schema, which can be automatically fetched from an endpoint using
-the introspection query.
+It also helps with code-generation, ``sgqlc-codegen`` can generate both
+the classes matching a GraphQL Schema or functions to return
+:class:`sgqlc.operation.Operation` based on executable documents
+GraphQL Domain Specific Language (DSL).
+
 
 Installation
 ------------
