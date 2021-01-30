@@ -456,9 +456,11 @@ def fragment_%(name)s():
             if a['type']['kind'] == 'NON_NULL' and a['defaultValue'] is None:
                 required.add(a['name'])
 
-        for _, var in node.arguments:
-            if var.name in required:
-                required.remove(var.name)
+        for name, maybe_var in node.arguments:
+            if hasattr(maybe_var, 'name'):
+                name = maybe_var.name
+            if name in required:
+                required.remove(name)
 
         if required:
             raise ValueError(
