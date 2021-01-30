@@ -471,17 +471,16 @@ def fragment_%(name)s():
     def leave_field(self, node, *_args):
         self.validate_required_arguments(node)
 
+        args = node.arguments
         alias = ''
         if node.alias:
             alias = to_python_name(node.alias)
-            node.arguments.append(('__alias__', alias))
-
-        args = OrderedDict(node.arguments)
+            args = list(args) + [('__alias__', alias)]
 
         name = to_python_name(node.name)
         selection = '%(name)s(%(args)s)' % {
             'name': name,
-            'args': ', '.join('%s=%r' % a for a in args.items()),
+            'args': ', '.join('%s=%r' % a for a in args),
         }
         if not alias:
             alias = name
