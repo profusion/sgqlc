@@ -61,7 +61,24 @@ function test_coverage {
     return 0
 }
 
+function check_examples {
+    if [ -z "$STAGED_PY_FILES" ]; then
+        echo "No python files changed, nothing to check in examples"
+        return 0
+    fi
+
+    (cd $BASE_PATH/examples/github &&
+        NO_DOWNLOAD=1 ./update-schema.sh &&
+        ./update-operations.sh &&
+        echo 'GitHub example Ok')
+    (cd $BASE_PATH/examples/shopify &&
+        NO_DOWNLOAD=1 ./update-schema.sh &&
+        ./update-operations.sh &&
+        echo 'Shopify example Ok')
+}
+
 cd $BASE_PATH
 test_dependencies &&
 call_flake8 &&
+check_examples &&
 test_coverage
