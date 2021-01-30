@@ -33,3 +33,16 @@ jobs:
     - name: Build
       run: |
         ./setup.py egg_info -Db '' sdist bdist_egg
+    - name: Install
+      run: |
+        ./setup.py install --skip-build
+    - name: Test GitHub example
+      run: |
+        cd examples/github
+        NO_DOWNLOAD=1 ./update-schema.sh
+        ./update-operations.sh
+    - name: Test Shopify example
+      run: |
+        cd examples/shopify
+        NO_DOWNLOAD=1 ./update-schema.sh
+        ./update-operations.sh
