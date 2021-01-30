@@ -10,7 +10,7 @@ def query_list_issues():
     _op_repository = _op.repository(owner=sgqlc.types.Variable('owner'), name=sgqlc.types.Variable('name'))
     _op_repository_issues = _op_repository.issues(first=100)
     _op_repository_issues_nodes = _op_repository_issues.nodes()
-    _op_repository_issues_nodes.number()
+    _op_repository_issues_nodes.number(__alias__='n')
     _op_repository_issues_nodes.title()
     _op_repository_issues_page_info = _op_repository_issues.page_info()
     _op_repository_issues_page_info.has_next_page()
