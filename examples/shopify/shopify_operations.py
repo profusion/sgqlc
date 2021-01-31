@@ -2,11 +2,14 @@ import sgqlc.types
 import sgqlc.operation
 import shopify_schema
 
+_schema = shopify_schema
+_schema_root = _schema.shopify_schema
+
 __all__ = ('Operations',)
 
 
 def fragment_select_products():
-    _frag = sgqlc.operation.Fragment(shopify_schema.ProductConnection, 'SelectProducts')
+    _frag = sgqlc.operation.Fragment(_schema.ProductConnection, 'SelectProducts')
     _frag_page_info = _frag.page_info()
     _frag_page_info.has_next_page()
     _frag_edges = _frag.edges()
@@ -26,7 +29,7 @@ def fragment_select_products():
 
 
 def fragment_money():
-    _frag = sgqlc.operation.Fragment(shopify_schema.MoneyV2, 'Money')
+    _frag = sgqlc.operation.Fragment(_schema.MoneyV2, 'Money')
     _frag.amount()
     _frag.currency_code()
     return _frag
@@ -38,7 +41,7 @@ class Fragment:
 
 
 def query_initial_query():
-    _op = sgqlc.operation.Operation(shopify_schema.shopify_schema.query_type, name='InitialQuery', variables=dict(first=sgqlc.types.Arg(sgqlc.types.non_null(shopify_schema.shopify_schema.Int)), after=sgqlc.types.Arg(shopify_schema.shopify_schema.String, default=None)))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='InitialQuery', variables=dict(first=sgqlc.types.Arg(sgqlc.types.non_null(shopify_schema.shopify_schema.Int)), after=sgqlc.types.Arg(shopify_schema.shopify_schema.String, default=None)))
     _op_shop = _op.shop()
     _op_shop.name()
     _op_shop.description()
@@ -49,7 +52,7 @@ def query_initial_query():
 
 
 def query_load_products():
-    _op = sgqlc.operation.Operation(shopify_schema.shopify_schema.query_type, name='LoadProducts', variables=dict(first=sgqlc.types.Arg(sgqlc.types.non_null(shopify_schema.shopify_schema.Int)), after=sgqlc.types.Arg(sgqlc.types.non_null(shopify_schema.shopify_schema.String))))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='LoadProducts', variables=dict(first=sgqlc.types.Arg(sgqlc.types.non_null(shopify_schema.shopify_schema.Int)), after=sgqlc.types.Arg(sgqlc.types.non_null(shopify_schema.shopify_schema.String))))
     _op_products = _op.products(first=sgqlc.types.Variable('first'), after=sgqlc.types.Variable('after'))
     _op_products.__fragment__(fragment_select_products())
     return _op

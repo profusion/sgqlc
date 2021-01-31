@@ -386,8 +386,9 @@ class GraphQLToPython(Visitor):
         if args_definition:
             args_definition = ', variables=dict(%s)' % (args_definition,)
         lines = [
-            '_op = sgqlc.operation.Operation(%s.%s_type, name=%r%s)' % (
-                self.schema_name, node.operation.value,
+            '_op = sgqlc.operation.Operation'
+            '(_schema_root.%s_type, name=%r%s)' % (
+                node.operation.value,
                 node.name, args_definition),
         ]
         self.format_selection_set('_op', node.selection_set, lines, 0)
@@ -418,12 +419,11 @@ def %(operation)s_%(name)s():
         name = to_python_name(node.name)
         return ('fragment', name, '''\
 def fragment_%(name)s():
-    _frag = sgqlc.operation.Fragment(%(schema)s.%(type)s, %(gql_name)r)
+    _frag = sgqlc.operation.Fragment(_schema.%(type)s, %(gql_name)r)
     %(lines)s
 ''' % {
             'name': name,
             'gql_name': node.name,
-            'schema': self.schema_name.modname,
             'type': node.type_condition.name,
             'lines': '\n    '.join(lines)
         })
@@ -638,8 +638,11 @@ class CodeGen:
             self.writer('import ' + self.schema_name.modname)
         self.writer('''
 
+_schema = %s
+_schema_root = _schema.%s
+
 __all__ = ('Operations',)
-''')
+''' % (self.schema_name.modname, self.schema_name.sym))
 
     def write_operations(self):
         for source in self.operations_gql:

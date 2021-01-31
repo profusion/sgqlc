@@ -2,11 +2,14 @@ import sgqlc.types
 import sgqlc.operation
 import github_schema
 
+_schema = github_schema
+_schema_root = _schema.github_schema
+
 __all__ = ('Operations',)
 
 
 def query_list_issues():
-    _op = sgqlc.operation.Operation(github_schema.github_schema.query_type, name='ListIssues', variables=dict(owner=sgqlc.types.Arg(sgqlc.types.non_null(github_schema.github_schema.String)), name=sgqlc.types.Arg(sgqlc.types.non_null(github_schema.github_schema.String))))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='ListIssues', variables=dict(owner=sgqlc.types.Arg(sgqlc.types.non_null(github_schema.github_schema.String)), name=sgqlc.types.Arg(sgqlc.types.non_null(github_schema.github_schema.String))))
     _op_repository = _op.repository(owner=sgqlc.types.Variable('owner'), name=sgqlc.types.Variable('name'))
     _op_repository_issues = _op_repository.issues(first=100)
     _op_repository_issues_nodes = _op_repository_issues.nodes()
