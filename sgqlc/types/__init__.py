@@ -973,6 +973,9 @@ def _create_list_of_wrapper(name, t):
         return [realize_type(v, selection_list) for v in json_data]
 
     def __to_graphql_input__(value, indent=0, indent_string='  '):
+        if isinstance(value, Variable):
+            return value.__to_graphql_input__(value, indent, indent_string)
+
         r = []
         for v in value:
             v = realize_type(v)
@@ -2246,20 +2249,20 @@ class ArgDict(OrderedDict):
     Note that for better understanding, more than 3 arguments are
     printed in multiple lines:
 
-    >>> ad = ArgDict(a=int, b=float, c=str, d=list_of(int))
+    >>> ad = ArgDict(a=int, b=float, c=non_null(str), d=list_of(int))
     >>> ad._set_container(global_schema, None)  # done automatically by Field
     >>> print(ad)
     (
       a: Int
       b: Float
-      c: String
+      c: String!
       d: [Int]
     )
     >>> print(bytes(ad).decode('utf-8'))
     (
     a: Int
     b: Float
-    c: String
+    c: String!
     d: [Int]
     )
 
@@ -2273,6 +2276,21 @@ class ArgDict(OrderedDict):
         b: 2.2
         c: "hi"
         d: [1, 2]
+      )
+
+    Variables can be handled using :class:`Variable` instances:
+
+    >>> print('fieldName' + ad.__to_graphql_input__({
+    ...     'a': Variable('a'),
+    ...     'b': Variable('b'),
+    ...     'c': Variable('c'),
+    ...     'd': Variable('d'),
+    ... }))
+    fieldName(
+        a: $a
+        b: $b
+        c: $c
+        d: $d
       )
 
     '''
