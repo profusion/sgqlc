@@ -262,7 +262,7 @@ class GraphQLToPython(Visitor):
                                              children, lines, idx):
         sel = self.selection_name(parent, '_as__%s' % type_condition, idx)
         idx += 1
-        lines.append('%s = %s.__as__(%s)' % (sel, parent, type_condition))
+        lines.append('%s = %s.__as__(%s)' % (sel, parent, str(self.schema_name) + "." + type_condition))
         return self.format_selection_set(sel, children, lines, idx)
 
     @staticmethod
@@ -456,9 +456,9 @@ def fragment_%(name)s():
             if a['type']['kind'] == 'NON_NULL' and a['defaultValue'] is None:
                 required.add(a['name'])
 
-        for _, var in node.arguments:
-            if var.name in required:
-                required.remove(var.name)
+        for name, _ in node.arguments:
+            if name in required:
+                required.remove(name)
 
         if required:
             raise ValueError(
