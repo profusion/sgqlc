@@ -64,10 +64,18 @@ function check_examples {
         NO_DOWNLOAD=1 ./update-schema.sh &&
         ./update-operations.sh &&
         echo 'GitHub example Ok')
+    if [ $? -ne 0 ]; then
+      printf "\033[41mGitHub example FAILED\033[0m\n"
+      return 1
+    fi
     (cd $BASE_PATH/examples/shopify &&
         NO_DOWNLOAD=1 ./update-schema.sh &&
         ./update-operations.sh &&
         echo 'Shopify example Ok')
+    if [ $? -ne 0 ]; then
+      printf "\033[41mShopify example FAILED\033[0m\n"
+      return 1
+    fi
 }
 
 cd $BASE_PATH
