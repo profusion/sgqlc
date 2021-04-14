@@ -15,6 +15,8 @@ def query_list_issues():
     _op_repository_issues_nodes = _op_repository_issues.nodes()
     _op_repository_issues_nodes.number(__alias__='n')
     _op_repository_issues_nodes.title()
+    _op_repository_issues_nodes__as__Node = _op_repository_issues_nodes.__as__(github_schema.github_schema.Node)
+    _op_repository_issues_nodes__as__Node.id()
     _op_repository_issues_page_info = _op_repository_issues.page_info()
     _op_repository_issues_page_info.has_next_page()
     _op_repository_issues_page_info.end_cursor()

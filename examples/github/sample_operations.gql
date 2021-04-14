@@ -4,6 +4,9 @@ query ListIssues($owner: String!, $name: String!) {
             nodes {
                 n: number
                 title
+                ... on Node {
+                    id
+                }
             }
             pageInfo {
                 hasNextPage
