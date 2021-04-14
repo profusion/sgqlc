@@ -88,7 +88,7 @@ class SchemaValidation(NoValidation):
         enum_values = typ['enumValues'] or []
         typ['enumValues'] = {e['name'] for e in enum_values}
 
-        possible_types = typ['possibleTypes'] or []
+        possible_types = typ['possibleTypes'] or typ['interfaces'] or []
         typ['possibleTypes'] = {t['name'] for t in possible_types}
 
         return typ
@@ -261,6 +261,7 @@ class GraphQLToPython(Visitor):
     def format_selection_set_inline_fragment(self, parent, type_condition,
                                              children, lines, idx):
         sel = self.selection_name(parent, '_as__%s' % type_condition, idx)
+        type_condition = self.format_typename_usage(type_condition)
         idx += 1
         lines.append('%s = %s.__as__(%s)' % (sel, parent, type_condition))
         return self.format_selection_set(sel, children, lines, idx)
@@ -278,12 +279,15 @@ class GraphQLToPython(Visitor):
         'list_type': 'sgqlc.types.list_of',
     }
 
+    def format_typename_usage(self, typename):
+        return '%s.%s' % (self.schema_name, typename)
+
     def format_type_usage(self, typ):
         wrapper = self.wrapper_map.get(typ.kind)
         if wrapper:
             return '%s(%s)' % (wrapper, self.format_type_usage(typ.type))
 
-        return '%s.%s' % (self.schema_name, typ.name)
+        return self.format_typename_usage(typ.name)
 
     def format_variable_definition(self, node):
         name = node.variable.name
