@@ -7,6 +7,7 @@ import os.path
 import sys
 import re
 import functools
+import textwrap
 
 from sgqlc.types import BaseItem
 
@@ -74,8 +75,50 @@ def parse_graphql_value_to_json(source):
     return v
 
 
+paragraph_wrapper = textwrap.TextWrapper(
+    width=70,
+    expand_tabs=True,
+    initial_indent='    ',
+    subsequent_indent='    ',
+)
+
+list_wrapper = textwrap.TextWrapper(
+    width=70,
+    expand_tabs=True,
+    initial_indent='    * ',
+    subsequent_indent='      ',
+)
+
+
+def to_docstring(wrapped_text, level=1):
+    if not wrapped_text:
+        return ''
+    prefix = '    ' * level
+    if len(wrapped_text) == 1:
+        suffix = ''
+    else:
+        suffix = '\n' + prefix
+
+    wrapped_text[0] = wrapped_text[0].lstrip()
+    return '%s\'\'\'%s%s\'\'\'\n' % (
+        prefix,
+        '\n'.join(wrapped_text),
+        suffix,
+    )
+
+
+def graphql_type_to_str(t):
+    kind = t['kind']
+    if kind == 'NON_NULL':
+        return '%s!' % (graphql_type_to_str(t['ofType']),)
+    elif kind == 'LIST':
+        return '[%s]' % (graphql_type_to_str(t['ofType']),)
+    else:
+        return t['name']
+
+
 class CodeGen:
-    def __init__(self, schema_name, schema, writer):
+    def __init__(self, schema_name, schema, writer, docstrings):
         self.schema_name = schema_name
         self.schema = schema
         self.types = sorted(schema['types'], key=lambda x: x['name'])
@@ -87,6 +130,7 @@ class CodeGen:
         self.analyze()
         self.writer = writer
         self.written_types = set()
+        self.docstrings = docstrings
 
     def get_path(self, *path, fallback=None):
         d = self.schema
@@ -236,12 +280,70 @@ class CodeGen:
 
     builtin_enum_names = ('__TypeKind', '__DirectiveLocation')
 
+    def get_docstring(self, t):
+        if not self.docstrings:
+            return ''
+        description = t.get('description')
+        if not description:
+            return ''
+        return to_docstring(paragraph_wrapper.wrap(description))
+
+    def get_enum_docstring(self, t):
+        if not self.docstrings:
+            return ''
+        lines = []
+        description = t.get('description')
+        if description:
+            lines.extend(paragraph_wrapper.wrap(description))
+            lines.append('')
+
+        lines.extend(paragraph_wrapper.wrap('Enumeration Choices:'))
+        lines.append('')
+        for c in t['enumValues']:
+            d = c.get('description', '')
+            if d:
+                d = ': ' + d
+            lines.extend(list_wrapper.wrap('`%s`%s' % (c['name'], d)))
+        return to_docstring(lines)
+
+    def write_field_docstring(self, field):
+        if not self.docstrings:
+            return
+        lines = []
+        description = field.get('description')
+        if description:
+            lines.extend(paragraph_wrapper.wrap(description))
+
+        args = field.get('args')
+        if args:
+            if lines:
+                lines.append('')
+            lines.extend(paragraph_wrapper.wrap('Arguments:'))
+            lines.append('')
+            for a in args:
+                n = BaseItem._to_python_name(a['name'])
+                t = graphql_type_to_str(a['type'])
+                d = a.get('description', '')
+                if d:
+                    d = ': ' + d
+                defval = a.get('defaultValue')
+                if defval is None:
+                    defval = ''
+                else:
+                    defval = ' (default: `%s`)' % (defval,)
+                lines.extend(list_wrapper.wrap(
+                    '`%s` (`%s`)%s%s' % (n, t, d, defval)
+                ))
+        self.writer(to_docstring(lines))
+        self.writer('\n')
+
     def write_type_enum(self, t):
         name = t['name']
         if name in self.builtin_enum_names:
             return
         self.writer('''\
 class %(name)s(sgqlc.types.Enum):
+%(docstrings)s\
     __schema__ = %(schema_name)s
     __choices__ = %(choices)r
 
@@ -249,6 +351,7 @@ class %(name)s(sgqlc.types.Enum):
 ''' % {
             'name': name,
             'schema_name': self.schema_name,
+            'docstrings': self.get_enum_docstring(t),
             'choices': tuple(v['name'] for v in t['enumValues']),
         })
         self.written_types.add(name)
@@ -287,6 +390,7 @@ class %(name)s(sgqlc.types.Enum):
             'gql_name': name,
             'type': tref,
         })
+        self.write_field_docstring(field)
 
     def write_arg(self, arg, siblings):
         name = arg['name']
@@ -326,17 +430,20 @@ default=%(default)s)),
             self.writer('))\n    ')
 
         self.writer(')\n')
+        self.write_field_docstring(field)
 
     def write_type_container(self, t, bases, own_fields, write_field):
         name = t['name']
         py_fields, siblings = self.get_py_fields_and_siblings(own_fields)
         self.writer('''\
 class %(name)s(%(bases)s):
+%(docstrings)s\
     __schema__ = %(schema_name)s
     __field_names__ = %(field_names)s
 ''' % {
             'name': name,
             'bases': bases,
+            'docstrings': self.get_docstring(t),
             'schema_name': self.schema_name,
             'field_names': py_fields,
         })
@@ -401,9 +508,11 @@ class %(name)s(%(bases)s):
         else:
             self.writer('''\
 class %(name)s(sgqlc.types.Scalar):
+%(docstring)s\
     __schema__ = %(schema_name)s
 ''' % {
                 'name': name,
+                'docstring': self.get_docstring(t),
                 'schema_name': self.schema_name,
             })
         self.writer('\n\n')
@@ -415,12 +524,14 @@ class %(name)s(sgqlc.types.Scalar):
         trailing_comma = ',' if len(possible_types) == 1 else ''
         self.writer('''\
 class %(name)s(sgqlc.types.Union):
+%(docstring)s\
     __schema__ = %(schema_name)s
     __types__ = (%(types)s%(trailing_comma)s)
 
 
 ''' % {
             'name': name,
+            'docstring': self.get_docstring(t),
             'schema_name': self.schema_name,
             'types': ', '.join(v['name'] for v in possible_types),
             'trailing_comma': trailing_comma,
@@ -433,6 +544,8 @@ class %(name)s(sgqlc.types.Union):
         self.write_relay_import()
         self.writer('\n\n%s = sgqlc.types.Schema()\n\n\n' % self.schema_name)
         self.write_relay_fixup()
+        if self.docstrings:
+            self.writer('__docformat__ = \'markdown\'\n\n')
 
     def write_datetime_import(self):
         if not self.uses_datetime:
@@ -545,6 +658,10 @@ def add_arguments(ap):
                           'extension and invalid python identifiers replaced '
                           ' with "_".'),
                     default=None)
+    ap.add_argument('--docstrings', '-d', action='store_true',
+                    help=('Include schema descriptions in the generated file '
+                          'as docstrings'),
+                    default=False)
 
 
 def handle_command(parsed_args):
@@ -565,7 +682,9 @@ def handle_command(parsed_args):
 
     schema = load_schema(in_file)
 
-    gen = CodeGen(schema_name, schema, out_file.write)
+    docstrings = args['docstrings'] or False
+
+    gen = CodeGen(schema_name, schema, out_file.write, docstrings)
     gen.write()
     out_file.close()
 

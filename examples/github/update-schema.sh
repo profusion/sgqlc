@@ -10,10 +10,9 @@ if [ "$NO_DOWNLOAD" != 1 ]; then
     python3 \
         -m sgqlc.introspection \
         --exclude-deprecated \
-        --exclude-description \
         -H "Authorization: bearer ${GH_TOKEN}" \
         https://api.github.com/graphql \
         github_schema.json || exit 1
 fi
 
-sgqlc-codegen schema github_schema.json github_schema.py
+sgqlc-codegen schema --docstrings github_schema.json github_schema.py
