@@ -686,6 +686,38 @@ repository(id: "repo1") {
 >>> obj.repository.name
 'Repo #1'
 
+
+Error Reporting
+~~~~~~~~~~~~~~~
+
+If the returned data contains only ``errors`` and no ``data``,
+the interpretation will raise an error :class:`GraphQLErrors`:
+
+>>> json_data = {'errors': [{'message': 'some message'}]}
+>>> try:  # doctest: +ELLIPSIS
+...     obj = op + json_data
+... except GraphQLErrors as ex:
+...     print('Got error:', repr(ex))
+...     print(ex.errors)
+Got error: GraphQLErrors('some message'...
+[{'message': 'some message'}]
+
+If there are mixed data and errors, the object is returned with
+``__errors__`` attribute set to the errors:
+
+>>> json_data = {
+...     'errors': [{'message': 'some message'}],
+...     'data': {
+...         'repository': {'id': 'repo1', 'name': 'Repo #1'},
+...     },
+... }
+>>> obj = op + json_data
+>>> obj.repository.name
+'Repo #1'
+>>> obj.__errors__
+[{'message': 'some message'}]
+
+
 Mutations
 ~~~~~~~~~
 
@@ -1848,6 +1880,14 @@ class Fragment(SelectionList):
             self.__name, self.__type__, selection)
 
 
+class GraphQLErrors(RuntimeError):
+    def __init__(self, errors):
+        assert len(errors) > 0
+        msg = str(errors[0].get('message'))
+        super(RuntimeError, self).__init__(msg)
+        self.errors = errors
+
+
 class Operation:
     '''GraphQL Operation: query or mutation.
 
@@ -2103,4 +2143,16 @@ class Operation:
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
 
     def __add__(self, other):
-        return self.__type(other.get('data'), self.__selection_list)
+        errors = other.get('errors')
+        ex = None
+        if errors:
+            ex = GraphQLErrors(errors)
+
+        data = other.get('data')
+        if not data:
+            if not ex:  # pragma: no cover
+                ex = ValueError('no data and no errors')
+            raise ex
+        o = self.__type(other.get('data'), self.__selection_list)
+        o.__errors__ = errors
+        return o
