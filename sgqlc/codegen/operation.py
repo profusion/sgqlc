@@ -19,9 +19,25 @@ __docformat__ = 'reStructuredText en'
 to_python_name = BaseItem._to_python_name
 
 
+def format_graphql_type(typ):
+    kind = typ['kind']
+    if kind == 'NON_NULL':
+        of_type = typ['ofType']
+        return '%s!' % (format_graphql_type(of_type),)
+    elif kind == 'LIST':
+        of_type = typ['ofType']
+        return '[%s]' % (format_graphql_type(of_type),)
+    else:
+        return typ['name']
+
+
 class Variable:
     def __init__(self, name):
         self.name = name
+        self.type = None
+        self.default_value = None
+        self.node = None
+        self.usage = 0
 
     def __repr__(self):
         return 'sgqlc.types.Variable(%r)' % (self.name,)
@@ -51,6 +67,18 @@ class NoValidation:
         return None
 
     def validate_type(self, typ, candidate, value):
+        return None
+
+    def validate_object(typ, candidate_name):
+        return None
+
+    def validate_input_object_fields(self, typ, obj):
+        return None
+
+    def validate_type_matches(self, typ, candidate):
+        return None
+
+    def validate_variable_definition(self, definition):
         return None
 
 
@@ -150,8 +178,8 @@ class SchemaValidation(NoValidation):
 
     def validate_enum(self, name, candidate_name, value):
         if candidate_name != 'Enum':
-            raise ValueError('got %s where Enum is required' %
-                             (candidate_name,))
+            raise ValueError('got %s where %s is required' %
+                             (candidate_name, name))
         enum = self.get_type(name)
         if value not in enum['enumValues']:
             raise ValueError('enum %s has no value %s' % (name, value))
@@ -162,6 +190,8 @@ class SchemaValidation(NoValidation):
             name = typ.get('name')
             if kind == 'NON_NULL':
                 self.validate_non_null(candidate_name)
+            elif value is None or isinstance(value, Null):
+                return
             elif kind == 'LIST':
                 pass
             elif kind == 'SCALAR':
@@ -170,14 +200,53 @@ class SchemaValidation(NoValidation):
             elif kind == 'ENUM':
                 self.validate_enum(name, candidate_name, value)
                 return
-            elif kind == 'OBJECT':
-                # nothing to validate, it's usually operation variables
-                # declaration since there was no 'variables container'
-                # added to the stack
+            elif kind == 'OBJECT' or kind == 'INPUT_OBJECT':
+                self.validate_object(typ, candidate_name)
                 return
             else:
                 raise ValueError('cannot validate kind=%s' % (kind,))
             typ = typ.get('ofType')
+
+    @staticmethod
+    def validate_object(typ, candidate_name):
+        name = typ['name']
+        if candidate_name != name:
+            raise ValueError('got %s where %s is required' %
+                             (candidate_name, name))
+
+    def validate_input_object_fields(self, typ, obj):
+        required = set()
+        name = self.unwrap_type(typ)['name']
+        fields = self.get_type(name)['fields']
+        for f in fields.values():
+            if f['type']['kind'] == 'NON_NULL' and f['defaultValue'] is None:
+                required.add(f['name'])
+
+        for name in obj.keys():
+            if name in required:
+                required.remove(name)
+
+        if required:
+            raise ValueError('missing required fields of type %s: %s' %
+                             (typ['name'], ', '.join(required)))
+
+    @staticmethod
+    def validate_type_matches(typ, candidate):
+        used = format_graphql_type(candidate)
+        required = format_graphql_type(typ)
+        if not required.endswith('!'):
+            used = used.rstrip('!')  # relax candidate type
+
+        if required != used:
+            msg = 'got %s where %s is required' % (
+                format_graphql_type(candidate),
+                required,
+            )
+            raise ValueError(msg)
+
+    def validate_variable_definition(self, definition):
+        if definition.type['kind'] == 'NON_NULL' and definition.default_value:
+            raise ValueError('non-null variables can\'t have default value')
 
 
 class SelectionFormatResult(NamedTuple):
@@ -226,17 +295,36 @@ class GraphQLToPython(Visitor):
         self.short_names = short_names
         self.type_stack = []
         self.field_stack = []
+        self.variables = {}
+        self.current_variable_definition = None
 
     @staticmethod
     def leave_name(node, *_args):
         return node.value
 
-    @staticmethod
-    def leave_variable(node, *_args):
-        return Variable(node.name)
+    def leave_variable(self, node, *_args):
+        name = node.name
+        if not self.current_variable_definition:
+            try:
+                v = self.variables[name]
+            except KeyError as ex:
+                self.report_unknown_variable(node, ex)
+            self.validation.validate_type_matches(self.type_stack[-1], v.type)
+            v.usage += 1
+            return v
 
-    @staticmethod
-    def leave_document(node, *_args):
+        v = self.current_variable_definition
+        v.name = name
+        self.variables[name] = v
+        return v
+
+    def leave_document(self, node, *_args):
+        unused = []
+        for v in self.variables.values():
+            if v.usage == 0:
+                unused.append(v)
+        if unused:
+            self.report_unused_variables(unused)
         return node.definitions
 
     def selection_name(self, parent, name, idx):
@@ -275,19 +363,20 @@ class GraphQLToPython(Visitor):
         return SelectionFormatResult(lines, idx)
 
     wrapper_map = {
-        'non_null_type': 'sgqlc.types.non_null',
-        'list_type': 'sgqlc.types.list_of',
+        'NON_NULL': 'sgqlc.types.non_null',
+        'LIST': 'sgqlc.types.list_of',
     }
 
-    def format_typename_usage(self, typename):
-        return '%s.%s' % (self.schema_name, typename)
+    @staticmethod
+    def format_typename_usage(typename):
+        return '%s.%s' % ('_schema', typename)
 
     def format_type_usage(self, typ):
-        wrapper = self.wrapper_map.get(typ.kind)
+        wrapper = self.wrapper_map.get(typ['kind'])
         if wrapper:
-            return '%s(%s)' % (wrapper, self.format_type_usage(typ.type))
+            return '%s(%s)' % (wrapper, self.format_type_usage(typ['ofType']))
 
-        return self.format_typename_usage(typ.name)
+        return self.format_typename_usage(typ['name'])
 
     def format_variable_definition(self, node):
         name = node.variable.name
@@ -375,6 +464,30 @@ class GraphQLToPython(Visitor):
         raise SystemExit('type %s not possible for %s at %s' %
                          (type_name, typ['name'], loc))
 
+    @classmethod
+    def report_unknown_variable(cls, node, ex):
+        loc = cls.get_node_location(node)
+        raise SystemExit('no variable named %s at %s' % (ex, loc)) from ex
+
+    @classmethod
+    def report_validation_error(cls, node, ex):
+        loc = cls.get_node_location(node)
+        raise SystemExit('validation failed: %s at %s' % (ex, loc)) from ex
+
+    @classmethod
+    def report_variable_definition(cls, node, ex):
+        loc = cls.get_node_location(node)
+        raise SystemExit('invalid variable definition: %s at %s' %
+                         (ex, loc)) from ex
+
+    @classmethod
+    def report_unused_variables(cls, variables):
+        s = ', '.join(
+            '%s at %s' % (v.name, cls.get_node_location(v.node))
+            for v in variables
+        )
+        raise SystemExit('unused variable definitions: %s' % (s,))
+
     def enter_operation_definition(self, node, *_args):
         try:
             operation = node.operation.value
@@ -423,18 +536,63 @@ def %(operation)s_%(name)s():
         name = to_python_name(node.name)
         return ('fragment', name, '''\
 def fragment_%(name)s():
-    _frag = sgqlc.operation.Fragment(_schema.%(type)s, %(gql_name)r)
+    _frag = sgqlc.operation.Fragment(%(type)s, %(gql_name)r)
     %(lines)s
 ''' % {
             'name': name,
             'gql_name': node.name,
-            'type': node.type_condition.name,
+            'type': self.format_typename_usage(node.type_condition['name']),
             'lines': '\n    '.join(lines)
         })
 
     @staticmethod
     def leave_selection_set(node, *_args):
         return node.selections
+
+    def enter_variable_definition(self, node, *_args):
+        self.current_variable_definition = Variable('<unknown>')
+        self.current_variable_definition.node = node
+        self.type_stack.append(None)
+
+    def leave_variable_definition(self, node, *_args):
+        v = self.current_variable_definition
+        v.type = node.type
+        v.default_value = node.default_value
+        try:
+            self.validation.validate_variable_definition(v)
+        except Exception as ex:
+            self.report_variable_definition(node, ex)
+        self.current_variable_definition = None
+        self.type_stack.pop()
+
+    def set_variable_definition_type(self, typ):
+        if not self.current_variable_definition:
+            return
+        self.current_variable_definition.type = typ
+        self.type_stack[-1] = typ
+
+    def leave_non_null_type(self, node, *_args):
+        typ = {'kind': 'NON_NULL', 'name': None, 'ofType': node.type}
+        self.set_variable_definition_type(typ)
+        return typ
+
+    def leave_list_type(self, node, *_args):
+        typ = {'kind': 'LIST', 'name': None, 'ofType': node.type}
+        self.set_variable_definition_type(typ)
+        return typ
+
+    def leave_named_type(self, node, *_args):
+        try:
+            name = node.name
+            typ = self.validation.get_type(name)
+            if not typ:
+                # fallback when validation is not being used
+                typ = {'kind': 'SCALAR', 'name': name, 'ofType': None}
+            self.set_variable_definition_type(typ)
+            return typ
+
+        except KeyError as ex:
+            self.report_type_validation(node, ex)
 
     def enter_field(self, node, *_args):
         typ = self.type_stack[-1]
@@ -530,46 +688,63 @@ def fragment_%(name)s():
 
     def leave_inline_fragment(self, node, *_args):
         self.type_stack.pop()
-        return ('inline_fragment', node.type_condition.name,
+        return ('inline_fragment', node.type_condition['name'],
                 node.selection_set)
+
+    def validate_value(self, node, candidate_type, value):
+        try:
+            self.validation.validate_type(
+                self.type_stack[-1],
+                candidate_type,
+                value,
+            )
+        except Exception as ex:
+            self.report_validation_error(node, ex)
 
     def leave_int_value(self, node, *_args):
         value = int(node.value)
-        self.validation.validate_type(self.type_stack[-1], 'Int', value)
+        self.validate_value(node, 'Int', value)
         return value
 
     def leave_float_value(self, node, *_args):
         value = float(node.value)
-        self.validation.validate_type(self.type_stack[-1], 'Float', value)
+        self.validate_value(node, 'Float', value)
         return value
 
     def leave_string_value(self, node, *_args):
         value = node.value
-        self.validation.validate_type(self.type_stack[-1], 'String', value)
+        self.validate_value(node, 'String', value)
         return value
 
     def leave_boolean_value(self, node, *_args):
         value = node.value
-        self.validation.validate_type(self.type_stack[-1], 'Boolean', value)
+        self.validate_value(node, 'Boolean', value)
         return value
 
-    def leave_null_value(self, _node, *_args):
+    def leave_null_value(self, node, *_args):
         value = Null()  # can't return None due Visitor() pattern
-        self.validation.validate_type(self.type_stack[-1], 'Null', value)
+        self.validate_value(node, 'Null', value)
         return value
 
     def leave_enum_value(self, node, *_args):
         value = node.value
-        self.validation.validate_type(self.type_stack[-1], 'Enum', value)
+        self.validate_value(node, 'Enum', value)
         return value
 
     @staticmethod
     def leave_list_value(node, *_args):
         return node.values
 
-    @staticmethod
-    def leave_object_value(node, *_args):
-        return dict(node.fields)
+    def leave_object_value(self, node, *_args):
+        value = dict(node.fields)
+        try:
+            self.validation.validate_input_object_fields(
+                self.type_stack[-1],
+                value,
+            )
+        except Exception as ex:
+            self.report_validation_error(node, ex)
+        return value
 
     def enter_object_field(self, node, *_args):
         typ = self.type_stack[-1]

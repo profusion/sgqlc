@@ -41,7 +41,7 @@ class Fragment:
 
 
 def query_initial_query():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='InitialQuery', variables=dict(first=sgqlc.types.Arg(sgqlc.types.non_null(shopify_schema.shopify_schema.Int)), after=sgqlc.types.Arg(shopify_schema.shopify_schema.String, default=None)))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='InitialQuery', variables=dict(first=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Int)), after=sgqlc.types.Arg(_schema.String, default=None)))
     _op_shop = _op.shop()
     _op_shop.name()
     _op_shop.description()
@@ -52,7 +52,7 @@ def query_initial_query():
 
 
 def query_load_products():
-    _op = sgqlc.operation.Operation(_schema_root.query_type, name='LoadProducts', variables=dict(first=sgqlc.types.Arg(sgqlc.types.non_null(shopify_schema.shopify_schema.Int)), after=sgqlc.types.Arg(sgqlc.types.non_null(shopify_schema.shopify_schema.String))))
+    _op = sgqlc.operation.Operation(_schema_root.query_type, name='LoadProducts', variables=dict(first=sgqlc.types.Arg(sgqlc.types.non_null(_schema.Int)), after=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String))))
     _op_products = _op.products(first=sgqlc.types.Variable('first'), after=sgqlc.types.Variable('after'))
     _op_products.__fragment__(fragment_select_products())
     return _op

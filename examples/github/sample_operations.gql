@@ -1,6 +1,11 @@
-query ListIssues($owner: String!, $name: String!) {
+query ListIssues(
+    $owner: String!,
+    $name: String!,
+    $desiredOrderBy: IssueOrder={ field: CREATED_AT, direction: ASC },
+    $filterStates: [IssueState!]=[OPEN]
+) {
     repository(owner: $owner, name: $name) {
-        issues(first: 100) {
+        issues(first: 100, orderBy: $desiredOrderBy, states: $filterStates) {
             nodes {
                 n: number
                 title
