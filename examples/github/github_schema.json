@@ -62,7 +62,9 @@
           ],
           "locations": [
             "FIELD_DEFINITION",
-            "ENUM_VALUE"
+            "ENUM_VALUE",
+            "ARGUMENT_DEFINITION",
+            "INPUT_FIELD_DEFINITION"
           ],
           "name": "deprecated"
         }
@@ -540,6 +542,79 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "AddCommentPayload",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "enterpriseId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "login",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "AddEnterpriseSupportEntitlementInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "message",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "AddEnterpriseSupportEntitlementPayload",
           "possibleTypes": null
         },
         {
@@ -1312,6 +1387,79 @@
         },
         {
           "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "ownerId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "domain",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "URI",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "AddVerifiableDomainInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "domain",
+              "type": {
+                "kind": "OBJECT",
+                "name": "VerifiableDomain",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "AddVerifiableDomainPayload",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
           "fields": [
             {
               "args": [],
@@ -1516,6 +1664,66 @@
           ],
           "kind": "OBJECT",
           "name": "App",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "ApproveVerifiableDomainInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "domain",
+              "type": {
+                "kind": "OBJECT",
+                "name": "VerifiableDomain",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "ApproveVerifiableDomainPayload",
           "possibleTypes": null
         },
         {
@@ -2242,6 +2450,381 @@
           "interfaces": null,
           "kind": "ENUM",
           "name": "AuditLogOrderField",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "actor",
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Actor",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "createdAt",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "disabler",
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pullRequest",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PullRequest",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "reason",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "reasonCode",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "AutoMergeDisabledEvent",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "actor",
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Actor",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "createdAt",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "enabler",
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pullRequest",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PullRequest",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "AutoMergeEnabledEvent",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "authorEmail",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "commitBody",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "commitHeadline",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "enabledAt",
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "enabledBy",
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Actor",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "mergeMethod",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "PullRequestMergeMethod",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pullRequest",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PullRequest",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "AutoMergeRequest",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "actor",
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Actor",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "createdAt",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "enabler",
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pullRequest",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PullRequest",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "AutoRebaseEnabledEvent",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "actor",
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Actor",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "createdAt",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "enabler",
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pullRequest",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PullRequest",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "AutoSquashEnabledEvent",
           "possibleTypes": null
         },
         {
@@ -3747,6 +4330,200 @@
         },
         {
           "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "score",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "vectorString",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "CVSS",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "cweId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "description",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "name",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "CWE",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "edges",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CWEEdge",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "nodes",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CWE",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pageInfo",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "totalCount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "CWEConnection",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "node",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CWE",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "CWEEdge",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
           "fields": null,
           "inputFields": [
             {
@@ -4477,6 +5254,38 @@
               }
             },
             {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "pullRequestId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "pullRequestNumber",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "isRequired",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
               "args": [],
               "name": "name",
               "type": {
@@ -4601,6 +5410,11 @@
             {
               "kind": "INTERFACE",
               "name": "UniformResourceLocatable",
+              "ofType": null
+            },
+            {
+              "kind": "INTERFACE",
+              "name": "RequirableByPullRequest",
               "ofType": null
             }
           ],
@@ -4947,6 +5761,9 @@
             },
             {
               "name": "COMPLETED"
+            },
+            {
+              "name": "WAITING"
             },
             {
               "name": "REQUESTED"
@@ -8925,6 +9742,19 @@
             },
             {
               "args": [],
+              "name": "contributionLevel",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "ContributionLevel",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "date",
               "type": {
                 "kind": "NON_NULL",
@@ -9060,6 +9890,31 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "ContributionCalendarWeek",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": [
+            {
+              "name": "NONE"
+            },
+            {
+              "name": "FIRST_QUARTILE"
+            },
+            {
+              "name": "SECOND_QUARTILE"
+            },
+            {
+              "name": "THIRD_QUARTILE"
+            },
+            {
+              "name": "FOURTH_QUARTILE"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "ContributionLevel",
           "possibleTypes": null
         },
         {
@@ -13822,6 +14677,66 @@
         },
         {
           "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "DeleteVerifiableDomainInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "owner",
+              "type": {
+                "kind": "UNION",
+                "name": "VerifiableDomainOwner",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "DeleteVerifiableDomainPayload",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
           "fields": [
             {
               "args": [],
@@ -14916,6 +15831,9 @@
             },
             {
               "name": "IN_PROGRESS"
+            },
+            {
+              "name": "WAITING"
             }
           ],
           "fields": null,
@@ -14939,6 +15857,75 @@
           "interfaces": null,
           "kind": "ENUM",
           "name": "DiffSide",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "pullRequestId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "DisablePullRequestAutoMergeInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "actor",
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Actor",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "pullRequest",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PullRequest",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "DisablePullRequestAutoMergePayload",
           "possibleTypes": null
         },
         {
@@ -15227,6 +16214,111 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "DraftPullRequestReviewThread",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "pullRequestId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "commitHeadline",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "commitBody",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": "MERGE",
+              "name": "mergeMethod",
+              "type": {
+                "kind": "ENUM",
+                "name": "PullRequestMergeMethod",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "authorEmail",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "EnablePullRequestAutoMergeInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "actor",
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Actor",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "pullRequest",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PullRequest",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "EnablePullRequestAutoMergePayload",
           "possibleTypes": null
         },
         {
@@ -17255,6 +18347,74 @@
                   }
                 },
                 {
+                  "defaultValue": "null",
+                  "name": "isVerified",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "{field: DOMAIN, direction: ASC}",
+                  "name": "orderBy",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "VerifiableDomainOrder",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "domains",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "VerifiableDomainConnection",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
                   "defaultValue": "false",
                   "name": "connectedOnly",
                   "type": {
@@ -18015,6 +19175,19 @@
             },
             {
               "args": [],
+              "name": "notificationDeliveryRestrictionEnabledSetting",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "NotificationRestrictionSettingValue",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "organizationProjectsSetting",
               "type": {
                 "kind": "NON_NULL",
@@ -18550,6 +19723,65 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "OrganizationConnection",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": "{field: LOGIN, direction: ASC}",
+                  "name": "orderBy",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "EnterpriseMemberOrder",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "supportEntitlements",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "EnterpriseMemberConnection",
                   "ofType": null
                 }
               }
@@ -24236,6 +25468,15 @@
                   "name": "Boolean",
                   "ofType": null
                 }
+              }
+            },
+            {
+              "args": [],
+              "name": "isPinned",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               }
             },
             {
@@ -31702,6 +32943,29 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
+                      "name": "AddEnterpriseSupportEntitlementInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "addEnterpriseSupportEntitlement",
+              "type": {
+                "kind": "OBJECT",
+                "name": "AddEnterpriseSupportEntitlementPayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
                       "name": "AddLabelsToLabelableInput",
                       "ofType": null
                     }
@@ -31873,6 +33137,52 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "AddStarPayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "AddVerifiableDomainInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "addVerifiableDomain",
+              "type": {
+                "kind": "OBJECT",
+                "name": "AddVerifiableDomainPayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "ApproveVerifiableDomainInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "approveVerifiableDomain",
+              "type": {
+                "kind": "OBJECT",
+                "name": "ApproveVerifiableDomainPayload",
                 "ofType": null
               }
             },
@@ -32691,6 +34001,52 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
+                      "name": "DeleteVerifiableDomainInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "deleteVerifiableDomain",
+              "type": {
+                "kind": "OBJECT",
+                "name": "DeleteVerifiableDomainPayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "DisablePullRequestAutoMergeInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "disablePullRequestAutoMerge",
+              "type": {
+                "kind": "OBJECT",
+                "name": "DisablePullRequestAutoMergePayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
                       "name": "DismissPullRequestReviewInput",
                       "ofType": null
                     }
@@ -32701,6 +34057,29 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "DismissPullRequestReviewPayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "EnablePullRequestAutoMergeInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "enablePullRequestAutoMerge",
+              "type": {
+                "kind": "OBJECT",
+                "name": "EnablePullRequestAutoMergePayload",
                 "ofType": null
               }
             },
@@ -32967,6 +34346,29 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
+                      "name": "PinIssueInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "pinIssue",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PinIssuePayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
                       "name": "RegenerateEnterpriseIdentityProviderRecoveryCodesInput",
                       "ofType": null
                     }
@@ -32977,6 +34379,29 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "RegenerateEnterpriseIdentityProviderRecoveryCodesPayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "RegenerateVerifiableDomainTokenInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "regenerateVerifiableDomainToken",
+              "type": {
+                "kind": "OBJECT",
+                "name": "RegenerateVerifiableDomainTokenPayload",
                 "ofType": null
               }
             },
@@ -33069,6 +34494,29 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "RemoveEnterpriseOrganizationPayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "RemoveEnterpriseSupportEntitlementInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "removeEnterpriseSupportEntitlement",
+              "type": {
+                "kind": "OBJECT",
+                "name": "RemoveEnterpriseSupportEntitlementPayload",
                 "ofType": null
               }
             },
@@ -33575,6 +35023,29 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "UnminimizeCommentPayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UnpinIssueInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "unpinIssue",
+              "type": {
+                "kind": "OBJECT",
+                "name": "UnpinIssuePayload",
                 "ofType": null
               }
             },
@@ -34140,6 +35611,29 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
+                      "name": "UpdateNotificationRestrictionSettingInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "updateNotificationRestrictionSetting",
+              "type": {
+                "kind": "OBJECT",
+                "name": "UpdateNotificationRestrictionSettingPayload",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
                       "name": "UpdateProjectInput",
                       "ofType": null
                     }
@@ -34405,6 +35899,29 @@
                 "name": "UpdateTopicsPayload",
                 "ofType": null
               }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "VerifyVerifiableDomainInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "verifyVerifiableDomain",
+              "type": {
+                "kind": "OBJECT",
+                "name": "VerifyVerifiableDomainPayload",
+                "ofType": null
+              }
             }
           ],
           "inputFields": null,
@@ -34452,6 +35969,26 @@
             },
             {
               "kind": "OBJECT",
+              "name": "AutoMergeDisabledEvent",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "AutoMergeEnabledEvent",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "AutoRebaseEnabledEvent",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "AutoSquashEnabledEvent",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "AutomaticBaseChangeFailedEvent",
               "ofType": null
             },
@@ -34488,6 +36025,11 @@
             {
               "kind": "OBJECT",
               "name": "BranchProtectionRule",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "CWE",
               "ofType": null
             },
             {
@@ -34937,6 +36479,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "PinnedIssue",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "PrivateRepositoryForkingDisableAuditEntry",
               "ofType": null
             },
@@ -35354,8 +36901,29 @@
               "kind": "OBJECT",
               "name": "UserStatus",
               "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "VerifiableDomain",
+              "ofType": null
             }
           ]
+        },
+        {
+          "enumValues": [
+            {
+              "name": "ENABLED"
+            },
+            {
+              "name": "DISABLED"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "NotificationRestrictionSettingValue",
+          "possibleTypes": null
         },
         {
           "enumValues": null,
@@ -42017,6 +43585,70 @@
               }
             },
             {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "null",
+                  "name": "isVerified",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "{field: DOMAIN, direction: ASC}",
+                  "name": "orderBy",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "VerifiableDomainOrder",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "domains",
+              "type": {
+                "kind": "OBJECT",
+                "name": "VerifiableDomainConnection",
+                "ofType": null
+              }
+            },
+            {
               "args": [],
               "name": "email",
               "type": {
@@ -42128,6 +43760,33 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "IpAllowListEntryConnection",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "accountLogin",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "isSponsoredBy",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
                   "ofType": null
                 }
               }
@@ -42333,6 +43992,19 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "URI",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "notificationDeliveryRestrictionEnabledSetting",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "NotificationRestrictionSettingValue",
                   "ofType": null
                 }
               }
@@ -42939,6 +44611,15 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SponsorsListing",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "sponsorshipForViewerAsSponsor",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Sponsorship",
                 "ofType": null
               }
             },
@@ -46316,6 +47997,66 @@
         {
           "enumValues": null,
           "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "issueId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "PinIssueInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "issue",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Issue",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "PinIssuePayload",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
           "inputFields": null,
           "interfaces": null,
           "kind": "UNION",
@@ -46523,6 +48264,177 @@
           ],
           "kind": "OBJECT",
           "name": "PinnedEvent",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "databaseId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "issue",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Issue",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pinnedBy",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INTERFACE",
+                  "name": "Actor",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "repository",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Repository",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "PinnedIssue",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "edges",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PinnedIssueEdge",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "nodes",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PinnedIssue",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pageInfo",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "totalCount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "PinnedIssueConnection",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "node",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PinnedIssue",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "PinnedIssueEdge",
           "possibleTypes": null
         },
         {
@@ -49145,6 +51057,15 @@
             },
             {
               "args": [],
+              "name": "autoMergeRequest",
+              "type": {
+                "kind": "OBJECT",
+                "name": "AutoMergeRequest",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
               "name": "baseRef",
               "type": {
                 "kind": "OBJECT",
@@ -50588,6 +52509,32 @@
             },
             {
               "args": [],
+              "name": "viewerCanDisableAutoMerge",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "viewerCanEnableAutoMerge",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "viewerCanReact",
               "type": {
                 "kind": "NON_NULL",
@@ -50657,6 +52604,24 @@
                   "name": "Boolean",
                   "ofType": null
                 }
+              }
+            },
+            {
+              "args": [],
+              "name": "viewerLatestReview",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PullRequestReview",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "viewerLatestReviewRequest",
+              "type": {
+                "kind": "OBJECT",
+                "name": "ReviewRequest",
+                "ofType": null
               }
             },
             {
@@ -53816,6 +55781,26 @@
             },
             {
               "kind": "OBJECT",
+              "name": "AutoMergeDisabledEvent",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "AutoMergeEnabledEvent",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "AutoRebaseEnabledEvent",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "AutoSquashEnabledEvent",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "AutomaticBaseChangeFailedEvent",
               "ofType": null
             },
@@ -54216,6 +56201,18 @@
             },
             {
               "name": "AUTOMATIC_BASE_CHANGE_SUCCEEDED_EVENT"
+            },
+            {
+              "name": "AUTO_MERGE_DISABLED_EVENT"
+            },
+            {
+              "name": "AUTO_MERGE_ENABLED_EVENT"
+            },
+            {
+              "name": "AUTO_REBASE_ENABLED_EVENT"
+            },
+            {
+              "name": "AUTO_SQUASH_ENABLED_EVENT"
             },
             {
               "name": "BASE_REF_CHANGED_EVENT"
@@ -55542,6 +57539,92 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "SecurityVulnerabilityConnection",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "{field: LOGIN, direction: ASC}",
+                  "name": "orderBy",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "SponsorableOrder",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "false",
+                  "name": "onlyDependencies",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "orgLoginForDependencies",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "dependencyEcosystem",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "SecurityAdvisoryEcosystem",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "sponsorables",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SponsorableItemConnection",
                   "ofType": null
                 }
               }
@@ -56879,6 +58962,19 @@
             },
             {
               "args": [],
+              "name": "requiresCodeOwnerReviews",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "requiresLinearHistory",
               "type": {
                 "kind": "NON_NULL",
@@ -56893,6 +58989,19 @@
             {
               "args": [],
               "name": "requiresSignatures",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "viewerAllowedToDismissReviews",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -57117,6 +59226,66 @@
         },
         {
           "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "RegenerateVerifiableDomainTokenInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "verificationToken",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "RegenerateVerifiableDomainTokenPayload",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
           "fields": [
             {
               "args": [],
@@ -57174,6 +59343,19 @@
             {
               "args": [],
               "name": "isDraft",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "isLatest",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -57276,6 +59458,19 @@
             },
             {
               "args": [],
+              "name": "repository",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Repository",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "resourcePath",
               "type": {
                 "kind": "NON_NULL",
@@ -57312,6 +59507,15 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Ref",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "tagCommit",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Commit",
                 "ofType": null
               }
             },
@@ -58097,6 +60301,79 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "RemoveEnterpriseOrganizationPayload",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "enterpriseId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "login",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "RemoveEnterpriseSupportEntitlementInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "message",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "RemoveEnterpriseSupportEntitlementPayload",
           "possibleTypes": null
         },
         {
@@ -64746,6 +67023,15 @@
             },
             {
               "args": [],
+              "name": "latestRelease",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Release",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
               "name": "licenseInfo",
               "type": {
                 "kind": "OBJECT",
@@ -65123,6 +67409,52 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Repository",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "pinnedIssues",
+              "type": {
+                "kind": "OBJECT",
+                "name": "PinnedIssueConnection",
                 "ofType": null
               }
             },
@@ -68826,6 +71158,9 @@
             },
             {
               "name": "COMPLETED"
+            },
+            {
+              "name": "WAITING"
             }
           ],
           "fields": null,
@@ -68856,6 +71191,59 @@
             {
               "kind": "OBJECT",
               "name": "User",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "pullRequestId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "pullRequestNumber",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "isRequired",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "INTERFACE",
+          "name": "RequirableByPullRequest",
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "CheckRun",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "StatusContext",
               "ofType": null
             }
           ]
@@ -70253,6 +72641,69 @@
           "fields": [
             {
               "args": [],
+              "name": "cvss",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CVSS",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "cwes",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CWEConnection",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "databaseId",
               "type": {
                 "kind": "SCALAR",
@@ -70318,6 +72769,15 @@
                     }
                   }
                 }
+              }
+            },
+            {
+              "args": [],
+              "name": "notificationsPermalink",
+              "type": {
+                "kind": "SCALAR",
+                "name": "URI",
+                "ofType": null
               }
             },
             {
@@ -71631,6 +74091,33 @@
               }
             },
             {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "accountLogin",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "isSponsoredBy",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
               "args": [],
               "name": "isSponsoringViewer",
               "type": {
@@ -71649,6 +74136,15 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SponsorsListing",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "sponsorshipForViewerAsSponsor",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Sponsorship",
                 "ofType": null
               }
             },
@@ -71825,7 +74321,266 @@
         },
         {
           "enumValues": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "UNION",
+          "name": "SponsorableItem",
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "Organization",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "User",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "enumValues": null,
           "fields": [
+            {
+              "args": [],
+              "name": "edges",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SponsorableItemEdge",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "nodes",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "UNION",
+                  "name": "SponsorableItem",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pageInfo",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "totalCount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "SponsorableItemConnection",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "node",
+              "type": {
+                "kind": "UNION",
+                "name": "SponsorableItem",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "SponsorableItemEdge",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "field",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SponsorableOrderField",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "direction",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "OrderDirection",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "SponsorableOrder",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": [
+            {
+              "name": "LOGIN"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "SponsorableOrderField",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "description",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "kind",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SponsorsGoalKind",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "percentComplete",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "targetValue",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "title",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "SponsorsGoal",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": [
+            {
+              "name": "TOTAL_SPONSORS_COUNT"
+            },
+            {
+              "name": "MONTHLY_SPONSORSHIP_AMOUNT"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "SponsorsGoalKind",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "activeGoal",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SponsorsGoal",
+                "ofType": null
+              }
+            },
             {
               "args": [],
               "name": "createdAt",
@@ -71999,6 +74754,15 @@
             },
             {
               "args": [],
+              "name": "closestLesserValueTier",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SponsorsTier",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
               "name": "createdAt",
               "type": {
                 "kind": "NON_NULL",
@@ -72045,6 +74809,32 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "isCustomAmount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "isOneTime",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
                   "ofType": null
                 }
               }
@@ -72382,6 +75172,19 @@
             },
             {
               "args": [],
+              "name": "isOneTimePayment",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "privacyLevel",
               "type": {
                 "kind": "NON_NULL",
@@ -72421,6 +75224,15 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SponsorsTier",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "tierSelectedAt",
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
                 "ofType": null
               }
             }
@@ -73453,6 +76265,38 @@
               }
             },
             {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "pullRequestId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "pullRequestNumber",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "isRequired",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
               "args": [],
               "name": "state",
               "type": {
@@ -73480,6 +76324,11 @@
             {
               "kind": "INTERFACE",
               "name": "Node",
+              "ofType": null
+            },
+            {
+              "kind": "INTERFACE",
+              "name": "RequirableByPullRequest",
               "ofType": null
             }
           ],
@@ -80216,6 +83065,66 @@
         },
         {
           "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "issueId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "UnpinIssueInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "issue",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Issue",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "UnpinIssuePayload",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
           "fields": [
             {
               "args": [],
@@ -82798,6 +85707,79 @@
           "inputFields": [
             {
               "defaultValue": null,
+              "name": "ownerId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "settingValue",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "NotificationRestrictionSettingValue",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateNotificationRestrictionSettingInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "owner",
+              "type": {
+                "kind": "UNION",
+                "name": "VerifiableDomainOwner",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "UpdateNotificationRestrictionSettingPayload",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
               "name": "projectCardId",
               "type": {
                 "kind": "NON_NULL",
@@ -84485,6 +87467,19 @@
             },
             {
               "args": [],
+              "name": "isGitHubStar",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "isHireable",
               "type": {
                 "kind": "NON_NULL",
@@ -84499,6 +87494,33 @@
             {
               "args": [],
               "name": "isSiteAdmin",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "accountLogin",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "name": "isSponsoredBy",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -85688,6 +88710,15 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "SponsorsListing",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "sponsorshipForViewerAsSponsor",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Sponsorship",
                 "ofType": null
               }
             },
@@ -86945,6 +89976,414 @@
           "fields": [
             {
               "args": [],
+              "name": "createdAt",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "databaseId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "dnsHostName",
+              "type": {
+                "kind": "SCALAR",
+                "name": "URI",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "domain",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "URI",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "hasFoundHostName",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "hasFoundVerificationToken",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "isRequiredForPolicyEnforcement",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "isVerified",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "owner",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "UNION",
+                  "name": "VerifiableDomainOwner",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "punycodeEncodedDomain",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "URI",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "tokenExpirationTime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "updatedAt",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "verificationToken",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "VerifiableDomain",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "edges",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "VerifiableDomainEdge",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "nodes",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "VerifiableDomain",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pageInfo",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "totalCount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "VerifiableDomainConnection",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "node",
+              "type": {
+                "kind": "OBJECT",
+                "name": "VerifiableDomain",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "VerifiableDomainEdge",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "field",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "VerifiableDomainOrderField",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "direction",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "OrderDirection",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "VerifiableDomainOrder",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": [
+            {
+              "name": "DOMAIN"
+            },
+            {
+              "name": "CREATED_AT"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "VerifiableDomainOrderField",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "UNION",
+          "name": "VerifiableDomainOwner",
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "Enterprise",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "Organization",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "VerifyVerifiableDomainInput",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "clientMutationId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "domain",
+              "type": {
+                "kind": "OBJECT",
+                "name": "VerifiableDomain",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "VerifyVerifiableDomainPayload",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
               "name": "message",
               "type": {
                 "kind": "NON_NULL",
@@ -87200,7 +90639,17 @@
           "enumValues": null,
           "fields": [
             {
-              "args": [],
+              "args": [
+                {
+                  "defaultValue": "false",
+                  "name": "includeDeprecated",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                }
+              ],
               "name": "args",
               "type": {
                 "kind": "NON_NULL",
@@ -87298,11 +90747,33 @@
             },
             {
               "args": [],
+              "name": "deprecationReason",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
               "name": "description",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "isDeprecated",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               }
             },
             {
@@ -87488,7 +90959,17 @@
               }
             },
             {
-              "args": [],
+              "args": [
+                {
+                  "defaultValue": "false",
+                  "name": "includeDeprecated",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                }
+              ],
               "name": "inputFields",
               "type": {
                 "kind": "LIST",
