@@ -395,7 +395,7 @@ class %(name)s(sgqlc.types.Enum):
     def write_arg(self, arg, siblings):
         name = arg['name']
         tref = self.get_type_ref(arg['type'], siblings)
-        defval = arg['defaultValue']
+        defval = arg.get('defaultValue')
         if defval:
             if defval.startswith('$'):
                 defval = 'sgqlc.types.Variable(%r)' % defval[1:]

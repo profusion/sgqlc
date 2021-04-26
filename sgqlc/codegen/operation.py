@@ -31,6 +31,11 @@ def format_graphql_type(typ):
         return typ['name']
 
 
+def is_value_required(field):
+    return field['type']['kind'] == 'NON_NULL' \
+        and field.get('defaultValue')
+
+
 class Variable:
     def __init__(self, name):
         self.name = name
@@ -219,7 +224,7 @@ class SchemaValidation(NoValidation):
         name = self.unwrap_type(typ)['name']
         fields = self.get_type(name)['fields']
         for f in fields.values():
-            if f['type']['kind'] == 'NON_NULL' and f['defaultValue'] is None:
+            if is_value_required(f):
                 required.add(f['name'])
 
         for name in obj.keys():
@@ -615,7 +620,7 @@ def fragment_%(name)s():
             return
         required = set()
         for a in field['args'].values():
-            if a['type']['kind'] == 'NON_NULL' and a['defaultValue'] is None:
+            if is_value_required(a):
                 required.add(a['name'])
 
         for name, _ in node.arguments:
