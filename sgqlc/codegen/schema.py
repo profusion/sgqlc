@@ -352,7 +352,7 @@ class %(name)s(sgqlc.types.Enum):
             'name': name,
             'schema_name': self.schema_name,
             'docstrings': self.get_enum_docstring(t),
-            'choices': tuple(v['name'] for v in t['enumValues']),
+            'choices': tuple(sorted(v['name'] for v in t['enumValues'])),
         })
         self.written_types.add(name)
 

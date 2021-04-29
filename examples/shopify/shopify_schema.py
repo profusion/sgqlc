@@ -26,12 +26,12 @@ class AppInstallationCategory(sgqlc.types.Enum):
 
 class AppInstallationPrivacy(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('PUBLIC', 'PRIVATE')
+    __choices__ = ('PRIVATE', 'PUBLIC')
 
 
 class AppInstallationSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('INSTALLED_AT', 'APP_TITLE', 'ID', 'RELEVANCE')
+    __choices__ = ('APP_TITLE', 'ID', 'INSTALLED_AT', 'RELEVANCE')
 
 
 class AppPricingInterval(sgqlc.types.Enum):
@@ -51,7 +51,7 @@ class AppSubscriptionSortKeys(sgqlc.types.Enum):
 
 class AppSubscriptionStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('PENDING', 'ACCEPTED', 'ACTIVE', 'DECLINED', 'EXPIRED', 'FROZEN', 'CANCELLED')
+    __choices__ = ('ACCEPTED', 'ACTIVE', 'CANCELLED', 'DECLINED', 'EXPIRED', 'FROZEN', 'PENDING')
 
 
 class AppTransactionSortKeys(sgqlc.types.Enum):
@@ -78,17 +78,17 @@ class BulkOperationErrorCode(sgqlc.types.Enum):
 
 class BulkOperationStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('CREATED', 'RUNNING', 'COMPLETED', 'CANCELING', 'CANCELED', 'FAILED', 'EXPIRED')
+    __choices__ = ('CANCELED', 'CANCELING', 'COMPLETED', 'CREATED', 'EXPIRED', 'FAILED', 'RUNNING')
 
 
 class CodeDiscountSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('STARTS_AT', 'ENDS_AT', 'TITLE', 'CREATED_AT', 'UPDATED_AT', 'ID', 'RELEVANCE')
+    __choices__ = ('CREATED_AT', 'ENDS_AT', 'ID', 'RELEVANCE', 'STARTS_AT', 'TITLE', 'UPDATED_AT')
 
 
 class CollectionRuleColumn(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('TAG', 'TITLE', 'TYPE', 'VENDOR', 'VARIANT_PRICE', 'IS_PRICE_REDUCED', 'VARIANT_COMPARE_AT_PRICE', 'VARIANT_WEIGHT', 'VARIANT_INVENTORY', 'VARIANT_TITLE')
+    __choices__ = ('IS_PRICE_REDUCED', 'TAG', 'TITLE', 'TYPE', 'VARIANT_COMPARE_AT_PRICE', 'VARIANT_INVENTORY', 'VARIANT_PRICE', 'VARIANT_TITLE', 'VARIANT_WEIGHT', 'VENDOR')
 
 
 class CollectionRuleRelation(sgqlc.types.Enum):
@@ -98,7 +98,7 @@ class CollectionRuleRelation(sgqlc.types.Enum):
 
 class CollectionSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('TITLE', 'UPDATED_AT', 'ID', 'RELEVANCE')
+    __choices__ = ('ID', 'RELEVANCE', 'TITLE', 'UPDATED_AT')
 
 
 class CollectionSortOrder(sgqlc.types.Enum):
@@ -108,32 +108,32 @@ class CollectionSortOrder(sgqlc.types.Enum):
 
 class CountryCode(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('AF', 'AX', 'AL', 'DZ', 'AD', 'AO', 'AI', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ', 'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN', 'BG', 'BF', 'BI', 'KH', 'CA', 'CV', 'BQ', 'KY', 'CF', 'TD', 'CL', 'CN', 'CX', 'CC', 'CO', 'KM', 'CG', 'CD', 'CK', 'CR', 'HR', 'CU', 'CW', 'CY', 'CZ', 'CI', 'DK', 'DJ', 'DM', 'DO', 'EC', 'EG', 'SV', 'GQ', 'ER', 'EE', 'SZ', 'ET', 'FK', 'FO', 'FJ', 'FI', 'FR', 'GF', 'PF', 'TF', 'GA', 'GM', 'GE', 'DE', 'GH', 'GI', 'GR', 'GL', 'GD', 'GP', 'GT', 'GG', 'GN', 'GW', 'GY', 'HT', 'HM', 'VA', 'HN', 'HK', 'HU', 'IS', 'IN', 'ID', 'IR', 'IQ', 'IE', 'IM', 'IL', 'IT', 'JM', 'JP', 'JE', 'JO', 'KZ', 'KE', 'KI', 'KP', 'XK', 'KW', 'KG', 'LA', 'LV', 'LB', 'LS', 'LR', 'LY', 'LI', 'LT', 'LU', 'MO', 'MG', 'MW', 'MY', 'MV', 'ML', 'MT', 'MQ', 'MR', 'MU', 'YT', 'MX', 'MD', 'MC', 'MN', 'ME', 'MS', 'MA', 'MZ', 'MM', 'NA', 'NR', 'NP', 'NL', 'AN', 'NC', 'NZ', 'NI', 'NE', 'NG', 'NU', 'NF', 'MK', 'NO', 'OM', 'PK', 'PS', 'PA', 'PG', 'PY', 'PE', 'PH', 'PN', 'PL', 'PT', 'QA', 'CM', 'RE', 'RO', 'RU', 'RW', 'BL', 'SH', 'KN', 'LC', 'MF', 'PM', 'WS', 'SM', 'ST', 'SA', 'SN', 'RS', 'SC', 'SL', 'SG', 'SX', 'SK', 'SI', 'SB', 'SO', 'ZA', 'GS', 'KR', 'SS', 'ES', 'LK', 'VC', 'SD', 'SR', 'SJ', 'SE', 'CH', 'SY', 'TW', 'TJ', 'TZ', 'TH', 'TL', 'TG', 'TK', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UG', 'UA', 'AE', 'GB', 'US', 'UM', 'UY', 'UZ', 'VU', 'VE', 'VN', 'VG', 'WF', 'EH', 'YE', 'ZM', 'ZW')
+    __choices__ = ('AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AN', 'AO', 'AR', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GW', 'GY', 'HK', 'HM', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MK', 'ML', 'MM', 'MN', 'MO', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG', 'PH', 'PK', 'PL', 'PM', 'PN', 'PS', 'PT', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TF', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VN', 'VU', 'WF', 'WS', 'XK', 'YE', 'YT', 'ZA', 'ZM', 'ZW')
 
 
 class CropRegion(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('CENTER', 'TOP', 'BOTTOM', 'LEFT', 'RIGHT')
+    __choices__ = ('BOTTOM', 'CENTER', 'LEFT', 'RIGHT', 'TOP')
 
 
 class CurrencyCode(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('USD', 'EUR', 'GBP', 'CAD', 'AFN', 'ALL', 'DZD', 'AOA', 'ARS', 'AMD', 'AWG', 'AUD', 'BBD', 'AZN', 'BDT', 'BSD', 'BHD', 'BIF', 'BZD', 'BMD', 'BTN', 'BAM', 'BRL', 'BOB', 'BWP', 'BND', 'BGN', 'MMK', 'KHR', 'CVE', 'KYD', 'XAF', 'CLP', 'CNY', 'COP', 'KMF', 'CDF', 'CRC', 'HRK', 'CZK', 'DKK', 'DJF', 'DOP', 'XCD', 'EGP', 'ERN', 'ETB', 'FKP', 'XPF', 'FJD', 'GIP', 'GMD', 'GHS', 'GTQ', 'GYD', 'GEL', 'GNF', 'HTG', 'HNL', 'HKD', 'HUF', 'ISK', 'INR', 'IDR', 'ILS', 'IRR', 'IQD', 'JMD', 'JPY', 'JEP', 'JOD', 'KZT', 'KES', 'KID', 'KWD', 'KGS', 'LAK', 'LVL', 'LBP', 'LSL', 'LRD', 'LYD', 'LTL', 'MGA', 'MKD', 'MOP', 'MWK', 'MVR', 'MRU', 'MXN', 'MYR', 'MUR', 'MDL', 'MAD', 'MNT', 'MZN', 'NAD', 'NPR', 'ANG', 'NZD', 'NIO', 'NGN', 'NOK', 'OMR', 'PAB', 'PKR', 'PGK', 'PYG', 'PEN', 'PHP', 'PLN', 'QAR', 'RON', 'RUB', 'RWF', 'WST', 'SHP', 'SAR', 'STD', 'RSD', 'SCR', 'SLL', 'SGD', 'SDG', 'SOS', 'SYP', 'ZAR', 'KRW', 'SSP', 'SBD', 'LKR', 'SRD', 'SZL', 'SEK', 'CHF', 'TWD', 'THB', 'TJS', 'TZS', 'TOP', 'TTD', 'TND', 'TRY', 'TMT', 'UGX', 'UAH', 'AED', 'UYU', 'UZS', 'VUV', 'VES', 'VND', 'XOF', 'YER', 'ZMW')
+    __choices__ = ('AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BTN', 'BWP', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP', 'CNY', 'COP', 'CRC', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'IQD', 'IRR', 'ISK', 'JEP', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KID', 'KMF', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LTL', 'LVL', 'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRU', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'SSP', 'STD', 'SYP', 'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'USD', 'UYU', 'UZS', 'VES', 'VND', 'VUV', 'WST', 'XAF', 'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW')
 
 
 class CustomerMarketingOptInLevel(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('SINGLE_OPT_IN', 'CONFIRMED_OPT_IN', 'UNKNOWN')
+    __choices__ = ('CONFIRMED_OPT_IN', 'SINGLE_OPT_IN', 'UNKNOWN')
 
 
 class CustomerSavedSearchSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('NAME', 'ID', 'RELEVANCE')
+    __choices__ = ('ID', 'NAME', 'RELEVANCE')
 
 
 class CustomerSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('NAME', 'LOCATION', 'ORDERS_COUNT', 'LAST_ORDER_DATE', 'TOTAL_SPENT', 'UPDATED_AT', 'ID', 'RELEVANCE')
+    __choices__ = ('ID', 'LAST_ORDER_DATE', 'LOCATION', 'NAME', 'ORDERS_COUNT', 'RELEVANCE', 'TOTAL_SPENT', 'UPDATED_AT')
 
 
 class CustomerState(sgqlc.types.Enum):
@@ -147,7 +147,7 @@ DateTime = sgqlc.types.datetime.DateTime
 
 class DayOfTheWeek(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY')
+    __choices__ = ('FRIDAY', 'MONDAY', 'SATURDAY', 'SUNDAY', 'THURSDAY', 'TUESDAY', 'WEDNESDAY')
 
 
 class Decimal(sgqlc.types.Scalar):
@@ -166,7 +166,7 @@ class DeletionEventSubjectType(sgqlc.types.Enum):
 
 class DeliveryConditionField(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('TOTAL_WEIGHT', 'TOTAL_PRICE')
+    __choices__ = ('TOTAL_PRICE', 'TOTAL_WEIGHT')
 
 
 class DeliveryConditionOperator(sgqlc.types.Enum):
@@ -186,12 +186,12 @@ class DeliveryMethodDefinitionType(sgqlc.types.Enum):
 
 class DeliveryMethodType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('SHIPPING', 'PICK_UP', 'NONE', 'RETAIL', 'LOCAL')
+    __choices__ = ('LOCAL', 'NONE', 'PICK_UP', 'RETAIL', 'SHIPPING')
 
 
 class DigitalWallet(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('APPLE_PAY', 'ANDROID_PAY', 'GOOGLE_PAY', 'SHOPIFY_PAY')
+    __choices__ = ('ANDROID_PAY', 'APPLE_PAY', 'GOOGLE_PAY', 'SHOPIFY_PAY')
 
 
 class DiscountApplicationAllocationMethod(sgqlc.types.Enum):
@@ -201,7 +201,7 @@ class DiscountApplicationAllocationMethod(sgqlc.types.Enum):
 
 class DiscountApplicationLevel(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('ORDER', 'LINE')
+    __choices__ = ('LINE', 'ORDER')
 
 
 class DiscountApplicationTargetSelection(sgqlc.types.Enum):
@@ -221,12 +221,12 @@ class DiscountCodeSortKeys(sgqlc.types.Enum):
 
 class DiscountErrorCode(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('BLANK', 'PRESENT', 'EQUAL_TO', 'GREATER_THAN', 'GREATER_THAN_OR_EQUAL_TO', 'INVALID', 'LESS_THAN_OR_EQUAL_TO', 'LESS_THAN', 'TAKEN', 'TOO_LONG', 'TOO_SHORT', 'INTERNAL_ERROR', 'TOO_MANY_ARGUMENTS', 'MISSING_ARGUMENT', 'EXCEEDED_MAX', 'MINIMUM_SUBTOTAL_AND_QUANTITY_RANGE_BOTH_PRESENT', 'VALUE_OUTSIDE_RANGE', 'ACTIVE_PERIOD_OVERLAP', 'CONFLICT', 'IMPLICIT_DUPLICATE', 'DUPLICATE', 'INCLUSION')
+    __choices__ = ('ACTIVE_PERIOD_OVERLAP', 'BLANK', 'CONFLICT', 'DUPLICATE', 'EQUAL_TO', 'EXCEEDED_MAX', 'GREATER_THAN', 'GREATER_THAN_OR_EQUAL_TO', 'IMPLICIT_DUPLICATE', 'INCLUSION', 'INTERNAL_ERROR', 'INVALID', 'LESS_THAN', 'LESS_THAN_OR_EQUAL_TO', 'MINIMUM_SUBTOTAL_AND_QUANTITY_RANGE_BOTH_PRESENT', 'MISSING_ARGUMENT', 'PRESENT', 'TAKEN', 'TOO_LONG', 'TOO_MANY_ARGUMENTS', 'TOO_SHORT', 'VALUE_OUTSIDE_RANGE')
 
 
 class DiscountShareableUrlTargetType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('HOME', 'PRODUCT', 'COLLECTION')
+    __choices__ = ('COLLECTION', 'HOME', 'PRODUCT')
 
 
 class DiscountStatus(sgqlc.types.Enum):
@@ -236,7 +236,7 @@ class DiscountStatus(sgqlc.types.Enum):
 
 class DisputeStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('NEEDS_RESPONSE', 'UNDER_REVIEW', 'CHARGE_REFUNDED', 'ACCEPTED', 'WON', 'LOST')
+    __choices__ = ('ACCEPTED', 'CHARGE_REFUNDED', 'LOST', 'NEEDS_RESPONSE', 'UNDER_REVIEW', 'WON')
 
 
 class DisputeType(sgqlc.types.Enum):
@@ -251,7 +251,7 @@ class DraftOrderAppliedDiscountType(sgqlc.types.Enum):
 
 class DraftOrderSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('NUMBER', 'UPDATED_AT', 'STATUS', 'TOTAL_PRICE', 'CUSTOMER_NAME', 'ID', 'RELEVANCE')
+    __choices__ = ('CUSTOMER_NAME', 'ID', 'NUMBER', 'RELEVANCE', 'STATUS', 'TOTAL_PRICE', 'UPDATED_AT')
 
 
 class DraftOrderStatus(sgqlc.types.Enum):
@@ -282,27 +282,27 @@ class FulfillmentEventSortKeys(sgqlc.types.Enum):
 
 class FulfillmentEventStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('LABEL_PURCHASED', 'LABEL_PRINTED', 'READY_FOR_PICKUP', 'CONFIRMED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'ATTEMPTED_DELIVERY', 'DELIVERED', 'FAILURE')
+    __choices__ = ('ATTEMPTED_DELIVERY', 'CONFIRMED', 'DELIVERED', 'FAILURE', 'IN_TRANSIT', 'LABEL_PRINTED', 'LABEL_PURCHASED', 'OUT_FOR_DELIVERY', 'READY_FOR_PICKUP')
 
 
 class FulfillmentOrderAction(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('CREATE_FULFILLMENT', 'REQUEST_FULFILLMENT', 'CANCEL_FULFILLMENT_ORDER', 'MOVE', 'REQUEST_CANCELLATION', 'EXTERNAL')
+    __choices__ = ('CANCEL_FULFILLMENT_ORDER', 'CREATE_FULFILLMENT', 'EXTERNAL', 'MOVE', 'REQUEST_CANCELLATION', 'REQUEST_FULFILLMENT')
 
 
 class FulfillmentOrderAssignmentStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('CANCELLATION_REQUESTED', 'FULFILLMENT_REQUESTED', 'FULFILLMENT_ACCEPTED')
+    __choices__ = ('CANCELLATION_REQUESTED', 'FULFILLMENT_ACCEPTED', 'FULFILLMENT_REQUESTED')
 
 
 class FulfillmentOrderMerchantRequestKind(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('FULFILLMENT_REQUEST', 'CANCELLATION_REQUEST')
+    __choices__ = ('CANCELLATION_REQUEST', 'FULFILLMENT_REQUEST')
 
 
 class FulfillmentOrderRequestStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('UNSUBMITTED', 'SUBMITTED', 'ACCEPTED', 'REJECTED', 'CANCELLATION_REQUESTED', 'CANCELLATION_ACCEPTED', 'CANCELLATION_REJECTED', 'CLOSED')
+    __choices__ = ('ACCEPTED', 'CANCELLATION_ACCEPTED', 'CANCELLATION_REJECTED', 'CANCELLATION_REQUESTED', 'CLOSED', 'REJECTED', 'SUBMITTED', 'UNSUBMITTED')
 
 
 class FulfillmentOrderSortKeys(sgqlc.types.Enum):
@@ -312,7 +312,7 @@ class FulfillmentOrderSortKeys(sgqlc.types.Enum):
 
 class FulfillmentOrderStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('OPEN', 'IN_PROGRESS', 'CANCELLED', 'INCOMPLETE', 'CLOSED')
+    __choices__ = ('CANCELLED', 'CLOSED', 'INCOMPLETE', 'IN_PROGRESS', 'OPEN')
 
 
 class FulfillmentServiceType(sgqlc.types.Enum):
@@ -322,7 +322,7 @@ class FulfillmentServiceType(sgqlc.types.Enum):
 
 class FulfillmentStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('PENDING', 'OPEN', 'SUCCESS', 'CANCELLED', 'ERROR', 'FAILURE')
+    __choices__ = ('CANCELLED', 'ERROR', 'FAILURE', 'OPEN', 'PENDING', 'SUCCESS')
 
 
 class HTML(sgqlc.types.Scalar):
@@ -333,7 +333,7 @@ ID = sgqlc.types.ID
 
 class ImageContentType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('PNG', 'JPG', 'WEBP')
+    __choices__ = ('JPG', 'PNG', 'WEBP')
 
 
 Int = sgqlc.types.Int
@@ -354,17 +354,17 @@ class LocalizationExtensionPurpose(sgqlc.types.Enum):
 
 class LocationSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('NAME', 'ID', 'RELEVANCE')
+    __choices__ = ('ID', 'NAME', 'RELEVANCE')
 
 
 class MarketingActivityExtensionAppErrorCode(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('NOT_ONBOARDED_ERROR', 'VALIDATION_ERROR', 'API_ERROR', 'PLATFORM_ERROR', 'INSTALL_REQUIRED_ERROR')
+    __choices__ = ('API_ERROR', 'INSTALL_REQUIRED_ERROR', 'NOT_ONBOARDED_ERROR', 'PLATFORM_ERROR', 'VALIDATION_ERROR')
 
 
 class MarketingActivitySortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('TITLE', 'CREATED_AT', 'ID', 'RELEVANCE')
+    __choices__ = ('CREATED_AT', 'ID', 'RELEVANCE', 'TITLE')
 
 
 class MarketingActivityStatus(sgqlc.types.Enum):
@@ -374,7 +374,7 @@ class MarketingActivityStatus(sgqlc.types.Enum):
 
 class MarketingActivityStatusBadgeType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('DEFAULT', 'SUCCESS', 'ATTENTION', 'WARNING', 'INFO')
+    __choices__ = ('ATTENTION', 'DEFAULT', 'INFO', 'SUCCESS', 'WARNING')
 
 
 class MarketingBudgetBudgetType(sgqlc.types.Enum):
@@ -384,42 +384,42 @@ class MarketingBudgetBudgetType(sgqlc.types.Enum):
 
 class MarketingChannel(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('SEARCH', 'DISPLAY', 'SOCIAL', 'EMAIL', 'REFERRAL')
+    __choices__ = ('DISPLAY', 'EMAIL', 'REFERRAL', 'SEARCH', 'SOCIAL')
 
 
 class MarketingEventSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('STARTED_AT', 'ID', 'RELEVANCE')
+    __choices__ = ('ID', 'RELEVANCE', 'STARTED_AT')
 
 
 class MarketingTactic(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('ABANDONED_CART', 'AD', 'AFFILIATE', 'LINK', 'LOYALTY', 'MESSAGE', 'NEWSLETTER', 'NOTIFICATION', 'POST', 'RETARGETING', 'TRANSACTIONAL', 'SEO', 'DIRECT', 'STOREFRONT_APP')
+    __choices__ = ('ABANDONED_CART', 'AD', 'AFFILIATE', 'DIRECT', 'LINK', 'LOYALTY', 'MESSAGE', 'NEWSLETTER', 'NOTIFICATION', 'POST', 'RETARGETING', 'SEO', 'STOREFRONT_APP', 'TRANSACTIONAL')
 
 
 class MediaContentType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('VIDEO', 'EXTERNAL_VIDEO', 'MODEL_3D', 'IMAGE')
+    __choices__ = ('EXTERNAL_VIDEO', 'IMAGE', 'MODEL_3D', 'VIDEO')
 
 
 class MediaErrorCode(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('UNKNOWN', 'INVALID_SIGNED_URL', 'IMAGE_DOWNLOAD_FAILURE', 'IMAGE_PROCESSING_FAILURE', 'MEDIA_TIMEOUT_ERROR', 'EXTERNAL_VIDEO_NOT_FOUND', 'EXTERNAL_VIDEO_UNLISTED', 'EXTERNAL_VIDEO_INVALID_ASPECT_RATIO', 'VIDEO_METADATA_READ_ERROR', 'VIDEO_INVALID_FILETYPE_ERROR', 'VIDEO_MIN_WIDTH_ERROR', 'VIDEO_MAX_WIDTH_ERROR', 'VIDEO_MIN_HEIGHT_ERROR', 'VIDEO_MAX_HEIGHT_ERROR', 'VIDEO_MIN_DURATION_ERROR', 'VIDEO_MAX_DURATION_ERROR', 'VIDEO_VALIDATION_ERROR', 'MODEL3D_VALIDATION_ERROR', 'MODEL3D_THUMBNAIL_GENERATION_ERROR', 'MODEL3D_GLB_TO_USDZ_CONVERSION_ERROR', 'MODEL3D_GLB_OUTPUT_CREATION_ERROR', 'UNSUPPORTED_IMAGE_FILE_TYPE', 'INVALID_IMAGE_FILE_SIZE')
+    __choices__ = ('EXTERNAL_VIDEO_INVALID_ASPECT_RATIO', 'EXTERNAL_VIDEO_NOT_FOUND', 'EXTERNAL_VIDEO_UNLISTED', 'IMAGE_DOWNLOAD_FAILURE', 'IMAGE_PROCESSING_FAILURE', 'INVALID_IMAGE_FILE_SIZE', 'INVALID_SIGNED_URL', 'MEDIA_TIMEOUT_ERROR', 'MODEL3D_GLB_OUTPUT_CREATION_ERROR', 'MODEL3D_GLB_TO_USDZ_CONVERSION_ERROR', 'MODEL3D_THUMBNAIL_GENERATION_ERROR', 'MODEL3D_VALIDATION_ERROR', 'UNKNOWN', 'UNSUPPORTED_IMAGE_FILE_TYPE', 'VIDEO_INVALID_FILETYPE_ERROR', 'VIDEO_MAX_DURATION_ERROR', 'VIDEO_MAX_HEIGHT_ERROR', 'VIDEO_MAX_WIDTH_ERROR', 'VIDEO_METADATA_READ_ERROR', 'VIDEO_MIN_DURATION_ERROR', 'VIDEO_MIN_HEIGHT_ERROR', 'VIDEO_MIN_WIDTH_ERROR', 'VIDEO_VALIDATION_ERROR')
 
 
 class MediaPreviewImageStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('UPLOADED', 'PROCESSING', 'READY', 'FAILED')
+    __choices__ = ('FAILED', 'PROCESSING', 'READY', 'UPLOADED')
 
 
 class MediaStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('UPLOADED', 'PROCESSING', 'READY', 'FAILED')
+    __choices__ = ('FAILED', 'PROCESSING', 'READY', 'UPLOADED')
 
 
 class MediaUserErrorCode(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('INVALID', 'BLANK', 'VIDEO_VALIDATION_ERROR', 'MODEL3D_VALIDATION_ERROR', 'VIDEO_THROTTLE_EXCEEDED', 'MODEL3D_THROTTLE_EXCEEDED', 'PRODUCT_MEDIA_LIMIT_EXCEEDED', 'SHOP_MEDIA_LIMIT_EXCEEDED', 'PRODUCT_DOES_NOT_EXIST', 'MEDIA_DOES_NOT_EXIST', 'MEDIA_DOES_NOT_EXIST_ON_PRODUCT', 'TOO_MANY_MEDIA_PER_INPUT_PAIR', 'MAXIMUM_VARIANT_MEDIA_PAIRS_EXCEEDED', 'INVALID_MEDIA_TYPE', 'PRODUCT_VARIANT_SPECIFIED_MULTIPLE_TIMES', 'PRODUCT_VARIANT_DOES_NOT_EXIST_ON_PRODUCT', 'NON_READY_MEDIA', 'PRODUCT_VARIANT_ALREADY_HAS_MEDIA', 'MEDIA_IS_NOT_ATTACHED_TO_VARIANT', 'MEDIA_CANNOT_BE_MODIFIED')
+    __choices__ = ('BLANK', 'INVALID', 'INVALID_MEDIA_TYPE', 'MAXIMUM_VARIANT_MEDIA_PAIRS_EXCEEDED', 'MEDIA_CANNOT_BE_MODIFIED', 'MEDIA_DOES_NOT_EXIST', 'MEDIA_DOES_NOT_EXIST_ON_PRODUCT', 'MEDIA_IS_NOT_ATTACHED_TO_VARIANT', 'MODEL3D_THROTTLE_EXCEEDED', 'MODEL3D_VALIDATION_ERROR', 'NON_READY_MEDIA', 'PRODUCT_DOES_NOT_EXIST', 'PRODUCT_MEDIA_LIMIT_EXCEEDED', 'PRODUCT_VARIANT_ALREADY_HAS_MEDIA', 'PRODUCT_VARIANT_DOES_NOT_EXIST_ON_PRODUCT', 'PRODUCT_VARIANT_SPECIFIED_MULTIPLE_TIMES', 'SHOP_MEDIA_LIMIT_EXCEEDED', 'TOO_MANY_MEDIA_PER_INPUT_PAIR', 'VIDEO_THROTTLE_EXCEEDED', 'VIDEO_VALIDATION_ERROR')
 
 
 class MetafieldOwnerType(sgqlc.types.Enum):
@@ -429,12 +429,12 @@ class MetafieldOwnerType(sgqlc.types.Enum):
 
 class MetafieldValueType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('STRING', 'INTEGER', 'JSON_STRING')
+    __choices__ = ('INTEGER', 'JSON_STRING', 'STRING')
 
 
 class MethodDefinitionSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('RATE_PROVIDER_TYPE', 'ID', 'RELEVANCE')
+    __choices__ = ('ID', 'RATE_PROVIDER_TYPE', 'RELEVANCE')
 
 
 class Money(sgqlc.types.Scalar):
@@ -443,72 +443,72 @@ class Money(sgqlc.types.Scalar):
 
 class OrderCancelReason(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('CUSTOMER', 'FRAUD', 'INVENTORY', 'DECLINED', 'OTHER')
+    __choices__ = ('CUSTOMER', 'DECLINED', 'FRAUD', 'INVENTORY', 'OTHER')
 
 
 class OrderDisplayFinancialStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('PENDING', 'AUTHORIZED', 'PARTIALLY_PAID', 'PARTIALLY_REFUNDED', 'VOIDED', 'PAID', 'REFUNDED')
+    __choices__ = ('AUTHORIZED', 'PAID', 'PARTIALLY_PAID', 'PARTIALLY_REFUNDED', 'PENDING', 'REFUNDED', 'VOIDED')
 
 
 class OrderDisplayFulfillmentStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('UNFULFILLED', 'PARTIALLY_FULFILLED', 'FULFILLED', 'RESTOCKED', 'PENDING_FULFILLMENT', 'OPEN', 'IN_PROGRESS')
+    __choices__ = ('FULFILLED', 'IN_PROGRESS', 'OPEN', 'PARTIALLY_FULFILLED', 'PENDING_FULFILLMENT', 'RESTOCKED', 'UNFULFILLED')
 
 
 class OrderRiskLevel(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('LOW', 'MEDIUM', 'HIGH')
+    __choices__ = ('HIGH', 'LOW', 'MEDIUM')
 
 
 class OrderSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('CREATED_AT', 'CUSTOMER_NAME', 'FINANCIAL_STATUS', 'FULFILLMENT_STATUS', 'ORDER_NUMBER', 'PROCESSED_AT', 'TOTAL_PRICE', 'UPDATED_AT', 'ID', 'RELEVANCE')
+    __choices__ = ('CREATED_AT', 'CUSTOMER_NAME', 'FINANCIAL_STATUS', 'FULFILLMENT_STATUS', 'ID', 'ORDER_NUMBER', 'PROCESSED_AT', 'RELEVANCE', 'TOTAL_PRICE', 'UPDATED_AT')
 
 
 class OrderTransactionErrorCode(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('INCORRECT_NUMBER', 'INVALID_NUMBER', 'INVALID_EXPIRY_DATE', 'INVALID_CVC', 'EXPIRED_CARD', 'INCORRECT_CVC', 'INCORRECT_ZIP', 'INCORRECT_ADDRESS', 'INCORRECT_PIN', 'CARD_DECLINED', 'PROCESSING_ERROR', 'CALL_ISSUER', 'PICK_UP_CARD', 'CONFIG_ERROR', 'TEST_MODE_LIVE_CARD', 'UNSUPPORTED_FEATURE', 'GENERIC_ERROR', 'INVALID_COUNTRY', 'INVALID_AMOUNT', 'PAYMENT_METHOD_UNAVAILABLE', 'AMAZON_PAYMENTS_INVALID_PAYMENT_METHOD', 'AMAZON_PAYMENTS_MAX_AMOUNT_CHARGED', 'AMAZON_PAYMENTS_MAX_AMOUNT_REFUNDED', 'AMAZON_PAYMENTS_MAX_AUTHORIZATIONS_CAPTURED', 'AMAZON_PAYMENTS_MAX_REFUNDS_PROCESSED', 'AMAZON_PAYMENTS_ORDER_REFERENCE_CANCELED', 'AMAZON_PAYMENTS_STALE')
+    __choices__ = ('AMAZON_PAYMENTS_INVALID_PAYMENT_METHOD', 'AMAZON_PAYMENTS_MAX_AMOUNT_CHARGED', 'AMAZON_PAYMENTS_MAX_AMOUNT_REFUNDED', 'AMAZON_PAYMENTS_MAX_AUTHORIZATIONS_CAPTURED', 'AMAZON_PAYMENTS_MAX_REFUNDS_PROCESSED', 'AMAZON_PAYMENTS_ORDER_REFERENCE_CANCELED', 'AMAZON_PAYMENTS_STALE', 'CALL_ISSUER', 'CARD_DECLINED', 'CONFIG_ERROR', 'EXPIRED_CARD', 'GENERIC_ERROR', 'INCORRECT_ADDRESS', 'INCORRECT_CVC', 'INCORRECT_NUMBER', 'INCORRECT_PIN', 'INCORRECT_ZIP', 'INVALID_AMOUNT', 'INVALID_COUNTRY', 'INVALID_CVC', 'INVALID_EXPIRY_DATE', 'INVALID_NUMBER', 'PAYMENT_METHOD_UNAVAILABLE', 'PICK_UP_CARD', 'PROCESSING_ERROR', 'TEST_MODE_LIVE_CARD', 'UNSUPPORTED_FEATURE')
 
 
 class OrderTransactionKind(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('SALE', 'CAPTURE', 'AUTHORIZATION', 'VOID', 'REFUND', 'CHANGE', 'EMV_AUTHORIZATION', 'SUGGESTED_REFUND')
+    __choices__ = ('AUTHORIZATION', 'CAPTURE', 'CHANGE', 'EMV_AUTHORIZATION', 'REFUND', 'SALE', 'SUGGESTED_REFUND', 'VOID')
 
 
 class OrderTransactionStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('SUCCESS', 'FAILURE', 'PENDING', 'ERROR', 'AWAITING_RESPONSE', 'UNKNOWN')
+    __choices__ = ('AWAITING_RESPONSE', 'ERROR', 'FAILURE', 'PENDING', 'SUCCESS', 'UNKNOWN')
 
 
 class PaymentMethods(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('VISA', 'MASTERCARD', 'DISCOVER', 'AMERICAN_EXPRESS', 'DINERS_CLUB', 'JCB', 'DANKORT', 'MAESTRO', 'FORBRUGSFORENINGEN', 'PAYPAL', 'BOGUS', 'BITCOIN', 'LITECOIN', 'DOGECOIN')
+    __choices__ = ('AMERICAN_EXPRESS', 'BITCOIN', 'BOGUS', 'DANKORT', 'DINERS_CLUB', 'DISCOVER', 'DOGECOIN', 'FORBRUGSFORENINGEN', 'JCB', 'LITECOIN', 'MAESTRO', 'MASTERCARD', 'PAYPAL', 'VISA')
 
 
 class PriceRuleAllocationMethod(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('EACH', 'ACROSS')
+    __choices__ = ('ACROSS', 'EACH')
 
 
 class PriceRuleErrorCode(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('BLANK', 'EQUAL_TO', 'GREATER_THAN', 'GREATER_THAN_OR_EQUAL_TO', 'INVALID', 'LESS_THAN', 'LESS_THAN_OR_EQUAL_TO', 'TAKEN', 'TOO_LONG', 'TOO_SHORT', 'INTERNAL_ERROR', 'TOO_MANY_ARGUMENTS', 'MISSING_ARGUMENT', 'CUSTOMER_PREREQUISITE_DUPLICATE', 'CANNOT_ENTITLE_COLLECTIONS_WITH_PRODUCTS_OR_VARIANTS', 'ITEM_ENTITLEMENT_INVALID_TYPE', 'ITEM_ENTITLEMENTS_DUPLICATE_COLLECTION', 'ITEM_ENTITLEMENTS_DUPLICATE_PRODUCT', 'ITEM_ENTITLEMENTS_DUPLICATE_VARIANT', 'ITEM_ENTITLEMENTS_EXCEEDED_MAX_COLLECTION', 'ITEM_ENTITLEMENTS_EXCEEDED_MAX_PRODUCT', 'ITEM_ENTITLEMENTS_EXCEEDED_MAX_VARIANT', 'ITEM_ENTITLEMENTS_INVALID_COLLECTION', 'ITEM_ENTITLEMENTS_INVALID_PRODUCT', 'ITEM_ENTITLEMENTS_INVALID_TARGET_TYPE_OR_SELECTION', 'ITEM_ENTITLEMENTS_INVALID_VARIANT', 'ITEM_ENTITLEMENTS_MISSING', 'VARIANT_ALREADY_ENTITLED_THROUGH_PRODUCT', 'CANNOT_PREREQUISITE_COLLECTION_WITH_PRODUCT_OR_VARIANTS', 'ITEM_PREREQUISITES_DUPLICATE_COLLECTION', 'ITEM_PREREQUISITES_DUPLICATE_PRODUCT', 'ITEM_PREREQUISITES_DUPLICATE_VARIANT', 'ITEM_PREREQUISITES_EXCEEDED_MAX', 'ITEM_PREREQUISITES_INVALID_COLLECTION', 'ITEM_PREREQUISITES_INVALID_PRODUCT', 'ITEM_PREREQUISITES_INVALID_TYPE', 'ITEM_PREREQUISITES_INVALID_VARIANT', 'ITEM_PREREQUISITES_MISSING', 'ITEM_PREREQUISITES_MUST_BE_EMPTY', 'INVALID_TARGET_TYPE_PREREQUISITE_SHIPPING_PRICE_RANGE', 'SHIPPING_ENTITLEMENTS_DUPLICATE_COUNTRY', 'SHIPPING_ENTITLEMENTS_EXCEEDED_MAX', 'SHIPPING_ENTITLEMENTS_INVALID_COUNTRY', 'SHIPPING_ENTITLEMENTS_INVALID_TARGET_TYPE_OR_SELECTION', 'SHIPPING_ENTITLEMENTS_MISSING', 'SHIPPING_ENTITLEMENTS_UNSUPPORTED_DESTINATION_TYPE', 'BOTH_CUSTOMER_AND_SAVED_SEARCH_PREREQUISITES_SELECTED', 'CUSTOMER_PREREQUISITES_EXCEEDED_MAX', 'CUSTOMER_PREREQUISITES_INVALID_SELECTION', 'CUSTOMER_PREREQUISITES_MISSING', 'CUSTOMER_SAVED_SEARCH_DUPLICATE', 'CUSTOMER_SAVED_SEARCH_EXCEEDED_MAX', 'CUSTOMER_SAVED_SEARCH_INVALID', 'DISCOUNT_CODE_DUPLICATE', 'EXCEEDED_MAX', 'BOGO_INVALID_TARGET_SELECTION', 'BOGO_INVALID_TARGET_TYPE', 'BOGO_INVALID_VALUE_TYPE', 'PRICE_RULE_ALLOCATION_LIMIT_ON_NON_BOGO', 'PRICE_RULE_ALLOCATION_LIMIT_IS_ZERO', 'PRICE_RULE_EXCEEDED_MAX_DISCOUNT_CODE', 'SHOP_EXCEEDED_MAX_PRICE_RULES', 'END_DATE_BEFORE_START_DATE', 'PRICE_RULE_PERCENTAGE_VALUE_OUTSIDE_RANGE', 'PREREQUISITE_SUBTOTAL_AND_QUANTITY_RANGE_BOTH_PRESENT', 'ALLOCATION_METHOD_MUST_BE_ACROSS_FOR_GIVEN_TARGET_SELECTION')
+    __choices__ = ('ALLOCATION_METHOD_MUST_BE_ACROSS_FOR_GIVEN_TARGET_SELECTION', 'BLANK', 'BOGO_INVALID_TARGET_SELECTION', 'BOGO_INVALID_TARGET_TYPE', 'BOGO_INVALID_VALUE_TYPE', 'BOTH_CUSTOMER_AND_SAVED_SEARCH_PREREQUISITES_SELECTED', 'CANNOT_ENTITLE_COLLECTIONS_WITH_PRODUCTS_OR_VARIANTS', 'CANNOT_PREREQUISITE_COLLECTION_WITH_PRODUCT_OR_VARIANTS', 'CUSTOMER_PREREQUISITES_EXCEEDED_MAX', 'CUSTOMER_PREREQUISITES_INVALID_SELECTION', 'CUSTOMER_PREREQUISITES_MISSING', 'CUSTOMER_PREREQUISITE_DUPLICATE', 'CUSTOMER_SAVED_SEARCH_DUPLICATE', 'CUSTOMER_SAVED_SEARCH_EXCEEDED_MAX', 'CUSTOMER_SAVED_SEARCH_INVALID', 'DISCOUNT_CODE_DUPLICATE', 'END_DATE_BEFORE_START_DATE', 'EQUAL_TO', 'EXCEEDED_MAX', 'GREATER_THAN', 'GREATER_THAN_OR_EQUAL_TO', 'INTERNAL_ERROR', 'INVALID', 'INVALID_TARGET_TYPE_PREREQUISITE_SHIPPING_PRICE_RANGE', 'ITEM_ENTITLEMENTS_DUPLICATE_COLLECTION', 'ITEM_ENTITLEMENTS_DUPLICATE_PRODUCT', 'ITEM_ENTITLEMENTS_DUPLICATE_VARIANT', 'ITEM_ENTITLEMENTS_EXCEEDED_MAX_COLLECTION', 'ITEM_ENTITLEMENTS_EXCEEDED_MAX_PRODUCT', 'ITEM_ENTITLEMENTS_EXCEEDED_MAX_VARIANT', 'ITEM_ENTITLEMENTS_INVALID_COLLECTION', 'ITEM_ENTITLEMENTS_INVALID_PRODUCT', 'ITEM_ENTITLEMENTS_INVALID_TARGET_TYPE_OR_SELECTION', 'ITEM_ENTITLEMENTS_INVALID_VARIANT', 'ITEM_ENTITLEMENTS_MISSING', 'ITEM_ENTITLEMENT_INVALID_TYPE', 'ITEM_PREREQUISITES_DUPLICATE_COLLECTION', 'ITEM_PREREQUISITES_DUPLICATE_PRODUCT', 'ITEM_PREREQUISITES_DUPLICATE_VARIANT', 'ITEM_PREREQUISITES_EXCEEDED_MAX', 'ITEM_PREREQUISITES_INVALID_COLLECTION', 'ITEM_PREREQUISITES_INVALID_PRODUCT', 'ITEM_PREREQUISITES_INVALID_TYPE', 'ITEM_PREREQUISITES_INVALID_VARIANT', 'ITEM_PREREQUISITES_MISSING', 'ITEM_PREREQUISITES_MUST_BE_EMPTY', 'LESS_THAN', 'LESS_THAN_OR_EQUAL_TO', 'MISSING_ARGUMENT', 'PREREQUISITE_SUBTOTAL_AND_QUANTITY_RANGE_BOTH_PRESENT', 'PRICE_RULE_ALLOCATION_LIMIT_IS_ZERO', 'PRICE_RULE_ALLOCATION_LIMIT_ON_NON_BOGO', 'PRICE_RULE_EXCEEDED_MAX_DISCOUNT_CODE', 'PRICE_RULE_PERCENTAGE_VALUE_OUTSIDE_RANGE', 'SHIPPING_ENTITLEMENTS_DUPLICATE_COUNTRY', 'SHIPPING_ENTITLEMENTS_EXCEEDED_MAX', 'SHIPPING_ENTITLEMENTS_INVALID_COUNTRY', 'SHIPPING_ENTITLEMENTS_INVALID_TARGET_TYPE_OR_SELECTION', 'SHIPPING_ENTITLEMENTS_MISSING', 'SHIPPING_ENTITLEMENTS_UNSUPPORTED_DESTINATION_TYPE', 'SHOP_EXCEEDED_MAX_PRICE_RULES', 'TAKEN', 'TOO_LONG', 'TOO_MANY_ARGUMENTS', 'TOO_SHORT', 'VARIANT_ALREADY_ENTITLED_THROUGH_PRODUCT')
 
 
 class PriceRuleFeature(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('BUY_ONE_GET_ONE', 'BUY_ONE_GET_ONE_WITH_ALLOCATION_LIMIT', 'BULK', 'SPECIFIC_CUSTOMERS', 'QUANTITY_DISCOUNTS')
+    __choices__ = ('BULK', 'BUY_ONE_GET_ONE', 'BUY_ONE_GET_ONE_WITH_ALLOCATION_LIMIT', 'QUANTITY_DISCOUNTS', 'SPECIFIC_CUSTOMERS')
 
 
 class PriceRuleShareableUrlTargetType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('HOME', 'PRODUCT', 'COLLECTION')
+    __choices__ = ('COLLECTION', 'HOME', 'PRODUCT')
 
 
 class PriceRuleSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('STARTS_AT', 'ENDS_AT', 'TITLE', 'CREATED_AT', 'UPDATED_AT', 'ID', 'RELEVANCE')
+    __choices__ = ('CREATED_AT', 'ENDS_AT', 'ID', 'RELEVANCE', 'STARTS_AT', 'TITLE', 'UPDATED_AT')
 
 
 class PriceRuleStatus(sgqlc.types.Enum):
@@ -523,12 +523,12 @@ class PriceRuleTarget(sgqlc.types.Enum):
 
 class PriceRuleTrait(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('BUY_ONE_GET_ONE', 'BUY_ONE_GET_ONE_WITH_ALLOCATION_LIMIT', 'BULK', 'SPECIFIC_CUSTOMERS', 'QUANTITY_DISCOUNTS')
+    __choices__ = ('BULK', 'BUY_ONE_GET_ONE', 'BUY_ONE_GET_ONE_WITH_ALLOCATION_LIMIT', 'QUANTITY_DISCOUNTS', 'SPECIFIC_CUSTOMERS')
 
 
 class PrivateMetafieldValueType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('STRING', 'INTEGER', 'JSON_STRING')
+    __choices__ = ('INTEGER', 'JSON_STRING', 'STRING')
 
 
 class ProductChangeStatusUserErrorCode(sgqlc.types.Enum):
@@ -538,22 +538,22 @@ class ProductChangeStatusUserErrorCode(sgqlc.types.Enum):
 
 class ProductCollectionSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('TITLE', 'PRICE', 'BEST_SELLING', 'CREATED', 'ID', 'MANUAL', 'COLLECTION_DEFAULT', 'RELEVANCE')
+    __choices__ = ('BEST_SELLING', 'COLLECTION_DEFAULT', 'CREATED', 'ID', 'MANUAL', 'PRICE', 'RELEVANCE', 'TITLE')
 
 
 class ProductImageSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('CREATED_AT', 'POSITION', 'ID', 'RELEVANCE')
+    __choices__ = ('CREATED_AT', 'ID', 'POSITION', 'RELEVANCE')
 
 
 class ProductMediaSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('POSITION', 'ID', 'RELEVANCE')
+    __choices__ = ('ID', 'POSITION', 'RELEVANCE')
 
 
 class ProductSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('TITLE', 'PRODUCT_TYPE', 'VENDOR', 'INVENTORY_TOTAL', 'UPDATED_AT', 'CREATED_AT', 'PUBLISHED_AT', 'ID', 'RELEVANCE')
+    __choices__ = ('CREATED_AT', 'ID', 'INVENTORY_TOTAL', 'PRODUCT_TYPE', 'PUBLISHED_AT', 'RELEVANCE', 'TITLE', 'UPDATED_AT', 'VENDOR')
 
 
 class ProductStatus(sgqlc.types.Enum):
@@ -563,32 +563,32 @@ class ProductStatus(sgqlc.types.Enum):
 
 class ProductVariantInventoryManagement(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('SHOPIFY', 'NOT_MANAGED', 'FULFILLMENT_SERVICE')
+    __choices__ = ('FULFILLMENT_SERVICE', 'NOT_MANAGED', 'SHOPIFY')
 
 
 class ProductVariantInventoryPolicy(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('DENY', 'CONTINUE')
+    __choices__ = ('CONTINUE', 'DENY')
 
 
 class ProductVariantSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('TITLE', 'NAME', 'SKU', 'INVENTORY_QUANTITY', 'INVENTORY_MANAGEMENT', 'INVENTORY_LEVELS_AVAILABLE', 'INVENTORY_POLICY', 'FULL_TITLE', 'POPULAR', 'POSITION', 'ID', 'RELEVANCE')
+    __choices__ = ('FULL_TITLE', 'ID', 'INVENTORY_LEVELS_AVAILABLE', 'INVENTORY_MANAGEMENT', 'INVENTORY_POLICY', 'INVENTORY_QUANTITY', 'NAME', 'POPULAR', 'POSITION', 'RELEVANCE', 'SKU', 'TITLE')
 
 
 class ProfileItemSortKeys(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('TITLE', 'PRODUCT_TYPE', 'VENDOR', 'INVENTORY_TOTAL', 'UPDATED_AT', 'CREATED_AT', 'PUBLISHED_AT', 'ID', 'RELEVANCE')
+    __choices__ = ('CREATED_AT', 'ID', 'INVENTORY_TOTAL', 'PRODUCT_TYPE', 'PUBLISHED_AT', 'RELEVANCE', 'TITLE', 'UPDATED_AT', 'VENDOR')
 
 
 class RefundDutyRefundType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('PROPORTIONAL', 'FULL')
+    __choices__ = ('FULL', 'PROPORTIONAL')
 
 
 class RefundLineItemRestockType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('RETURN', 'CANCEL', 'LEGACY_RESTOCK', 'NO_RESTOCK')
+    __choices__ = ('CANCEL', 'LEGACY_RESTOCK', 'NO_RESTOCK', 'RETURN')
 
 
 class ResourceAlertIcon(sgqlc.types.Enum):
@@ -598,27 +598,27 @@ class ResourceAlertIcon(sgqlc.types.Enum):
 
 class ResourceAlertSeverity(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('DEFAULT', 'INFO', 'WARNING', 'SUCCESS', 'CRITICAL')
+    __choices__ = ('CRITICAL', 'DEFAULT', 'INFO', 'SUCCESS', 'WARNING')
 
 
 class ScriptTagDisplayScope(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('ALL', 'ORDER_STATUS', 'ONLINE_STORE')
+    __choices__ = ('ALL', 'ONLINE_STORE', 'ORDER_STATUS')
 
 
 class SearchResultType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('ORDER', 'CUSTOMER', 'PRODUCT', 'ONLINE_STORE_PAGE', 'ONLINE_STORE_BLOG', 'ONLINE_STORE_ARTICLE', 'COLLECTION', 'DRAFT_ORDER', 'PRICE_RULE', 'DISCOUNT_REDEEM_CODE')
+    __choices__ = ('COLLECTION', 'CUSTOMER', 'DISCOUNT_REDEEM_CODE', 'DRAFT_ORDER', 'ONLINE_STORE_ARTICLE', 'ONLINE_STORE_BLOG', 'ONLINE_STORE_PAGE', 'ORDER', 'PRICE_RULE', 'PRODUCT')
 
 
 class ShopBranding(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('SHOPIFY_GOLD', 'SHOPIFY_PLUS', 'ROGERS', 'SHOPIFY')
+    __choices__ = ('ROGERS', 'SHOPIFY', 'SHOPIFY_GOLD', 'SHOPIFY_PLUS')
 
 
 class ShopCustomerAccountsSetting(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('REQUIRED', 'OPTIONAL', 'DISABLED')
+    __choices__ = ('DISABLED', 'OPTIONAL', 'REQUIRED')
 
 
 class ShopImageSortKeys(sgqlc.types.Enum):
@@ -633,7 +633,7 @@ class ShopPolicyErrorCode(sgqlc.types.Enum):
 
 class ShopPolicyType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('REFUND_POLICY', 'SHIPPING_POLICY', 'PRIVACY_POLICY', 'TERMS_OF_SERVICE', 'TERMS_OF_SALE', 'LEGAL_NOTICE')
+    __choices__ = ('LEGAL_NOTICE', 'PRIVACY_POLICY', 'REFUND_POLICY', 'SHIPPING_POLICY', 'TERMS_OF_SALE', 'TERMS_OF_SERVICE')
 
 
 class ShopTagSort(sgqlc.types.Enum):
@@ -643,22 +643,22 @@ class ShopTagSort(sgqlc.types.Enum):
 
 class ShopifyPaymentsBankAccountStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('NEW', 'VALIDATED', 'VERIFIED', 'ERRORED')
+    __choices__ = ('ERRORED', 'NEW', 'VALIDATED', 'VERIFIED')
 
 
 class ShopifyPaymentsDisputeReason(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('FRAUDULENT', 'GENERAL', 'UNRECOGNIZED', 'DUPLICATE', 'SUBSCRIPTION_CANCELLED', 'PRODUCT_UNACCEPTABLE', 'PRODUCT_NOT_RECEIVED', 'CREDIT_NOT_PROCESSED', 'INCORRECT_ACCOUNT_DETAILS', 'INSUFFICIENT_FUNDS', 'BANK_CANNOT_PROCESS', 'DEBIT_NOT_AUTHORIZED', 'CUSTOMER_INITIATED')
+    __choices__ = ('BANK_CANNOT_PROCESS', 'CREDIT_NOT_PROCESSED', 'CUSTOMER_INITIATED', 'DEBIT_NOT_AUTHORIZED', 'DUPLICATE', 'FRAUDULENT', 'GENERAL', 'INCORRECT_ACCOUNT_DETAILS', 'INSUFFICIENT_FUNDS', 'PRODUCT_NOT_RECEIVED', 'PRODUCT_UNACCEPTABLE', 'SUBSCRIPTION_CANCELLED', 'UNRECOGNIZED')
 
 
 class ShopifyPaymentsPayoutInterval(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('DAILY', 'WEEKLY', 'MONTHLY', 'MANUAL')
+    __choices__ = ('DAILY', 'MANUAL', 'MONTHLY', 'WEEKLY')
 
 
 class ShopifyPaymentsPayoutStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('SCHEDULED', 'IN_TRANSIT', 'PAID', 'FAILED', 'CANCELED')
+    __choices__ = ('CANCELED', 'FAILED', 'IN_TRANSIT', 'PAID', 'SCHEDULED')
 
 
 class ShopifyPaymentsPayoutTransactionType(sgqlc.types.Enum):
@@ -673,7 +673,7 @@ class ShopifyPaymentsVerificationDocumentType(sgqlc.types.Enum):
 
 class ShopifyPaymentsVerificationStatus(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('VERIFIED', 'UNVERIFIED', 'PENDING')
+    __choices__ = ('PENDING', 'UNVERIFIED', 'VERIFIED')
 
 
 class StagedUploadHttpMethodType(sgqlc.types.Enum):
@@ -683,7 +683,7 @@ class StagedUploadHttpMethodType(sgqlc.types.Enum):
 
 class StagedUploadTargetGenerateUploadResource(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('TIMELINE', 'PRODUCT_IMAGE', 'COLLECTION_IMAGE', 'SHOP_IMAGE', 'VIDEO', 'MODEL_3D', 'IMAGE')
+    __choices__ = ('COLLECTION_IMAGE', 'IMAGE', 'MODEL_3D', 'PRODUCT_IMAGE', 'SHOP_IMAGE', 'TIMELINE', 'VIDEO')
 
 
 class StorefrontID(sgqlc.types.Scalar):
@@ -699,17 +699,17 @@ class SuggestedOrderTransactionKind(sgqlc.types.Enum):
 
 class TaxExemption(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('CA_STATUS_CARD_EXEMPTION', 'CA_BC_RESELLER_EXEMPTION', 'CA_MB_RESELLER_EXEMPTION', 'CA_SK_RESELLER_EXEMPTION', 'CA_DIPLOMAT_EXEMPTION', 'CA_BC_COMMERCIAL_FISHERY_EXEMPTION', 'CA_MB_COMMERCIAL_FISHERY_EXEMPTION', 'CA_NS_COMMERCIAL_FISHERY_EXEMPTION', 'CA_PE_COMMERCIAL_FISHERY_EXEMPTION', 'CA_SK_COMMERCIAL_FISHERY_EXEMPTION', 'CA_BC_PRODUCTION_AND_MACHINERY_EXEMPTION', 'CA_SK_PRODUCTION_AND_MACHINERY_EXEMPTION', 'CA_BC_SUB_CONTRACTOR_EXEMPTION', 'CA_SK_SUB_CONTRACTOR_EXEMPTION', 'CA_BC_CONTRACTOR_EXEMPTION', 'CA_SK_CONTRACTOR_EXEMPTION', 'CA_ON_PURCHASE_EXEMPTION', 'CA_MB_FARMER_EXEMPTION', 'CA_NS_FARMER_EXEMPTION', 'CA_SK_FARMER_EXEMPTION')
+    __choices__ = ('CA_BC_COMMERCIAL_FISHERY_EXEMPTION', 'CA_BC_CONTRACTOR_EXEMPTION', 'CA_BC_PRODUCTION_AND_MACHINERY_EXEMPTION', 'CA_BC_RESELLER_EXEMPTION', 'CA_BC_SUB_CONTRACTOR_EXEMPTION', 'CA_DIPLOMAT_EXEMPTION', 'CA_MB_COMMERCIAL_FISHERY_EXEMPTION', 'CA_MB_FARMER_EXEMPTION', 'CA_MB_RESELLER_EXEMPTION', 'CA_NS_COMMERCIAL_FISHERY_EXEMPTION', 'CA_NS_FARMER_EXEMPTION', 'CA_ON_PURCHASE_EXEMPTION', 'CA_PE_COMMERCIAL_FISHERY_EXEMPTION', 'CA_SK_COMMERCIAL_FISHERY_EXEMPTION', 'CA_SK_CONTRACTOR_EXEMPTION', 'CA_SK_FARMER_EXEMPTION', 'CA_SK_PRODUCTION_AND_MACHINERY_EXEMPTION', 'CA_SK_RESELLER_EXEMPTION', 'CA_SK_SUB_CONTRACTOR_EXEMPTION', 'CA_STATUS_CARD_EXEMPTION')
 
 
 class TranslatableResourceType(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('PRODUCT', 'PRODUCT_VARIANT', 'EMAIL_TEMPLATE', 'ONLINE_STORE_THEME', 'ONLINE_STORE_ARTICLE', 'ONLINE_STORE_BLOG', 'ONLINE_STORE_PAGE', 'COLLECTION', 'LINK', 'METAFIELD', 'SMS_TEMPLATE', 'SHOP', 'SHOP_POLICY', 'PAYMENT_GATEWAY', 'PRODUCT_OPTION', 'DELIVERY_METHOD_DEFINITION')
+    __choices__ = ('COLLECTION', 'DELIVERY_METHOD_DEFINITION', 'EMAIL_TEMPLATE', 'LINK', 'METAFIELD', 'ONLINE_STORE_ARTICLE', 'ONLINE_STORE_BLOG', 'ONLINE_STORE_PAGE', 'ONLINE_STORE_THEME', 'PAYMENT_GATEWAY', 'PRODUCT', 'PRODUCT_OPTION', 'PRODUCT_VARIANT', 'SHOP', 'SHOP_POLICY', 'SMS_TEMPLATE')
 
 
 class TranslationErrorCode(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('BLANK', 'INVALID', 'RESOURCE_NOT_FOUND', 'TOO_MANY_KEYS_FOR_RESOURCE', 'INVALID_KEY_FOR_MODEL', 'FAILS_RESOURCE_VALIDATION', 'INVALID_TRANSLATABLE_CONTENT', 'INVALID_LOCALE_FOR_SHOP', 'INVALID_CODE', 'INVALID_FORMAT')
+    __choices__ = ('BLANK', 'FAILS_RESOURCE_VALIDATION', 'INVALID', 'INVALID_CODE', 'INVALID_FORMAT', 'INVALID_KEY_FOR_MODEL', 'INVALID_LOCALE_FOR_SHOP', 'INVALID_TRANSLATABLE_CONTENT', 'RESOURCE_NOT_FOUND', 'TOO_MANY_KEYS_FOR_RESOURCE')
 
 
 class URL(sgqlc.types.Scalar):
@@ -741,12 +741,12 @@ class WebhookSubscriptionSortKeys(sgqlc.types.Enum):
 
 class WebhookSubscriptionTopic(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('APP_UNINSTALLED', 'CARTS_CREATE', 'CARTS_UPDATE', 'CHANNELS_DELETE', 'CHECKOUTS_CREATE', 'CHECKOUTS_DELETE', 'CHECKOUTS_UPDATE', 'COLLECTION_LISTINGS_ADD', 'COLLECTION_LISTINGS_REMOVE', 'COLLECTION_LISTINGS_UPDATE', 'COLLECTION_PUBLICATIONS_CREATE', 'COLLECTION_PUBLICATIONS_DELETE', 'COLLECTION_PUBLICATIONS_UPDATE', 'COLLECTIONS_CREATE', 'COLLECTIONS_DELETE', 'COLLECTIONS_UPDATE', 'CUSTOMER_GROUPS_CREATE', 'CUSTOMER_GROUPS_DELETE', 'CUSTOMER_GROUPS_UPDATE', 'CUSTOMERS_CREATE', 'CUSTOMERS_DELETE', 'CUSTOMERS_DISABLE', 'CUSTOMERS_ENABLE', 'CUSTOMERS_UPDATE', 'DISPUTES_CREATE', 'DISPUTES_UPDATE', 'DRAFT_ORDERS_CREATE', 'DRAFT_ORDERS_DELETE', 'DRAFT_ORDERS_UPDATE', 'FULFILLMENT_EVENTS_CREATE', 'FULFILLMENT_EVENTS_DELETE', 'FULFILLMENTS_CREATE', 'FULFILLMENTS_UPDATE', 'ATTRIBUTED_SESSIONS_FIRST', 'ATTRIBUTED_SESSIONS_LAST', 'ORDER_TRANSACTIONS_CREATE', 'ORDERS_CANCELLED', 'ORDERS_CREATE', 'ORDERS_DELETE', 'ORDERS_EDITED', 'ORDERS_FULFILLED', 'ORDERS_PAID', 'ORDERS_PARTIALLY_FULFILLED', 'ORDERS_UPDATED', 'PRODUCT_LISTINGS_ADD', 'PRODUCT_LISTINGS_REMOVE', 'PRODUCT_LISTINGS_UPDATE', 'PRODUCT_PUBLICATIONS_CREATE', 'PRODUCT_PUBLICATIONS_DELETE', 'PRODUCT_PUBLICATIONS_UPDATE', 'PRODUCTS_CREATE', 'PRODUCTS_DELETE', 'PRODUCTS_UPDATE', 'REFUNDS_CREATE', 'SHIPPING_ADDRESSES_CREATE', 'SHIPPING_ADDRESSES_UPDATE', 'SHOP_UPDATE', 'TAX_SERVICES_CREATE', 'TAX_SERVICES_UPDATE', 'THEMES_CREATE', 'THEMES_DELETE', 'THEMES_PUBLISH', 'THEMES_UPDATE', 'VARIANTS_IN_STOCK', 'VARIANTS_OUT_OF_STOCK', 'INVENTORY_LEVELS_CONNECT', 'INVENTORY_LEVELS_UPDATE', 'INVENTORY_LEVELS_DISCONNECT', 'ATTRIBUTION_RISK', 'INVENTORY_ITEMS_CREATE', 'INVENTORY_ITEMS_UPDATE', 'INVENTORY_ITEMS_DELETE', 'LOCATIONS_CREATE', 'LOCATIONS_UPDATE', 'LOCATIONS_DELETE', 'TENDER_TRANSACTIONS_CREATE', 'APP_PURCHASES_ONE_TIME_UPDATE', 'APP_SUBSCRIPTIONS_UPDATE', 'LOCALES_CREATE', 'LOCALES_UPDATE', 'DOMAINS_CREATE', 'DOMAINS_UPDATE', 'DOMAINS_DESTROY', 'PROFILES_CREATE', 'PROFILES_UPDATE', 'PROFILES_DELETE')
+    __choices__ = ('APP_PURCHASES_ONE_TIME_UPDATE', 'APP_SUBSCRIPTIONS_UPDATE', 'APP_UNINSTALLED', 'ATTRIBUTED_SESSIONS_FIRST', 'ATTRIBUTED_SESSIONS_LAST', 'ATTRIBUTION_RISK', 'CARTS_CREATE', 'CARTS_UPDATE', 'CHANNELS_DELETE', 'CHECKOUTS_CREATE', 'CHECKOUTS_DELETE', 'CHECKOUTS_UPDATE', 'COLLECTIONS_CREATE', 'COLLECTIONS_DELETE', 'COLLECTIONS_UPDATE', 'COLLECTION_LISTINGS_ADD', 'COLLECTION_LISTINGS_REMOVE', 'COLLECTION_LISTINGS_UPDATE', 'COLLECTION_PUBLICATIONS_CREATE', 'COLLECTION_PUBLICATIONS_DELETE', 'COLLECTION_PUBLICATIONS_UPDATE', 'CUSTOMERS_CREATE', 'CUSTOMERS_DELETE', 'CUSTOMERS_DISABLE', 'CUSTOMERS_ENABLE', 'CUSTOMERS_UPDATE', 'CUSTOMER_GROUPS_CREATE', 'CUSTOMER_GROUPS_DELETE', 'CUSTOMER_GROUPS_UPDATE', 'DISPUTES_CREATE', 'DISPUTES_UPDATE', 'DOMAINS_CREATE', 'DOMAINS_DESTROY', 'DOMAINS_UPDATE', 'DRAFT_ORDERS_CREATE', 'DRAFT_ORDERS_DELETE', 'DRAFT_ORDERS_UPDATE', 'FULFILLMENTS_CREATE', 'FULFILLMENTS_UPDATE', 'FULFILLMENT_EVENTS_CREATE', 'FULFILLMENT_EVENTS_DELETE', 'INVENTORY_ITEMS_CREATE', 'INVENTORY_ITEMS_DELETE', 'INVENTORY_ITEMS_UPDATE', 'INVENTORY_LEVELS_CONNECT', 'INVENTORY_LEVELS_DISCONNECT', 'INVENTORY_LEVELS_UPDATE', 'LOCALES_CREATE', 'LOCALES_UPDATE', 'LOCATIONS_CREATE', 'LOCATIONS_DELETE', 'LOCATIONS_UPDATE', 'ORDERS_CANCELLED', 'ORDERS_CREATE', 'ORDERS_DELETE', 'ORDERS_EDITED', 'ORDERS_FULFILLED', 'ORDERS_PAID', 'ORDERS_PARTIALLY_FULFILLED', 'ORDERS_UPDATED', 'ORDER_TRANSACTIONS_CREATE', 'PRODUCTS_CREATE', 'PRODUCTS_DELETE', 'PRODUCTS_UPDATE', 'PRODUCT_LISTINGS_ADD', 'PRODUCT_LISTINGS_REMOVE', 'PRODUCT_LISTINGS_UPDATE', 'PRODUCT_PUBLICATIONS_CREATE', 'PRODUCT_PUBLICATIONS_DELETE', 'PRODUCT_PUBLICATIONS_UPDATE', 'PROFILES_CREATE', 'PROFILES_DELETE', 'PROFILES_UPDATE', 'REFUNDS_CREATE', 'SHIPPING_ADDRESSES_CREATE', 'SHIPPING_ADDRESSES_UPDATE', 'SHOP_UPDATE', 'TAX_SERVICES_CREATE', 'TAX_SERVICES_UPDATE', 'TENDER_TRANSACTIONS_CREATE', 'THEMES_CREATE', 'THEMES_DELETE', 'THEMES_PUBLISH', 'THEMES_UPDATE', 'VARIANTS_IN_STOCK', 'VARIANTS_OUT_OF_STOCK')
 
 
 class WeightUnit(sgqlc.types.Enum):
     __schema__ = shopify_schema
-    __choices__ = ('KILOGRAMS', 'GRAMS', 'POUNDS', 'OUNCES')
+    __choices__ = ('GRAMS', 'KILOGRAMS', 'OUNCES', 'POUNDS')
 
 
 
