@@ -356,7 +356,9 @@ class GraphQLToPython(Visitor):
         sel = self.selection_name(parent, '_as__%s' % type_condition, idx)
         type_condition = self.format_typename_usage(type_condition)
         idx += 1
-        lines.append('%s = %s.__as__(%s)' % (sel, parent, type_condition))
+        full_type_condition = str(self.schema_name) + "." + type_condition
+        lines.append('%s = %s.__as__(%s)' % full_type_condition
+                     (sel, parent, ))
         return self.format_selection_set(sel, children, lines, idx)
 
     @staticmethod
