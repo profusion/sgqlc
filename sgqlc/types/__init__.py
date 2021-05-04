@@ -1360,6 +1360,8 @@ class Enum(BaseType, metaclass=EnumMeta):
     The instance constructor will never return instance of
     :class:`Enum`, rather the string, if that matches.
 
+    Variables are passed through as-is.
+
     Examples:
 
     >>> class Colors(Enum):
@@ -1401,6 +1403,9 @@ class Enum(BaseType, metaclass=EnumMeta):
     >>> print(json.dumps(Fruits.__to_json_value__(Fruits.APPLE)))
     "APPLE"
 
+    >>> print(json.dumps(Fruits(Variable('input'))))
+    "$input"
+
     '''
     __kind__ = 'enum'
     __choices__ = ()
@@ -1408,6 +1413,8 @@ class Enum(BaseType, metaclass=EnumMeta):
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             return None
+        if isinstance(json_data, Variable):
+            return json_data
         if json_data not in cls:
             raise ValueError('%s does not accept value %s' % (cls, json_data))
         return json_data
