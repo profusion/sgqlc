@@ -962,13 +962,14 @@ def _create_non_null_wrapper(name, t):
 def _create_list_of_wrapper(name, t):
     'creates type wrapper for list of given type'
     def realize_type(v, selection_list=None):
-        if isinstance(v, (t, Variable)):  # pragma: no cover
-            return v
         return t(v, selection_list)
 
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             return None
+
+        if isinstance(json_data, (t, Variable)):  # pragma: no cover
+            return json_data
 
         return [realize_type(v, selection_list) for v in json_data]
 
