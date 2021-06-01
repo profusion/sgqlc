@@ -1294,7 +1294,12 @@ class Scalar(BaseType):
         return value
 
     def __new__(cls, json_data, selection_list=None):
-        return None if json_data is None else cls.converter(json_data)
+        if json_data is None:
+            return None
+        elif isinstance(json_data, Variable):
+            return json_data
+        else:
+            return cls.converter(json_data)
 
     @classmethod
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
