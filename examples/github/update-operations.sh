@@ -5,3 +5,5 @@ sgqlc-codegen operation \
     github_schema \
     sample_operations.py \
     sample_operations.gql
+
+python3 -c 'import sample_operations' || exit 1

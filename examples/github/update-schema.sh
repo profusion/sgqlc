@@ -15,4 +15,6 @@ if [ "$NO_DOWNLOAD" != 1 ]; then
         github_schema.json || exit 1
 fi
 
-sgqlc-codegen schema --docstrings github_schema.json github_schema.py
+sgqlc-codegen schema --docstrings github_schema.json github_schema.py || exit 1
+
+python3 -c 'import github_schema' || exit 1

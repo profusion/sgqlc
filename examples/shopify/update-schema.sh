@@ -17,4 +17,6 @@ if [ "$NO_DOWNLOAD" != 1 ]; then
         shopify_schema.json || exit 1
 fi
 
-sgqlc-codegen schema shopify_schema.json shopify_schema.py
+sgqlc-codegen schema shopify_schema.json shopify_schema.py || exit 1
+
+python3 -c 'import shopify_schema' || exit 1

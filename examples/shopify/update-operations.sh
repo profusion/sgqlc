@@ -5,3 +5,5 @@ sgqlc-codegen operation \
     shopify_schema \
     shopify_operations.py \
     shopify_operations.gql
+
+python3 -c 'import shopify_operations' || exit 1
