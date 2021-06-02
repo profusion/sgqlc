@@ -100,9 +100,14 @@ def to_docstring(wrapped_text, level=1):
         suffix = '\n' + prefix
 
     wrapped_text[0] = wrapped_text[0].lstrip()
+    body = '\n'.join(wrapped_text)
+    if not suffix and body[-1] == "'":
+        # otherwise it becomes: '''' (EOL while scanning string literal)
+        suffix = ' '
+
     return '%s\'\'\'%s%s\'\'\'\n' % (
         prefix,
-        '\n'.join(wrapped_text),
+        body,
         suffix,
     )
 

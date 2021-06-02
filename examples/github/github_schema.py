@@ -3617,7 +3617,7 @@ class EnablePullRequestAutoMergeInput(sgqlc.types.Input):
     '''
 
     merge_method = sgqlc.types.Field(PullRequestMergeMethod, graphql_name='mergeMethod')
-    '''The merge method to use. If omitted, defaults to 'MERGE''''
+    '''The merge method to use. If omitted, defaults to 'MERGE' '''
 
     author_email = sgqlc.types.Field(String, graphql_name='authorEmail')
     '''The email address to associate with this merge.'''
@@ -3962,7 +3962,7 @@ class MergePullRequestInput(sgqlc.types.Input):
     '''
 
     merge_method = sgqlc.types.Field(PullRequestMergeMethod, graphql_name='mergeMethod')
-    '''The merge method to use. If omitted, defaults to 'MERGE''''
+    '''The merge method to use. If omitted, defaults to 'MERGE' '''
 
     author_email = sgqlc.types.Field(String, graphql_name='authorEmail')
     '''The email address to associate with this merge.'''
