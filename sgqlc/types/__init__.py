@@ -1286,6 +1286,11 @@ class Scalar(BaseType):
     >>> MyTypeWithScalar({'v': 'abc'}).v
     'abc'
 
+    Variables are passed thru:
+
+    >>> MyTypeWithScalar({'v': Variable('var')}).v
+    $var
+
     '''
     __kind__ = 'scalar'
     __json_dump_args__ = {}  # given to json.dumps(obj, **args)
@@ -1294,7 +1299,11 @@ class Scalar(BaseType):
         return value
 
     def __new__(cls, json_data, selection_list=None):
-        return None if json_data is None else cls.converter(json_data)
+        if json_data is None:
+            return None
+        if isinstance(json_data, Variable):
+            return json_data
+        return cls.converter(json_data)
 
     @classmethod
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
@@ -1391,6 +1400,10 @@ class Enum(BaseType, metaclass=EnumMeta):
     >>> print(json.dumps(Fruits.__to_json_value__(Fruits.APPLE)))
     "APPLE"
 
+    Variables are passed thru:
+
+    >>> Fruits(Variable('var'))
+    $var
     '''
     __kind__ = 'enum'
     __choices__ = ()
@@ -1398,6 +1411,8 @@ class Enum(BaseType, metaclass=EnumMeta):
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             return None
+        if isinstance(json_data, Variable):
+            return json_data
         if json_data not in cls:
             raise ValueError('%s does not accept value %s' % (cls, json_data))
         return json_data
@@ -1507,6 +1522,10 @@ class Union(BaseTypeWithTypename, metaclass=UnionMeta):
     >>> data = None
     >>> TypeU(data)
 
+    Variables are passed thru:
+
+    >>> TypeU(Variable('var'))
+    $var
     '''
 
     __kind__ = 'union'
@@ -1515,7 +1534,8 @@ class Union(BaseTypeWithTypename, metaclass=UnionMeta):
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
             return
-
+        if isinstance(json_data, Variable):
+            return json_data
         type_name = json_data.get('__typename')
         if not type_name:
             t = UnknownType
