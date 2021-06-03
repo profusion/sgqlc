@@ -1312,9 +1312,6 @@ class EnumMeta(BaseMeta):
     'meta class to set enumeration attributes, __contains__, __iter__...'
     def __init__(cls, name, bases, namespace):
         super(EnumMeta, cls).__init__(name, bases, namespace)
-        if not cls.__choices__ and BaseType not in bases:
-            raise ValueError(name + ': missing __choices__')
-
         if isinstance(cls.__choices__, str):
             cls.__choices__ = tuple(cls.__choices__.split())
         else:
@@ -1383,14 +1380,6 @@ class Enum(BaseType, metaclass=EnumMeta):
     ('APPLE', 'ORANGE', 'BANANA')
     >>> len(Fruits)
     3
-
-    Failing to define choices will raise exception:
-
-    >>> class FailureEnum(Enum):
-    ...     pass
-    Traceback (most recent call last):
-      ...
-    ValueError: FailureEnum: missing __choices__
 
     Enumerations have a special syntax in GraphQL, no quotes:
 
