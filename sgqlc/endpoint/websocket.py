@@ -15,10 +15,12 @@ class WebSocketEndpoint(BaseEndpoint):
 
         :param connection_payload: data to pass during initiation of the
           WebSocket connection. It's passed as ``"payload"`` key of the
-          ``connection_init`` type message.
+          ``connection_init`` type message. **Authentication tokens** usually
+          goes here.
         :type connection_payload: dict
 
-        :param ws_options: options to pass to websocket.create_connection
+        :param ws_options: options to pass to
+          :func:`websocket._core.create_connection`.
         :type ws_options: dict
         '''
         self.url = url
@@ -43,6 +45,11 @@ class WebSocketEndpoint(BaseEndpoint):
         :param variables: variables (dict) to use with
           ``query``. This is only useful if the query or
           mutation contains ``$variableName``.
+          Must be a **plain JSON-serializeable object**
+          (dict with string keys and values being one of dict, list, tuple,
+          str, int, float, bool, None... -- :func:`json.dumps` is used)
+          and the keys must **match exactly** the variable names (no name
+          conversion is done, no dollar-sign prefix ``$`` should be used).
         :type variables: dict
 
         :param operation_name: if more than one operation is listed in

@@ -11,6 +11,17 @@ This module provides command line utility:
 
    $ python3 -m sgqlc.endpoint.http http://server.com/ '{ queryHere { ... } }'
 
+Example using :class:`sgqlc.endpoint.http.HTTPEndpoint`:
+
+.. literalinclude:: ../../examples/basic/01_http_endpoint.py
+   :language: python
+
+The ``query`` may be given as ``bytes`` or ``str`` as in the example, but
+it may be a :class:`sgqlc.operation.Operation`, which will serialize as
+string while also providing convenience to interepret the results.
+
+See `more examples <https://github.com/profusion/sgqlc/tree/master/examples>`_.
+
 :license: ISC
 '''
 

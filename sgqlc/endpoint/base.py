@@ -4,6 +4,24 @@ Base Endpoint
 
 Base interface for endpoints.
 
+See concrete implementations:
+
+ - :class:`sgqlc.endpoint.http.HTTPEndpoint` using
+   :func:`urllib.request.urlopen()`.
+
+ - :class:`sgqlc.endpoint.requests.RequestsEndpoint` using
+   :mod:`requests`.
+
+ - :class:`sgqlc.endpoint.websocket.WebSocketEndpoint` using
+   :func:`websocket._core.create_connection`.
+
+Example using :class:`sgqlc.endpoint.http.HTTPEndpoint`:
+
+.. literalinclude:: ../../examples/basic/01_http_endpoint.py
+   :language: python
+
+See `more examples <https://github.com/profusion/sgqlc/tree/master/examples>`_.
+
 :license: ISC
 '''
 
@@ -89,6 +107,11 @@ class BaseEndpoint:
         :param variables: variables (dict) to use with
           ``query``. This is only useful if the query or
           mutation contains ``$variableName``.
+          Must be a **plain JSON-serializeable object**
+          (dict with string keys and values being one of dict, list, tuple,
+          str, int, float, bool, None... -- :func:`json.dumps` is used)
+          and the keys must **match exactly** the variable names (no name
+          conversion is done, no dollar-sign prefix ``$`` should be used).
         :type variables: dict
 
         :param operation_name: if more than one operation is listed in

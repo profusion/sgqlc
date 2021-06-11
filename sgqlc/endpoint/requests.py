@@ -1,14 +1,32 @@
 '''
-Synchronous HTTP Endpoint
-=========================
+Synchronous HTTP Endpoint using python-requests
+===============================================
 
-This endpoint implements GraphQL client using the requests library.
+This endpoint implements GraphQL client using the :mod:`requests` library.
 
 This module provides command line utility:
 
 .. code-block:: console
 
    $ python3 -m sgqlc.endpoint.requests http://server.com/ '{ query { ... } }'
+
+It's pretty much like :class:`sgqlc.endpoint.http.HTTPEndpoint`, but
+using the :mod:`requests`. This comes with the convenience to use a
+:class:`requests.Session` and ``requests.auth`` compatible authentication
+option (Auth tuple or callable to enable Basic/Digest/Custom HTTP Auth),
+which is useful when third party libraries offer such helpers (ex:
+`requests-aws <https://pypi.org/project/requests-aws/>`_).
+
+Example using :class:`sgqlc.endpoint.requests.RequestsEndpoint`:
+
+.. literalinclude:: ../../examples/basic/03_requests_endpoint.py
+   :language: python
+
+The ``query`` may be given as ``bytes`` or ``str`` as in the example, but
+it may be a :class:`sgqlc.operation.Operation`, which will serialize as
+string while also providing convenience to interepret the results.
+
+See `more examples <https://github.com/profusion/sgqlc/tree/master/examples>`_.
 
 :license: ISC
 '''
@@ -80,9 +98,11 @@ class RequestsEndpoint(BaseEndpoint):
         :param method: HTTP Method to use for the request,
                        `POST` is used by default
 
-        :param auth: requests.auth compatible authentication option. Optional.
+        :param auth: ``requests.auth`` compatible authentication option.
+          Auth tuple or callable to enable Basic/Digest/Custom HTTP Auth.
+          Optional.
 
-        :param session: requests.Session object. Optional.
+        :param session: :class:`requests.Session` object. Optional.
         '''
         self.url = url
         self.base_headers = base_headers or {}
@@ -112,6 +132,11 @@ class RequestsEndpoint(BaseEndpoint):
         :param variables: variables (dict) to use with
           ``query``. This is only useful if the query or
           mutation contains ``$variableName``.
+          Must be a **plain JSON-serializeable object**
+          (dict with string keys and values being one of dict, list, tuple,
+          str, int, float, bool, None... -- :func:`json.dumps` is used)
+          and the keys must **match exactly** the variable names (no name
+          conversion is done, no dollar-sign prefix ``$`` should be used).
         :type variables: dict
 
         :param operation_name: if more than one operation is listed in

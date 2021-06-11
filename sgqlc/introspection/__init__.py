@@ -7,6 +7,36 @@ https://github.com/graphql/graphql-js/blob/master/src/utilities/introspectionQue
 however allows to choose whether to include descriptions and
 deprecated fields.
 
+Downloading schema.json
+-----------------------
+
+Usually services provide a ``schema.json`` file with the introspection results
+or offer a development server where the introspection query can be executed
+and saved as JSON:
+
+.. code-block:: shell
+
+    python3 \\
+        -m sgqlc.introspection \\
+        --exclude-deprecated \\
+        -H "Authorization: bearer ${TOKEN}" \\
+        https://server.com/graphql \\
+        schema.json
+
+If the descriptions are not needed, then they can be excluded (saves
+bandwith and space):
+
+.. code-block:: shell
+
+    python3 \\
+        -m sgqlc.introspection \\
+        --exclude-deprecated \\
+        --exclude-description \\
+        -H "Authorization: bearer ${TOKEN}" \\
+        https://server.com/graphql \\
+        schema.json
+
+
 :license: ISC
 '''
 

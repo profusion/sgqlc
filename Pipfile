@@ -25,6 +25,7 @@ pygments = "*"
 nose = "*"
 sphinx = "*"
 requests = "*"
+sphinx-argparse = "*"
 
 [requires]
 python_version = "3.7"

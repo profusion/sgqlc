@@ -37,6 +37,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
               'sphinx.ext.githubpages',
+              'sphinxarg.ext',
               ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -171,7 +172,8 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     'https://docs.python.org/3/': None,
-    'https://3.python-requests.org/': None
+    'https://3.python-requests.org/': None,
+    'https://websocket-client.readthedocs.io/en/latest/': None,
 }
 
 # -- Extension interface -------------------------------------------------------

@@ -57,6 +57,100 @@ objects:
    print(obj.parent.sibling.x.y)
 
 
+Performance
+-----------
+
+When the endpoint is called passing :class:`Operation` it will
+serialize the operation to a string. This may be costly depending on the
+operation size and will be done on **every endpoint usage**, there is no
+caching. Internally it does:
+
+.. code-block:: python
+
+   query = bytes(op).decode('utf-8')
+
+
+Then it's advised that those looking for extra performance to do this
+externally and pass the resulting string. A faster version of the code
+in the previous section is:
+
+.. code-block:: python
+
+   endpoint = HTTPEndpoint(url)
+   query = bytes(op).decode('utf-8')
+   data = endpoint(query)  # faster if used multiple times
+
+   # The rest of the code is the same and uses 'op':
+   obj = op + data
+   print(obj.parent.child.field)
+   print(obj.parent.sibling.x.y)
+
+This also hints at our second optimization: avoid creating operations using
+arguments with values that changes. Replace those with the :class:`Variable`,
+this will allow the query to be converted to string only once and will also
+help the server -- some of them employ caching.
+
+.. code-block:: python
+
+   # slower version
+   for a in args:
+       op = Operation(Query)          # creates a new operation again
+       my_query = op.my_query(arg=a)  # only thing that changed!
+       my_query.field()               # do all the field processing again
+       data = endpoint(op)            # serializes again
+       obj = op + data
+       process_my_query(obj)
+
+   # faster version
+   from sgqlc.types import Arg, String, Variable
+   op = Operation(Query, variables={
+      'a': Arg(String),  # this must match the my_query arg type!
+   })
+   my_query = op.my_query(arg=Variable('a'))
+   my_query.field()
+   query = bytes(op).decode('utf-8')
+   for a in args:
+       data = endpoint(query, variables={'a': a})  # variables are plain JSON!
+       obj = op + data
+       process_my_query(obj)
+
+
+Unfortunately SGQLC does not implements
+`Automatic Persisted Queries <https://www.apollographql.com/docs/apollo-server/performance/apq/>`_
+yet, but that technique can be implemented on top of SGQLC.
+Contributions are welcome ;-)
+
+Code Generator
+--------------
+
+If you are savvy enough to write GraphQL executable documents using their
+Domain Specific Language (DSL) and already have ``schema.json`` or access
+to a server with introspection you may use the ``sgqlc-codegen operation`` to
+automatically generate the SGQLC Operations for you.
+
+The generated code should be stable and can be committed to repositories,
+leading to minimum ``diff`` when updated.
+
+See examples:
+ - `GitHub
+   <https://github.com/profusion/sgqlc/blob/master/examples/github/update-operations.sh>`_
+   defining a single parametrized (variables) query
+   `ListIssues
+   <https://github.com/profusion/sgqlc/blob/master/examples/github/sample_operations.gql>`_
+   and generates
+   `sample_operations.py
+   <https://github.com/profusion/sgqlc/blob/master/examples/github/sample_operations.py>`_.
+ - `Shopify
+   <https://github.com/profusion/sgqlc/blob/master/examples/shopify/update-operations.sh>`_
+   uses
+   `shopify_operations.gql
+   <https://github.com/profusion/sgqlc/blob/master/examples/shopify/shopify_operations.gql>`_
+   defining all the operations, including fragments and variables, and outputs
+   the SGQLC code. See the generated
+   `shopify_operations.py
+   <https://github.com/profusion/sgqlc/blob/master/examples/shopify/shopify_operations.py>`_.
+
+
 Examples
 --------
 

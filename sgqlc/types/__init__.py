@@ -93,6 +93,32 @@ modules will extend the behavior for common conventions:
    are widely used.
 
 
+Code Generator
+--------------
+
+If you already have ``schema.json`` or access to a server with
+introspection you may use the ``sgqlc-codegen schema`` to
+automatically generate the type definitions for you.
+
+The generated code should be stable and can be committed to repositories,
+leading to minimum ``diff`` when updated. It may include docstrings, which
+improves development experience at the expense of larger files.
+
+See examples:
+ - `GitHub
+   <https://github.com/profusion/sgqlc/blob/master/examples/github/update-schema.sh>`_
+   downloads the schema using introspection and generates a schema
+   using GraphQL descriptions as Python docstrings, see the generated
+   `github_schema.py
+   <https://github.com/profusion/sgqlc/blob/master/examples/github/github_schema.py>`_.
+ - `Shopify
+   <https://github.com/profusion/sgqlc/blob/master/examples/shopify/update-schema.sh>`_
+   downloads the schema (without descriptions) using introspection and
+   generates a schema without Python docstrings, see the generated
+   `shopify_schema.py
+   <https://github.com/profusion/sgqlc/blob/master/examples/shopify/shopify_schema.py>`_.
+
+
 Examples
 --------
 
