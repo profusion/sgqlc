@@ -6,7 +6,7 @@ import re
 from setuptools import setup, find_packages
 
 name = 'sgqlc'
-version = 13
+version = 14
 release = 0
 
 
