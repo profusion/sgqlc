@@ -34,7 +34,7 @@ setup(
     requires=[],
     install_requires=['graphql-core'],
     extras_require={
-        'sphinx': ['sphinx'],
+        'sphinx': ['sphinx', 'sphinx-argparse'],
         'websocket': ['websocket-client'],
         'requests': ['requests']
     },

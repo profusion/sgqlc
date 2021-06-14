@@ -2,6 +2,9 @@ build:
   image: latest
 
 python:
-  version: 3.6
+  version: 3.7
   setup_py_install: true
   use_system_site_packages: true
+  install:
+    - method: pip
+      path: sphinx-argparse
