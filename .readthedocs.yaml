@@ -1,3 +1,6 @@
+version: 2
+formats: all
+
 build:
   image: latest
 
@@ -9,3 +12,6 @@ python:
       path: .
       extra_requirements:
         - sphinx
+
+sphinx:
+   configuration: doc/source/conf.py
