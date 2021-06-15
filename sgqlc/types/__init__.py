@@ -1785,7 +1785,8 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
                 self.__class__, name, value, exc)) from exc
 
     def __populate_fields_from_selection_list(self, sl, json_data):
-        for sel in sl.__get_selections_or_auto_select__():
+        selections = sl.__get_selections_or_auto_select__()
+        for sel in selections:
             field = sel.__field__
             ftype = self.__get_type_for_selection(sel, json_data)
             if sel.__alias__ is not None:
@@ -1794,14 +1795,21 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
                 field._set_container(self.__schema__, self, alias)
             self.__populate_field_data(field, ftype, sel, json_data)
 
-        casts = sl.__casts__
+        if isinstance(selections, list):
+            # sl is SelectionList or subclass (InlineFragmentSelectionList)
+            casts = sl.__casts__
+            fragments = sl.__fragments__
+        else:
+            # sl is Selection, use possibly auto-selected fields
+            casts = selections.__casts__
+            fragments = selections.__fragments__
+
         if casts:
             tname = json_data.get('__typename')
             csl = casts.get(tname)
             if csl:
                 self.__populate_fields_from_selection_list(csl, json_data)
 
-        fragments = sl.__fragments__
         if fragments:
             tname = json_data.get('__typename')
             fl = fragments.get(tname)
