@@ -1,8 +1,8 @@
 `sgqlc` - Simple GraphQL Client
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: https://travis-ci.com/profusion/sgqlc.svg?branch=master
-    :target: https://travis-ci.com/profusion/sgqlc
+.. image:: https://github.com/profusion/sgqlc/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/profusion/sgqlc/actions/workflows/ci.yml
 
 .. image:: https://coveralls.io/repos/github/profusion/sgqlc/badge.svg?branch=master
     :target: https://coveralls.io/github/profusion/sgqlc?branch=master

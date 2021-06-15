@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip --quiet --no-input install --upgrade pip
-        python -m pip --quiet --no-input install wheel pygments nose websocket-client requests
+        python -m pip --quiet --no-input install wheel pygments nose websocket-client requests coveralls
         pip install -r flake8-requirements.txt
     - name: Lint with flake8
       run: |
@@ -46,3 +46,7 @@ jobs:
         cd examples/shopify
         NO_DOWNLOAD=1 ./update-schema.sh
         ./update-operations.sh
+    - name: Coveralls
+      run: coveralls --service=github
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
