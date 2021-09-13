@@ -2598,6 +2598,8 @@ class Input(ContainerType):
         ...           'aNestedList': [{'aStr': 'there'}]})
         >>> print(TheInput.__to_graphql_input__(value))
         {aInt: 1, aFloat: 1.2, aNested: {aStr: "hi"}, aNestedList: [{aStr: "there"}]}
+        >>> print(TheInput.__to_graphql_input__(None))
+        null
 
         .. note::
 
@@ -2622,6 +2624,8 @@ class Input(ContainerType):
             return Variable.__to_graphql_input__(value, indent, indent_string)
         elif isinstance(value, Input):
             value = value.__json_data__
+        elif value is None:
+            return "null"
 
         for f in cls:
             try:
