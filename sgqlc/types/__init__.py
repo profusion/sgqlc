@@ -1365,7 +1365,7 @@ class EnumMeta(BaseMeta):
         return len(cls.__choices__)
 
     def __to_graphql__(cls, indent=0, indent_string='  '):
-        s = [BaseMeta.__to_graphql__(cls, indent, indent_string)]
+        s = [BaseMeta.__to_graphql__(cls, indent, indent_string) + ' {']
         prefix = indent_string * (indent + 1)
         for c in cls:
             s.append(prefix + str(c))
