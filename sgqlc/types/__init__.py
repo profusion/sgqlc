@@ -985,9 +985,11 @@ def _create_non_null_wrapper(name, t):
     })
 
 
-def _create_list_of_wrapper(name, t):
+def _create_list_of_wrapper(name, t):  # noqa: C901
     'creates type wrapper for list of given type'
     def realize_type(v, selection_list=None):
+        if isinstance(v, (t, Variable)):
+            return v
         return t(v, selection_list)
 
     def __new__(cls, json_data, selection_list=None):
@@ -1154,6 +1156,9 @@ def list_of(t):
       ``None`` **and** the list elements must not be ``Non``, ie:
       ``[1, 2]``.
 
+    >>> class AnotherIntInput(Input):
+    ...     a_int = int
+    ...
     >>> class TypeWithListFields(Type):
     ...     list_of_int = list_of(int)
     ...     list_of_float = list_of(Float)
@@ -1161,6 +1166,7 @@ def list_of(t):
     ...     non_null_list_of_int = non_null(list_of(int))
     ...     list_of_non_null_int = list_of(non_null(int))
     ...     non_null_list_of_non_null_int = non_null(list_of(non_null(int)))
+    ...     a_nested_list = list_of(AnotherIntInput)
     ...
     >>> TypeWithListFields
     type TypeWithListFields {
@@ -1170,6 +1176,7 @@ def list_of(t):
       nonNullListOfInt: [Int]!
       listOfNonNullInt: [Int!]
       nonNullListOfNonNullInt: [Int!]!
+      aNestedList: [AnotherIntInput]
     }
 
     It takes care to enforce proper type, including non-null checking
@@ -1182,6 +1189,7 @@ def list_of(t):
     ...     'nonNullListOfInt': [None, 1, None, 2],
     ...     'listOfNonNullInt': [1, 2, 3],
     ...     'nonNullListOfNonNullInt': [1, 2, 3, 4],
+    ...     'aNestedList': [AnotherIntInput(a_int=42)],
     ... }
     >>> obj = TypeWithListFields(json_data)
     >>> for field_name in obj:
@@ -1193,6 +1201,7 @@ def list_of(t):
     non_null_list_of_int [None, 1, None, 2]
     list_of_non_null_int [1, 2, 3]
     non_null_list_of_non_null_int [1, 2, 3, 4]
+    a_nested_list [AnotherIntInput(a_int=42)]
 
     Note that lists that are **not** enclosed in ``non_null()`` can be
     ``None``:
@@ -1204,6 +1213,7 @@ def list_of(t):
     ...     'nonNullListOfInt': [None, 1, None, 2],
     ...     'listOfNonNullInt': None,
     ...     'nonNullListOfNonNullInt': [1, 2, 3],
+    ...     'aNestedList': [AnotherIntInput(a_int=42)],
     ... }
     >>> obj = TypeWithListFields(json_data)
     >>> for field_name in obj:
@@ -1215,6 +1225,7 @@ def list_of(t):
     non_null_list_of_int [None, 1, None, 2]
     list_of_non_null_int None
     non_null_list_of_non_null_int [1, 2, 3]
+    a_nested_list [AnotherIntInput(a_int=42)]
 
     Types will be converted, so although not usual (since GraphQL
     gives you the proper JSON type), this can be done:
@@ -1226,6 +1237,7 @@ def list_of(t):
     ...     'nonNullListOfInt': [None, '1', None, 2.1],
     ...     'listOfNonNullInt': ['1', 2.1, 3],
     ...     'nonNullListOfNonNullInt': ['1', 2.1, 3, 4],
+    ...     'aNestedList': [AnotherIntInput(a_int=42)],
     ... }
     >>> obj = TypeWithListFields(json_data)
     >>> for field_name in obj:
@@ -1237,6 +1249,7 @@ def list_of(t):
     non_null_list_of_int [None, 1, None, 2]
     list_of_non_null_int [1, 2, 3]
     non_null_list_of_non_null_int [1, 2, 3, 4]
+    a_nested_list [AnotherIntInput(a_int=42)]
 
     Giving incorrect (nonconvertible) JSON data will raise exceptions:
 
