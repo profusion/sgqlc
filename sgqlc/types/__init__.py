@@ -962,12 +962,18 @@ class BaseTypeWithTypename(BaseType, metaclass=BaseMetaWithTypename):
     'BaseType with ``__typename`` field (containers and union).'
 
 
-def _create_non_null_wrapper(name, t):
-    'creates type wrapper for non-null of given type'
+def create_realize_type(t):
     def realize_type(v, selection_list=None):
         if isinstance(v, (t, Variable)):
             return v
         return t(v, selection_list)
+    return realize_type
+
+
+def _create_non_null_wrapper(name, t):
+    'creates type wrapper for non-null of given type'
+
+    realize_type = create_realize_type(t)
 
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
@@ -987,8 +993,8 @@ def _create_non_null_wrapper(name, t):
 
 def _create_list_of_wrapper(name, t):
     'creates type wrapper for list of given type'
-    def realize_type(v, selection_list=None):
-        return t(v, selection_list)
+
+    realize_type = create_realize_type(t)
 
     def __new__(cls, json_data, selection_list=None):
         if json_data is None:
@@ -2583,11 +2589,17 @@ class Input(ContainerType):
         ...     a_nested_list = list_of(AnotherInput)
         ...
 
+        It can be constructed using fields and values as a regular Python class:
+
         >>> TheInput(a_int=1, a_float=1.2, a_nested=AnotherInput(a_str='hi'))
         TheInput(a_int=1, a_float=1.2, a_nested=AnotherInput(a_str='hi'))
 
+        Or can be given as a dict (ie: JSON data) as parameter:
+
         >>> TheInput({'aInt': 1, 'aFloat': 1.2, 'aNested': {'aStr': 'hi'}})
         TheInput(a_int=1, a_float=1.2, a_nested=AnotherInput(a_str='hi'))
+
+        It can be printed to GraphQL DSL using ``__to_graphql_input__()``:
 
         >>> value = TheInput(a_int=1, a_float=1.2,
         ...                  a_nested=AnotherInput(a_str='hi'),
@@ -2598,6 +2610,17 @@ class Input(ContainerType):
         ...           'aNestedList': [{'aStr': 'there'}]})
         >>> print(TheInput.__to_graphql_input__(value))
         {aInt: 1, aFloat: 1.2, aNested: {aStr: "hi"}, aNestedList: [{aStr: "there"}]}
+
+        The nested types (lists, non-null) can also take an already realized
+        value, see ``AnotherInput`` below:
+
+        >>> value = TheInput({'aInt': 1, 'aFloat': 1.2, 'aNested': {'aStr': 'hi'},
+        ...           'aNestedList': [AnotherInput(a_str='there')]})
+        >>> print(TheInput.__to_graphql_input__(value))
+        {aInt: 1, aFloat: 1.2, aNested: {aStr: "hi"}, aNestedList: [{aStr: "there"}]}
+
+        ``None`` will print ``null``:
+
         >>> print(TheInput.__to_graphql_input__(None))
         null
 
