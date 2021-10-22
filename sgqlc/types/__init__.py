@@ -1000,7 +1000,7 @@ def _create_list_of_wrapper(name, t):
         if json_data is None:
             return None
 
-        if isinstance(json_data, (t, Variable)):  # pragma: no cover
+        if isinstance(json_data, (t, Variable)):
             return json_data
 
         return [realize_type(v, selection_list) for v in json_data]
@@ -1157,7 +1157,7 @@ def list_of(t):
       ``[1, 2]``;
 
     - ``non_null_list_of_non_null_int`` means it must be a list, not
-      ``None`` **and** the list elements must not be ``Non``, ie:
+      ``None`` **and** the list elements must not be ``None``, ie:
       ``[1, 2]``.
 
     >>> class TypeWithListFields(Type):
@@ -1282,6 +1282,23 @@ def list_of(t):
     >>> print(json.dumps(list_of(int).__to_json_value__(None)))
     null
 
+    Lists can be of complex types, for instance :class:`Input`:
+
+    >>> class SomeInput(Input):
+    ...     a = int
+    >>> SomeInputList = list_of(SomeInput)
+    >>> SomeInputList([{'a': 123}])
+    [SomeInput(a=123)]
+
+    Variables may be given as constructor parameters:
+
+    >>> SomeInputList(Variable('lst'))
+    $lst
+
+    Or already realized lists:
+
+    >>> SomeInputList(SomeInputList([{'a': 123}]))
+    [SomeInput(a=123)]
     '''
     if isinstance(t, str):
         return Lazy(t, '[' + t + ']', list_of)
