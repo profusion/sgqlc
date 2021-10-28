@@ -11,6 +11,7 @@ __all__ = ('Operations',)
 def query_list_issues():
     _op = sgqlc.operation.Operation(_schema_root.query_type, name='ListIssues', variables=dict(owner=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), name=sgqlc.types.Arg(sgqlc.types.non_null(_schema.String)), desiredOrderBy=sgqlc.types.Arg(_schema.IssueOrder, default={'field': 'CREATED_AT', 'direction': 'ASC'}), filterStates=sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(_schema.IssueState)), default=['OPEN'])))
     _op_repository = _op.repository(owner=sgqlc.types.Variable('owner'), name=sgqlc.types.Variable('name'))
+    _op_repository.__typename__()
     _op_repository_issues = _op_repository.issues(first=100, order_by=sgqlc.types.Variable('desiredOrderBy'), states=sgqlc.types.Variable('filterStates'))
     _op_repository_issues_nodes = _op_repository_issues.nodes()
     _op_repository_issues_nodes.number(__alias__='n')

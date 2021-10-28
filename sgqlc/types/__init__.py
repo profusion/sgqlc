@@ -2096,8 +2096,15 @@ class BaseItem:
         self._type = self._type.resolve(self.schema)
         return self._type
 
-    @staticmethod
-    def _to_python_name(graphql_name):
+    _renamed_to_python_fields = {
+        '__typename': '__typename__',
+    }
+    _renamed_to_graphql_fields = {
+        v: k for k, v in _renamed_to_python_fields.items()
+    }
+
+    @classmethod
+    def _to_python_name(cls, graphql_name):
         '''Converts a GraphQL name, ``aName`` to Python: ``a_name``.
 
         Note that an underscore is appended if the name is a Python keyword.
@@ -2106,6 +2113,8 @@ class BaseItem:
         'a_name'
         >>> BaseItem._to_python_name('for')
         'for_'
+        >>> BaseItem._to_python_name('__typename')
+        '__typename__'
         '''
         s = []
         rgx = re.compile('([^A-Z]+|[A-Z]+[^A-Z]*)')
@@ -2114,14 +2123,28 @@ class BaseItem:
         name = '_'.join(s)
         if keyword.iskeyword(name):
             return name + '_'
-        return name
+        try:
+            return cls._renamed_to_python_fields[name]
+        except KeyError:
+            return name
 
-    @staticmethod
-    def _to_graphql_name(name):
+    @classmethod
+    def _to_graphql_name(cls, name):
         '''Converts a Python name, ``a_name`` to GraphQL: ``aName``.
 
         Note that leading underscores (``_``) are preserved.
+
+        >>> BaseItem._to_graphql_name('a_name')
+        'aName'
+        >>> BaseItem._to_graphql_name('__underscore_prefixed')
+        '__underscorePrefixed'
+        >>> BaseItem._to_graphql_name('__typename__')
+        '__typename'
         '''
+        try:
+            return cls._renamed_to_graphql_fields[name]
+        except KeyError:
+            pass
         prefix = ''
         while name.startswith('_'):
             prefix += '_'

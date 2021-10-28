@@ -650,6 +650,22 @@ query {
   }
 }
 
+.. note::
+
+  The built-in object type ``__typename`` would cause issues with Python's
+  name mangling as it would be translated to the private class member name.
+  In order to avoid this issue, whenever selecting GraphQL's ``__typename``
+  use the ``__typename__`` Python name. Example:
+
+  >>> op = Operation(Query)
+  >>> op.repository(id='repo1').__typename__()
+  __typename
+  >>> op
+  query {
+    repository(id: "repo1") {
+      __typename
+    }
+  }
 
 
 

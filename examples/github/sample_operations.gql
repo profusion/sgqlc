@@ -5,6 +5,7 @@ query ListIssues(
     $filterStates: [IssueState!]=[OPEN]
 ) {
     repository(owner: $owner, name: $name) {
+        __typename
         issues(first: 100, orderBy: $desiredOrderBy, states: $filterStates) {
             nodes {
                 n: number

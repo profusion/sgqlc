@@ -110,11 +110,24 @@ class SchemaValidation(NoValidation):
             return fallback
         return d
 
+    _typename_field = {
+        'args': {},
+        'description': 'GraphQL type name',
+        'name': '__typename',
+        'type': {
+            'kind': 'NON_NULL',
+            'name': None,
+            'ofType': {'kind': 'SCALAR', 'name': 'String', 'ofType': None},
+        },
+    }
+
     def _create_type(self, typ):
         fields = typ.get('fields') or typ.get('inputFields') or []
         typ['fields'] = {
             f['name']: self._create_field(f) for f in fields
         }
+        typ['fields'].setdefault('__typename', self._typename_field)
+
         if 'inputFields' in typ:
             del typ['inputFields']
 
