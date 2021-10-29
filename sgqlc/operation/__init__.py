@@ -1159,6 +1159,30 @@ it's going to behave as the interface type as well:
 >>> obj.repository.owner
 Actor(login='user')
 
+Auto-selection works on inline fragments (casts) as well:
+
+>>> op = Operation(Query)
+>>> repo = op.repository(id='repo1')
+>>> repo.owner.__as__(User).__fields__()
+>>> op
+query {
+  repository(id: "repo1") {
+    owner {
+      __typename
+      ... on User {
+        login
+        name
+      }
+    }
+  }
+}
+>>> json_data = {'data': {'repository': {'owner': {
+...    '__typename': 'User', 'login': 'user', 'name': 'User Name',
+... }}}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+User(__typename__='User', login='user', name='User Name')
+
 
 Named Fragments
 ~~~~~~~~~~~~~~~
@@ -1304,6 +1328,33 @@ it's going to behave as the interface type as well:
 >>> obj = op + json_data
 >>> obj.repository.owner
 Actor(login='user')
+
+Auto-selection works on fragments as well:
+
+
+>>> auto_sel_user = Fragment(User, 'AutoSelectedUser')
+>>> auto_sel_user.__fields__()
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').owner.__fragment__(auto_sel_user)
+>>> op
+query {
+  repository(id: "repo1") {
+    owner {
+      __typename
+      ...AutoSelectedUser
+    }
+  }
+}
+fragment AutoSelectedUser on User {
+  login
+  name
+}
+>>> json_data = {'data': {'repository': {'owner': {
+...    '__typename': 'User', 'login': 'user', 'name': 'User Name',
+... }}}}
+>>> obj = op + json_data
+>>> obj.repository.owner
+User(__typename__='User', login='user', name='User Name')
 
 
 Utilities
@@ -1588,160 +1639,22 @@ class Selection:
             return iter(self.__selection_list)
         return iter((self,))
 
-    def __select_all_types(cls, union_type, depth, trail, child_typename):
-        recursive = len(trail) < depth
-
-        q = SelectionList(union_type)
-        q.__typename__()  # this one is required in unions
-        for t in union_type:
-            if recursive and t not in trail:
-                sel = q.__as__(t)
-                for x in cls.__select_all_fields(t, depth, trail,
-                                                 False, child_typename):
-                    sel += x
-        return q
-
-    def __select_all_fields(cls, container_type, depth, trail,
-                            self_typename, child_typename):
-        recursive = len(trail) < depth
-
-        q = SelectionList(container_type)
-        if self_typename:
-            q.__typename__()
-        for f in container_type:
-            sel = Selection(None, f, {})
-            if issubclass(f.type, BaseTypeWithTypename):
-                if recursive and f.type not in trail:
-                    # change the locally created selection list to the
-                    # auto-selected one. This must be explicit here so
-                    # it doesn't affect __to_graphql__(), that one must not
-                    # affect the actual selection it's operating on!
-                    sel.__selection_list = \
-                        sel.__get_all_fields_selection_list(
-                            depth, trail, child_typename)
-                else:
-                    sel = None
-
-            if sel:
-                q += sel
-        return q
-
     def __get_all_fields_selection_list(self, depth, trail, typename):
-        t = self.__field__.type
-        trail.append(t)
+        '''Create a new SelectionList, select all fields and return it'''
+        selections = SelectionList(self.__field__.type)
+        selections.__select_all__(depth, trail, typename, typename)
+        return selections
 
-        if issubclass(t, Union):
-            q = self.__select_all_types(t, depth, trail, typename)
-        else:
-            q = self.__select_all_fields(t, depth, trail, typename, typename)
-
-        trail.pop()
-        return q
+    def __select_all__(self, depth, trail, typename):
+        '''Select all fields in the current SelectionList'''
+        self.__selection_list.__select_all__(depth, trail, typename, typename)
 
     def __fields__(self, *names, **names_and_args):
         '''Select fields of a container type.
 
-        This is a helper to automate selection of fields of container
-        types, such as giving a list of names to include, with or
-        without parameters (passed as a mapping ``name=args``).
-
-        If no arguments are given, all fields are included.
-
-        If the keyword argument ``__exclude__`` is given a list of
-        names, then all but those fields will be
-        included. Alternatively one can exclude fields using
-        ``name=None`` or ``name=False`` as keyword argument.
-
-        If a list of names is given as positional arguments, then only
-        those names will be included. Alternatively one can include
-        fields using ``name=True``. To include fields with selection
-        parameters, then use ``name=dict(...)`` or ``name=list(...)``.
-        To include fields without arguments and with aliases, use the
-        shortcut ``name='alias'``.
-
-        The special built-in field ``__typename`` is not selected by default.
-        In order to select it, provide ``__typename__=True`` as a parameter.
-
-        .. code-block:: python
-
-          # just field1 and field2
-          parent.field.child.__fields__('field1', 'field2')
-          parent.field.child.__fields__(field1=True, field2=True)
-
-          # field1 with parameters
-          parent.field.child.__fields__(field1=dict(param1='value1'))
-
-          # field1 renamed (aliased) to alias1
-          parent.field.child.__fields__(field1='alias1')
-
-          # all but field2
-          parent.field.child.__fields__(field2=False)
-          parent.field.child.__fields__(field2=None)
-          parent.field.child.__fields__(__exclude__=('field2',))
-
-          # all and also include __typename
-          parent.field.child.__fields__(__typename__=True)
-          parent.field.child.__fields__('__typename__')
+        See :func:`sgqlc.operation.SelectionList.__fields__`.
         '''
-        names = list(names)
-        exclude = self.__fields_gen_excludes(names_and_args)
-        typename = self.__fields_has_typename(names, names_and_args, exclude)
-        if typename:
-            self.__typename__()
-
-        if not names and not names_and_args:
-            self.__fields_add_all(exclude, typename)
-            return
-
-        self.__fields_add_names(names, typename)
-        self.__fields_add_names_and_args(names_and_args, typename)
-
-    def __fields_gen_excludes(self, names_and_args):
-        exclude = []
-        if '__exclude__' in names_and_args:
-            exclude = names_and_args.pop('__exclude__')
-
-        for k, v in tuple(names_and_args.items()):  # force copy
-            if v is False or v is None:
-                exclude.append(k)
-                del names_and_args[k]
-
-        return exclude
-
-    def __fields_has_typename(self, names, names_and_args, exclude):
-        if '__typename__' in exclude:
-            return False  # pragma: no cover
-
-        try:
-            names.remove('__typename__')
-            return True
-        except ValueError:
-            pass
-
-        try:
-            return bool(names_and_args.pop('__typename__'))
-        except KeyError:
-            return False
-
-    def __fields_add_all(self, exclude, typename):
-        for f in self.__field__.type:
-            if f.name not in exclude:
-                self[f.name](__typename__=typename)
-
-    def __fields_add_names(self, names, typename):
-        for n in names:
-            self[n](__typename__=typename)
-
-    def __fields_add_names_and_args(self, names_and_args, typename):
-        for n, args in names_and_args.items():
-            if args and not isinstance(args, dict):
-                if isinstance(args, (tuple, list)):
-                    args = dict(args)
-                elif isinstance(args, str):
-                    args = {'__alias__': args}
-                else:
-                    args = {}
-            self[n](__typename__=typename, **args)
+        self.__selection_list.__fields__(*names, **names_and_args)
 
     def __to_graphql__(self, indent=0, indent_string='  ',
                        auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
@@ -2150,7 +2063,7 @@ class SelectionList:
 
         sl = InlineFragmentSelectionList(typ)
         self.__casts[typ.__name__] = sl
-        self['__typename__']()
+        self.__typename__()
         return sl
 
     def __fragment__(self, fragment):
@@ -2158,7 +2071,150 @@ class SelectionList:
         self.__fragments.setdefault(
             fragment.__type__.__name__, []
         ).append(fragment)
-        self['__typename__']()
+        self.__typename__()
+
+    def __select_all_types(self, depth, trail, child_typename):
+        recursive = len(trail) < depth
+
+        self.__typename__()  # this one is required in unions
+
+        for t in self.__type:
+            if recursive and t not in trail:
+                sel = self.__as__(t)
+                sel.__select_all__(depth, trail, False, child_typename)
+
+    def __select_all_fields(self, depth, trail, self_typename, child_typename):
+        recursive = len(trail) < depth
+
+        if self_typename:
+            self.__typename__()
+
+        for f in self.__type:
+            if not issubclass(f.type, BaseTypeWithTypename):
+                self += Selection(None, f, {})
+            elif recursive and f.type not in trail:
+                sel = Selection(None, f, {})
+                sel.__select_all__(depth, trail, child_typename)
+                if sel:
+                    self += sel
+
+    def __select_all__(self, depth, trail, self_typename, child_typename):
+        trail.append(self.__type)
+
+        if issubclass(self.__type, Union):
+            self.__select_all_types(depth, trail, child_typename)
+        else:
+            self.__select_all_fields(depth, trail,
+                                     self_typename, child_typename)
+
+        trail.pop()
+
+    def __fields__(self, *names, **names_and_args):
+        '''Select fields of a container type.
+
+        This is a helper to automate selection of fields of container
+        types, such as giving a list of names to include, with or
+        without parameters (passed as a mapping ``name=args``).
+
+        If no arguments are given, all fields are included.
+
+        If the keyword argument ``__exclude__`` is given a list of
+        names, then all but those fields will be
+        included. Alternatively one can exclude fields using
+        ``name=None`` or ``name=False`` as keyword argument.
+
+        If a list of names is given as positional arguments, then only
+        those names will be included. Alternatively one can include
+        fields using ``name=True``. To include fields with selection
+        parameters, then use ``name=dict(...)`` or ``name=list(...)``.
+        To include fields without arguments and with aliases, use the
+        shortcut ``name='alias'``.
+
+        The special built-in field ``__typename`` is not selected by default.
+        In order to select it, provide ``__typename__=True`` as a parameter.
+
+        .. code-block:: python
+
+          # just field1 and field2
+          parent.field.child.__fields__('field1', 'field2')
+          parent.field.child.__fields__(field1=True, field2=True)
+
+          # field1 with parameters
+          parent.field.child.__fields__(field1=dict(param1='value1'))
+
+          # field1 renamed (aliased) to alias1
+          parent.field.child.__fields__(field1='alias1')
+
+          # all but field2
+          parent.field.child.__fields__(field2=False)
+          parent.field.child.__fields__(field2=None)
+          parent.field.child.__fields__(__exclude__=('field2',))
+
+          # all and also include __typename
+          parent.field.child.__fields__(__typename__=True)
+          parent.field.child.__fields__('__typename__')
+        '''
+        names = list(names)
+        exclude = self.__fields_gen_excludes(names_and_args)
+        typename = self.__fields_has_typename(names, names_and_args, exclude)
+        if typename:
+            self['__typename__']()
+
+        if not names and not names_and_args:
+            self.__fields_add_all(exclude, typename)
+            return
+
+        self.__fields_add_names(names, typename)
+        self.__fields_add_names_and_args(names_and_args, typename)
+
+    @staticmethod
+    def __fields_gen_excludes(names_and_args):
+        exclude = []
+        if '__exclude__' in names_and_args:
+            exclude = names_and_args.pop('__exclude__')
+
+        for k, v in tuple(names_and_args.items()):  # force copy
+            if v is False or v is None:
+                exclude.append(k)
+                del names_and_args[k]
+
+        return exclude
+
+    @staticmethod
+    def __fields_has_typename(names, names_and_args, exclude):
+        if '__typename__' in exclude:
+            return False  # pragma: no cover
+
+        try:
+            names.remove('__typename__')
+            return True
+        except ValueError:
+            pass
+
+        try:
+            return bool(names_and_args.pop('__typename__'))
+        except KeyError:
+            return False
+
+    def __fields_add_all(self, exclude, typename):
+        for f in self.__type:
+            if f.name not in exclude:
+                self[f.name](__typename__=typename)
+
+    def __fields_add_names(self, names, typename):
+        for n in names:
+            self[n](__typename__=typename)
+
+    def __fields_add_names_and_args(self, names_and_args, typename):
+        for n, args in names_and_args.items():
+            if args and not isinstance(args, dict):
+                if isinstance(args, (tuple, list)):
+                    args = dict(args)
+                elif isinstance(args, str):
+                    args = {'__alias__': args}
+                else:
+                    args = {}
+            self[n](__typename__=typename, **args)
 
 
 class InlineFragmentSelectionList(SelectionList):
