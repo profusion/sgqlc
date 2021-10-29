@@ -549,6 +549,85 @@ query {
   }
 }
 
+By default ``__typename`` is only included when selecting :class:`Union`,
+if that should be included in every :class:`Type`, then you must specify
+``__typename__`` as a selected field. It's handled recursively:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.__fields__('__typename__')
+>>> op
+query {
+  repository(id: "repo1") {
+    issues {
+      __typename
+      number
+      title
+      body
+      reporter {
+        __typename
+        login
+        name
+      }
+      assigned {
+        __typename
+        ... on User {
+          login
+          name
+        }
+        ... on Assignee {
+          email
+        }
+      }
+      commenters {
+        __typename
+        actors {
+          __typename
+          login
+        }
+      }
+    }
+  }
+}
+
+Or included using ``__typename__=True``:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1').issues.__fields__(__typename__=True)
+>>> op
+query {
+  repository(id: "repo1") {
+    issues {
+      __typename
+      number
+      title
+      body
+      reporter {
+        __typename
+        login
+        name
+      }
+      assigned {
+        __typename
+        ... on User {
+          login
+          name
+        }
+        ... on Assignee {
+          email
+        }
+      }
+      commenters {
+        __typename
+        actors {
+          __typename
+          login
+        }
+      }
+    }
+  }
+}
+
+
 If a field of a container type (interface or type) is used without explicit
 fields as documented above, all of its fields will be added automatically.
 It will avoid dependency loops and limit the allowed nest depth to 2 by
@@ -649,6 +728,50 @@ query {
     }
   }
 }
+
+If ``__typename`` is to be automatically selected, then use ``typename=True``:
+
+>>> print(op.__to_graphql__(auto_select_depth=4, typename=True))
+query {
+  repository(id: "repo1") {
+    __typename
+    id
+    name
+    owner {
+      __typename
+      login
+    }
+    issues {
+      __typename
+      number
+      title
+      body
+      reporter {
+        __typename
+        login
+        name
+      }
+      assigned {
+        __typename
+        ... on User {
+          login
+          name
+        }
+        ... on Assignee {
+          email
+        }
+      }
+      commenters {
+        __typename
+        actors {
+          __typename
+          login
+        }
+      }
+    }
+  }
+}
+
 
 .. note::
 
@@ -795,6 +918,40 @@ repository(id: "repo1") {
 >>> obj = op + json_data
 >>> obj.repository.name
 'Repo #1'
+
+And also if ``__typename__`` is selected:
+
+>>> op = Operation(Query)
+>>> op.repository(id='repo1', __typename__=True)
+repository(id: "repo1") {
+  __typename
+  id
+  name
+  owner {
+    __typename
+    login
+  }
+  issues {
+    __typename
+    number
+    title
+    body
+  }
+}
+>>> json_data = {'data': {
+...     'repository': {
+...         '__typename': 'Repository', 'id': 'repo1', 'name': 'Repo #1',
+...         'owner': {'__typename': 'Actor', 'login': 'name'},
+...         'issues': [{
+...             '__typename': 'Issue', 'number': 1, 'title': 'title',
+...         }],
+...     },
+... }}
+>>> obj = op + json_data
+>>> obj.repository
+Repository(__typename__='Repository', id='repo1', name='Repo #1', \
+owner=Actor(__typename__='Actor', login='name'), issues=[\
+Issue(__typename__='Issue', number=1, title='title')])
 
 
 Error Reporting
@@ -1397,25 +1554,29 @@ class Selection:
 
     __slots__ = (
         '__alias__', '__field__', '__args__', '__field_selector',
-        '__selection_list',
+        '__selection_list', '__typename',
     )
 
-    def __init__(self, alias, field, args):
+    def __init__(self, alias, field, args, typename=None):
         self.__alias__ = alias
         self.__field__ = field
         self.__args__ = args
         self.__field_selector = {}
         self.__selection_list = None
+        self.__typename = typename
         if issubclass(field.type, BaseTypeWithTypename):
             self.__selection_list = SelectionList(field.type)
 
     def __get_selections_or_auto_select__(
-            self, auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
+            self, auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+            typename=None):
         selections = self.__selection_list
         if selections is None or selections:
             return selections
+        if typename is None:
+            typename = self.__typename
         return self.__get_all_fields_selection_list(
-            auto_select_depth, [])
+            auto_select_depth, [], typename)
 
     def __len__(self):
         if self.__selection_list is not None:
@@ -1427,22 +1588,26 @@ class Selection:
             return iter(self.__selection_list)
         return iter((self,))
 
-    def __select_all_types(cls, union_type, depth, trail):
+    def __select_all_types(cls, union_type, depth, trail, child_typename):
         recursive = len(trail) < depth
 
         q = SelectionList(union_type)
-        q.__typename__()
+        q.__typename__()  # this one is required in unions
         for t in union_type:
             if recursive and t not in trail:
                 sel = q.__as__(t)
-                for x in cls.__select_all_fields(t, depth, trail):
+                for x in cls.__select_all_fields(t, depth, trail,
+                                                 False, child_typename):
                     sel += x
         return q
 
-    def __select_all_fields(cls, container_type, depth, trail):
+    def __select_all_fields(cls, container_type, depth, trail,
+                            self_typename, child_typename):
         recursive = len(trail) < depth
 
         q = SelectionList(container_type)
+        if self_typename:
+            q.__typename__()
         for f in container_type:
             sel = Selection(None, f, {})
             if issubclass(f.type, BaseTypeWithTypename):
@@ -1452,7 +1617,8 @@ class Selection:
                     # it doesn't affect __to_graphql__(), that one must not
                     # affect the actual selection it's operating on!
                     sel.__selection_list = \
-                        sel.__get_all_fields_selection_list(depth, trail)
+                        sel.__get_all_fields_selection_list(
+                            depth, trail, child_typename)
                 else:
                     sel = None
 
@@ -1460,14 +1626,14 @@ class Selection:
                 q += sel
         return q
 
-    def __get_all_fields_selection_list(self, depth, trail):
+    def __get_all_fields_selection_list(self, depth, trail, typename):
         t = self.__field__.type
         trail.append(t)
 
         if issubclass(t, Union):
-            q = self.__select_all_types(t, depth, trail)
+            q = self.__select_all_types(t, depth, trail, typename)
         else:
-            q = self.__select_all_fields(t, depth, trail)
+            q = self.__select_all_fields(t, depth, trail, typename, typename)
 
         trail.pop()
         return q
@@ -1493,6 +1659,9 @@ class Selection:
         To include fields without arguments and with aliases, use the
         shortcut ``name='alias'``.
 
+        The special built-in field ``__typename`` is not selected by default.
+        In order to select it, provide ``__typename__=True`` as a parameter.
+
         .. code-block:: python
 
           # just field1 and field2
@@ -1509,15 +1678,23 @@ class Selection:
           parent.field.child.__fields__(field2=False)
           parent.field.child.__fields__(field2=None)
           parent.field.child.__fields__(__exclude__=('field2',))
+
+          # all and also include __typename
+          parent.field.child.__fields__(__typename__=True)
+          parent.field.child.__fields__('__typename__')
         '''
+        names = list(names)
         exclude = self.__fields_gen_excludes(names_and_args)
+        typename = self.__fields_has_typename(names, names_and_args, exclude)
+        if typename:
+            self.__typename__()
 
         if not names and not names_and_args:
-            self.__fields_add_all(exclude)
+            self.__fields_add_all(exclude, typename)
             return
 
-        self.__fields_add_names(names)
-        self.__fields_add_names_and_args(names_and_args)
+        self.__fields_add_names(names, typename)
+        self.__fields_add_names_and_args(names_and_args, typename)
 
     def __fields_gen_excludes(self, names_and_args):
         exclude = []
@@ -1531,16 +1708,31 @@ class Selection:
 
         return exclude
 
-    def __fields_add_all(self, exclude):
+    def __fields_has_typename(self, names, names_and_args, exclude):
+        if '__typename__' in exclude:
+            return False  # pragma: no cover
+
+        try:
+            names.remove('__typename__')
+            return True
+        except ValueError:
+            pass
+
+        try:
+            return bool(names_and_args.pop('__typename__'))
+        except KeyError:
+            return False
+
+    def __fields_add_all(self, exclude, typename):
         for f in self.__field__.type:
             if f.name not in exclude:
-                self[f.name]()
+                self[f.name](__typename__=typename)
 
-    def __fields_add_names(self, names):
+    def __fields_add_names(self, names, typename):
         for n in names:
-            self[n]()
+            self[n](__typename__=typename)
 
-    def __fields_add_names_and_args(self, names_and_args):
+    def __fields_add_names_and_args(self, names_and_args, typename):
         for n, args in names_and_args.items():
             if args and not isinstance(args, dict):
                 if isinstance(args, (tuple, list)):
@@ -1549,10 +1741,11 @@ class Selection:
                     args = {'__alias__': args}
                 else:
                     args = {}
-            self[n](**args)
+            self[n](__typename__=typename, **args)
 
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       typename=None):
         prefix = indent_string * indent
 
         alias = ''
@@ -1564,12 +1757,14 @@ class Selection:
 
         query = ''
         if self.__selection_list is not None:
+            if typename is None:
+                typename = self.__typename
             selections = self.__selection_list
             if not selections:
                 selections = self.__get_all_fields_selection_list(
-                    auto_select_depth, [])
+                    auto_select_depth, [], typename)
             query = ' ' + selections.__to_graphql__(
-                indent, indent_string, auto_select_depth)
+                indent, indent_string, auto_select_depth, typename)
         return prefix + alias + self.__field__.graphql_name + args + query
 
     def __collect_fragments__(self, fragments):
@@ -1701,6 +1896,10 @@ class Selector:
         if '__alias__' in args:
             alias = args.pop('__alias__')
 
+        typename = None
+        if '__typename__' in args:
+            typename = args.pop('__typename__')
+
         s = self.__selections.get(alias)
         if s is not None:
             if not args:
@@ -1709,7 +1908,8 @@ class Selector:
                 ('%s already have a selection %s. '
                  'Maybe use __alias__ as param?') % (self.__field__, s))
 
-        s = self.__selections[alias] = Selection(alias, self.__field__, args)
+        s = self.__selections[alias] = Selection(
+            alias, self.__field__, args, typename)
         self.__parent__ += s
         return s
 
@@ -1857,20 +2057,21 @@ class SelectionList:
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
 
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       typename=None):
         prefix = indent_string * indent
         next_indent = indent + 1
 
         s = ['{']
         for v in self.__selections:
             s.append(v.__to_graphql__(
-                next_indent, indent_string, auto_select_depth,
+                next_indent, indent_string, auto_select_depth, typename,
             ))
 
         next_prefix = prefix + indent_string
         for v in self.__casts.values():
             s.append(next_prefix + v.__to_graphql__(
-                next_indent, indent_string, auto_select_depth,
+                next_indent, indent_string, auto_select_depth, typename,
             ))
         for lst in self.__fragments.values():
             for v in lst:
@@ -1962,9 +2163,10 @@ class SelectionList:
 
 class InlineFragmentSelectionList(SelectionList):
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       typename=None):
         selection = SelectionList.__to_graphql__(
-            self, indent, indent_string, auto_select_depth)
+            self, indent, indent_string, auto_select_depth, typename)
         return '... on %s %s' % (self.__type__, selection)
 
 
@@ -1983,9 +2185,10 @@ class Fragment(SelectionList):
         return '...%s' % (self.__name,)
 
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       typename=None):
         selection = SelectionList.__to_graphql__(
-            self, indent, indent_string, auto_select_depth)
+            self, indent, indent_string, auto_select_depth, typename)
         return 'fragment %s on %s %s' % (
             self.__name, self.__type__, selection)
 
@@ -2206,7 +2409,8 @@ class Operation:
             )
 
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH):
+                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       typename=None):
         prefix = indent_string * indent
         kind = self.__kind
         name = ''
@@ -2215,13 +2419,13 @@ class Operation:
 
         args = self.__args.__to_graphql__(indent, indent_string)
         selections = self.__selection_list.__to_graphql__(
-            indent, indent_string, auto_select_depth)
+            indent, indent_string, auto_select_depth, typename)
 
         frags_gql = []
         fragments = self.__selection_list.__collect_fragments__()
         for fragment in fragments.values():
             frags_gql.append(fragment.__to_graphql__(indent, indent_string,
-                             auto_select_depth))
+                             auto_select_depth, typename))
 
         frags = ''
         if frags_gql:
