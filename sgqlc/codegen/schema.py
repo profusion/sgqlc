@@ -92,11 +92,7 @@ def to_docstring(wrapped_text, level=1):
     if not wrapped_text:
         return ''
     prefix = '    ' * level
-    if len(wrapped_text) == 1:
-        suffix = ''
-    else:
-        suffix = '\n' + prefix
-
+    suffix = '' if len(wrapped_text) == 1 else '\n' + prefix
     wrapped_text[0] = wrapped_text[0].lstrip()
     body = '\n'.join(wrapped_text)
     if not suffix and body[-1] == "'":
@@ -181,10 +177,7 @@ class CodeGen:
 
     @staticmethod
     def has_iface(ifaces, name):
-        for iface in ifaces:
-            if name == iface['name']:
-                return True
-        return False
+        return any(name == iface['name'] for iface in ifaces)
 
     # fields without interfaces first, then order the interface
     # implementor after the interface declaration
@@ -195,7 +188,7 @@ class CodeGen:
             return -1
         elif a_ifaces and not b_ifaces:
             return 1
-        elif not a_ifaces and not b_ifaces:
+        elif not a_ifaces:
             return 0
 
         has_iface = CodeGen.has_iface
@@ -206,13 +199,12 @@ class CodeGen:
                 return -1
             else:
                 return 0
+        elif has_iface(b_ifaces, a['name']):
+            return -1
+        elif has_iface(a_ifaces, b['name']):
+            return 1
         else:
-            if has_iface(b_ifaces, a['name']):
-                return -1
-            elif has_iface(a_ifaces, b['name']):
-                return 1
-            else:
-                return 0
+            return 0
 
     @staticmethod
     def get_depend_sort_key():
@@ -593,18 +585,17 @@ def get_basename_noext(path):
 
 
 def gen_schema_name(out_file, in_fname):
-    if out_file:
-        if out_file.name != '<stdout>':
-            return get_basename_noext(out_file.name)
-        elif in_fname != '<stdin>':
-            return get_basename_noext(in_fname)
-        else:
-            return 'generated_schema'
+    if out_file and out_file.name != '<stdout>':
+        return get_basename_noext(out_file.name)
+    elif (
+        out_file
+        and in_fname != '<stdin>'
+        or not out_file
+        and in_fname != '<stdin>'
+    ):
+        return get_basename_noext(in_fname)
     else:
-        if in_fname == '<stdin>':
-            return 'generated_schema'
-        else:
-            return get_basename_noext(in_fname)
+        return 'generated_schema'
 
 
 def cleanup_schema_name(schema_name):
@@ -619,11 +610,10 @@ def cleanup_schema_name(schema_name):
 def gen_out_file(schema_name, in_fname):
     if in_fname == '<stdin>':
         return sys.stdout
-    else:
-        wd = os.path.dirname(in_fname)
-        out_fname = os.path.join(wd, schema_name + '.py')
-        sys.stdout.write('Writing to: %s\n' % (out_fname,))
-        return open(out_fname, 'w')
+    wd = os.path.dirname(in_fname)
+    out_fname = os.path.join(wd, schema_name + '.py')
+    sys.stdout.write('Writing to: %s\n' % (out_fname,))
+    return open(out_fname, 'w')
 
 
 def load_schema(in_file):
