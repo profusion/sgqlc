@@ -1661,10 +1661,7 @@ class Selection:
                        typename=None):
         prefix = indent_string * indent
 
-        alias = ''
-        if self.__alias__:
-            alias = self.__alias__ + ': '
-
+        alias = self.__alias__ + ': ' if self.__alias__ else ''
         args = self.__field__.args.__to_graphql_input__(
             self.__args__, indent, indent_string)
 
@@ -1805,14 +1802,8 @@ class Selector:
 
         To provide an alias, use ``__alias__`` keyword argument.
         '''
-        alias = None
-        if '__alias__' in args:
-            alias = args.pop('__alias__')
-
-        typename = None
-        if '__typename__' in args:
-            typename = args.pop('__typename__')
-
+        alias = args.pop('__alias__') if '__alias__' in args else None
+        typename = args.pop('__typename__') if '__typename__' in args else None
         s = self.__selections.get(alias)
         if s is not None:
             if not args:
@@ -2469,23 +2460,20 @@ class Operation:
                        typename=None):
         prefix = indent_string * indent
         kind = self.__kind
-        name = ''
-        if self.__name:
-            name = ' ' + self.__name
-
+        name = ' ' + self.__name if self.__name else ''
         args = self.__args.__to_graphql__(indent, indent_string)
         selections = self.__selection_list.__to_graphql__(
             indent, indent_string, auto_select_depth, typename)
 
-        frags_gql = []
         fragments = self.__selection_list.__collect_fragments__()
-        for fragment in fragments.values():
-            frags_gql.append(fragment.__to_graphql__(indent, indent_string,
-                             auto_select_depth, typename))
+        frags_gql = [
+            fragment.__to_graphql__(
+                indent, indent_string, auto_select_depth, typename
+            )
+            for fragment in fragments.values()
+        ]
 
-        frags = ''
-        if frags_gql:
-            frags = '\n' + '\n'.join(frags_gql)
+        frags = '\n' + '\n'.join(frags_gql) if frags_gql else ''
         return prefix + kind + name + args + ' ' + selections + frags
 
     def __iter__(self):
@@ -2514,10 +2502,7 @@ class Operation:
 
     def __add__(self, other):
         errors = other.get('errors')
-        ex = None
-        if errors:
-            ex = GraphQLErrors(errors)
-
+        ex = GraphQLErrors(errors) if errors else None
         data = other.get('data')
         if not data:
             if not ex:  # pragma: no cover
