@@ -302,7 +302,7 @@ class CodeGen:
 
         lines.extend(paragraph_wrapper.wrap('Enumeration Choices:'))
         lines.append('')
-        for c in t['enumValues']:
+        for c in sorted(t['enumValues'], key=lambda x: x['name']):
             d = c.get('description', '')
             if d:
                 d = ': ' + d
