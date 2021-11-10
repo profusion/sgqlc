@@ -49,15 +49,15 @@ class CheckConclusionState(sgqlc.types.Enum):
     Enumeration Choices:
 
     * `ACTION_REQUIRED`: The check suite or run requires action.
-    * `TIMED_OUT`: The check suite or run has timed out.
     * `CANCELLED`: The check suite or run has been cancelled.
     * `FAILURE`: The check suite or run has failed.
-    * `SUCCESS`: The check suite or run has succeeded.
     * `NEUTRAL`: The check suite or run was neutral.
     * `SKIPPED`: The check suite or run was skipped.
-    * `STARTUP_FAILURE`: The check suite or run has failed at startup.
     * `STALE`: The check suite or run was marked stale by GitHub. Only
       GitHub can use this conclusion.
+    * `STARTUP_FAILURE`: The check suite or run has failed at startup.
+    * `SUCCESS`: The check suite or run has succeeded.
+    * `TIMED_OUT`: The check suite or run has timed out.
     '''
     __schema__ = github_schema
     __choices__ = ('ACTION_REQUIRED', 'CANCELLED', 'FAILURE', 'NEUTRAL', 'SKIPPED', 'STALE', 'STARTUP_FAILURE', 'SUCCESS', 'TIMED_OUT')
@@ -80,11 +80,11 @@ class CheckStatusState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `QUEUED`: The check suite or run has been queued.
-    * `IN_PROGRESS`: The check suite or run is in progress.
     * `COMPLETED`: The check suite or run has been completed.
-    * `WAITING`: The check suite or run is in waiting state.
+    * `IN_PROGRESS`: The check suite or run is in progress.
+    * `QUEUED`: The check suite or run has been queued.
     * `REQUESTED`: The check suite or run has been requested.
+    * `WAITING`: The check suite or run is in waiting state.
     '''
     __schema__ = github_schema
     __choices__ = ('COMPLETED', 'IN_PROGRESS', 'QUEUED', 'REQUESTED', 'WAITING')
@@ -95,11 +95,11 @@ class CollaboratorAffiliation(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `OUTSIDE`: All outside collaborators of an organization-owned
-      subject.
+    * `ALL`: All collaborators the authenticated user can see.
     * `DIRECT`: All collaborators with permissions to an organization-
       owned subject, regardless of organization membership status.
-    * `ALL`: All collaborators the authenticated user can see.
+    * `OUTSIDE`: All outside collaborators of an organization-owned
+      subject.
     '''
     __schema__ = github_schema
     __choices__ = ('ALL', 'DIRECT', 'OUTSIDE')
@@ -110,18 +110,18 @@ class CommentAuthorAssociation(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `MEMBER`: Author is a member of the organization that owns the
-      repository.
-    * `OWNER`: Author is the owner of the repository.
-    * `MANNEQUIN`: Author is a placeholder for an unclaimed user.
     * `COLLABORATOR`: Author has been invited to collaborate on the
       repository.
     * `CONTRIBUTOR`: Author has previously committed to the
       repository.
+    * `FIRST_TIMER`: Author has not previously committed to GitHub.
     * `FIRST_TIME_CONTRIBUTOR`: Author has not previously committed to
       the repository.
-    * `FIRST_TIMER`: Author has not previously committed to GitHub.
+    * `MANNEQUIN`: Author is a placeholder for an unclaimed user.
+    * `MEMBER`: Author is a member of the organization that owns the
+      repository.
     * `NONE`: Author has no association with the repository.
+    * `OWNER`: Author is the owner of the repository.
     '''
     __schema__ = github_schema
     __choices__ = ('COLLABORATOR', 'CONTRIBUTOR', 'FIRST_TIMER', 'FIRST_TIME_CONTRIBUTOR', 'MANNEQUIN', 'MEMBER', 'NONE', 'OWNER')
@@ -135,6 +135,7 @@ class CommentCannotUpdateReason(sgqlc.types.Enum):
 
     * `ARCHIVED`: Unable to create comment because repository is
       archived.
+    * `DENIED`: You cannot update this comment
     * `INSUFFICIENT_ACCESS`: You must be the author or have write
       access to this repository to update this comment.
     * `LOCKED`: Unable to create comment because issue is locked.
@@ -142,7 +143,6 @@ class CommentCannotUpdateReason(sgqlc.types.Enum):
     * `MAINTENANCE`: Repository is under maintenance.
     * `VERIFIED_EMAIL_REQUIRED`: At least one email address must be
       verified to update this comment.
-    * `DENIED`: You cannot update this comment
     '''
     __schema__ = github_schema
     __choices__ = ('ARCHIVED', 'DENIED', 'INSUFFICIENT_ACCESS', 'LOCKED', 'LOGIN_REQUIRED', 'MAINTENANCE', 'VERIFIED_EMAIL_REQUIRED')
@@ -154,10 +154,10 @@ class CommitContributionOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `OCCURRED_AT`: Order commit contributions by when they were
-      made.
     * `COMMIT_COUNT`: Order commit contributions by how many commits
       they represent.
+    * `OCCURRED_AT`: Order commit contributions by when they were
+      made.
     '''
     __schema__ = github_schema
     __choices__ = ('COMMIT_COUNT', 'OCCURRED_AT')
@@ -168,15 +168,15 @@ class ContributionLevel(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `NONE`: No contributions occurred.
     * `FIRST_QUARTILE`: Lowest 25% of days of contributions.
+    * `FOURTH_QUARTILE`: Highest 25% of days of contributions. More
+      contributions than the third quartile.
+    * `NONE`: No contributions occurred.
     * `SECOND_QUARTILE`: Second lowest 25% of days of contributions.
       More contributions than the first quartile.
     * `THIRD_QUARTILE`: Second highest 25% of days of contributions.
       More contributions than second quartile, less than the fourth
       quartile.
-    * `FOURTH_QUARTILE`: Highest 25% of days of contributions. More
-      contributions than the third quartile.
     '''
     __schema__ = github_schema
     __choices__ = ('FIRST_QUARTILE', 'FOURTH_QUARTILE', 'NONE', 'SECOND_QUARTILE', 'THIRD_QUARTILE')
@@ -191,10 +191,10 @@ class DefaultRepositoryPermissionField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `ADMIN`: Can read, write, and administrate repos by default
     * `NONE`: No access
     * `READ`: Can read repos by default
     * `WRITE`: Can read and write repos by default
-    * `ADMIN`: Can read, write, and administrate repos by default
     '''
     __schema__ = github_schema
     __choices__ = ('ADMIN', 'NONE', 'READ', 'WRITE')
@@ -223,9 +223,9 @@ class DeploymentState(sgqlc.types.Enum):
     * `ERROR`: The deployment experienced an error.
     * `FAILURE`: The deployment has failed.
     * `INACTIVE`: The deployment is inactive.
+    * `IN_PROGRESS`: The deployment is in progress.
     * `PENDING`: The deployment is pending.
     * `QUEUED`: The deployment has queued
-    * `IN_PROGRESS`: The deployment is in progress.
     * `WAITING`: The deployment is waiting.
     '''
     __schema__ = github_schema
@@ -237,13 +237,13 @@ class DeploymentStatusState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `PENDING`: The deployment is pending.
-    * `SUCCESS`: The deployment was successful.
+    * `ERROR`: The deployment experienced an error.
     * `FAILURE`: The deployment has failed.
     * `INACTIVE`: The deployment is inactive.
-    * `ERROR`: The deployment experienced an error.
-    * `QUEUED`: The deployment is queued
     * `IN_PROGRESS`: The deployment is in progress.
+    * `PENDING`: The deployment is pending.
+    * `QUEUED`: The deployment is queued
+    * `SUCCESS`: The deployment was successful.
     * `WAITING`: The deployment is waiting.
     '''
     __schema__ = github_schema
@@ -280,9 +280,9 @@ class EnterpriseAdministratorRole(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `OWNER`: Represents an owner of the enterprise account.
     * `BILLING_MANAGER`: Represents a billing manager of the
       enterprise account.
+    * `OWNER`: Represents an owner of the enterprise account.
     '''
     __schema__ = github_schema
     __choices__ = ('BILLING_MANAGER', 'OWNER')
@@ -294,16 +294,16 @@ class EnterpriseDefaultRepositoryPermissionSettingValue(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `NO_POLICY`: Organizations in the enterprise choose default
-      repository permissions for their members.
     * `ADMIN`: Organization members will be able to clone, pull, push,
       and add new collaborators to all organization repositories.
-    * `WRITE`: Organization members will be able to clone, pull, and
-      push all organization repositories.
-    * `READ`: Organization members will be able to clone and pull all
-      organization repositories.
     * `NONE`: Organization members will only be able to clone and pull
       public repositories.
+    * `NO_POLICY`: Organizations in the enterprise choose default
+      repository permissions for their members.
+    * `READ`: Organization members will be able to clone and pull all
+      organization repositories.
+    * `WRITE`: Organization members will be able to clone, pull, and
+      push all organization repositories.
     '''
     __schema__ = github_schema
     __choices__ = ('ADMIN', 'NONE', 'NO_POLICY', 'READ', 'WRITE')
@@ -314,9 +314,9 @@ class EnterpriseEnabledDisabledSettingValue(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `ENABLED`: The setting is enabled for organizations in the
-      enterprise.
     * `DISABLED`: The setting is disabled for organizations in the
+      enterprise.
+    * `ENABLED`: The setting is enabled for organizations in the
       enterprise.
     * `NO_POLICY`: There is no policy set for organizations in the
       enterprise.
@@ -344,8 +344,8 @@ class EnterpriseMemberOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `LOGIN`: Order enterprise members by login
     * `CREATED_AT`: Order enterprise members by creation time
+    * `LOGIN`: Order enterprise members by login
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'LOGIN')
@@ -357,15 +357,15 @@ class EnterpriseMembersCanCreateRepositoriesSettingValue(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `NO_POLICY`: Organization administrators choose whether to allow
-      members to create repositories.
     * `ALL`: Members will be able to create public and private
       repositories.
-    * `PUBLIC`: Members will be able to create only public
+    * `DISABLED`: Members will not be able to create public or private
       repositories.
+    * `NO_POLICY`: Organization administrators choose whether to allow
+      members to create repositories.
     * `PRIVATE`: Members will be able to create only private
       repositories.
-    * `DISABLED`: Members will not be able to create public or private
+    * `PUBLIC`: Members will be able to create only public
       repositories.
     '''
     __schema__ = github_schema
@@ -377,9 +377,9 @@ class EnterpriseMembersCanMakePurchasesSettingValue(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `ENABLED`: The setting is enabled for organizations in the
-      enterprise.
     * `DISABLED`: The setting is disabled for organizations in the
+      enterprise.
+    * `ENABLED`: The setting is enabled for organizations in the
       enterprise.
     '''
     __schema__ = github_schema
@@ -392,11 +392,11 @@ class EnterpriseServerInstallationOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `HOST_NAME`: Order Enterprise Server installations by host name
-    * `CUSTOMER_NAME`: Order Enterprise Server installations by
-      customer name
     * `CREATED_AT`: Order Enterprise Server installations by creation
       time
+    * `CUSTOMER_NAME`: Order Enterprise Server installations by
+      customer name
+    * `HOST_NAME`: Order Enterprise Server installations by host name
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'CUSTOMER_NAME', 'HOST_NAME')
@@ -446,9 +446,9 @@ class EnterpriseServerUserAccountsUploadSyncState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `FAILURE`: The synchronization of the upload failed.
     * `PENDING`: The synchronization of the upload is pending.
     * `SUCCESS`: The synchronization of the upload succeeded.
-    * `FAILURE`: The synchronization of the upload failed.
     '''
     __schema__ = github_schema
     __choices__ = ('FAILURE', 'PENDING', 'SUCCESS')
@@ -487,8 +487,8 @@ class FileViewedState(sgqlc.types.Enum):
     Enumeration Choices:
 
     * `DISMISSED`: The file has new changes since last viewed.
-    * `VIEWED`: The file has been marked as viewed.
     * `UNVIEWED`: The file has not been marked as viewed.
+    * `VIEWED`: The file has been marked as viewed.
     '''
     __schema__ = github_schema
     __choices__ = ('DISMISSED', 'UNVIEWED', 'VIEWED')
@@ -501,16 +501,16 @@ class FundingPlatform(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `GITHUB`: GitHub funding platform.
-    * `PATREON`: Patreon funding platform.
-    * `OPEN_COLLECTIVE`: Open Collective funding platform.
-    * `KO_FI`: Ko-fi funding platform.
-    * `TIDELIFT`: Tidelift funding platform.
     * `COMMUNITY_BRIDGE`: Community Bridge funding platform.
-    * `LIBERAPAY`: Liberapay funding platform.
-    * `ISSUEHUNT`: IssueHunt funding platform.
-    * `OTECHIE`: Otechie funding platform.
     * `CUSTOM`: Custom funding platform.
+    * `GITHUB`: GitHub funding platform.
+    * `ISSUEHUNT`: IssueHunt funding platform.
+    * `KO_FI`: Ko-fi funding platform.
+    * `LIBERAPAY`: Liberapay funding platform.
+    * `OPEN_COLLECTIVE`: Open Collective funding platform.
+    * `OTECHIE`: Otechie funding platform.
+    * `PATREON`: Patreon funding platform.
+    * `TIDELIFT`: Tidelift funding platform.
     '''
     __schema__ = github_schema
     __choices__ = ('COMMUNITY_BRIDGE', 'CUSTOM', 'GITHUB', 'ISSUEHUNT', 'KO_FI', 'LIBERAPAY', 'OPEN_COLLECTIVE', 'OTECHIE', 'PATREON', 'TIDELIFT')
@@ -522,8 +522,8 @@ class GistOrderField(sgqlc.types.Enum):
     Enumeration Choices:
 
     * `CREATED_AT`: Order gists by creation time
-    * `UPDATED_AT`: Order gists by update time
     * `PUSHED_AT`: Order gists by push time
+    * `UPDATED_AT`: Order gists by update time
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'PUSHED_AT', 'UPDATED_AT')
@@ -534,9 +534,9 @@ class GistPrivacy(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `ALL`: Gists that are public and secret
     * `PUBLIC`: Public
     * `SECRET`: Secret
-    * `ALL`: Gists that are public and secret
     '''
     __schema__ = github_schema
     __choices__ = ('ALL', 'PUBLIC', 'SECRET')
@@ -557,30 +557,30 @@ class GitSignatureState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `VALID`: Valid signature and verified by GitHub
-    * `INVALID`: Invalid signature
-    * `MALFORMED_SIG`: Malformed signature
-    * `UNKNOWN_KEY`: Key used for signing not known to GitHub
-    * `BAD_EMAIL`: Invalid email used for signing
-    * `UNVERIFIED_EMAIL`: Email used for signing unverified on GitHub
-    * `NO_USER`: Email used for signing not known to GitHub
-    * `UNKNOWN_SIG_TYPE`: Unknown signature type
-    * `UNSIGNED`: Unsigned
-    * `GPGVERIFY_UNAVAILABLE`: Internal error - the GPG verification
-      service is unavailable at the moment
-    * `GPGVERIFY_ERROR`: Internal error - the GPG verification service
-      misbehaved
-    * `NOT_SIGNING_KEY`: The usage flags for the key that signed this
-      don't allow signing
-    * `EXPIRED_KEY`: Signing key expired
-    * `OCSP_PENDING`: Valid signature, pending certificate revocation
-      checking
-    * `OCSP_ERROR`: Valid signature, though certificate revocation
-      check failed
     * `BAD_CERT`: The signing certificate or its chain could not be
       verified
+    * `BAD_EMAIL`: Invalid email used for signing
+    * `EXPIRED_KEY`: Signing key expired
+    * `GPGVERIFY_ERROR`: Internal error - the GPG verification service
+      misbehaved
+    * `GPGVERIFY_UNAVAILABLE`: Internal error - the GPG verification
+      service is unavailable at the moment
+    * `INVALID`: Invalid signature
+    * `MALFORMED_SIG`: Malformed signature
+    * `NOT_SIGNING_KEY`: The usage flags for the key that signed this
+      don't allow signing
+    * `NO_USER`: Email used for signing not known to GitHub
+    * `OCSP_ERROR`: Valid signature, though certificate revocation
+      check failed
+    * `OCSP_PENDING`: Valid signature, pending certificate revocation
+      checking
     * `OCSP_REVOKED`: One or more certificates in chain has been
       revoked
+    * `UNKNOWN_KEY`: Key used for signing not known to GitHub
+    * `UNKNOWN_SIG_TYPE`: Unknown signature type
+    * `UNSIGNED`: Unsigned
+    * `UNVERIFIED_EMAIL`: Email used for signing unverified on GitHub
+    * `VALID`: Valid signature and verified by GitHub
     '''
     __schema__ = github_schema
     __choices__ = ('BAD_CERT', 'BAD_EMAIL', 'EXPIRED_KEY', 'GPGVERIFY_ERROR', 'GPGVERIFY_UNAVAILABLE', 'INVALID', 'MALFORMED_SIG', 'NOT_SIGNING_KEY', 'NO_USER', 'OCSP_ERROR', 'OCSP_PENDING', 'OCSP_REVOKED', 'UNKNOWN_KEY', 'UNKNOWN_SIG_TYPE', 'UNSIGNED', 'UNVERIFIED_EMAIL', 'VALID')
@@ -606,10 +606,10 @@ class IdentityProviderConfigurationState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `ENFORCED`: Authentication with an identity provider is
-      configured and enforced.
     * `CONFIGURED`: Authentication with an identity provider is
       configured but not enforced.
+    * `ENFORCED`: Authentication with an identity provider is
+      configured and enforced.
     * `UNCONFIGURED`: Authentication with an identity provider is not
       configured.
     '''
@@ -624,8 +624,8 @@ class IpAllowListEnabledSettingValue(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `ENABLED`: The setting is enabled for the owner.
     * `DISABLED`: The setting is disabled for the owner.
+    * `ENABLED`: The setting is enabled for the owner.
     '''
     __schema__ = github_schema
     __choices__ = ('DISABLED', 'ENABLED')
@@ -637,9 +637,9 @@ class IpAllowListEntryOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `CREATED_AT`: Order IP allow list entries by creation time.
     * `ALLOW_LIST_VALUE`: Order IP allow list entries by the allow
       list value.
+    * `CREATED_AT`: Order IP allow list entries by creation time.
     '''
     __schema__ = github_schema
     __choices__ = ('ALLOW_LIST_VALUE', 'CREATED_AT')
@@ -661,9 +661,9 @@ class IssueOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `COMMENTS`: Order issues by comment count
     * `CREATED_AT`: Order issues by creation time
     * `UPDATED_AT`: Order issues by update time
-    * `COMMENTS`: Order issues by comment count
     '''
     __schema__ = github_schema
     __choices__ = ('COMMENTS', 'CREATED_AT', 'UPDATED_AT')
@@ -674,8 +674,8 @@ class IssueState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `OPEN`: An issue that is still open
     * `CLOSED`: An issue that has been closed
+    * `OPEN`: An issue that is still open
     '''
     __schema__ = github_schema
     __choices__ = ('CLOSED', 'OPEN')
@@ -686,9 +686,6 @@ class IssueTimelineItemsItemType(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `ISSUE_COMMENT`: Represents a comment on an Issue.
-    * `CROSS_REFERENCED_EVENT`: Represents a mention made by one issue
-      or pull request to another.
     * `ADDED_TO_PROJECT_EVENT`: Represents a 'added_to_project' event
       on a given issue or pull request.
     * `ASSIGNED_EVENT`: Represents an 'assigned' event on any
@@ -701,10 +698,13 @@ class IssueTimelineItemsItemType(sgqlc.types.Enum):
     * `CONVERTED_NOTE_TO_ISSUE_EVENT`: Represents a
       'converted_note_to_issue' event on a given issue or pull
       request.
+    * `CROSS_REFERENCED_EVENT`: Represents a mention made by one issue
+      or pull request to another.
     * `DEMILESTONED_EVENT`: Represents a 'demilestoned' event on a
       given issue or pull request.
     * `DISCONNECTED_EVENT`: Represents a 'disconnected' event on a
       given issue or pull request.
+    * `ISSUE_COMMENT`: Represents a comment on an Issue.
     * `LABELED_EVENT`: Represents a 'labeled' event on a given issue
       or pull request.
     * `LOCKED_EVENT`: Represents a 'locked' event on a given issue or
@@ -738,14 +738,14 @@ class IssueTimelineItemsItemType(sgqlc.types.Enum):
       issue or pull request.
     * `UNLOCKED_EVENT`: Represents an 'unlocked' event on a given
       issue or pull request.
-    * `USER_BLOCKED_EVENT`: Represents a 'user_blocked' event on a
-      given user.
     * `UNMARKED_AS_DUPLICATE_EVENT`: Represents an
       'unmarked_as_duplicate' event on a given issue or pull request.
     * `UNPINNED_EVENT`: Represents an 'unpinned' event on a given
       issue or pull request.
     * `UNSUBSCRIBED_EVENT`: Represents an 'unsubscribed' event on a
       given `Subscribable`.
+    * `USER_BLOCKED_EVENT`: Represents a 'user_blocked' event on a
+      given user.
     '''
     __schema__ = github_schema
     __choices__ = ('ADDED_TO_PROJECT_EVENT', 'ASSIGNED_EVENT', 'CLOSED_EVENT', 'COMMENT_DELETED_EVENT', 'CONNECTED_EVENT', 'CONVERTED_NOTE_TO_ISSUE_EVENT', 'CROSS_REFERENCED_EVENT', 'DEMILESTONED_EVENT', 'DISCONNECTED_EVENT', 'ISSUE_COMMENT', 'LABELED_EVENT', 'LOCKED_EVENT', 'MARKED_AS_DUPLICATE_EVENT', 'MENTIONED_EVENT', 'MILESTONED_EVENT', 'MOVED_COLUMNS_IN_PROJECT_EVENT', 'PINNED_EVENT', 'REFERENCED_EVENT', 'REMOVED_FROM_PROJECT_EVENT', 'RENAMED_TITLE_EVENT', 'REOPENED_EVENT', 'SUBSCRIBED_EVENT', 'TRANSFERRED_EVENT', 'UNASSIGNED_EVENT', 'UNLABELED_EVENT', 'UNLOCKED_EVENT', 'UNMARKED_AS_DUPLICATE_EVENT', 'UNPINNED_EVENT', 'UNSUBSCRIBED_EVENT', 'USER_BLOCKED_EVENT')
@@ -756,8 +756,8 @@ class LabelOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `NAME`: Order labels by name
     * `CREATED_AT`: Order labels by creation time
+    * `NAME`: Order labels by name
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'NAME')
@@ -782,12 +782,12 @@ class LockReason(sgqlc.types.Enum):
 
     * `OFF_TOPIC`: The issue or pull request was locked because the
       conversation was off-topic.
-    * `TOO_HEATED`: The issue or pull request was locked because the
-      conversation was too heated.
     * `RESOLVED`: The issue or pull request was locked because the
       conversation was resolved.
     * `SPAM`: The issue or pull request was locked because the
       conversation was spam.
+    * `TOO_HEATED`: The issue or pull request was locked because the
+      conversation was too heated.
     '''
     __schema__ = github_schema
     __choices__ = ('OFF_TOPIC', 'RESOLVED', 'SPAM', 'TOO_HEATED')
@@ -798,9 +798,9 @@ class MergeableState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `MERGEABLE`: The pull request can be merged.
     * `CONFLICTING`: The pull request cannot be merged due to merge
       conflicts.
+    * `MERGEABLE`: The pull request can be merged.
     * `UNKNOWN`: The mergeability of the pull request is still being
       calculated.
     '''
@@ -813,10 +813,10 @@ class MilestoneOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `DUE_DATE`: Order milestones by when they are due.
     * `CREATED_AT`: Order milestones by when they were created.
-    * `UPDATED_AT`: Order milestones by when they were last updated.
+    * `DUE_DATE`: Order milestones by when they are due.
     * `NUMBER`: Order milestones by their number.
+    * `UPDATED_AT`: Order milestones by when they were last updated.
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'DUE_DATE', 'NUMBER', 'UPDATED_AT')
@@ -827,8 +827,8 @@ class MilestoneState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `OPEN`: A milestone that is still open.
     * `CLOSED`: A milestone that has been closed.
+    * `OPEN`: A milestone that is still open.
     '''
     __schema__ = github_schema
     __choices__ = ('CLOSED', 'OPEN')
@@ -839,8 +839,8 @@ class NotificationRestrictionSettingValue(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `ENABLED`: The setting is enabled for the owner.
     * `DISABLED`: The setting is disabled for the owner.
+    * `ENABLED`: The setting is enabled for the owner.
     '''
     __schema__ = github_schema
     __choices__ = ('DISABLED', 'ENABLED')
@@ -853,10 +853,10 @@ class OauthApplicationCreateAuditEntryState(sgqlc.types.Enum):
 
     * `ACTIVE`: The OAuth Application was active and allowed to have
       OAuth Accesses.
-    * `SUSPENDED`: The OAuth Application was suspended from generating
-      OAuth Accesses due to abuse or security concerns.
     * `PENDING_DELETION`: The OAuth Application was in the process of
       being deleted.
+    * `SUSPENDED`: The OAuth Application was suspended from generating
+      OAuth Accesses due to abuse or security concerns.
     '''
     __schema__ = github_schema
     __choices__ = ('ACTIVE', 'PENDING_DELETION', 'SUSPENDED')
@@ -900,9 +900,9 @@ class OrgAddMemberAuditEntryPermission(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `READ`: Can read and clone repositories.
     * `ADMIN`: Can read, clone, push, and add collaborators to
       repositories.
+    * `READ`: Can read and clone repositories.
     '''
     __schema__ = github_schema
     __choices__ = ('ADMIN', 'READ')
@@ -913,11 +913,11 @@ class OrgCreateAuditEntryBillingPlan(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `FREE`: Free Plan
     * `BUSINESS`: Team Plan
     * `BUSINESS_PLUS`: Enterprise Cloud Plan
-    * `UNLIMITED`: Legacy Unlimited Plan
+    * `FREE`: Free Plan
     * `TIERED_PER_SEAT`: Tiered Per Seat Plan
+    * `UNLIMITED`: Legacy Unlimited Plan
     '''
     __schema__ = github_schema
     __choices__ = ('BUSINESS', 'BUSINESS_PLUS', 'FREE', 'TIERED_PER_SEAT', 'UNLIMITED')
@@ -928,12 +928,12 @@ class OrgRemoveBillingManagerAuditEntryReason(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE`: The organization
-      required 2FA of its billing managers and this user did not have
-      2FA enabled.
     * `SAML_EXTERNAL_IDENTITY_MISSING`: SAML external identity missing
     * `SAML_SSO_ENFORCEMENT_REQUIRES_EXTERNAL_IDENTITY`: SAML SSO
       enforcement requires an external identity
+    * `TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE`: The organization
+      required 2FA of its billing managers and this user did not have
+      2FA enabled.
     '''
     __schema__ = github_schema
     __choices__ = ('SAML_EXTERNAL_IDENTITY_MISSING', 'SAML_SSO_ENFORCEMENT_REQUIRES_EXTERNAL_IDENTITY', 'TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE')
@@ -944,8 +944,6 @@ class OrgRemoveMemberAuditEntryMembershipType(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `DIRECT_MEMBER`: A direct member is a user that is a member of
-      the Organization.
     * `ADMIN`: Organization administrators have full access and can
       change several settings, including the names of repositories
       that belong to the Organization and Owners team membership. In
@@ -954,13 +952,15 @@ class OrgRemoveMemberAuditEntryMembershipType(sgqlc.types.Enum):
     * `BILLING_MANAGER`: A billing manager is a user who manages the
       billing settings for the Organization, such as updating payment
       information.
-    * `UNAFFILIATED`: An unaffiliated collaborator is a person who is
-      not a member of the Organization and does not have access to any
-      repositories in the Organization.
+    * `DIRECT_MEMBER`: A direct member is a user that is a member of
+      the Organization.
     * `OUTSIDE_COLLABORATOR`: An outside collaborator is a person who
       isn't explicitly a member of the Organization, but who has Read,
       Write, or Admin permissions to one or more repositories in the
       organization.
+    * `UNAFFILIATED`: An unaffiliated collaborator is a person who is
+      not a member of the Organization and does not have access to any
+      repositories in the Organization.
     '''
     __schema__ = github_schema
     __choices__ = ('ADMIN', 'BILLING_MANAGER', 'DIRECT_MEMBER', 'OUTSIDE_COLLABORATOR', 'UNAFFILIATED')
@@ -971,15 +971,15 @@ class OrgRemoveMemberAuditEntryReason(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE`: The organization
-      required 2FA of its billing managers and this user did not have
-      2FA enabled.
     * `SAML_EXTERNAL_IDENTITY_MISSING`: SAML external identity missing
     * `SAML_SSO_ENFORCEMENT_REQUIRES_EXTERNAL_IDENTITY`: SAML SSO
       enforcement requires an external identity
-    * `USER_ACCOUNT_DELETED`: User account has been deleted
     * `TWO_FACTOR_ACCOUNT_RECOVERY`: User was removed from
       organization during account recovery
+    * `TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE`: The organization
+      required 2FA of its billing managers and this user did not have
+      2FA enabled.
+    * `USER_ACCOUNT_DELETED`: User account has been deleted
     '''
     __schema__ = github_schema
     __choices__ = ('SAML_EXTERNAL_IDENTITY_MISSING', 'SAML_SSO_ENFORCEMENT_REQUIRES_EXTERNAL_IDENTITY', 'TWO_FACTOR_ACCOUNT_RECOVERY', 'TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE', 'USER_ACCOUNT_DELETED')
@@ -990,6 +990,9 @@ class OrgRemoveOutsideCollaboratorAuditEntryMembershipType(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `BILLING_MANAGER`: A billing manager is a user who manages the
+      billing settings for the Organization, such as updating payment
+      information.
     * `OUTSIDE_COLLABORATOR`: An outside collaborator is a person who
       isn't explicitly a member of the Organization, but who has Read,
       Write, or Admin permissions to one or more repositories in the
@@ -997,9 +1000,6 @@ class OrgRemoveOutsideCollaboratorAuditEntryMembershipType(sgqlc.types.Enum):
     * `UNAFFILIATED`: An unaffiliated collaborator is a person who is
       not a member of the Organization and does not have access to any
       repositories in the organization.
-    * `BILLING_MANAGER`: A billing manager is a user who manages the
-      billing settings for the Organization, such as updating payment
-      information.
     '''
     __schema__ = github_schema
     __choices__ = ('BILLING_MANAGER', 'OUTSIDE_COLLABORATOR', 'UNAFFILIATED')
@@ -1011,10 +1011,10 @@ class OrgRemoveOutsideCollaboratorAuditEntryReason(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `SAML_EXTERNAL_IDENTITY_MISSING`: SAML external identity missing
     * `TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE`: The organization
       required 2FA of its billing managers and this user did not have
       2FA enabled.
-    * `SAML_EXTERNAL_IDENTITY_MISSING`: SAML external identity missing
     '''
     __schema__ = github_schema
     __choices__ = ('SAML_EXTERNAL_IDENTITY_MISSING', 'TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE')
@@ -1025,11 +1025,11 @@ class OrgUpdateDefaultRepositoryPermissionAuditEntryPermission(sgqlc.types.Enum)
 
     Enumeration Choices:
 
-    * `READ`: Can read and clone repositories.
-    * `WRITE`: Can read, clone and push to repositories.
     * `ADMIN`: Can read, clone, push, and add collaborators to
       repositories.
     * `NONE`: No default permission value.
+    * `READ`: Can read and clone repositories.
+    * `WRITE`: Can read, clone and push to repositories.
     '''
     __schema__ = github_schema
     __choices__ = ('ADMIN', 'NONE', 'READ', 'WRITE')
@@ -1040,9 +1040,9 @@ class OrgUpdateMemberAuditEntryPermission(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `READ`: Can read and clone repositories.
     * `ADMIN`: Can read, clone, push, and add collaborators to
       repositories.
+    * `READ`: Can read and clone repositories.
     '''
     __schema__ = github_schema
     __choices__ = ('ADMIN', 'READ')
@@ -1056,18 +1056,18 @@ class OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility(sgqlc.type
 
     * `ALL`: All organization members are restricted from creating any
       repositories.
-    * `PUBLIC`: All organization members are restricted from creating
-      public repositories.
+    * `INTERNAL`: All organization members are restricted from
+      creating internal repositories.
     * `NONE`: All organization members are allowed to create any
       repositories.
     * `PRIVATE`: All organization members are restricted from creating
       private repositories.
-    * `INTERNAL`: All organization members are restricted from
-      creating internal repositories.
-    * `PUBLIC_INTERNAL`: All organization members are restricted from
-      creating public or internal repositories.
     * `PRIVATE_INTERNAL`: All organization members are restricted from
       creating private or internal repositories.
+    * `PUBLIC`: All organization members are restricted from creating
+      public repositories.
+    * `PUBLIC_INTERNAL`: All organization members are restricted from
+      creating public or internal repositories.
     * `PUBLIC_PRIVATE`: All organization members are restricted from
       creating public or private repositories.
     '''
@@ -1080,11 +1080,11 @@ class OrganizationInvitationRole(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `DIRECT_MEMBER`: The user is invited to be a direct member of
-      the organization.
     * `ADMIN`: The user is invited to be an admin of the organization.
     * `BILLING_MANAGER`: The user is invited to be a billing manager
       of the organization.
+    * `DIRECT_MEMBER`: The user is invited to be a direct member of
+      the organization.
     * `REINSTATE`: The user's previous role will be reinstated.
     '''
     __schema__ = github_schema
@@ -1096,8 +1096,8 @@ class OrganizationInvitationType(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `USER`: The invitation was to an existing user.
     * `EMAIL`: The invitation was to an email address.
+    * `USER`: The invitation was to an existing user.
     '''
     __schema__ = github_schema
     __choices__ = ('EMAIL', 'USER')
@@ -1108,8 +1108,8 @@ class OrganizationMemberRole(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `MEMBER`: The user is a member of the organization.
     * `ADMIN`: The user is an administrator of the organization.
+    * `MEMBER`: The user is a member of the organization.
     '''
     __schema__ = github_schema
     __choices__ = ('ADMIN', 'MEMBER')
@@ -1123,9 +1123,9 @@ class OrganizationMembersCanCreateRepositoriesSettingValue(sgqlc.types.Enum):
 
     * `ALL`: Members will be able to create public and private
       repositories.
-    * `PRIVATE`: Members will be able to create only private
-      repositories.
     * `DISABLED`: Members will not be able to create public or private
+      repositories.
+    * `PRIVATE`: Members will be able to create only private
       repositories.
     '''
     __schema__ = github_schema
@@ -1171,13 +1171,13 @@ class PackageType(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `NPM`: An npm package.
-    * `RUBYGEMS`: A rubygems package.
-    * `MAVEN`: A maven package.
-    * `DOCKER`: A docker image.
     * `DEBIAN`: A debian package.
+    * `DOCKER`: A docker image.
+    * `MAVEN`: A maven package.
+    * `NPM`: An npm package.
     * `NUGET`: A nuget package.
     * `PYPI`: A python package.
+    * `RUBYGEMS`: A rubygems package.
     '''
     __schema__ = github_schema
     __choices__ = ('DEBIAN', 'DOCKER', 'MAVEN', 'NPM', 'NUGET', 'PYPI', 'RUBYGEMS')
@@ -1200,14 +1200,14 @@ class PinnableItemType(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `REPOSITORY`: A repository.
     * `GIST`: A gist.
     * `ISSUE`: An issue.
+    * `ORGANIZATION`: An organization.
     * `PROJECT`: A project.
     * `PULL_REQUEST`: A pull request.
-    * `USER`: A user.
-    * `ORGANIZATION`: An organization.
+    * `REPOSITORY`: A repository.
     * `TEAM`: A team.
+    * `USER`: A user.
     '''
     __schema__ = github_schema
     __choices__ = ('GIST', 'ISSUE', 'ORGANIZATION', 'PROJECT', 'PULL_REQUEST', 'REPOSITORY', 'TEAM', 'USER')
@@ -1248,10 +1248,10 @@ class ProjectColumnPurpose(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `TODO`: The column contains cards still to be worked on
+    * `DONE`: The column contains cards which are complete
     * `IN_PROGRESS`: The column contains cards which are currently
       being worked on
-    * `DONE`: The column contains cards which are complete
+    * `TODO`: The column contains cards still to be worked on
     '''
     __schema__ = github_schema
     __choices__ = ('DONE', 'IN_PROGRESS', 'TODO')
@@ -1263,8 +1263,8 @@ class ProjectOrderField(sgqlc.types.Enum):
     Enumeration Choices:
 
     * `CREATED_AT`: Order projects by creation time
-    * `UPDATED_AT`: Order projects by update time
     * `NAME`: Order projects by name
+    * `UPDATED_AT`: Order projects by update time
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'NAME', 'UPDATED_AT')
@@ -1275,8 +1275,8 @@ class ProjectState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `OPEN`: The project is open.
     * `CLOSED`: The project is closed.
+    * `OPEN`: The project is open.
     '''
     __schema__ = github_schema
     __choices__ = ('CLOSED', 'OPEN')
@@ -1287,13 +1287,13 @@ class ProjectTemplate(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `BASIC_KANBAN`: Create a board with columns for To do, In
-      progress and Done.
     * `AUTOMATED_KANBAN_V2`: Create a board with v2 triggers to
       automatically move cards across To do, In progress and Done
       columns.
     * `AUTOMATED_REVIEWS_KANBAN`: Create a board with triggers to
       automatically move cards across columns with review automation.
+    * `BASIC_KANBAN`: Create a board with columns for To do, In
+      progress and Done.
     * `BUG_TRIAGE`: Create a board to triage and prioritize bugs with
       To do, priority, and Done columns.
     '''
@@ -1309,10 +1309,10 @@ class PullRequestMergeMethod(sgqlc.types.Enum):
 
     * `MERGE`: Add all commits from the head branch to the base branch
       with a merge commit.
-    * `SQUASH`: Combine all commits from the head branch into a single
-      commit in the base branch.
     * `REBASE`: Add all commits from the head branch onto the base
       branch individually.
+    * `SQUASH`: Combine all commits from the head branch into a single
+      commit in the base branch.
     '''
     __schema__ = github_schema
     __choices__ = ('MERGE', 'REBASE', 'SQUASH')
@@ -1347,9 +1347,9 @@ class PullRequestReviewDecision(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `APPROVED`: The pull request has received an approving review.
     * `CHANGES_REQUESTED`: Changes have been requested on the pull
       request.
-    * `APPROVED`: The pull request has received an approving review.
     * `REVIEW_REQUIRED`: A review is required before the pull request
       can be merged.
     '''
@@ -1362,11 +1362,11 @@ class PullRequestReviewEvent(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `COMMENT`: Submit general feedback without explicit approval.
     * `APPROVE`: Submit feedback and approve merging these changes.
+    * `COMMENT`: Submit general feedback without explicit approval.
+    * `DISMISS`: Dismiss review so it now longer effects merging.
     * `REQUEST_CHANGES`: Submit feedback that must be addressed before
       merging.
-    * `DISMISS`: Dismiss review so it now longer effects merging.
     '''
     __schema__ = github_schema
     __choices__ = ('APPROVE', 'COMMENT', 'DISMISS', 'REQUEST_CHANGES')
@@ -1377,12 +1377,12 @@ class PullRequestReviewState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `PENDING`: A review that has not yet been submitted.
-    * `COMMENTED`: An informational review.
     * `APPROVED`: A review allowing the pull request to merge.
     * `CHANGES_REQUESTED`: A review blocking the pull request from
       merging.
+    * `COMMENTED`: An informational review.
     * `DISMISSED`: A review that has been dismissed.
+    * `PENDING`: A review that has not yet been submitted.
     '''
     __schema__ = github_schema
     __choices__ = ('APPROVED', 'CHANGES_REQUESTED', 'COMMENTED', 'DISMISSED', 'PENDING')
@@ -1393,10 +1393,10 @@ class PullRequestState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `OPEN`: A pull request that is still open.
     * `CLOSED`: A pull request that has been closed without being
       merged.
     * `MERGED`: A pull request that has been closed by being merged.
+    * `OPEN`: A pull request that is still open.
     '''
     __schema__ = github_schema
     __choices__ = ('CLOSED', 'MERGED', 'OPEN')
@@ -1407,16 +1407,10 @@ class PullRequestTimelineItemsItemType(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `PULL_REQUEST_COMMIT`: Represents a Git commit part of a pull
-      request.
-    * `PULL_REQUEST_COMMIT_COMMENT_THREAD`: Represents a commit
-      comment thread part of a pull request.
-    * `PULL_REQUEST_REVIEW`: A review object for a given pull request.
-    * `PULL_REQUEST_REVIEW_THREAD`: A threaded list of comments for a
-      given pull request.
-    * `PULL_REQUEST_REVISION_MARKER`: Represents the latest point in
-      the pull request timeline for which the viewer has seen the pull
-      request's commits.
+    * `ADDED_TO_PROJECT_EVENT`: Represents a 'added_to_project' event
+      on a given issue or pull request.
+    * `ASSIGNED_EVENT`: Represents an 'assigned' event on any
+      assignable object.
     * `AUTOMATIC_BASE_CHANGE_FAILED_EVENT`: Represents a
       'automatic_base_change_failed' event on a given pull request.
     * `AUTOMATIC_BASE_CHANGE_SUCCEEDED_EVENT`: Represents a
@@ -1431,39 +1425,10 @@ class PullRequestTimelineItemsItemType(sgqlc.types.Enum):
       event on a given pull request.
     * `BASE_REF_CHANGED_EVENT`: Represents a 'base_ref_changed' event
       on a given issue or pull request.
-    * `BASE_REF_FORCE_PUSHED_EVENT`: Represents a
-      'base_ref_force_pushed' event on a given pull request.
     * `BASE_REF_DELETED_EVENT`: Represents a 'base_ref_deleted' event
       on a given pull request.
-    * `DEPLOYED_EVENT`: Represents a 'deployed' event on a given pull
-      request.
-    * `DEPLOYMENT_ENVIRONMENT_CHANGED_EVENT`: Represents a
-      'deployment_environment_changed' event on a given pull request.
-    * `HEAD_REF_DELETED_EVENT`: Represents a 'head_ref_deleted' event
-      on a given pull request.
-    * `HEAD_REF_FORCE_PUSHED_EVENT`: Represents a
-      'head_ref_force_pushed' event on a given pull request.
-    * `HEAD_REF_RESTORED_EVENT`: Represents a 'head_ref_restored'
-      event on a given pull request.
-    * `MERGED_EVENT`: Represents a 'merged' event on a given pull
-      request.
-    * `REVIEW_DISMISSED_EVENT`: Represents a 'review_dismissed' event
-      on a given issue or pull request.
-    * `REVIEW_REQUESTED_EVENT`: Represents an 'review_requested' event
-      on a given pull request.
-    * `REVIEW_REQUEST_REMOVED_EVENT`: Represents an
-      'review_request_removed' event on a given pull request.
-    * `READY_FOR_REVIEW_EVENT`: Represents a 'ready_for_review' event
-      on a given pull request.
-    * `CONVERT_TO_DRAFT_EVENT`: Represents a 'convert_to_draft' event
-      on a given pull request.
-    * `ISSUE_COMMENT`: Represents a comment on an Issue.
-    * `CROSS_REFERENCED_EVENT`: Represents a mention made by one issue
-      or pull request to another.
-    * `ADDED_TO_PROJECT_EVENT`: Represents a 'added_to_project' event
-      on a given issue or pull request.
-    * `ASSIGNED_EVENT`: Represents an 'assigned' event on any
-      assignable object.
+    * `BASE_REF_FORCE_PUSHED_EVENT`: Represents a
+      'base_ref_force_pushed' event on a given pull request.
     * `CLOSED_EVENT`: Represents a 'closed' event on any `Closable`.
     * `COMMENT_DELETED_EVENT`: Represents a 'comment_deleted' event on
       a given issue or pull request.
@@ -1472,10 +1437,25 @@ class PullRequestTimelineItemsItemType(sgqlc.types.Enum):
     * `CONVERTED_NOTE_TO_ISSUE_EVENT`: Represents a
       'converted_note_to_issue' event on a given issue or pull
       request.
+    * `CONVERT_TO_DRAFT_EVENT`: Represents a 'convert_to_draft' event
+      on a given pull request.
+    * `CROSS_REFERENCED_EVENT`: Represents a mention made by one issue
+      or pull request to another.
     * `DEMILESTONED_EVENT`: Represents a 'demilestoned' event on a
       given issue or pull request.
+    * `DEPLOYED_EVENT`: Represents a 'deployed' event on a given pull
+      request.
+    * `DEPLOYMENT_ENVIRONMENT_CHANGED_EVENT`: Represents a
+      'deployment_environment_changed' event on a given pull request.
     * `DISCONNECTED_EVENT`: Represents a 'disconnected' event on a
       given issue or pull request.
+    * `HEAD_REF_DELETED_EVENT`: Represents a 'head_ref_deleted' event
+      on a given pull request.
+    * `HEAD_REF_FORCE_PUSHED_EVENT`: Represents a
+      'head_ref_force_pushed' event on a given pull request.
+    * `HEAD_REF_RESTORED_EVENT`: Represents a 'head_ref_restored'
+      event on a given pull request.
+    * `ISSUE_COMMENT`: Represents a comment on an Issue.
     * `LABELED_EVENT`: Represents a 'labeled' event on a given issue
       or pull request.
     * `LOCKED_EVENT`: Represents a 'locked' event on a given issue or
@@ -1484,6 +1464,8 @@ class PullRequestTimelineItemsItemType(sgqlc.types.Enum):
       event on a given issue or pull request.
     * `MENTIONED_EVENT`: Represents a 'mentioned' event on a given
       issue or pull request.
+    * `MERGED_EVENT`: Represents a 'merged' event on a given pull
+      request.
     * `MILESTONED_EVENT`: Represents a 'milestoned' event on a given
       issue or pull request.
     * `MOVED_COLUMNS_IN_PROJECT_EVENT`: Represents a
@@ -1491,6 +1473,18 @@ class PullRequestTimelineItemsItemType(sgqlc.types.Enum):
       request.
     * `PINNED_EVENT`: Represents a 'pinned' event on a given issue or
       pull request.
+    * `PULL_REQUEST_COMMIT`: Represents a Git commit part of a pull
+      request.
+    * `PULL_REQUEST_COMMIT_COMMENT_THREAD`: Represents a commit
+      comment thread part of a pull request.
+    * `PULL_REQUEST_REVIEW`: A review object for a given pull request.
+    * `PULL_REQUEST_REVIEW_THREAD`: A threaded list of comments for a
+      given pull request.
+    * `PULL_REQUEST_REVISION_MARKER`: Represents the latest point in
+      the pull request timeline for which the viewer has seen the pull
+      request's commits.
+    * `READY_FOR_REVIEW_EVENT`: Represents a 'ready_for_review' event
+      on a given pull request.
     * `REFERENCED_EVENT`: Represents a 'referenced' event on a given
       `ReferencedSubject`.
     * `REMOVED_FROM_PROJECT_EVENT`: Represents a
@@ -1499,6 +1493,12 @@ class PullRequestTimelineItemsItemType(sgqlc.types.Enum):
       issue or pull request
     * `REOPENED_EVENT`: Represents a 'reopened' event on any
       `Closable`.
+    * `REVIEW_DISMISSED_EVENT`: Represents a 'review_dismissed' event
+      on a given issue or pull request.
+    * `REVIEW_REQUESTED_EVENT`: Represents an 'review_requested' event
+      on a given pull request.
+    * `REVIEW_REQUEST_REMOVED_EVENT`: Represents an
+      'review_request_removed' event on a given pull request.
     * `SUBSCRIBED_EVENT`: Represents a 'subscribed' event on a given
       `Subscribable`.
     * `TRANSFERRED_EVENT`: Represents a 'transferred' event on a given
@@ -1509,14 +1509,14 @@ class PullRequestTimelineItemsItemType(sgqlc.types.Enum):
       issue or pull request.
     * `UNLOCKED_EVENT`: Represents an 'unlocked' event on a given
       issue or pull request.
-    * `USER_BLOCKED_EVENT`: Represents a 'user_blocked' event on a
-      given user.
     * `UNMARKED_AS_DUPLICATE_EVENT`: Represents an
       'unmarked_as_duplicate' event on a given issue or pull request.
     * `UNPINNED_EVENT`: Represents an 'unpinned' event on a given
       issue or pull request.
     * `UNSUBSCRIBED_EVENT`: Represents an 'unsubscribed' event on a
       given `Subscribable`.
+    * `USER_BLOCKED_EVENT`: Represents a 'user_blocked' event on a
+      given user.
     '''
     __schema__ = github_schema
     __choices__ = ('ADDED_TO_PROJECT_EVENT', 'ASSIGNED_EVENT', 'AUTOMATIC_BASE_CHANGE_FAILED_EVENT', 'AUTOMATIC_BASE_CHANGE_SUCCEEDED_EVENT', 'AUTO_MERGE_DISABLED_EVENT', 'AUTO_MERGE_ENABLED_EVENT', 'AUTO_REBASE_ENABLED_EVENT', 'AUTO_SQUASH_ENABLED_EVENT', 'BASE_REF_CHANGED_EVENT', 'BASE_REF_DELETED_EVENT', 'BASE_REF_FORCE_PUSHED_EVENT', 'CLOSED_EVENT', 'COMMENT_DELETED_EVENT', 'CONNECTED_EVENT', 'CONVERTED_NOTE_TO_ISSUE_EVENT', 'CONVERT_TO_DRAFT_EVENT', 'CROSS_REFERENCED_EVENT', 'DEMILESTONED_EVENT', 'DEPLOYED_EVENT', 'DEPLOYMENT_ENVIRONMENT_CHANGED_EVENT', 'DISCONNECTED_EVENT', 'HEAD_REF_DELETED_EVENT', 'HEAD_REF_FORCE_PUSHED_EVENT', 'HEAD_REF_RESTORED_EVENT', 'ISSUE_COMMENT', 'LABELED_EVENT', 'LOCKED_EVENT', 'MARKED_AS_DUPLICATE_EVENT', 'MENTIONED_EVENT', 'MERGED_EVENT', 'MILESTONED_EVENT', 'MOVED_COLUMNS_IN_PROJECT_EVENT', 'PINNED_EVENT', 'PULL_REQUEST_COMMIT', 'PULL_REQUEST_COMMIT_COMMENT_THREAD', 'PULL_REQUEST_REVIEW', 'PULL_REQUEST_REVIEW_THREAD', 'PULL_REQUEST_REVISION_MARKER', 'READY_FOR_REVIEW_EVENT', 'REFERENCED_EVENT', 'REMOVED_FROM_PROJECT_EVENT', 'RENAMED_TITLE_EVENT', 'REOPENED_EVENT', 'REVIEW_DISMISSED_EVENT', 'REVIEW_REQUESTED_EVENT', 'REVIEW_REQUEST_REMOVED_EVENT', 'SUBSCRIBED_EVENT', 'TRANSFERRED_EVENT', 'UNASSIGNED_EVENT', 'UNLABELED_EVENT', 'UNLOCKED_EVENT', 'UNMARKED_AS_DUPLICATE_EVENT', 'UNPINNED_EVENT', 'UNSUBSCRIBED_EVENT', 'USER_BLOCKED_EVENT')
@@ -1527,9 +1527,9 @@ class PullRequestUpdateState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `OPEN`: A pull request that is still open.
     * `CLOSED`: A pull request that has been closed without being
       merged.
+    * `OPEN`: A pull request that is still open.
     '''
     __schema__ = github_schema
     __choices__ = ('CLOSED', 'OPEN')
@@ -1540,14 +1540,14 @@ class ReactionContent(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `THUMBS_UP`: Represents the `:+1:` emoji.
-    * `THUMBS_DOWN`: Represents the `:-1:` emoji.
-    * `LAUGH`: Represents the `:laugh:` emoji.
-    * `HOORAY`: Represents the `:hooray:` emoji.
     * `CONFUSED`: Represents the `:confused:` emoji.
-    * `HEART`: Represents the `:heart:` emoji.
-    * `ROCKET`: Represents the `:rocket:` emoji.
     * `EYES`: Represents the `:eyes:` emoji.
+    * `HEART`: Represents the `:heart:` emoji.
+    * `HOORAY`: Represents the `:hooray:` emoji.
+    * `LAUGH`: Represents the `:laugh:` emoji.
+    * `ROCKET`: Represents the `:rocket:` emoji.
+    * `THUMBS_DOWN`: Represents the `:-1:` emoji.
+    * `THUMBS_UP`: Represents the `:+1:` emoji.
     '''
     __schema__ = github_schema
     __choices__ = ('CONFUSED', 'EYES', 'HEART', 'HOORAY', 'LAUGH', 'ROCKET', 'THUMBS_DOWN', 'THUMBS_UP')
@@ -1570,9 +1570,9 @@ class RefOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `ALPHABETICAL`: Order refs by their alphanumeric name
     * `TAG_COMMIT_DATE`: Order refs by underlying commit date if the
       ref prefix is refs/tags/
-    * `ALPHABETICAL`: Order refs by their alphanumeric name
     '''
     __schema__ = github_schema
     __choices__ = ('ALPHABETICAL', 'TAG_COMMIT_DATE')
@@ -1701,12 +1701,12 @@ class ReportedContentClassifiers(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `SPAM`: A spammy piece of content
     * `ABUSE`: An abusive or harassing piece of content
+    * `DUPLICATE`: A duplicated piece of content
     * `OFF_TOPIC`: An irrelevant piece of content
     * `OUTDATED`: An outdated piece of content
-    * `DUPLICATE`: A duplicated piece of content
     * `RESOLVED`: The content has been resolved
+    * `SPAM`: A spammy piece of content
     '''
     __schema__ = github_schema
     __choices__ = ('ABUSE', 'DUPLICATE', 'OFF_TOPIC', 'OUTDATED', 'RESOLVED', 'SPAM')
@@ -1717,12 +1717,12 @@ class RepositoryAffiliation(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `OWNER`: Repositories that are owned by the authenticated user.
     * `COLLABORATOR`: Repositories that the user has been added to as
       a collaborator.
     * `ORGANIZATION_MEMBER`: Repositories that the user has access to
       through being a member of an organization. This includes every
       repository on every team that the user is on.
+    * `OWNER`: Repositories that are owned by the authenticated user.
     '''
     __schema__ = github_schema
     __choices__ = ('COLLABORATOR', 'ORGANIZATION_MEMBER', 'OWNER')
@@ -1736,8 +1736,8 @@ class RepositoryContributionType(sgqlc.types.Enum):
     * `COMMIT`: Created a commit
     * `ISSUE`: Created an issue
     * `PULL_REQUEST`: Created a pull request
-    * `REPOSITORY`: Created the repository
     * `PULL_REQUEST_REVIEW`: Reviewed a pull request
+    * `REPOSITORY`: Created the repository
     '''
     __schema__ = github_schema
     __choices__ = ('COMMIT', 'ISSUE', 'PULL_REQUEST', 'PULL_REQUEST_REVIEW', 'REPOSITORY')
@@ -1748,13 +1748,13 @@ class RepositoryInteractionLimit(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `EXISTING_USERS`: Users that have recently created their account
-      will be unable to interact with the repository.
+    * `COLLABORATORS_ONLY`: Users that are not collaborators will not
+      be able to interact with the repository.
     * `CONTRIBUTORS_ONLY`: Users that have not previously committed to
       a repository’s default branch will be unable to interact with
       the repository.
-    * `COLLABORATORS_ONLY`: Users that are not collaborators will not
-      be able to interact with the repository.
+    * `EXISTING_USERS`: Users that have recently created their account
+      will be unable to interact with the repository.
     * `NO_LIMIT`: No interaction limits are enabled.
     '''
     __schema__ = github_schema
@@ -1767,10 +1767,10 @@ class RepositoryInteractionLimitExpiry(sgqlc.types.Enum):
     Enumeration Choices:
 
     * `ONE_DAY`: The interaction limit will expire after 1 day.
-    * `THREE_DAYS`: The interaction limit will expire after 3 days.
-    * `ONE_WEEK`: The interaction limit will expire after 1 week.
     * `ONE_MONTH`: The interaction limit will expire after 1 month.
+    * `ONE_WEEK`: The interaction limit will expire after 1 week.
     * `SIX_MONTHS`: The interaction limit will expire after 6 months.
+    * `THREE_DAYS`: The interaction limit will expire after 3 days.
     '''
     __schema__ = github_schema
     __choices__ = ('ONE_DAY', 'ONE_MONTH', 'ONE_WEEK', 'SIX_MONTHS', 'THREE_DAYS')
@@ -1781,9 +1781,9 @@ class RepositoryInteractionLimitOrigin(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `REPOSITORY`: A limit that is configured at the repository
-      level.
     * `ORGANIZATION`: A limit that is configured at the organization
+      level.
+    * `REPOSITORY`: A limit that is configured at the repository
       level.
     * `USER`: A limit that is configured at the user-wide level.
     '''
@@ -1809,11 +1809,11 @@ class RepositoryLockReason(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `MOVING`: The repository is locked due to a move.
     * `BILLING`: The repository is locked due to a billing related
       reason.
-    * `RENAME`: The repository is locked due to a rename.
     * `MIGRATING`: The repository is locked due to a migration.
+    * `MOVING`: The repository is locked due to a move.
+    * `RENAME`: The repository is locked due to a rename.
     '''
     __schema__ = github_schema
     __choices__ = ('BILLING', 'MIGRATING', 'MOVING', 'RENAME')
@@ -1825,10 +1825,10 @@ class RepositoryOrderField(sgqlc.types.Enum):
     Enumeration Choices:
 
     * `CREATED_AT`: Order repositories by creation time
-    * `UPDATED_AT`: Order repositories by update time
-    * `PUSHED_AT`: Order repositories by push time
     * `NAME`: Order repositories by name
+    * `PUSHED_AT`: Order repositories by push time
     * `STARGAZERS`: Order repositories by number of stargazers
+    * `UPDATED_AT`: Order repositories by update time
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'NAME', 'PUSHED_AT', 'STARGAZERS', 'UPDATED_AT')
@@ -1845,12 +1845,12 @@ class RepositoryPermission(sgqlc.types.Enum):
     * `MAINTAIN`: Can read, clone, and push to this repository. They
       can also manage issues, pull requests, and some repository
       settings
-    * `WRITE`: Can read, clone, and push to this repository. Can also
-      manage issues and pull requests
-    * `TRIAGE`: Can read and clone this repository. Can also manage
-      issues and pull requests
     * `READ`: Can read and clone this repository. Can also open and
       comment on issues and pull requests
+    * `TRIAGE`: Can read and clone this repository. Can also manage
+      issues and pull requests
+    * `WRITE`: Can read, clone, and push to this repository. Can also
+      manage issues and pull requests
     '''
     __schema__ = github_schema
     __choices__ = ('ADMIN', 'MAINTAIN', 'READ', 'TRIAGE', 'WRITE')
@@ -1861,8 +1861,8 @@ class RepositoryPrivacy(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `PUBLIC`: Public
     * `PRIVATE`: Private
+    * `PUBLIC`: Public
     '''
     __schema__ = github_schema
     __choices__ = ('PRIVATE', 'PUBLIC')
@@ -1873,11 +1873,11 @@ class RepositoryVisibility(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `INTERNAL`: The repository is visible only to users in the same
+      business.
     * `PRIVATE`: The repository is visible only to those with explicit
       access.
     * `PUBLIC`: The repository is visible to everyone.
-    * `INTERNAL`: The repository is visible only to users in the same
-      business.
     '''
     __schema__ = github_schema
     __choices__ = ('INTERNAL', 'PRIVATE', 'PUBLIC')
@@ -1889,9 +1889,9 @@ class RequestableCheckStatusState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `QUEUED`: The check suite or run has been queued.
-    * `IN_PROGRESS`: The check suite or run is in progress.
     * `COMPLETED`: The check suite or run has been completed.
+    * `IN_PROGRESS`: The check suite or run is in progress.
+    * `QUEUED`: The check suite or run has been queued.
     * `WAITING`: The check suite or run is in waiting state.
     '''
     __schema__ = github_schema
@@ -1958,12 +1958,12 @@ class SecurityAdvisoryEcosystem(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `RUBYGEMS`: Ruby gems hosted at RubyGems.org
-    * `NPM`: JavaScript packages hosted at npmjs.com
-    * `PIP`: Python packages hosted at PyPI.org
-    * `MAVEN`: Java artifacts hosted at the Maven central repository
-    * `NUGET`: .NET packages hosted at the NuGet Gallery
     * `COMPOSER`: PHP packages hosted at packagist.org
+    * `MAVEN`: Java artifacts hosted at the Maven central repository
+    * `NPM`: JavaScript packages hosted at npmjs.com
+    * `NUGET`: .NET packages hosted at the NuGet Gallery
+    * `PIP`: Python packages hosted at PyPI.org
+    * `RUBYGEMS`: Ruby gems hosted at RubyGems.org
     '''
     __schema__ = github_schema
     __choices__ = ('COMPOSER', 'MAVEN', 'NPM', 'NUGET', 'PIP', 'RUBYGEMS')
@@ -1998,10 +1998,10 @@ class SecurityAdvisorySeverity(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `CRITICAL`: Critical.
+    * `HIGH`: High.
     * `LOW`: Low.
     * `MODERATE`: Moderate.
-    * `HIGH`: High.
-    * `CRITICAL`: Critical.
     '''
     __schema__ = github_schema
     __choices__ = ('CRITICAL', 'HIGH', 'LOW', 'MODERATE')
@@ -2035,10 +2035,10 @@ class SponsorsGoalKind(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `TOTAL_SPONSORS_COUNT`: The goal is about reaching a certain
-      number of sponsors.
     * `MONTHLY_SPONSORSHIP_AMOUNT`: The goal is about getting a
       certain dollar amount from sponsorships each month.
+    * `TOTAL_SPONSORS_COUNT`: The goal is about reaching a certain
+      number of sponsors.
     '''
     __schema__ = github_schema
     __choices__ = ('MONTHLY_SPONSORSHIP_AMOUNT', 'TOTAL_SPONSORS_COUNT')
@@ -2073,8 +2073,8 @@ class SponsorshipPrivacy(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `PUBLIC`: Public
     * `PRIVATE`: Private
+    * `PUBLIC`: Public
     '''
     __schema__ = github_schema
     __choices__ = ('PRIVATE', 'PUBLIC')
@@ -2097,8 +2097,8 @@ class StatusState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `EXPECTED`: Status is expected.
     * `ERROR`: Status is errored.
+    * `EXPECTED`: Status is expected.
     * `FAILURE`: Status is failing.
     * `PENDING`: Status is pending.
     * `SUCCESS`: Status is successful.
@@ -2114,10 +2114,10 @@ class SubscriptionState(sgqlc.types.Enum):
 
     Enumeration Choices:
 
+    * `IGNORED`: The User is never notified.
+    * `SUBSCRIBED`: The User is notified of all conversations.
     * `UNSUBSCRIBED`: The User is only notified when participating or
       @mentioned.
-    * `SUBSCRIBED`: The User is notified of all conversations.
-    * `IGNORED`: The User is never notified.
     '''
     __schema__ = github_schema
     __choices__ = ('IGNORED', 'SUBSCRIBED', 'UNSUBSCRIBED')
@@ -2152,8 +2152,8 @@ class TeamMemberOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `LOGIN`: Order team members by login
     * `CREATED_AT`: Order team members by creation time
+    * `LOGIN`: Order team members by login
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'LOGIN')
@@ -2179,9 +2179,9 @@ class TeamMembershipType(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `IMMEDIATE`: Includes only immediate members of the team.
-    * `CHILD_TEAM`: Includes only child team members for the team.
     * `ALL`: Includes immediate and child team members for the team.
+    * `CHILD_TEAM`: Includes only child team members for the team.
+    * `IMMEDIATE`: Includes only immediate members of the team.
     '''
     __schema__ = github_schema
     __choices__ = ('ALL', 'CHILD_TEAM', 'IMMEDIATE')
@@ -2217,11 +2217,11 @@ class TeamRepositoryOrderField(sgqlc.types.Enum):
     Enumeration Choices:
 
     * `CREATED_AT`: Order repositories by creation time
-    * `UPDATED_AT`: Order repositories by update time
-    * `PUSHED_AT`: Order repositories by push time
     * `NAME`: Order repositories by name
     * `PERMISSION`: Order repositories by permission
+    * `PUSHED_AT`: Order repositories by push time
     * `STARGAZERS`: Order repositories by number of stargazers
+    * `UPDATED_AT`: Order repositories by update time
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'NAME', 'PERMISSION', 'PUSHED_AT', 'STARGAZERS', 'UPDATED_AT')
@@ -2246,12 +2246,12 @@ class TopicSuggestionDeclineReason(sgqlc.types.Enum):
 
     * `NOT_RELEVANT`: The suggested topic is not relevant to the
       repository.
-    * `TOO_SPECIFIC`: The suggested topic is too specific for the
-      repository (e.g. #ruby-on-rails-version-4-2-1).
     * `PERSONAL_PREFERENCE`: The viewer does not like the suggested
       topic.
     * `TOO_GENERAL`: The suggested topic is too general for the
       repository.
+    * `TOO_SPECIFIC`: The suggested topic is too specific for the
+      repository (e.g. #ruby-on-rails-version-4-2-1).
     '''
     __schema__ = github_schema
     __choices__ = ('NOT_RELEVANT', 'PERSONAL_PREFERENCE', 'TOO_GENERAL', 'TOO_SPECIFIC')
@@ -2270,10 +2270,10 @@ class UserBlockDuration(sgqlc.types.Enum):
     Enumeration Choices:
 
     * `ONE_DAY`: The user was blocked for 1 day
-    * `THREE_DAYS`: The user was blocked for 3 days
-    * `ONE_WEEK`: The user was blocked for 7 days
     * `ONE_MONTH`: The user was blocked for 30 days
+    * `ONE_WEEK`: The user was blocked for 7 days
     * `PERMANENT`: The user was blocked permanently
+    * `THREE_DAYS`: The user was blocked for 3 days
     '''
     __schema__ = github_schema
     __choices__ = ('ONE_DAY', 'ONE_MONTH', 'ONE_WEEK', 'PERMANENT', 'THREE_DAYS')
@@ -2295,8 +2295,8 @@ class VerifiableDomainOrderField(sgqlc.types.Enum):
 
     Enumeration Choices:
 
-    * `DOMAIN`: Order verifiable domains by the domain name.
     * `CREATED_AT`: Order verifiable domains by their creation date.
+    * `DOMAIN`: Order verifiable domains by the domain name.
     '''
     __schema__ = github_schema
     __choices__ = ('CREATED_AT', 'DOMAIN')
