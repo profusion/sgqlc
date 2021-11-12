@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip --quiet --no-input install --upgrade pip
-        python -m pip --quiet --no-input install wheel pygments nose websocket-client requests coveralls
+        python -m pip --quiet --no-input install --upgrade wheel pygments nose websocket-client requests coveralls
         pip install -r flake8-requirements.txt
     - name: Lint with flake8
       run: |

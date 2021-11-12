@@ -26,6 +26,7 @@ nose = "*"
 sphinx = "*"
 requests = "*"
 sphinx-argparse = "*"
+coveralls = "*"
 
 [requires]
 python_version = "3.7"
