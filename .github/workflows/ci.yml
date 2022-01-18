@@ -22,31 +22,32 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip --quiet --no-input install --upgrade pip
-        python -m pip --quiet --no-input install --upgrade wheel pygments nose websocket-client requests coveralls
-        pip install -r flake8-requirements.txt
+        python -m pip --quiet --no-input install --upgrade wheel pipenv
+        pipenv install --dev
+        pipenv run ./setup.py -q install
     - name: Lint with flake8
       run: |
-        flake8 . --config setup.cfg
+        pipenv run flake8 . --config setup.cfg
     - name: Test with nose
       run: |
-        ./setup.py nosetests
+        pipenv run ./setup.py nosetests
     - name: Build
       run: |
-        ./setup.py egg_info -Db '' sdist bdist_egg
+        pipenv run ./setup.py egg_info -Db '' sdist bdist_egg
     - name: Install
       run: |
-        ./setup.py install --skip-build
+        pipenv run ./setup.py install --skip-build
     - name: Test GitHub example
       run: |
         cd examples/github
-        NO_DOWNLOAD=1 ./update-schema.sh
-        ./update-operations.sh
+        NO_DOWNLOAD=1 pipenv run ./update-schema.sh
+        pipenv run ./update-operations.sh
     - name: Test Shopify example
       run: |
         cd examples/shopify
-        NO_DOWNLOAD=1 ./update-schema.sh
-        ./update-operations.sh
+        NO_DOWNLOAD=1 pipenv run ./update-schema.sh
+        pipenv run ./update-operations.sh
     - name: Coveralls
-      run: coveralls --service=github
+      run: pipenv run coveralls --service=github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
