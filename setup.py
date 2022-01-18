@@ -6,8 +6,8 @@ import re
 from setuptools import setup, find_packages
 
 name = 'sgqlc'
-version = 14
-release = 1
+version = 15
+release = 0
 
 
 def cleanup_rst(doc):
