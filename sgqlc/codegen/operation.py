@@ -308,6 +308,7 @@ class ParsedSchemaName(NamedTuple):
 
 class GraphQLToPython(Visitor):
     def __init__(self, validation, schema_name, short_names):
+        Visitor.__init__(self)
         self.validation = validation
         self.schema_name = schema_name
         self.short_names = short_names
