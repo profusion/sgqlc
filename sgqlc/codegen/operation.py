@@ -891,12 +891,12 @@ def add_arguments(ap):
     )
     ap.add_argument(
         'operation.gql',
-        type=argparse.FileType('r'), nargs='*',
+        type=argparse.FileType('r', encoding='utf-8'), nargs='*',
         help='The input GraphQL (DSL) with operations',
         default=[sys.stdin],
     )
     ap.add_argument(
-        '--schema', type=argparse.FileType('r'),
+        '--schema', type=argparse.FileType('rb'),
         help=('The input schema as JSON file. '
               'Usually the output from introspection query. '
               'If given, the operations will be validated.'),
@@ -937,7 +937,9 @@ def handle_command(parsed_args):
     in_files = args['operation.gql']
     short_names = args['short_names']
 
-    operations_gql = [Source(f.read(), f.name) for f in in_files]
+    operations_gql = [
+        Source(f.read(), f.name) for f in in_files
+    ]
 
     gen = CodeGen(
         schema, schema_name, operations_gql,

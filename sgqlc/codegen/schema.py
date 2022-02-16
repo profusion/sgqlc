@@ -634,7 +634,7 @@ def load_schema(in_file):
 
 def add_arguments(ap):
     # Generic options to access the GraphQL API
-    ap.add_argument('schema.json', type=argparse.FileType('r'), nargs='?',
+    ap.add_argument('schema.json', type=argparse.FileType('rb'), nargs='?',
                     help=('The input schema as JSON file. '
                           'Usually the output from introspection query.'),
                     default=sys.stdin)
