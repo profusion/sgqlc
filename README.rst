@@ -423,6 +423,8 @@ You can also generate these operations given a GraphQL Domain Specific
 Language (DSL) operation:
 
 .. code-block::
+   
+   # sample_operations.gql
 
    query ListIssues($owner: String!, $name: String!) {
        repository(owner: $owner, name: $name) {
