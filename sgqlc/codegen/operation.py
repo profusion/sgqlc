@@ -17,6 +17,7 @@ __docformat__ = 'reStructuredText en'
 
 
 to_python_name = BaseItem._to_python_name
+read_encoding = 'utf-8-sig'  # allows reading UTF-8 with/without BOM
 
 
 def format_graphql_type(typ):
@@ -891,12 +892,14 @@ def add_arguments(ap):
     )
     ap.add_argument(
         'operation.gql',
-        type=argparse.FileType('r'), nargs='*',
+        type=argparse.FileType('r', encoding=read_encoding),
+        nargs='*',
         help='The input GraphQL (DSL) with operations',
         default=[sys.stdin],
     )
     ap.add_argument(
-        '--schema', type=argparse.FileType('r'),
+        '--schema',
+        type=argparse.FileType('r', encoding=read_encoding),
         help=('The input schema as JSON file. '
               'Usually the output from introspection query. '
               'If given, the operations will be validated.'),

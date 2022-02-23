@@ -19,6 +19,9 @@ from graphql.language.parser import parse_value as parse_graphql_value
 from graphql.language.visitor import Visitor, visit
 
 
+read_encoding = 'utf-8-sig'  # allows reading UTF-8 with/without BOM
+
+
 # Use Null instead of None as Visitor.leave_* understands None as IDLE,
 # which keeps the original node.
 class Null:
@@ -634,7 +637,9 @@ def load_schema(in_file):
 
 def add_arguments(ap):
     # Generic options to access the GraphQL API
-    ap.add_argument('schema.json', type=argparse.FileType('r'), nargs='?',
+    ap.add_argument('schema.json',
+                    type=argparse.FileType('r', encoding=read_encoding),
+                    nargs='?',
                     help=('The input schema as JSON file. '
                           'Usually the output from introspection query.'),
                     default=sys.stdin)
