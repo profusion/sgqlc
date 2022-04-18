@@ -962,6 +962,24 @@ class BaseTypeWithTypename(BaseType, metaclass=BaseMetaWithTypename):
     'BaseType with ``__typename`` field (containers and union).'
 
 
+def get_variable_or_none(v):
+    if v is None:
+        return v
+    if isinstance(v, Variable):
+        return v
+
+    raise ValueError('expected None or Variable, got %s' % (type(v),))
+
+
+def get_variable_or_none_input(v, indent, indent_string):
+    if v is None:
+        return "null"
+    if isinstance(v, Variable):
+        return Variable.__to_graphql_input__(v, indent, indent_string)
+
+    raise ValueError('expected None or Variable, got %s' % (type(v),))
+
+
 def create_realize_type(t):
     def realize_type(v, selection_list=None):
         if isinstance(v, (t, Variable)):
@@ -991,34 +1009,45 @@ def _create_non_null_wrapper(name, t):
     })
 
 
+def get_list_input(t, realize_type, value, indent, indent_string):
+    try:
+        return get_variable_or_none_input(value, indent, indent_string)
+    except ValueError:
+        pass
+
+    def convert(v):
+        return t.__to_graphql_input__(realize_type(v), indent, indent_string)
+
+    return '[' + ', '.join(convert(v) for v in value) + ']'
+
+
+def get_list_json(t, value):
+    try:
+        return get_variable_or_none(value)
+    except ValueError:
+        pass
+
+    return [t.__to_json_value__(v) for v in value]
+
+
 def _create_list_of_wrapper(name, t):
     'creates type wrapper for list of given type'
 
     realize_type = create_realize_type(t)
 
     def __new__(cls, json_data, selection_list=None):
-        if json_data is None:
-            return None
-
-        if isinstance(json_data, (t, Variable)):
-            return json_data
+        try:
+            return get_variable_or_none(json_data)
+        except ValueError:
+            pass
 
         return [realize_type(v, selection_list) for v in json_data]
 
     def __to_graphql_input__(value, indent=0, indent_string='  '):
-        if isinstance(value, Variable):
-            return value.__to_graphql_input__(value, indent, indent_string)
-
-        r = []
-        for v in value:
-            v = realize_type(v)
-            r.append(t.__to_graphql_input__(v, indent, indent_string))
-        return '[' + ', '.join(r) + ']'
+        return get_list_input(t, realize_type, value, indent, indent_string)
 
     def __to_json_value__(value):
-        if value is None:
-            return None
-        return [t.__to_json_value__(v) for v in value]
+        return get_list_json(t, value)
 
     return type(name, (t,), {
         '__new__': __new__,
@@ -1348,10 +1377,11 @@ class Scalar(BaseType):
         return value
 
     def __new__(cls, json_data, selection_list=None):
-        if json_data is None:
-            return None
-        if isinstance(json_data, Variable):
-            return json_data
+        try:
+            return get_variable_or_none(json_data)
+        except ValueError:
+            pass
+
         return cls.converter(json_data)
 
     @classmethod
@@ -1458,10 +1488,11 @@ class Enum(BaseType, metaclass=EnumMeta):
     __choices__ = ()
 
     def __new__(cls, json_data, selection_list=None):
-        if json_data is None:
-            return None
-        if isinstance(json_data, Variable):
-            return json_data
+        try:
+            return get_variable_or_none(json_data)
+        except ValueError:
+            pass
+
         if json_data not in cls:
             raise ValueError('%s does not accept value %s' % (cls, json_data))
         return json_data
@@ -1581,10 +1612,11 @@ class Union(BaseTypeWithTypename, metaclass=UnionMeta):
     __types__ = ()
 
     def __new__(cls, json_data, selection_list=None):
-        if json_data is None:
-            return
-        if isinstance(json_data, Variable):
-            return json_data
+        try:
+            return get_variable_or_none(json_data)
+        except ValueError:
+            pass
+
         type_name = json_data.get('__typename')
         if not type_name:
             t = UnknownType
@@ -1718,8 +1750,11 @@ class ContainerTypeMeta(BaseMetaWithTypename):
         return '\n'.join(s)
 
     def __to_json_value__(cls, value):
-        if value is None:
-            return None
+        try:
+            return get_variable_or_none(value)
+        except ValueError:
+            pass
+
         d = {}
         for name, f in cls.__fields.items():
             # elements may not exist since not queried and would
@@ -2255,8 +2290,14 @@ class Arg(BaseItem):
         '''
         super(Arg, self).__init__(typ, graphql_name)
         self.default = default
-        if default is not None and not isinstance(default, Variable):
-            typ(default)
+        try:
+            get_variable_or_none(default)
+            return
+        except ValueError:
+            pass
+
+        # validate default value
+        typ(default)
 
     def __to_graphql__(self, indent=0, indent_string='  '):
         default = ''
@@ -2616,6 +2657,15 @@ class Input(ContainerType):
     '''
     __kind__ = 'input'
 
+    def __new__(cls, *args, **kwargs):
+        if len(args) == 1:
+            try:
+                return get_variable_or_none(args[0])
+            except ValueError:
+                pass
+
+        return super().__new__(cls)
+
     def __init__(self, _json_obj=None, _selection_list=None, **kwargs):
         '''Create the type given a json object or keyword arguments.
 
@@ -2659,10 +2709,77 @@ class Input(ContainerType):
         >>> print(TheInput.__to_graphql_input__(value))
         {aInt: 1, aFloat: 1.2, aNested: {aStr: "hi"}, aNestedList: [{aStr: "there"}]}
 
+        Input types can be constructed from variables. Note that the input
+        variable can't be an element of a list, the list itself must be a variable:
+
+        >>> a_var = Variable('input')
+        >>> value = TheInput(a_var)
+        >>> print(TheInput.__to_graphql_input__(value))
+        $input
+        >>> value = TheInput(a_int=1, a_float=1.2,
+        ...                  a_nested=a_var,
+        ...                  a_nested_list=[AnotherInput(a_str='there')])
+        >>> print(TheInput.__to_graphql_input__(value))
+        {aInt: 1, aFloat: 1.2, aNested: $input, aNestedList: [{aStr: "there"}]}
+        >>> value = TheInput(a_int=1, a_float=1.2,
+        ...                  a_nested=AnotherInput(a_str='hi'),
+        ...                  a_nested_list=a_var)
+        >>> print(TheInput.__to_graphql_input__(value))
+        {aInt: 1, aFloat: 1.2, aNested: {aStr: "hi"}, aNestedList: $input}
+
         ``None`` will print ``null``:
 
         >>> print(TheInput.__to_graphql_input__(None))
         null
+
+        >>> value = TheInput(a_int=None, a_float=None, a_nested=None,
+        ...                  a_nested_list=None)
+        >>> print(TheInput.__to_graphql_input__(value))
+        {aInt: null, aFloat: null, aNested: null, aNestedList: null}
+
+        Unless fields are non-nullable, then ``ValueError`` is raised:
+
+        >>> class TheNonNullInput(Input):
+        ...     a_int = non_null(int)
+        ...     a_float = non_null(float)
+        ...     a_nested = non_null(AnotherInput)
+        ...     a_nested_list = non_null(list_of(non_null(AnotherInput)))
+
+        >>> TheNonNullInput(a_int=None, a_float=1.2,
+        ...                 a_nested=AnotherInput(a_str='hi'),
+        ...                 a_nested_list=[AnotherInput(a_str='there')]
+        ...                 )  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+          ...
+        ValueError: Int! received null value
+        >>> TheNonNullInput(a_int=1, a_float=None,
+        ...                 a_nested=AnotherInput(a_str='hi'),
+        ...                 a_nested_list=[AnotherInput(a_str='there')]
+        ...                 )  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+          ...
+        ValueError: Float! received null value
+        >>> TheNonNullInput(a_int=1, a_float=1.2,
+        ...                 a_nested=None,
+        ...                 a_nested_list=[AnotherInput(a_str='there')]
+        ...                 )  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+          ...
+        ValueError: AnotherInput! received null value
+        >>> TheNonNullInput(a_int=1, a_float=1.2,
+        ...                 a_nested=AnotherInput(a_str='hi'),
+        ...                 a_nested_list=[None]
+        ...                 )  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+          ...
+        ValueError: AnotherInput! received null value
+        >>> TheNonNullInput(a_int=1, a_float=1.2,
+        ...                 a_nested=AnotherInput(a_str='hi'),
+        ...                 a_nested_list=None
+        ...                 )  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+          ...
+        ValueError: [AnotherInput!]! received null value
 
         .. note::
 
@@ -2670,26 +2787,26 @@ class Input(ContainerType):
             it's only provided to cope with the ``ContainerType`` interface.
 
         '''  # noqa: E501
-        if _json_obj is None:
-            _json_obj = {}
         super().__init__(_json_obj, _selection_list)
         cls = type(self)
         for k, v in kwargs.items():
             f = cls[k]
-            if not isinstance(v, (f.type, Variable, list)):
+            if not isinstance(v, (f.type, Variable)):
                 v = f.type(v)
             setattr(self, k, v)
 
     @classmethod
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
-        args = []
-        if isinstance(value, Variable):
-            return Variable.__to_graphql_input__(value, indent, indent_string)
-        elif isinstance(value, Input):
-            value = value.__json_data__
-        elif value is None:
-            return "null"
+        try:
+            return get_variable_or_none_input(value, indent, indent_string)
+        except ValueError:
+            pass
 
+        if isinstance(value, Input):
+            value = value.__json_data__
+        assert isinstance(value, dict)
+
+        args = []
         for f in cls:
             try:
                 v = value[f.graphql_name]
