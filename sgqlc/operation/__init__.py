@@ -1528,6 +1528,7 @@ __docformat__ = 'reStructuredText en'
 __all__ = ('Operation',)
 
 from collections import OrderedDict
+from contextlib import contextmanager
 
 from ..types import BaseTypeWithTypename, Union, ContainerType, ArgDict, \
     global_schema
@@ -1537,6 +1538,17 @@ DEFAULT_AUTO_SELECT_DEPTH = 2
 PROXIED_FIELDS = {
     '__type__', '__casts__', '__as__', '__fragment__', '__fragments__',
 }
+
+
+@contextmanager
+def select_depth(depth):
+    global DEFAULT_AUTO_SELECT_DEPTH
+    old_depth = DEFAULT_AUTO_SELECT_DEPTH
+    DEFAULT_AUTO_SELECT_DEPTH = depth
+    try:
+        yield
+    finally:
+        DEFAULT_AUTO_SELECT_DEPTH = old_depth
 
 
 class Selection:
@@ -1619,8 +1631,9 @@ class Selection:
             self.__selection_list = SelectionList(field.type)
 
     def __get_selections_or_auto_select__(
-            self, auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+            self, auto_select_depth=None,
             typename=None):
+        auto_select_depth = auto_select_depth or DEFAULT_AUTO_SELECT_DEPTH
         selections = self.__selection_list
         if selections is None or selections:
             return selections
@@ -1657,8 +1670,9 @@ class Selection:
         self.__selection_list.__fields__(*names, **names_and_args)
 
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       auto_select_depth=None,
                        typename=None):
+        auto_select_depth = auto_select_depth or DEFAULT_AUTO_SELECT_DEPTH
         prefix = indent_string * indent
 
         alias = self.__alias__ + ': ' if self.__alias__ else ''
@@ -1961,8 +1975,9 @@ class SelectionList:
         return bytes(self.__to_graphql__(indent_string=''), 'utf-8')
 
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       auto_select_depth=None,
                        typename=None):
+        auto_select_depth = auto_select_depth or DEFAULT_AUTO_SELECT_DEPTH
         prefix = indent_string * indent
         next_indent = indent + 1
 
@@ -2210,8 +2225,9 @@ class SelectionList:
 
 class InlineFragmentSelectionList(SelectionList):
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       auto_select_depth=None,
                        typename=None):
+        auto_select_depth = auto_select_depth or DEFAULT_AUTO_SELECT_DEPTH
         selection = SelectionList.__to_graphql__(
             self, indent, indent_string, auto_select_depth, typename)
         return '... on %s %s' % (self.__type__, selection)
@@ -2232,8 +2248,9 @@ class Fragment(SelectionList):
         return '...%s' % (self.__name,)
 
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       auto_select_depth=None,
                        typename=None):
+        auto_select_depth = auto_select_depth or DEFAULT_AUTO_SELECT_DEPTH
         selection = SelectionList.__to_graphql__(
             self, indent, indent_string, auto_select_depth, typename)
         return 'fragment %s on %s %s' % (
@@ -2456,8 +2473,9 @@ class Operation:
             )
 
     def __to_graphql__(self, indent=0, indent_string='  ',
-                       auto_select_depth=DEFAULT_AUTO_SELECT_DEPTH,
+                       auto_select_depth=None,
                        typename=None):
+        auto_select_depth = auto_select_depth or DEFAULT_AUTO_SELECT_DEPTH
         prefix = indent_string * indent
         kind = self.__kind
         name = ' ' + self.__name if self.__name else ''
