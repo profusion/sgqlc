@@ -13965,7 +13965,7 @@ class RepositoryOwner(sgqlc.types.Interface):
         ('privacy', sgqlc.types.Arg(RepositoryPrivacy, graphql_name='privacy', default=None)),
         ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default=None)),
         ('affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='affiliations', default=None)),
-        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=['OWNER', 'COLLABORATOR'])),
+        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=('OWNER', 'COLLABORATOR'))),
         ('is_locked', sgqlc.types.Arg(Boolean, graphql_name='isLocked', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
@@ -18274,7 +18274,7 @@ class Issue(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatable, Up
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('archived_states', sgqlc.types.Arg(sgqlc.types.list_of(ProjectCardArchivedState), graphql_name='archivedStates', default=['ARCHIVED', 'NOT_ARCHIVED'])),
+        ('archived_states', sgqlc.types.Arg(sgqlc.types.list_of(ProjectCardArchivedState), graphql_name='archivedStates', default=('ARCHIVED', 'NOT_ARCHIVED'))),
 ))
     )
     '''List of project cards associated with this issue.
@@ -20024,7 +20024,7 @@ class Project(sgqlc.types.Type, Node, Closable, Updatable):
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('archived_states', sgqlc.types.Arg(sgqlc.types.list_of(ProjectCardArchivedState), graphql_name='archivedStates', default=['ARCHIVED', 'NOT_ARCHIVED'])),
+        ('archived_states', sgqlc.types.Arg(sgqlc.types.list_of(ProjectCardArchivedState), graphql_name='archivedStates', default=('ARCHIVED', 'NOT_ARCHIVED'))),
 ))
     )
     '''List of pending cards in this project
@@ -20115,7 +20115,7 @@ class ProjectColumn(sgqlc.types.Type, Node):
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('archived_states', sgqlc.types.Arg(sgqlc.types.list_of(ProjectCardArchivedState), graphql_name='archivedStates', default=['ARCHIVED', 'NOT_ARCHIVED'])),
+        ('archived_states', sgqlc.types.Arg(sgqlc.types.list_of(ProjectCardArchivedState), graphql_name='archivedStates', default=('ARCHIVED', 'NOT_ARCHIVED'))),
 ))
     )
     '''List of cards in the column
@@ -20441,7 +20441,7 @@ class PullRequest(sgqlc.types.Type, Node, Assignable, Closable, Comment, Updatab
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
         ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
         ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('archived_states', sgqlc.types.Arg(sgqlc.types.list_of(ProjectCardArchivedState), graphql_name='archivedStates', default=['ARCHIVED', 'NOT_ARCHIVED'])),
+        ('archived_states', sgqlc.types.Arg(sgqlc.types.list_of(ProjectCardArchivedState), graphql_name='archivedStates', default=('ARCHIVED', 'NOT_ARCHIVED'))),
 ))
     )
     '''List of project cards associated with this pull request.
@@ -21518,7 +21518,7 @@ class Repository(sgqlc.types.Type, Node, ProjectOwner, PackageOwner, Subscribabl
         ('privacy', sgqlc.types.Arg(RepositoryPrivacy, graphql_name='privacy', default=None)),
         ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default=None)),
         ('affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='affiliations', default=None)),
-        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=['OWNER', 'COLLABORATOR'])),
+        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=('OWNER', 'COLLABORATOR'))),
         ('is_locked', sgqlc.types.Arg(Boolean, graphql_name='isLocked', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
@@ -23692,7 +23692,7 @@ class User(sgqlc.types.Type, Node, Actor, PackageOwner, ProjectOwner, Repository
         ('privacy', sgqlc.types.Arg(RepositoryPrivacy, graphql_name='privacy', default=None)),
         ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default=None)),
         ('affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='affiliations', default=None)),
-        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=['OWNER', 'COLLABORATOR'])),
+        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=('OWNER', 'COLLABORATOR'))),
         ('is_locked', sgqlc.types.Arg(Boolean, graphql_name='isLocked', default=None)),
         ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
         ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
