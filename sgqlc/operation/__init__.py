@@ -2346,6 +2346,25 @@ class Operation:
       }
     }
 
+    We can optionally disable the name mangling by setting a global variable
+
+    >>> from sgqlc import types
+    >>> types.CONVERT_PYNAMES = False
+    >>> op = Operation(repo_id=str, reporter_login=str)
+    >>> repository = op.repository(id=Variable('repo_id'))
+    >>> issues = repository.issues(reporter_login=Variable('reporter_login'))
+    >>> issues.__fields__('number', 'title')
+    >>> op # or repr(), prints out GraphQL!
+    query Query($repo_id: String, $reporter_login: String) {
+      repository(id: $repo_id) {
+        issues(reporterLogin: $reporter_login) {
+          number
+          title
+        }
+      }
+    }
+    >>> types.CONVERT_PYNAMES = True
+
     If variable name conflicts with the parameter, you can pass
     them as a single ``variables`` parameter containing a dict.
 

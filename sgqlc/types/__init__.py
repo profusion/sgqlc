@@ -593,8 +593,10 @@ from collections import OrderedDict
 __all__ = (
     'Schema', 'Scalar', 'Enum', 'Union', 'Variable', 'Arg', 'ArgDict',
     'Field', 'Type', 'Interface', 'Input', 'Int', 'Float', 'String',
-    'Boolean', 'ID', 'non_null', 'list_of',
+    'Boolean', 'ID', 'non_null', 'list_of', 'CONVERT_PYNAMES'
 )
+
+CONVERT_PYNAMES = True
 
 
 class ODict(OrderedDict):
@@ -1802,7 +1804,7 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
     }
 
     def __init__(self, json_data, selection_list=None):
-        assert json_data is None or isinstance(json_data, dict), \
+        assert json_data is None or isinstance(json_data, (dict, Variable)), \
             '%r (%s) is not a JSON Object' % (
                 json_data, type(json_data).__name__)
         object.__setattr__(self, '__selection_list__', selection_list)
@@ -1811,7 +1813,7 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
     def __populate_fields(self, json_data):
         cache = OrderedDict()
         object.__setattr__(self, '__fields_cache__', cache)
-        if json_data is None:
+        if json_data is None or isinstance(json_data, Variable):
             # backing store, changed by setattr()
             object.__setattr__(self, '__json_data__', {})
             return
@@ -2176,6 +2178,8 @@ class BaseItem:
         >>> BaseItem._to_graphql_name('__typename__')
         '__typename'
         '''
+        if not CONVERT_PYNAMES:
+            return name
         try:
             return cls._renamed_to_graphql_fields[name]
         except KeyError:
@@ -2219,6 +2223,16 @@ class Variable:
     >>> print(bytes(MyTypeWithVariable.f.args['first'].default).decode('utf8'))
     $var
 
+    Name mangling for variables may be optionally disabled:
+
+    >>> from sgqlc import types
+    >>> types.CONVERT_PYNAMES = False
+    >>> print(types.Variable("python_name"))
+    $python_name
+    >>> types.CONVERT_PYNAMES = True
+    >>> print(types.Variable("python_name"))
+    $pythonName
+
     '''
 
     __slots__ = ('name', 'graphql_name')
@@ -2240,6 +2254,8 @@ class Variable:
     def _to_graphql_name(name):
         '''Converts a Python name, ``a_name`` to GraphQL: ``aName``.
         '''
+        if not CONVERT_PYNAMES:
+            return name
         parts = name.split('_')
         return ''.join(parts[:1] + [p.title() for p in parts[1:]])
 
