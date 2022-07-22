@@ -123,7 +123,7 @@ class CodeGen:
     def __init__(self, schema_name, schema, writer, docstrings):
         self.schema_name = schema_name
         self.schema = schema
-        self.types = sorted(schema['types'], key=lambda x: x['name'])
+        self.types = schema['types']
         self.type_by_name = {t['name']: t for t in self.types}
         self.query_type = self.get_path('queryType', 'name')
         self.mutation_type = self.get_path('mutationType', 'name')
