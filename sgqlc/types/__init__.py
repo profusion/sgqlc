@@ -1944,7 +1944,11 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
                 return
             self.__fields_cache__[name] = field
 
-        json_value = field.type.__to_json_value__(value)
+        if isinstance(value, list):
+            json_value = [v.__json_data__ for v in value]
+        else:
+            json_value = field.type.__to_json_value__(value)
+
         self.__json_data__[field.graphql_name] = json_value
 
     def __getitem__(self, name):
