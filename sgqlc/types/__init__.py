@@ -1426,6 +1426,8 @@ class EnumMeta(BaseMeta):
         return '\n'.join(s)
 
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
+        if value is None:
+            return "null"
         return value
 
     def __to_json_value__(cls, value):
@@ -1473,6 +1475,8 @@ class Enum(BaseType, metaclass=EnumMeta):
 
     >>> print(Fruits.__to_graphql_input__(Fruits.APPLE))
     APPLE
+    >>> print(Fruits.__to_graphql_input__(None))
+    null
 
     And for JSON it's a string as well (so JSON encoder adds quotes):
 
