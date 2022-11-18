@@ -182,9 +182,16 @@ class CodeGen:
     def has_iface(ifaces, name):
         return any(name == iface['name'] for iface in ifaces)
 
+    # all interfaces before anything else.
     # fields without interfaces first, then order the interface
     # implementor after the interface declaration
     def depend_cmp(a, b):
+        if a["kind"] != b["kind"]:
+            if a["kind"] == "INTERFACE":
+                return -1
+            elif b["kind"] == "INTERFACE":
+                return 1
+        
         a_ifaces = a['interfaces']
         b_ifaces = b['interfaces']
         if not a_ifaces and b_ifaces:
