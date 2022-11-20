@@ -181,17 +181,24 @@ class CodeGen:
     @staticmethod
     def has_iface(ifaces, name):
         return any(name == iface['name'] for iface in ifaces)
-
-    # all interfaces before anything else.
-    # fields without interfaces first, then order the interface
-    # implementor after the interface declaration
-    def depend_cmp(a, b):
+        
+    @staticmethod
+    def is_different_kind(a, b):
         if a["kind"] != b["kind"]:
             if a["kind"] == "INTERFACE":
                 return -1
             elif b["kind"] == "INTERFACE":
                 return 1
-        
+        return None
+
+    # all interfaces before anything else.
+    # fields without interfaces first, then order the interface
+    # implementor after the interface declaration
+    def depend_cmp(a, b):
+        kind_diff = is_different_kind(a, b)
+        if kind_diff is not None:
+            return kind_diff
+
         a_ifaces = a['interfaces']
         b_ifaces = b['interfaces']
         if not a_ifaces and b_ifaces:
@@ -215,7 +222,7 @@ class CodeGen:
             return 1
         else:
             return 0
-
+    
     @staticmethod
     def get_depend_sort_key():
         return functools.cmp_to_key(CodeGen.depend_cmp)
