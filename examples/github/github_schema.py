@@ -5716,6 +5716,1107 @@ class VerifyVerifiableDomainInput(sgqlc.types.Input):
 ########################################################################
 # Output Objects and Interfaces
 ########################################################################
+class Actor(sgqlc.types.Interface):
+    '''Represents an object which can take actions on GitHub. Typically a
+    User or Bot.
+    '''
+    __schema__ = github_schema
+    __field_names__ = ('avatar_url', 'login', 'resource_path', 'url')
+    avatar_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
+        ('size', sgqlc.types.Arg(Int, graphql_name='size', default=None)),
+))
+    )
+    '''A URL pointing to the actor's public avatar.
+
+    Arguments:
+
+    * `size` (`Int`): The size of the resulting square image.
+    '''
+
+    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    '''The username of the actor.'''
+
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    '''The HTTP path for this actor.'''
+
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    '''The HTTP URL for this actor.'''
+
+
+
+class Assignable(sgqlc.types.Interface):
+    '''An object that can have users assigned to it.'''
+    __schema__ = github_schema
+    __field_names__ = ('assignees',)
+    assignees = sgqlc.types.Field(sgqlc.types.non_null('UserConnection'), graphql_name='assignees', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    '''A list of Users assigned to this object.
+
+    Arguments:
+
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    '''
+
+
+
+class AuditEntry(sgqlc.types.Interface):
+    '''An entry in the audit log.'''
+    __schema__ = github_schema
+    __field_names__ = ('action', 'actor', 'actor_ip', 'actor_location', 'actor_login', 'actor_resource_path', 'actor_url', 'created_at', 'operation_type', 'user', 'user_login', 'user_resource_path', 'user_url')
+    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
+    '''The action name'''
+
+    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
+    '''The user who initiated the action'''
+
+    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
+    '''The IP address of the actor'''
+
+    actor_location = sgqlc.types.Field('ActorLocation', graphql_name='actorLocation')
+    '''A readable representation of the actor's location'''
+
+    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
+    '''The username of the user who initiated the action'''
+
+    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
+    '''The HTTP path for the actor.'''
+
+    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
+    '''The HTTP URL for the actor.'''
+
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
+    '''The time the action was initiated'''
+
+    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
+    '''The corresponding operation type for the action'''
+
+    user = sgqlc.types.Field('User', graphql_name='user')
+    '''The user affected by the action'''
+
+    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
+    '''For actions involving two users, the actor is the initiator and
+    the user is the affected user.
+    '''
+
+    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
+    '''The HTTP path for the user.'''
+
+    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
+    '''The HTTP URL for the user.'''
+
+
+
+class Closable(sgqlc.types.Interface):
+    '''An object that can be closed'''
+    __schema__ = github_schema
+    __field_names__ = ('closed', 'closed_at')
+    closed = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='closed')
+    '''`true` if the object is closed (definition of closed may depend on
+    type)
+    '''
+
+    closed_at = sgqlc.types.Field(DateTime, graphql_name='closedAt')
+    '''Identifies the date and time when the object was closed.'''
+
+
+
+class Comment(sgqlc.types.Interface):
+    '''Represents a comment.'''
+    __schema__ = github_schema
+    __field_names__ = ('author', 'author_association', 'body', 'body_html', 'body_text', 'created_at', 'created_via_email', 'editor', 'id', 'includes_created_edit', 'last_edited_at', 'published_at', 'updated_at', 'user_content_edits', 'viewer_did_author')
+    author = sgqlc.types.Field(Actor, graphql_name='author')
+    '''The actor who authored the comment.'''
+
+    author_association = sgqlc.types.Field(sgqlc.types.non_null(CommentAuthorAssociation), graphql_name='authorAssociation')
+    '''Author's association with the subject of the comment.'''
+
+    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
+    '''The body as Markdown.'''
+
+    body_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='bodyHTML')
+    '''The body rendered to HTML.'''
+
+    body_text = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='bodyText')
+    '''The body rendered to text.'''
+
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    '''Identifies the date and time when the object was created.'''
+
+    created_via_email = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='createdViaEmail')
+    '''Check if this comment was created via an email reply.'''
+
+    editor = sgqlc.types.Field(Actor, graphql_name='editor')
+    '''The actor who edited the comment.'''
+
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+    includes_created_edit = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='includesCreatedEdit')
+    '''Check if this comment was edited and includes an edit with the
+    creation data
+    '''
+
+    last_edited_at = sgqlc.types.Field(DateTime, graphql_name='lastEditedAt')
+    '''The moment the editor made the last edit'''
+
+    published_at = sgqlc.types.Field(DateTime, graphql_name='publishedAt')
+    '''Identifies when the comment was published at.'''
+
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    '''Identifies the date and time when the object was last updated.'''
+
+    user_content_edits = sgqlc.types.Field('UserContentEditConnection', graphql_name='userContentEdits', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    '''A list of edits to this content.
+
+    Arguments:
+
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    '''
+
+    viewer_did_author = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerDidAuthor')
+    '''Did the viewer author this comment.'''
+
+
+
+class Contribution(sgqlc.types.Interface):
+    '''Represents a contribution a user made on GitHub, such as opening
+    an issue.
+    '''
+    __schema__ = github_schema
+    __field_names__ = ('is_restricted', 'occurred_at', 'resource_path', 'url', 'user')
+    is_restricted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRestricted')
+    '''Whether this contribution is associated with a record you do not
+    have access to. For example, your own 'first issue' contribution
+    may have been made on a repository you can no longer access.
+    '''
+
+    occurred_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='occurredAt')
+    '''When this contribution was made.'''
+
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    '''The HTTP path for this contribution.'''
+
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    '''The HTTP URL for this contribution.'''
+
+    user = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='user')
+    '''The user who made this contribution.'''
+
+
+
+class Deletable(sgqlc.types.Interface):
+    '''Entities that can be deleted.'''
+    __schema__ = github_schema
+    __field_names__ = ('viewer_can_delete',)
+    viewer_can_delete = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanDelete')
+    '''Check if the current viewer can delete this object.'''
+
+
+
+class EnterpriseAuditEntryData(sgqlc.types.Interface):
+    '''Metadata for an audit entry containing enterprise account
+    information.
+    '''
+    __schema__ = github_schema
+    __field_names__ = ('enterprise_resource_path', 'enterprise_slug', 'enterprise_url')
+    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
+    '''The HTTP path for this enterprise.'''
+
+    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
+    '''The slug of the enterprise.'''
+
+    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
+    '''The HTTP URL for this enterprise.'''
+
+
+
+class GitObject(sgqlc.types.Interface):
+    '''Represents a Git object.'''
+    __schema__ = github_schema
+    __field_names__ = ('abbreviated_oid', 'commit_resource_path', 'commit_url', 'id', 'oid', 'repository')
+    abbreviated_oid = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='abbreviatedOid')
+    '''An abbreviated version of the Git object ID'''
+
+    commit_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='commitResourcePath')
+    '''The HTTP path for this Git object'''
+
+    commit_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='commitUrl')
+    '''The HTTP URL for this Git object'''
+
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+    oid = sgqlc.types.Field(sgqlc.types.non_null(GitObjectID), graphql_name='oid')
+    '''The Git object ID'''
+
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
+    '''The Repository the Git object belongs to'''
+
+
+
+class GitSignature(sgqlc.types.Interface):
+    '''Information about a signature (GPG or S/MIME) on a Commit or Tag.'''
+    __schema__ = github_schema
+    __field_names__ = ('email', 'is_valid', 'payload', 'signature', 'signer', 'state', 'was_signed_by_git_hub')
+    email = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='email')
+    '''Email used to sign this object.'''
+
+    is_valid = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isValid')
+    '''True if the signature is valid and verified by GitHub.'''
+
+    payload = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='payload')
+    '''Payload for GPG signing object. Raw ODB object without the
+    signature header.
+    '''
+
+    signature = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='signature')
+    '''ASCII-armored signature header from object.'''
+
+    signer = sgqlc.types.Field('User', graphql_name='signer')
+    '''GitHub user corresponding to the email signing this commit.'''
+
+    state = sgqlc.types.Field(sgqlc.types.non_null(GitSignatureState), graphql_name='state')
+    '''The state of this signature. `VALID` if signature is valid and
+    verified by GitHub, otherwise represents reason why signature is
+    considered invalid.
+    '''
+
+    was_signed_by_git_hub = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='wasSignedByGitHub')
+    '''True if the signature was made with GitHub's signing key.'''
+
+
+
+class HovercardContext(sgqlc.types.Interface):
+    '''An individual line of a hovercard'''
+    __schema__ = github_schema
+    __field_names__ = ('message', 'octicon')
+    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
+    '''A string describing this context'''
+
+    octicon = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='octicon')
+    '''An octicon to accompany this context'''
+
+
+
+class Labelable(sgqlc.types.Interface):
+    '''An object that can have labels assigned to it.'''
+    __schema__ = github_schema
+    __field_names__ = ('labels',)
+    labels = sgqlc.types.Field('LabelConnection', graphql_name='labels', args=sgqlc.types.ArgDict((
+        ('order_by', sgqlc.types.Arg(LabelOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'ASC'})),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    '''A list of labels associated with the object.
+
+    Arguments:
+
+    * `order_by` (`LabelOrder`): Ordering options for labels returned
+      from the connection. (default: `{field: CREATED_AT, direction:
+      ASC}`)
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    '''
+
+
+
+class Lockable(sgqlc.types.Interface):
+    '''An object that can be locked.'''
+    __schema__ = github_schema
+    __field_names__ = ('active_lock_reason', 'locked')
+    active_lock_reason = sgqlc.types.Field(LockReason, graphql_name='activeLockReason')
+    '''Reason that the conversation was locked.'''
+
+    locked = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='locked')
+    '''`true` if the object is locked'''
+
+
+
+class MemberStatusable(sgqlc.types.Interface):
+    '''Entities that have members who can set status messages.'''
+    __schema__ = github_schema
+    __field_names__ = ('member_statuses',)
+    member_statuses = sgqlc.types.Field(sgqlc.types.non_null('UserStatusConnection'), graphql_name='memberStatuses', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(UserStatusOrder, graphql_name='orderBy', default={'field': 'UPDATED_AT', 'direction': 'DESC'})),
+))
+    )
+    '''Get the status messages members of this entity have set that are
+    either public or visible only to the organization.
+
+    Arguments:
+
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    * `order_by` (`UserStatusOrder`): Ordering options for user
+      statuses returned from the connection. (default: `{field:
+      UPDATED_AT, direction: DESC}`)
+    '''
+
+
+
+class Minimizable(sgqlc.types.Interface):
+    '''Entities that can be minimized.'''
+    __schema__ = github_schema
+    __field_names__ = ('is_minimized', 'minimized_reason', 'viewer_can_minimize')
+    is_minimized = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isMinimized')
+    '''Returns whether or not a comment has been minimized.'''
+
+    minimized_reason = sgqlc.types.Field(String, graphql_name='minimizedReason')
+    '''Returns why the comment was minimized.'''
+
+    viewer_can_minimize = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanMinimize')
+    '''Check if the current viewer can minimize this object.'''
+
+
+
+class Node(sgqlc.types.Interface):
+    '''An object with an ID.'''
+    __schema__ = github_schema
+    __field_names__ = ('id',)
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    '''ID of the object.'''
+
+
+
+class OauthApplicationAuditEntryData(sgqlc.types.Interface):
+    '''Metadata for an audit entry with action oauth_application.*'''
+    __schema__ = github_schema
+    __field_names__ = ('oauth_application_name', 'oauth_application_resource_path', 'oauth_application_url')
+    oauth_application_name = sgqlc.types.Field(String, graphql_name='oauthApplicationName')
+    '''The name of the OAuth Application.'''
+
+    oauth_application_resource_path = sgqlc.types.Field(URI, graphql_name='oauthApplicationResourcePath')
+    '''The HTTP path for the OAuth Application'''
+
+    oauth_application_url = sgqlc.types.Field(URI, graphql_name='oauthApplicationUrl')
+    '''The HTTP URL for the OAuth Application'''
+
+
+
+class OrganizationAuditEntryData(sgqlc.types.Interface):
+    '''Metadata for an audit entry with action org.*'''
+    __schema__ = github_schema
+    __field_names__ = ('organization', 'organization_name', 'organization_resource_path', 'organization_url')
+    organization = sgqlc.types.Field('Organization', graphql_name='organization')
+    '''The Organization associated with the Audit Entry.'''
+
+    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
+    '''The name of the Organization.'''
+
+    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
+    '''The HTTP path for the organization'''
+
+    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
+    '''The HTTP URL for the organization'''
+
+
+
+class PackageOwner(sgqlc.types.Interface):
+    '''Represents an owner of a package.'''
+    __schema__ = github_schema
+    __field_names__ = ('id', 'packages')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+    packages = sgqlc.types.Field(sgqlc.types.non_null('PackageConnection'), graphql_name='packages', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('names', sgqlc.types.Arg(sgqlc.types.list_of(String), graphql_name='names', default=None)),
+        ('repository_id', sgqlc.types.Arg(ID, graphql_name='repositoryId', default=None)),
+        ('package_type', sgqlc.types.Arg(PackageType, graphql_name='packageType', default=None)),
+        ('order_by', sgqlc.types.Arg(PackageOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'DESC'})),
+))
+    )
+    '''A list of packages under the owner.
+
+    Arguments:
+
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    * `names` (`[String]`): Find packages by their names.
+    * `repository_id` (`ID`): Find packages in a repository by ID.
+    * `package_type` (`PackageType`): Filter registry package by type.
+    * `order_by` (`PackageOrder`): Ordering of the returned packages.
+      (default: `{field: CREATED_AT, direction: DESC}`)
+    '''
+
+
+
+class ProfileOwner(sgqlc.types.Interface):
+    '''Represents any entity on GitHub that has a profile page.'''
+    __schema__ = github_schema
+    __field_names__ = ('any_pinnable_items', 'email', 'id', 'item_showcase', 'location', 'login', 'name', 'pinnable_items', 'pinned_items', 'pinned_items_remaining', 'viewer_can_change_pinned_items', 'website_url')
+    any_pinnable_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='anyPinnableItems', args=sgqlc.types.ArgDict((
+        ('type', sgqlc.types.Arg(PinnableItemType, graphql_name='type', default=None)),
+))
+    )
+    '''Determine if this repository owner has any items that can be
+    pinned to their profile.
+
+    Arguments:
+
+    * `type` (`PinnableItemType`): Filter to only a particular kind of
+      pinnable item.
+    '''
+
+    email = sgqlc.types.Field(String, graphql_name='email')
+    '''The public profile email.'''
+
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+    item_showcase = sgqlc.types.Field(sgqlc.types.non_null('ProfileItemShowcase'), graphql_name='itemShowcase')
+    '''Showcases a selection of repositories and gists that the profile
+    owner has either curated or that have been selected automatically
+    based on popularity.
+    '''
+
+    location = sgqlc.types.Field(String, graphql_name='location')
+    '''The public profile location.'''
+
+    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    '''The username used to login.'''
+
+    name = sgqlc.types.Field(String, graphql_name='name')
+    '''The public profile name.'''
+
+    pinnable_items = sgqlc.types.Field(sgqlc.types.non_null('PinnableItemConnection'), graphql_name='pinnableItems', args=sgqlc.types.ArgDict((
+        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    '''A list of repositories and gists this profile owner can pin to
+    their profile.
+
+    Arguments:
+
+    * `types` (`[PinnableItemType!]`): Filter the types of pinnable
+      items that are returned.
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    '''
+
+    pinned_items = sgqlc.types.Field(sgqlc.types.non_null('PinnableItemConnection'), graphql_name='pinnedItems', args=sgqlc.types.ArgDict((
+        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    '''A list of repositories and gists this profile owner has pinned to
+    their profile
+
+    Arguments:
+
+    * `types` (`[PinnableItemType!]`): Filter the types of pinned
+      items that are returned.
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    '''
+
+    pinned_items_remaining = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='pinnedItemsRemaining')
+    '''Returns how many more items this profile owner can pin to their
+    profile.
+    '''
+
+    viewer_can_change_pinned_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanChangePinnedItems')
+    '''Can the viewer pin repositories and gists to the profile?'''
+
+    website_url = sgqlc.types.Field(URI, graphql_name='websiteUrl')
+    '''The public profile website URL.'''
+
+
+
+class ProjectOwner(sgqlc.types.Interface):
+    '''Represents an owner of a Project.'''
+    __schema__ = github_schema
+    __field_names__ = ('id', 'project', 'projects', 'projects_resource_path', 'projects_url', 'viewer_can_create_projects')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+    project = sgqlc.types.Field('Project', graphql_name='project', args=sgqlc.types.ArgDict((
+        ('number', sgqlc.types.Arg(sgqlc.types.non_null(Int), graphql_name='number', default=None)),
+))
+    )
+    '''Find project by number.
+
+    Arguments:
+
+    * `number` (`Int!`): The project number to find.
+    '''
+
+    projects = sgqlc.types.Field(sgqlc.types.non_null('ProjectConnection'), graphql_name='projects', args=sgqlc.types.ArgDict((
+        ('order_by', sgqlc.types.Arg(ProjectOrder, graphql_name='orderBy', default=None)),
+        ('search', sgqlc.types.Arg(String, graphql_name='search', default=None)),
+        ('states', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(ProjectState)), graphql_name='states', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+))
+    )
+    '''A list of projects under the owner.
+
+    Arguments:
+
+    * `order_by` (`ProjectOrder`): Ordering options for projects
+      returned from the connection
+    * `search` (`String`): Query to search projects by, currently only
+      searching by name.
+    * `states` (`[ProjectState!]`): A list of states to filter the
+      projects by.
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    '''
+
+    projects_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='projectsResourcePath')
+    '''The HTTP path listing owners projects'''
+
+    projects_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='projectsUrl')
+    '''The HTTP URL listing owners projects'''
+
+    viewer_can_create_projects = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanCreateProjects')
+    '''Can the current viewer create new projects on this owner.'''
+
+
+
+class Reactable(sgqlc.types.Interface):
+    '''Represents a subject that can be reacted on.'''
+    __schema__ = github_schema
+    __field_names__ = ('database_id', 'id', 'reaction_groups', 'reactions', 'viewer_can_react')
+    database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
+    '''Identifies the primary key from the database.'''
+
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+    reaction_groups = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('ReactionGroup')), graphql_name='reactionGroups')
+    '''A list of reactions grouped by content left on the subject.'''
+
+    reactions = sgqlc.types.Field(sgqlc.types.non_null('ReactionConnection'), graphql_name='reactions', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('content', sgqlc.types.Arg(ReactionContent, graphql_name='content', default=None)),
+        ('order_by', sgqlc.types.Arg(ReactionOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    '''A list of Reactions left on the Issue.
+
+    Arguments:
+
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    * `content` (`ReactionContent`): Allows filtering Reactions by
+      emoji.
+    * `order_by` (`ReactionOrder`): Allows specifying the order in
+      which reactions are returned.
+    '''
+
+    viewer_can_react = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanReact')
+    '''Can user react to this subject'''
+
+
+
+class RepositoryAuditEntryData(sgqlc.types.Interface):
+    '''Metadata for an audit entry with action repo.*'''
+    __schema__ = github_schema
+    __field_names__ = ('repository', 'repository_name', 'repository_resource_path', 'repository_url')
+    repository = sgqlc.types.Field('Repository', graphql_name='repository')
+    '''The repository associated with the action'''
+
+    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
+    '''The name of the repository'''
+
+    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
+    '''The HTTP path for the repository'''
+
+    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
+    '''The HTTP URL for the repository'''
+
+
+
+class RepositoryInfo(sgqlc.types.Interface):
+    '''A subset of repository info.'''
+    __schema__ = github_schema
+    __field_names__ = ('created_at', 'description', 'description_html', 'fork_count', 'has_issues_enabled', 'has_projects_enabled', 'has_wiki_enabled', 'homepage_url', 'is_archived', 'is_fork', 'is_in_organization', 'is_locked', 'is_mirror', 'is_private', 'is_template', 'license_info', 'lock_reason', 'mirror_url', 'name', 'name_with_owner', 'open_graph_image_url', 'owner', 'pushed_at', 'resource_path', 'short_description_html', 'updated_at', 'url', 'uses_custom_open_graph_image')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    '''Identifies the date and time when the object was created.'''
+
+    description = sgqlc.types.Field(String, graphql_name='description')
+    '''The description of the repository.'''
+
+    description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='descriptionHTML')
+    '''The description of the repository rendered to HTML.'''
+
+    fork_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='forkCount')
+    '''Returns how many forks there are of this repository in the whole
+    network.
+    '''
+
+    has_issues_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasIssuesEnabled')
+    '''Indicates if the repository has issues feature enabled.'''
+
+    has_projects_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasProjectsEnabled')
+    '''Indicates if the repository has the Projects feature enabled.'''
+
+    has_wiki_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasWikiEnabled')
+    '''Indicates if the repository has wiki feature enabled.'''
+
+    homepage_url = sgqlc.types.Field(URI, graphql_name='homepageUrl')
+    '''The repository's URL.'''
+
+    is_archived = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isArchived')
+    '''Indicates if the repository is unmaintained.'''
+
+    is_fork = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFork')
+    '''Identifies if the repository is a fork.'''
+
+    is_in_organization = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isInOrganization')
+    '''Indicates if a repository is either owned by an organization, or
+    is a private fork of an organization repository.
+    '''
+
+    is_locked = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isLocked')
+    '''Indicates if the repository has been locked or not.'''
+
+    is_mirror = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isMirror')
+    '''Identifies if the repository is a mirror.'''
+
+    is_private = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPrivate')
+    '''Identifies if the repository is private or internal.'''
+
+    is_template = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isTemplate')
+    '''Identifies if the repository is a template that can be used to
+    generate new repositories.
+    '''
+
+    license_info = sgqlc.types.Field('License', graphql_name='licenseInfo')
+    '''The license associated with the repository'''
+
+    lock_reason = sgqlc.types.Field(RepositoryLockReason, graphql_name='lockReason')
+    '''The reason the repository has been locked.'''
+
+    mirror_url = sgqlc.types.Field(URI, graphql_name='mirrorUrl')
+    '''The repository's original mirror URL.'''
+
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    '''The name of the repository.'''
+
+    name_with_owner = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='nameWithOwner')
+    '''The repository's name with owner.'''
+
+    open_graph_image_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='openGraphImageUrl')
+    '''The image used to represent this repository in Open Graph data.'''
+
+    owner = sgqlc.types.Field(sgqlc.types.non_null('RepositoryOwner'), graphql_name='owner')
+    '''The User owner of the repository.'''
+
+    pushed_at = sgqlc.types.Field(DateTime, graphql_name='pushedAt')
+    '''Identifies when the repository was last pushed to.'''
+
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    '''The HTTP path for this repository'''
+
+    short_description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='shortDescriptionHTML', args=sgqlc.types.ArgDict((
+        ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=200)),
+))
+    )
+    '''A description of the repository, rendered to HTML without any
+    links in it.
+
+    Arguments:
+
+    * `limit` (`Int`): How many characters to return. (default: `200`)
+    '''
+
+    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
+    '''Identifies the date and time when the object was last updated.'''
+
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    '''The HTTP URL for this repository'''
+
+    uses_custom_open_graph_image = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='usesCustomOpenGraphImage')
+    '''Whether this repository has a custom image to use with Open Graph
+    as opposed to being represented by the owner's avatar.
+    '''
+
+
+
+class RepositoryNode(sgqlc.types.Interface):
+    '''Represents a object that belongs to a repository.'''
+    __schema__ = github_schema
+    __field_names__ = ('repository',)
+    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
+    '''The repository associated with this node.'''
+
+
+
+class RepositoryOwner(sgqlc.types.Interface):
+    '''Represents an owner of a Repository.'''
+    __schema__ = github_schema
+    __field_names__ = ('avatar_url', 'id', 'login', 'repositories', 'repository', 'resource_path', 'url')
+    avatar_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
+        ('size', sgqlc.types.Arg(Int, graphql_name='size', default=None)),
+))
+    )
+    '''A URL pointing to the owner's public avatar.
+
+    Arguments:
+
+    * `size` (`Int`): The size of the resulting square image.
+    '''
+
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
+    '''The username used to login.'''
+
+    repositories = sgqlc.types.Field(sgqlc.types.non_null('RepositoryConnection'), graphql_name='repositories', args=sgqlc.types.ArgDict((
+        ('privacy', sgqlc.types.Arg(RepositoryPrivacy, graphql_name='privacy', default=None)),
+        ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default=None)),
+        ('affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='affiliations', default=None)),
+        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=['OWNER', 'COLLABORATOR'])),
+        ('is_locked', sgqlc.types.Arg(Boolean, graphql_name='isLocked', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('is_fork', sgqlc.types.Arg(Boolean, graphql_name='isFork', default=None)),
+))
+    )
+    '''A list of repositories that the user owns.
+
+    Arguments:
+
+    * `privacy` (`RepositoryPrivacy`): If non-null, filters
+      repositories according to privacy
+    * `order_by` (`RepositoryOrder`): Ordering options for
+      repositories returned from the connection
+    * `affiliations` (`[RepositoryAffiliation]`): Array of viewer's
+      affiliation options for repositories returned from the
+      connection. For example, OWNER will include only repositories
+      that the current viewer owns.
+    * `owner_affiliations` (`[RepositoryAffiliation]`): Array of
+      owner's affiliation options for repositories returned from the
+      connection. For example, OWNER will include only repositories
+      that the organization or user being viewed owns. (default:
+      `[OWNER, COLLABORATOR]`)
+    * `is_locked` (`Boolean`): If non-null, filters repositories
+      according to whether they have been locked
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    * `is_fork` (`Boolean`): If non-null, filters repositories
+      according to whether they are forks of another repository
+    '''
+
+    repository = sgqlc.types.Field('Repository', graphql_name='repository', args=sgqlc.types.ArgDict((
+        ('name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='name', default=None)),
+))
+    )
+    '''Find Repository.
+
+    Arguments:
+
+    * `name` (`String!`): Name of Repository to find.
+    '''
+
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    '''The HTTP URL for the owner.'''
+
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    '''The HTTP URL for the owner.'''
+
+
+
+class RequirableByPullRequest(sgqlc.types.Interface):
+    '''Represents a type that can be required by a pull request for
+    merging.
+    '''
+    __schema__ = github_schema
+    __field_names__ = ('is_required',)
+    is_required = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRequired', args=sgqlc.types.ArgDict((
+        ('pull_request_id', sgqlc.types.Arg(ID, graphql_name='pullRequestId', default=None)),
+        ('pull_request_number', sgqlc.types.Arg(Int, graphql_name='pullRequestNumber', default=None)),
+))
+    )
+    '''Whether this is required to pass before merging for a specific
+    pull request.
+
+    Arguments:
+
+    * `pull_request_id` (`ID`): The id of the pull request this is
+      required for
+    * `pull_request_number` (`Int`): The number of the pull request
+      this is required for
+    '''
+
+
+
+class Sponsorable(sgqlc.types.Interface):
+    '''Entities that can be sponsored through GitHub Sponsors'''
+    __schema__ = github_schema
+    __field_names__ = ('has_sponsors_listing', 'is_sponsored_by', 'is_sponsoring_viewer', 'sponsors_listing', 'sponsorship_for_viewer_as_sponsor', 'sponsorships_as_maintainer', 'sponsorships_as_sponsor', 'viewer_can_sponsor', 'viewer_is_sponsoring')
+    has_sponsors_listing = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasSponsorsListing')
+    '''True if this user/organization has a GitHub Sponsors listing.'''
+
+    is_sponsored_by = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isSponsoredBy', args=sgqlc.types.ArgDict((
+        ('account_login', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='accountLogin', default=None)),
+))
+    )
+    '''Check if the given account is sponsoring this user/organization.
+
+    Arguments:
+
+    * `account_login` (`String!`): The target account's login.
+    '''
+
+    is_sponsoring_viewer = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isSponsoringViewer')
+    '''True if the viewer is sponsored by this user/organization.'''
+
+    sponsors_listing = sgqlc.types.Field('SponsorsListing', graphql_name='sponsorsListing')
+    '''The GitHub Sponsors listing for this user or organization.'''
+
+    sponsorship_for_viewer_as_sponsor = sgqlc.types.Field('Sponsorship', graphql_name='sponsorshipForViewerAsSponsor')
+    '''The viewer's sponsorship of this entity.'''
+
+    sponsorships_as_maintainer = sgqlc.types.Field(sgqlc.types.non_null('SponsorshipConnection'), graphql_name='sponsorshipsAsMaintainer', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('include_private', sgqlc.types.Arg(Boolean, graphql_name='includePrivate', default=False)),
+        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    '''This object's sponsorships as the maintainer.
+
+    Arguments:
+
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    * `include_private` (`Boolean`): Whether or not to include private
+      sponsorships in the result set (default: `false`)
+    * `order_by` (`SponsorshipOrder`): Ordering options for
+      sponsorships returned from this connection. If left blank, the
+      sponsorships will be ordered based on relevancy to the viewer.
+    '''
+
+    sponsorships_as_sponsor = sgqlc.types.Field(sgqlc.types.non_null('SponsorshipConnection'), graphql_name='sponsorshipsAsSponsor', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    '''This object's sponsorships as the sponsor.
+
+    Arguments:
+
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    * `order_by` (`SponsorshipOrder`): Ordering options for
+      sponsorships returned from this connection. If left blank, the
+      sponsorships will be ordered based on relevancy to the viewer.
+    '''
+
+    viewer_can_sponsor = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanSponsor')
+    '''Whether or not the viewer is able to sponsor this
+    user/organization.
+    '''
+
+    viewer_is_sponsoring = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerIsSponsoring')
+    '''True if the viewer is sponsoring this user/organization.'''
+
+
+
+class Starrable(sgqlc.types.Interface):
+    '''Things that can be starred.'''
+    __schema__ = github_schema
+    __field_names__ = ('id', 'stargazer_count', 'stargazers', 'viewer_has_starred')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+    stargazer_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='stargazerCount')
+    '''Returns a count of how many stargazers there are on this object'''
+
+    stargazers = sgqlc.types.Field(sgqlc.types.non_null('StargazerConnection'), graphql_name='stargazers', args=sgqlc.types.ArgDict((
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('order_by', sgqlc.types.Arg(StarOrder, graphql_name='orderBy', default=None)),
+))
+    )
+    '''A list of users who have starred this starrable.
+
+    Arguments:
+
+    * `after` (`String`): Returns the elements in the list that come
+      after the specified cursor.
+    * `before` (`String`): Returns the elements in the list that come
+      before the specified cursor.
+    * `first` (`Int`): Returns the first _n_ elements from the list.
+    * `last` (`Int`): Returns the last _n_ elements from the list.
+    * `order_by` (`StarOrder`): Order for connection
+    '''
+
+    viewer_has_starred = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerHasStarred')
+    '''Returns a boolean indicating whether the viewing user has starred
+    this starrable.
+    '''
+
+
+
+class Subscribable(sgqlc.types.Interface):
+    '''Entities that can be subscribed to for web and email
+    notifications.
+    '''
+    __schema__ = github_schema
+    __field_names__ = ('id', 'viewer_can_subscribe', 'viewer_subscription')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+    viewer_can_subscribe = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanSubscribe')
+    '''Check if the viewer is able to change their subscription status
+    for the repository.
+    '''
+
+    viewer_subscription = sgqlc.types.Field(SubscriptionState, graphql_name='viewerSubscription')
+    '''Identifies if the viewer is watching, not watching, or ignoring
+    the subscribable entity.
+    '''
+
+
+
+class TeamAuditEntryData(sgqlc.types.Interface):
+    '''Metadata for an audit entry with action team.*'''
+    __schema__ = github_schema
+    __field_names__ = ('team', 'team_name', 'team_resource_path', 'team_url')
+    team = sgqlc.types.Field('Team', graphql_name='team')
+    '''The team associated with the action'''
+
+    team_name = sgqlc.types.Field(String, graphql_name='teamName')
+    '''The name of the team'''
+
+    team_resource_path = sgqlc.types.Field(URI, graphql_name='teamResourcePath')
+    '''The HTTP path for this team'''
+
+    team_url = sgqlc.types.Field(URI, graphql_name='teamUrl')
+    '''The HTTP URL for this team'''
+
+
+
+class TopicAuditEntryData(sgqlc.types.Interface):
+    '''Metadata for an audit entry with a topic.'''
+    __schema__ = github_schema
+    __field_names__ = ('topic', 'topic_name')
+    topic = sgqlc.types.Field('Topic', graphql_name='topic')
+    '''The name of the topic added to the repository'''
+
+    topic_name = sgqlc.types.Field(String, graphql_name='topicName')
+    '''The name of the topic added to the repository'''
+
+
+
+class UniformResourceLocatable(sgqlc.types.Interface):
+    '''Represents a type that can be retrieved by a URL.'''
+    __schema__ = github_schema
+    __field_names__ = ('resource_path', 'url')
+    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
+    '''The HTML path to this resource.'''
+
+    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
+    '''The URL to this resource.'''
+
+
+
+class Updatable(sgqlc.types.Interface):
+    '''Entities that can be updated.'''
+    __schema__ = github_schema
+    __field_names__ = ('viewer_can_update',)
+    viewer_can_update = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanUpdate')
+    '''Check if the current viewer can update this object.'''
+
+
+
+class UpdatableComment(sgqlc.types.Interface):
+    '''Comments that can be updated.'''
+    __schema__ = github_schema
+    __field_names__ = ('viewer_cannot_update_reasons',)
+    viewer_cannot_update_reasons = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(CommentCannotUpdateReason))), graphql_name='viewerCannotUpdateReasons')
+    '''Reasons why the current viewer can not update this comment.'''
+
+
+
 class AcceptEnterpriseAdministratorInvitationPayload(sgqlc.types.Type):
     '''Autogenerated return type of
     AcceptEnterpriseAdministratorInvitation
@@ -5747,34 +6848,6 @@ class AcceptTopicSuggestionPayload(sgqlc.types.Type):
 
 
 
-class Actor(sgqlc.types.Interface):
-    '''Represents an object which can take actions on GitHub. Typically a
-    User or Bot.
-    '''
-    __schema__ = github_schema
-    __field_names__ = ('avatar_url', 'login', 'resource_path', 'url')
-    avatar_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
-        ('size', sgqlc.types.Arg(Int, graphql_name='size', default=None)),
-))
-    )
-    '''A URL pointing to the actor's public avatar.
-
-    Arguments:
-
-    * `size` (`Int`): The size of the resulting square image.
-    '''
-
-    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
-    '''The username of the actor.'''
-
-    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
-    '''The HTTP path for this actor.'''
-
-    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
-    '''The HTTP URL for this actor.'''
-
-
-
 class ActorLocation(sgqlc.types.Type):
     '''Location information for an actor'''
     __schema__ = github_schema
@@ -5800,7 +6873,7 @@ class AddAssigneesToAssignablePayload(sgqlc.types.Type):
     '''Autogenerated return type of AddAssigneesToAssignable'''
     __schema__ = github_schema
     __field_names__ = ('assignable', 'client_mutation_id')
-    assignable = sgqlc.types.Field('Assignable', graphql_name='assignable')
+    assignable = sgqlc.types.Field(Assignable, graphql_name='assignable')
     '''The item that was assigned.'''
 
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
@@ -5818,7 +6891,7 @@ class AddCommentPayload(sgqlc.types.Type):
     comment_edge = sgqlc.types.Field('IssueCommentEdge', graphql_name='commentEdge')
     '''The edge from the subject's comment connection.'''
 
-    subject = sgqlc.types.Field('Node', graphql_name='subject')
+    subject = sgqlc.types.Field(Node, graphql_name='subject')
     '''The subject'''
 
     timeline_edge = sgqlc.types.Field('IssueTimelineItemEdge', graphql_name='timelineEdge')
@@ -5845,7 +6918,7 @@ class AddLabelsToLabelablePayload(sgqlc.types.Type):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     '''A unique identifier for the client performing the mutation.'''
 
-    labelable = sgqlc.types.Field('Labelable', graphql_name='labelable')
+    labelable = sgqlc.types.Field(Labelable, graphql_name='labelable')
     '''The item that was labeled.'''
 
 
@@ -5932,7 +7005,7 @@ class AddReactionPayload(sgqlc.types.Type):
     reaction = sgqlc.types.Field('Reaction', graphql_name='reaction')
     '''The reaction object.'''
 
-    subject = sgqlc.types.Field('Reactable', graphql_name='subject')
+    subject = sgqlc.types.Field(Reactable, graphql_name='subject')
     '''The reactable subject.'''
 
 
@@ -5944,7 +7017,7 @@ class AddStarPayload(sgqlc.types.Type):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     '''A unique identifier for the client performing the mutation.'''
 
-    starrable = sgqlc.types.Field('Starrable', graphql_name='starrable')
+    starrable = sgqlc.types.Field(Starrable, graphql_name='starrable')
     '''The starrable.'''
 
 
@@ -5982,78 +7055,6 @@ class ArchiveRepositoryPayload(sgqlc.types.Type):
 
     repository = sgqlc.types.Field('Repository', graphql_name='repository')
     '''The repository that was marked as archived.'''
-
-
-
-class Assignable(sgqlc.types.Interface):
-    '''An object that can have users assigned to it.'''
-    __schema__ = github_schema
-    __field_names__ = ('assignees',)
-    assignees = sgqlc.types.Field(sgqlc.types.non_null('UserConnection'), graphql_name='assignees', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-))
-    )
-    '''A list of Users assigned to this object.
-
-    Arguments:
-
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    '''
-
-
-
-class AuditEntry(sgqlc.types.Interface):
-    '''An entry in the audit log.'''
-    __schema__ = github_schema
-    __field_names__ = ('action', 'actor', 'actor_ip', 'actor_location', 'actor_login', 'actor_resource_path', 'actor_url', 'created_at', 'operation_type', 'user', 'user_login', 'user_resource_path', 'user_url')
-    action = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='action')
-    '''The action name'''
-
-    actor = sgqlc.types.Field('AuditEntryActor', graphql_name='actor')
-    '''The user who initiated the action'''
-
-    actor_ip = sgqlc.types.Field(String, graphql_name='actorIp')
-    '''The IP address of the actor'''
-
-    actor_location = sgqlc.types.Field(ActorLocation, graphql_name='actorLocation')
-    '''A readable representation of the actor's location'''
-
-    actor_login = sgqlc.types.Field(String, graphql_name='actorLogin')
-    '''The username of the user who initiated the action'''
-
-    actor_resource_path = sgqlc.types.Field(URI, graphql_name='actorResourcePath')
-    '''The HTTP path for the actor.'''
-
-    actor_url = sgqlc.types.Field(URI, graphql_name='actorUrl')
-    '''The HTTP URL for the actor.'''
-
-    created_at = sgqlc.types.Field(sgqlc.types.non_null(PreciseDateTime), graphql_name='createdAt')
-    '''The time the action was initiated'''
-
-    operation_type = sgqlc.types.Field(OperationType, graphql_name='operationType')
-    '''The corresponding operation type for the action'''
-
-    user = sgqlc.types.Field('User', graphql_name='user')
-    '''The user affected by the action'''
-
-    user_login = sgqlc.types.Field(String, graphql_name='userLogin')
-    '''For actions involving two users, the actor is the initiator and
-    the user is the affected user.
-    '''
-
-    user_resource_path = sgqlc.types.Field(URI, graphql_name='userResourcePath')
-    '''The HTTP path for the user.'''
-
-    user_url = sgqlc.types.Field(URI, graphql_name='userUrl')
-    '''The HTTP URL for the user.'''
 
 
 
@@ -6412,7 +7413,7 @@ class ClearLabelsFromLabelablePayload(sgqlc.types.Type):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     '''A unique identifier for the client performing the mutation.'''
 
-    labelable = sgqlc.types.Field('Labelable', graphql_name='labelable')
+    labelable = sgqlc.types.Field(Labelable, graphql_name='labelable')
     '''The item that was unlabeled.'''
 
 
@@ -6444,20 +7445,6 @@ class CloneTemplateRepositoryPayload(sgqlc.types.Type):
 
 
 
-class Closable(sgqlc.types.Interface):
-    '''An object that can be closed'''
-    __schema__ = github_schema
-    __field_names__ = ('closed', 'closed_at')
-    closed = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='closed')
-    '''`true` if the object is closed (definition of closed may depend on
-    type)
-    '''
-
-    closed_at = sgqlc.types.Field(DateTime, graphql_name='closedAt')
-    '''Identifies the date and time when the object was closed.'''
-
-
-
 class CloseIssuePayload(sgqlc.types.Type):
     '''Autogenerated return type of CloseIssue'''
     __schema__ = github_schema
@@ -6479,74 +7466,6 @@ class ClosePullRequestPayload(sgqlc.types.Type):
 
     pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
     '''The pull request that was closed.'''
-
-
-
-class Comment(sgqlc.types.Interface):
-    '''Represents a comment.'''
-    __schema__ = github_schema
-    __field_names__ = ('author', 'author_association', 'body', 'body_html', 'body_text', 'created_at', 'created_via_email', 'editor', 'id', 'includes_created_edit', 'last_edited_at', 'published_at', 'updated_at', 'user_content_edits', 'viewer_did_author')
-    author = sgqlc.types.Field(Actor, graphql_name='author')
-    '''The actor who authored the comment.'''
-
-    author_association = sgqlc.types.Field(sgqlc.types.non_null(CommentAuthorAssociation), graphql_name='authorAssociation')
-    '''Author's association with the subject of the comment.'''
-
-    body = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='body')
-    '''The body as Markdown.'''
-
-    body_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='bodyHTML')
-    '''The body rendered to HTML.'''
-
-    body_text = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='bodyText')
-    '''The body rendered to text.'''
-
-    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
-    '''Identifies the date and time when the object was created.'''
-
-    created_via_email = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='createdViaEmail')
-    '''Check if this comment was created via an email reply.'''
-
-    editor = sgqlc.types.Field(Actor, graphql_name='editor')
-    '''The actor who edited the comment.'''
-
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-    includes_created_edit = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='includesCreatedEdit')
-    '''Check if this comment was edited and includes an edit with the
-    creation data
-    '''
-
-    last_edited_at = sgqlc.types.Field(DateTime, graphql_name='lastEditedAt')
-    '''The moment the editor made the last edit'''
-
-    published_at = sgqlc.types.Field(DateTime, graphql_name='publishedAt')
-    '''Identifies when the comment was published at.'''
-
-    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
-    '''Identifies the date and time when the object was last updated.'''
-
-    user_content_edits = sgqlc.types.Field('UserContentEditConnection', graphql_name='userContentEdits', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-))
-    )
-    '''A list of edits to this content.
-
-    Arguments:
-
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    '''
-
-    viewer_did_author = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerDidAuthor')
-    '''Did the viewer author this comment.'''
 
 
 
@@ -6667,32 +7586,6 @@ class CommitHistoryConnection(sgqlc.types.relay.Connection):
 
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
     '''Identifies the total count of items in the connection.'''
-
-
-
-class Contribution(sgqlc.types.Interface):
-    '''Represents a contribution a user made on GitHub, such as opening
-    an issue.
-    '''
-    __schema__ = github_schema
-    __field_names__ = ('is_restricted', 'occurred_at', 'resource_path', 'url', 'user')
-    is_restricted = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRestricted')
-    '''Whether this contribution is associated with a record you do not
-    have access to. For example, your own 'first issue' contribution
-    may have been made on a repository you can no longer access.
-    '''
-
-    occurred_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='occurredAt')
-    '''When this contribution was made.'''
-
-    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
-    '''The HTTP path for this contribution.'''
-
-    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
-    '''The HTTP URL for this contribution.'''
-
-    user = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='user')
-    '''The user who made this contribution.'''
 
 
 
@@ -7475,15 +8368,6 @@ class DeclineTopicSuggestionPayload(sgqlc.types.Type):
 
 
 
-class Deletable(sgqlc.types.Interface):
-    '''Entities that can be deleted.'''
-    __schema__ = github_schema
-    __field_names__ = ('viewer_can_delete',)
-    viewer_can_delete = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanDelete')
-    '''Check if the current viewer can delete this object.'''
-
-
-
 class DeleteBranchProtectionRulePayload(sgqlc.types.Type):
     '''Autogenerated return type of DeleteBranchProtectionRule'''
     __schema__ = github_schema
@@ -7572,7 +8456,7 @@ class DeleteProjectPayload(sgqlc.types.Type):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     '''A unique identifier for the client performing the mutation.'''
 
-    owner = sgqlc.types.Field('ProjectOwner', graphql_name='owner')
+    owner = sgqlc.types.Field(ProjectOwner, graphql_name='owner')
     '''The repository or organization the project was removed from.'''
 
 
@@ -7832,23 +8716,6 @@ class EnterpriseAdministratorInvitationEdge(sgqlc.types.Type):
 
     node = sgqlc.types.Field('EnterpriseAdministratorInvitation', graphql_name='node')
     '''The item at the end of the edge.'''
-
-
-
-class EnterpriseAuditEntryData(sgqlc.types.Interface):
-    '''Metadata for an audit entry containing enterprise account
-    information.
-    '''
-    __schema__ = github_schema
-    __field_names__ = ('enterprise_resource_path', 'enterprise_slug', 'enterprise_url')
-    enterprise_resource_path = sgqlc.types.Field(URI, graphql_name='enterpriseResourcePath')
-    '''The HTTP path for this enterprise.'''
-
-    enterprise_slug = sgqlc.types.Field(String, graphql_name='enterpriseSlug')
-    '''The slug of the enterprise.'''
-
-    enterprise_url = sgqlc.types.Field(URI, graphql_name='enterpriseUrl')
-    '''The HTTP URL for this enterprise.'''
 
 
 
@@ -9364,79 +10231,12 @@ class GitHubMetadata(sgqlc.types.Type):
 
 
 
-class GitObject(sgqlc.types.Interface):
-    '''Represents a Git object.'''
-    __schema__ = github_schema
-    __field_names__ = ('abbreviated_oid', 'commit_resource_path', 'commit_url', 'id', 'oid', 'repository')
-    abbreviated_oid = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='abbreviatedOid')
-    '''An abbreviated version of the Git object ID'''
-
-    commit_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='commitResourcePath')
-    '''The HTTP path for this Git object'''
-
-    commit_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='commitUrl')
-    '''The HTTP URL for this Git object'''
-
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-    oid = sgqlc.types.Field(sgqlc.types.non_null(GitObjectID), graphql_name='oid')
-    '''The Git object ID'''
-
-    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
-    '''The Repository the Git object belongs to'''
-
-
-
-class GitSignature(sgqlc.types.Interface):
-    '''Information about a signature (GPG or S/MIME) on a Commit or Tag.'''
-    __schema__ = github_schema
-    __field_names__ = ('email', 'is_valid', 'payload', 'signature', 'signer', 'state', 'was_signed_by_git_hub')
-    email = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='email')
-    '''Email used to sign this object.'''
-
-    is_valid = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isValid')
-    '''True if the signature is valid and verified by GitHub.'''
-
-    payload = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='payload')
-    '''Payload for GPG signing object. Raw ODB object without the
-    signature header.
-    '''
-
-    signature = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='signature')
-    '''ASCII-armored signature header from object.'''
-
-    signer = sgqlc.types.Field('User', graphql_name='signer')
-    '''GitHub user corresponding to the email signing this commit.'''
-
-    state = sgqlc.types.Field(sgqlc.types.non_null(GitSignatureState), graphql_name='state')
-    '''The state of this signature. `VALID` if signature is valid and
-    verified by GitHub, otherwise represents reason why signature is
-    considered invalid.
-    '''
-
-    was_signed_by_git_hub = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='wasSignedByGitHub')
-    '''True if the signature was made with GitHub's signing key.'''
-
-
-
 class Hovercard(sgqlc.types.Type):
     '''Detail needed to display a hovercard for a user'''
     __schema__ = github_schema
     __field_names__ = ('contexts',)
-    contexts = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('HovercardContext'))), graphql_name='contexts')
+    contexts = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(HovercardContext))), graphql_name='contexts')
     '''Each of the contexts for this hovercard'''
-
-
-
-class HovercardContext(sgqlc.types.Interface):
-    '''An individual line of a hovercard'''
-    __schema__ = github_schema
-    __field_names__ = ('message', 'octicon')
-    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
-    '''A string describing this context'''
-
-    octicon = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='octicon')
-    '''An octicon to accompany this context'''
 
 
 
@@ -9695,35 +10495,6 @@ class LabelEdge(sgqlc.types.Type):
 
 
 
-class Labelable(sgqlc.types.Interface):
-    '''An object that can have labels assigned to it.'''
-    __schema__ = github_schema
-    __field_names__ = ('labels',)
-    labels = sgqlc.types.Field(LabelConnection, graphql_name='labels', args=sgqlc.types.ArgDict((
-        ('order_by', sgqlc.types.Arg(LabelOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'ASC'})),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-))
-    )
-    '''A list of labels associated with the object.
-
-    Arguments:
-
-    * `order_by` (`LabelOrder`): Ordering options for labels returned
-      from the connection. (default: `{field: CREATED_AT, direction:
-      ASC}`)
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    '''
-
-
-
 class LanguageConnection(sgqlc.types.relay.Connection):
     '''A list of languages associated with the parent.'''
     __schema__ = github_schema
@@ -9798,20 +10569,8 @@ class LockLockablePayload(sgqlc.types.Type):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     '''A unique identifier for the client performing the mutation.'''
 
-    locked_record = sgqlc.types.Field('Lockable', graphql_name='lockedRecord')
+    locked_record = sgqlc.types.Field(Lockable, graphql_name='lockedRecord')
     '''The item that was locked.'''
-
-
-
-class Lockable(sgqlc.types.Interface):
-    '''An object that can be locked.'''
-    __schema__ = github_schema
-    __field_names__ = ('active_lock_reason', 'locked')
-    active_lock_reason = sgqlc.types.Field(LockReason, graphql_name='activeLockReason')
-    '''Reason that the conversation was locked.'''
-
-    locked = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='locked')
-    '''`true` if the object is locked'''
 
 
 
@@ -9869,36 +10628,6 @@ class MarketplaceListingEdge(sgqlc.types.Type):
 
 
 
-class MemberStatusable(sgqlc.types.Interface):
-    '''Entities that have members who can set status messages.'''
-    __schema__ = github_schema
-    __field_names__ = ('member_statuses',)
-    member_statuses = sgqlc.types.Field(sgqlc.types.non_null('UserStatusConnection'), graphql_name='memberStatuses', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('order_by', sgqlc.types.Arg(UserStatusOrder, graphql_name='orderBy', default={'field': 'UPDATED_AT', 'direction': 'DESC'})),
-))
-    )
-    '''Get the status messages members of this entity have set that are
-    either public or visible only to the organization.
-
-    Arguments:
-
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    * `order_by` (`UserStatusOrder`): Ordering options for user
-      statuses returned from the connection. (default: `{field:
-      UPDATED_AT, direction: DESC}`)
-    '''
-
-
-
 class MergeBranchPayload(sgqlc.types.Type):
     '''Autogenerated return type of MergeBranch'''
     __schema__ = github_schema
@@ -9953,21 +10682,6 @@ class MilestoneEdge(sgqlc.types.Type):
 
     node = sgqlc.types.Field('Milestone', graphql_name='node')
     '''The item at the end of the edge.'''
-
-
-
-class Minimizable(sgqlc.types.Interface):
-    '''Entities that can be minimized.'''
-    __schema__ = github_schema
-    __field_names__ = ('is_minimized', 'minimized_reason', 'viewer_can_minimize')
-    is_minimized = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isMinimized')
-    '''Returns whether or not a comment has been minimized.'''
-
-    minimized_reason = sgqlc.types.Field(String, graphql_name='minimizedReason')
-    '''Returns why the comment was minimized.'''
-
-    viewer_can_minimize = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanMinimize')
-    '''Check if the current viewer can minimize this object.'''
 
 
 
@@ -11625,30 +12339,6 @@ class Mutation(sgqlc.types.Type):
 
 
 
-class Node(sgqlc.types.Interface):
-    '''An object with an ID.'''
-    __schema__ = github_schema
-    __field_names__ = ('id',)
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-    '''ID of the object.'''
-
-
-
-class OauthApplicationAuditEntryData(sgqlc.types.Interface):
-    '''Metadata for an audit entry with action oauth_application.*'''
-    __schema__ = github_schema
-    __field_names__ = ('oauth_application_name', 'oauth_application_resource_path', 'oauth_application_url')
-    oauth_application_name = sgqlc.types.Field(String, graphql_name='oauthApplicationName')
-    '''The name of the OAuth Application.'''
-
-    oauth_application_resource_path = sgqlc.types.Field(URI, graphql_name='oauthApplicationResourcePath')
-    '''The HTTP path for the OAuth Application'''
-
-    oauth_application_url = sgqlc.types.Field(URI, graphql_name='oauthApplicationUrl')
-    '''The HTTP URL for the OAuth Application'''
-
-
-
 class OrganizationAuditEntryConnection(sgqlc.types.relay.Connection):
     '''The connection type for OrganizationAuditEntry.'''
     __schema__ = github_schema
@@ -11664,24 +12354,6 @@ class OrganizationAuditEntryConnection(sgqlc.types.relay.Connection):
 
     total_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='totalCount')
     '''Identifies the total count of items in the connection.'''
-
-
-
-class OrganizationAuditEntryData(sgqlc.types.Interface):
-    '''Metadata for an audit entry with action org.*'''
-    __schema__ = github_schema
-    __field_names__ = ('organization', 'organization_name', 'organization_resource_path', 'organization_url')
-    organization = sgqlc.types.Field('Organization', graphql_name='organization')
-    '''The Organization associated with the Audit Entry.'''
-
-    organization_name = sgqlc.types.Field(String, graphql_name='organizationName')
-    '''The name of the Organization.'''
-
-    organization_resource_path = sgqlc.types.Field(URI, graphql_name='organizationResourcePath')
-    '''The HTTP path for the organization'''
-
-    organization_url = sgqlc.types.Field(URI, graphql_name='organizationUrl')
-    '''The HTTP URL for the organization'''
 
 
 
@@ -11852,42 +12524,6 @@ class PackageFileEdge(sgqlc.types.Type):
 
     node = sgqlc.types.Field('PackageFile', graphql_name='node')
     '''The item at the end of the edge.'''
-
-
-
-class PackageOwner(sgqlc.types.Interface):
-    '''Represents an owner of a package.'''
-    __schema__ = github_schema
-    __field_names__ = ('id', 'packages')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-    packages = sgqlc.types.Field(sgqlc.types.non_null(PackageConnection), graphql_name='packages', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('names', sgqlc.types.Arg(sgqlc.types.list_of(String), graphql_name='names', default=None)),
-        ('repository_id', sgqlc.types.Arg(ID, graphql_name='repositoryId', default=None)),
-        ('package_type', sgqlc.types.Arg(PackageType, graphql_name='packageType', default=None)),
-        ('order_by', sgqlc.types.Arg(PackageOrder, graphql_name='orderBy', default={'field': 'CREATED_AT', 'direction': 'DESC'})),
-))
-    )
-    '''A list of packages under the owner.
-
-    Arguments:
-
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    * `names` (`[String]`): Find packages by their names.
-    * `repository_id` (`ID`): Find packages in a repository by ID.
-    * `package_type` (`PackageType`): Filter registry package by type.
-    * `order_by` (`PackageOrder`): Ordering of the returned packages.
-      (default: `{field: CREATED_AT, direction: DESC}`)
-    '''
 
 
 
@@ -12082,102 +12718,6 @@ class ProfileItemShowcase(sgqlc.types.Type):
 
 
 
-class ProfileOwner(sgqlc.types.Interface):
-    '''Represents any entity on GitHub that has a profile page.'''
-    __schema__ = github_schema
-    __field_names__ = ('any_pinnable_items', 'email', 'id', 'item_showcase', 'location', 'login', 'name', 'pinnable_items', 'pinned_items', 'pinned_items_remaining', 'viewer_can_change_pinned_items', 'website_url')
-    any_pinnable_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='anyPinnableItems', args=sgqlc.types.ArgDict((
-        ('type', sgqlc.types.Arg(PinnableItemType, graphql_name='type', default=None)),
-))
-    )
-    '''Determine if this repository owner has any items that can be
-    pinned to their profile.
-
-    Arguments:
-
-    * `type` (`PinnableItemType`): Filter to only a particular kind of
-      pinnable item.
-    '''
-
-    email = sgqlc.types.Field(String, graphql_name='email')
-    '''The public profile email.'''
-
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-    item_showcase = sgqlc.types.Field(sgqlc.types.non_null(ProfileItemShowcase), graphql_name='itemShowcase')
-    '''Showcases a selection of repositories and gists that the profile
-    owner has either curated or that have been selected automatically
-    based on popularity.
-    '''
-
-    location = sgqlc.types.Field(String, graphql_name='location')
-    '''The public profile location.'''
-
-    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
-    '''The username used to login.'''
-
-    name = sgqlc.types.Field(String, graphql_name='name')
-    '''The public profile name.'''
-
-    pinnable_items = sgqlc.types.Field(sgqlc.types.non_null(PinnableItemConnection), graphql_name='pinnableItems', args=sgqlc.types.ArgDict((
-        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-))
-    )
-    '''A list of repositories and gists this profile owner can pin to
-    their profile.
-
-    Arguments:
-
-    * `types` (`[PinnableItemType!]`): Filter the types of pinnable
-      items that are returned.
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    '''
-
-    pinned_items = sgqlc.types.Field(sgqlc.types.non_null(PinnableItemConnection), graphql_name='pinnedItems', args=sgqlc.types.ArgDict((
-        ('types', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(PinnableItemType)), graphql_name='types', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-))
-    )
-    '''A list of repositories and gists this profile owner has pinned to
-    their profile
-
-    Arguments:
-
-    * `types` (`[PinnableItemType!]`): Filter the types of pinned
-      items that are returned.
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    '''
-
-    pinned_items_remaining = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='pinnedItemsRemaining')
-    '''Returns how many more items this profile owner can pin to their
-    profile.
-    '''
-
-    viewer_can_change_pinned_items = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanChangePinnedItems')
-    '''Can the viewer pin repositories and gists to the profile?'''
-
-    website_url = sgqlc.types.Field(URI, graphql_name='websiteUrl')
-    '''The public profile website URL.'''
-
-
-
 class ProjectCardConnection(sgqlc.types.relay.Connection):
     '''The connection type for ProjectCard.'''
     __schema__ = github_schema
@@ -12265,62 +12805,6 @@ class ProjectEdge(sgqlc.types.Type):
 
     node = sgqlc.types.Field('Project', graphql_name='node')
     '''The item at the end of the edge.'''
-
-
-
-class ProjectOwner(sgqlc.types.Interface):
-    '''Represents an owner of a Project.'''
-    __schema__ = github_schema
-    __field_names__ = ('id', 'project', 'projects', 'projects_resource_path', 'projects_url', 'viewer_can_create_projects')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-    project = sgqlc.types.Field('Project', graphql_name='project', args=sgqlc.types.ArgDict((
-        ('number', sgqlc.types.Arg(sgqlc.types.non_null(Int), graphql_name='number', default=None)),
-))
-    )
-    '''Find project by number.
-
-    Arguments:
-
-    * `number` (`Int!`): The project number to find.
-    '''
-
-    projects = sgqlc.types.Field(sgqlc.types.non_null(ProjectConnection), graphql_name='projects', args=sgqlc.types.ArgDict((
-        ('order_by', sgqlc.types.Arg(ProjectOrder, graphql_name='orderBy', default=None)),
-        ('search', sgqlc.types.Arg(String, graphql_name='search', default=None)),
-        ('states', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(ProjectState)), graphql_name='states', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-))
-    )
-    '''A list of projects under the owner.
-
-    Arguments:
-
-    * `order_by` (`ProjectOrder`): Ordering options for projects
-      returned from the connection
-    * `search` (`String`): Query to search projects by, currently only
-      searching by name.
-    * `states` (`[ProjectState!]`): A list of states to filter the
-      projects by.
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    '''
-
-    projects_resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='projectsResourcePath')
-    '''The HTTP path listing owners projects'''
-
-    projects_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='projectsUrl')
-    '''The HTTP URL listing owners projects'''
-
-    viewer_can_create_projects = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanCreateProjects')
-    '''Can the current viewer create new projects on this owner.'''
 
 
 
@@ -13005,7 +13489,7 @@ class Query(sgqlc.types.Type):
     * `name` (`String!`): The name of the repository
     '''
 
-    repository_owner = sgqlc.types.Field('RepositoryOwner', graphql_name='repositoryOwner', args=sgqlc.types.ArgDict((
+    repository_owner = sgqlc.types.Field(RepositoryOwner, graphql_name='repositoryOwner', args=sgqlc.types.ArgDict((
         ('login', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='login', default=None)),
 ))
     )
@@ -13017,7 +13501,7 @@ class Query(sgqlc.types.Type):
     * `login` (`String!`): The username to lookup the owner by.
     '''
 
-    resource = sgqlc.types.Field('UniformResourceLocatable', graphql_name='resource', args=sgqlc.types.ArgDict((
+    resource = sgqlc.types.Field(UniformResourceLocatable, graphql_name='resource', args=sgqlc.types.ArgDict((
         ('url', sgqlc.types.Arg(sgqlc.types.non_null(URI), graphql_name='url', default=None)),
 ))
     )
@@ -13221,48 +13705,6 @@ class RateLimit(sgqlc.types.Type):
 
     used = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='used')
     '''The number of points used in the current rate limit window.'''
-
-
-
-class Reactable(sgqlc.types.Interface):
-    '''Represents a subject that can be reacted on.'''
-    __schema__ = github_schema
-    __field_names__ = ('database_id', 'id', 'reaction_groups', 'reactions', 'viewer_can_react')
-    database_id = sgqlc.types.Field(Int, graphql_name='databaseId')
-    '''Identifies the primary key from the database.'''
-
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-    reaction_groups = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null('ReactionGroup')), graphql_name='reactionGroups')
-    '''A list of reactions grouped by content left on the subject.'''
-
-    reactions = sgqlc.types.Field(sgqlc.types.non_null('ReactionConnection'), graphql_name='reactions', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('content', sgqlc.types.Arg(ReactionContent, graphql_name='content', default=None)),
-        ('order_by', sgqlc.types.Arg(ReactionOrder, graphql_name='orderBy', default=None)),
-))
-    )
-    '''A list of Reactions left on the Issue.
-
-    Arguments:
-
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    * `content` (`ReactionContent`): Allows filtering Reactions by
-      emoji.
-    * `order_by` (`ReactionOrder`): Allows specifying the order in
-      which reactions are returned.
-    '''
-
-    viewer_can_react = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanReact')
-    '''Can user react to this subject'''
 
 
 
@@ -13650,7 +14092,7 @@ class RemoveStarPayload(sgqlc.types.Type):
     client_mutation_id = sgqlc.types.Field(String, graphql_name='clientMutationId')
     '''A unique identifier for the client performing the mutation.'''
 
-    starrable = sgqlc.types.Field('Starrable', graphql_name='starrable')
+    starrable = sgqlc.types.Field(Starrable, graphql_name='starrable')
     '''The starrable.'''
 
 
@@ -13676,24 +14118,6 @@ class ReopenPullRequestPayload(sgqlc.types.Type):
 
     pull_request = sgqlc.types.Field('PullRequest', graphql_name='pullRequest')
     '''The pull request that was reopened.'''
-
-
-
-class RepositoryAuditEntryData(sgqlc.types.Interface):
-    '''Metadata for an audit entry with action repo.*'''
-    __schema__ = github_schema
-    __field_names__ = ('repository', 'repository_name', 'repository_resource_path', 'repository_url')
-    repository = sgqlc.types.Field('Repository', graphql_name='repository')
-    '''The repository associated with the action'''
-
-    repository_name = sgqlc.types.Field(String, graphql_name='repositoryName')
-    '''The name of the repository'''
-
-    repository_resource_path = sgqlc.types.Field(URI, graphql_name='repositoryResourcePath')
-    '''The HTTP path for the repository'''
-
-    repository_url = sgqlc.types.Field(URI, graphql_name='repositoryUrl')
-    '''The HTTP URL for the repository'''
 
 
 
@@ -13780,113 +14204,6 @@ class RepositoryEdge(sgqlc.types.Type):
 
 
 
-class RepositoryInfo(sgqlc.types.Interface):
-    '''A subset of repository info.'''
-    __schema__ = github_schema
-    __field_names__ = ('created_at', 'description', 'description_html', 'fork_count', 'has_issues_enabled', 'has_projects_enabled', 'has_wiki_enabled', 'homepage_url', 'is_archived', 'is_fork', 'is_in_organization', 'is_locked', 'is_mirror', 'is_private', 'is_template', 'license_info', 'lock_reason', 'mirror_url', 'name', 'name_with_owner', 'open_graph_image_url', 'owner', 'pushed_at', 'resource_path', 'short_description_html', 'updated_at', 'url', 'uses_custom_open_graph_image')
-    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
-    '''Identifies the date and time when the object was created.'''
-
-    description = sgqlc.types.Field(String, graphql_name='description')
-    '''The description of the repository.'''
-
-    description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='descriptionHTML')
-    '''The description of the repository rendered to HTML.'''
-
-    fork_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='forkCount')
-    '''Returns how many forks there are of this repository in the whole
-    network.
-    '''
-
-    has_issues_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasIssuesEnabled')
-    '''Indicates if the repository has issues feature enabled.'''
-
-    has_projects_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasProjectsEnabled')
-    '''Indicates if the repository has the Projects feature enabled.'''
-
-    has_wiki_enabled = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasWikiEnabled')
-    '''Indicates if the repository has wiki feature enabled.'''
-
-    homepage_url = sgqlc.types.Field(URI, graphql_name='homepageUrl')
-    '''The repository's URL.'''
-
-    is_archived = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isArchived')
-    '''Indicates if the repository is unmaintained.'''
-
-    is_fork = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isFork')
-    '''Identifies if the repository is a fork.'''
-
-    is_in_organization = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isInOrganization')
-    '''Indicates if a repository is either owned by an organization, or
-    is a private fork of an organization repository.
-    '''
-
-    is_locked = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isLocked')
-    '''Indicates if the repository has been locked or not.'''
-
-    is_mirror = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isMirror')
-    '''Identifies if the repository is a mirror.'''
-
-    is_private = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isPrivate')
-    '''Identifies if the repository is private or internal.'''
-
-    is_template = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isTemplate')
-    '''Identifies if the repository is a template that can be used to
-    generate new repositories.
-    '''
-
-    license_info = sgqlc.types.Field('License', graphql_name='licenseInfo')
-    '''The license associated with the repository'''
-
-    lock_reason = sgqlc.types.Field(RepositoryLockReason, graphql_name='lockReason')
-    '''The reason the repository has been locked.'''
-
-    mirror_url = sgqlc.types.Field(URI, graphql_name='mirrorUrl')
-    '''The repository's original mirror URL.'''
-
-    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
-    '''The name of the repository.'''
-
-    name_with_owner = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='nameWithOwner')
-    '''The repository's name with owner.'''
-
-    open_graph_image_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='openGraphImageUrl')
-    '''The image used to represent this repository in Open Graph data.'''
-
-    owner = sgqlc.types.Field(sgqlc.types.non_null('RepositoryOwner'), graphql_name='owner')
-    '''The User owner of the repository.'''
-
-    pushed_at = sgqlc.types.Field(DateTime, graphql_name='pushedAt')
-    '''Identifies when the repository was last pushed to.'''
-
-    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
-    '''The HTTP path for this repository'''
-
-    short_description_html = sgqlc.types.Field(sgqlc.types.non_null(HTML), graphql_name='shortDescriptionHTML', args=sgqlc.types.ArgDict((
-        ('limit', sgqlc.types.Arg(Int, graphql_name='limit', default=200)),
-))
-    )
-    '''A description of the repository, rendered to HTML without any
-    links in it.
-
-    Arguments:
-
-    * `limit` (`Int`): How many characters to return. (default: `200`)
-    '''
-
-    updated_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='updatedAt')
-    '''Identifies the date and time when the object was last updated.'''
-
-    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
-    '''The HTTP URL for this repository'''
-
-    uses_custom_open_graph_image = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='usesCustomOpenGraphImage')
-    '''Whether this repository has a custom image to use with Open Graph
-    as opposed to being represented by the owner's avatar.
-    '''
-
-
-
 class RepositoryInteractionAbility(sgqlc.types.Type):
     '''Repository interaction limit that applies to this object.'''
     __schema__ = github_schema
@@ -13929,96 +14246,6 @@ class RepositoryInvitationEdge(sgqlc.types.Type):
 
     node = sgqlc.types.Field('RepositoryInvitation', graphql_name='node')
     '''The item at the end of the edge.'''
-
-
-
-class RepositoryNode(sgqlc.types.Interface):
-    '''Represents a object that belongs to a repository.'''
-    __schema__ = github_schema
-    __field_names__ = ('repository',)
-    repository = sgqlc.types.Field(sgqlc.types.non_null('Repository'), graphql_name='repository')
-    '''The repository associated with this node.'''
-
-
-
-class RepositoryOwner(sgqlc.types.Interface):
-    '''Represents an owner of a Repository.'''
-    __schema__ = github_schema
-    __field_names__ = ('avatar_url', 'id', 'login', 'repositories', 'repository', 'resource_path', 'url')
-    avatar_url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='avatarUrl', args=sgqlc.types.ArgDict((
-        ('size', sgqlc.types.Arg(Int, graphql_name='size', default=None)),
-))
-    )
-    '''A URL pointing to the owner's public avatar.
-
-    Arguments:
-
-    * `size` (`Int`): The size of the resulting square image.
-    '''
-
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-    login = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='login')
-    '''The username used to login.'''
-
-    repositories = sgqlc.types.Field(sgqlc.types.non_null(RepositoryConnection), graphql_name='repositories', args=sgqlc.types.ArgDict((
-        ('privacy', sgqlc.types.Arg(RepositoryPrivacy, graphql_name='privacy', default=None)),
-        ('order_by', sgqlc.types.Arg(RepositoryOrder, graphql_name='orderBy', default=None)),
-        ('affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='affiliations', default=None)),
-        ('owner_affiliations', sgqlc.types.Arg(sgqlc.types.list_of(RepositoryAffiliation), graphql_name='ownerAffiliations', default=['OWNER', 'COLLABORATOR'])),
-        ('is_locked', sgqlc.types.Arg(Boolean, graphql_name='isLocked', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('is_fork', sgqlc.types.Arg(Boolean, graphql_name='isFork', default=None)),
-))
-    )
-    '''A list of repositories that the user owns.
-
-    Arguments:
-
-    * `privacy` (`RepositoryPrivacy`): If non-null, filters
-      repositories according to privacy
-    * `order_by` (`RepositoryOrder`): Ordering options for
-      repositories returned from the connection
-    * `affiliations` (`[RepositoryAffiliation]`): Array of viewer's
-      affiliation options for repositories returned from the
-      connection. For example, OWNER will include only repositories
-      that the current viewer owns.
-    * `owner_affiliations` (`[RepositoryAffiliation]`): Array of
-      owner's affiliation options for repositories returned from the
-      connection. For example, OWNER will include only repositories
-      that the organization or user being viewed owns. (default:
-      `[OWNER, COLLABORATOR]`)
-    * `is_locked` (`Boolean`): If non-null, filters repositories
-      according to whether they have been locked
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    * `is_fork` (`Boolean`): If non-null, filters repositories
-      according to whether they are forks of another repository
-    '''
-
-    repository = sgqlc.types.Field('Repository', graphql_name='repository', args=sgqlc.types.ArgDict((
-        ('name', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='name', default=None)),
-))
-    )
-    '''Find Repository.
-
-    Arguments:
-
-    * `name` (`String!`): Name of Repository to find.
-    '''
-
-    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
-    '''The HTTP URL for the owner.'''
-
-    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
-    '''The HTTP URL for the owner.'''
 
 
 
@@ -14097,30 +14324,6 @@ class RequestReviewsPayload(sgqlc.types.Type):
 
     requested_reviewers_edge = sgqlc.types.Field('UserEdge', graphql_name='requestedReviewersEdge')
     '''The edge from the pull request to the requested reviewers.'''
-
-
-
-class RequirableByPullRequest(sgqlc.types.Interface):
-    '''Represents a type that can be required by a pull request for
-    merging.
-    '''
-    __schema__ = github_schema
-    __field_names__ = ('is_required',)
-    is_required = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isRequired', args=sgqlc.types.ArgDict((
-        ('pull_request_id', sgqlc.types.Arg(ID, graphql_name='pullRequestId', default=None)),
-        ('pull_request_number', sgqlc.types.Arg(Int, graphql_name='pullRequestNumber', default=None)),
-))
-    )
-    '''Whether this is required to pass before merging for a specific
-    pull request.
-
-    Arguments:
-
-    * `pull_request_id` (`ID`): The id of the pull request this is
-      required for
-    * `pull_request_number` (`Int`): The number of the pull request
-      this is required for
-    '''
 
 
 
@@ -14465,92 +14668,6 @@ class SetUserInteractionLimitPayload(sgqlc.types.Type):
 
 
 
-class Sponsorable(sgqlc.types.Interface):
-    '''Entities that can be sponsored through GitHub Sponsors'''
-    __schema__ = github_schema
-    __field_names__ = ('has_sponsors_listing', 'is_sponsored_by', 'is_sponsoring_viewer', 'sponsors_listing', 'sponsorship_for_viewer_as_sponsor', 'sponsorships_as_maintainer', 'sponsorships_as_sponsor', 'viewer_can_sponsor', 'viewer_is_sponsoring')
-    has_sponsors_listing = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasSponsorsListing')
-    '''True if this user/organization has a GitHub Sponsors listing.'''
-
-    is_sponsored_by = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isSponsoredBy', args=sgqlc.types.ArgDict((
-        ('account_login', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='accountLogin', default=None)),
-))
-    )
-    '''Check if the given account is sponsoring this user/organization.
-
-    Arguments:
-
-    * `account_login` (`String!`): The target account's login.
-    '''
-
-    is_sponsoring_viewer = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='isSponsoringViewer')
-    '''True if the viewer is sponsored by this user/organization.'''
-
-    sponsors_listing = sgqlc.types.Field('SponsorsListing', graphql_name='sponsorsListing')
-    '''The GitHub Sponsors listing for this user or organization.'''
-
-    sponsorship_for_viewer_as_sponsor = sgqlc.types.Field('Sponsorship', graphql_name='sponsorshipForViewerAsSponsor')
-    '''The viewer's sponsorship of this entity.'''
-
-    sponsorships_as_maintainer = sgqlc.types.Field(sgqlc.types.non_null('SponsorshipConnection'), graphql_name='sponsorshipsAsMaintainer', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('include_private', sgqlc.types.Arg(Boolean, graphql_name='includePrivate', default=False)),
-        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
-))
-    )
-    '''This object's sponsorships as the maintainer.
-
-    Arguments:
-
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    * `include_private` (`Boolean`): Whether or not to include private
-      sponsorships in the result set (default: `false`)
-    * `order_by` (`SponsorshipOrder`): Ordering options for
-      sponsorships returned from this connection. If left blank, the
-      sponsorships will be ordered based on relevancy to the viewer.
-    '''
-
-    sponsorships_as_sponsor = sgqlc.types.Field(sgqlc.types.non_null('SponsorshipConnection'), graphql_name='sponsorshipsAsSponsor', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('order_by', sgqlc.types.Arg(SponsorshipOrder, graphql_name='orderBy', default=None)),
-))
-    )
-    '''This object's sponsorships as the sponsor.
-
-    Arguments:
-
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    * `order_by` (`SponsorshipOrder`): Ordering options for
-      sponsorships returned from this connection. If left blank, the
-      sponsorships will be ordered based on relevancy to the viewer.
-    '''
-
-    viewer_can_sponsor = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanSponsor')
-    '''Whether or not the viewer is able to sponsor this
-    user/organization.
-    '''
-
-    viewer_is_sponsoring = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerIsSponsoring')
-    '''True if the viewer is sponsoring this user/organization.'''
-
-
-
 class SponsorableItemConnection(sgqlc.types.relay.Connection):
     '''The connection type for SponsorableItem.'''
     __schema__ = github_schema
@@ -14735,43 +14852,6 @@ class StargazerEdge(sgqlc.types.Type):
 
 
 
-class Starrable(sgqlc.types.Interface):
-    '''Things that can be starred.'''
-    __schema__ = github_schema
-    __field_names__ = ('id', 'stargazer_count', 'stargazers', 'viewer_has_starred')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-    stargazer_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='stargazerCount')
-    '''Returns a count of how many stargazers there are on this object'''
-
-    stargazers = sgqlc.types.Field(sgqlc.types.non_null(StargazerConnection), graphql_name='stargazers', args=sgqlc.types.ArgDict((
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('order_by', sgqlc.types.Arg(StarOrder, graphql_name='orderBy', default=None)),
-))
-    )
-    '''A list of users who have starred this starrable.
-
-    Arguments:
-
-    * `after` (`String`): Returns the elements in the list that come
-      after the specified cursor.
-    * `before` (`String`): Returns the elements in the list that come
-      before the specified cursor.
-    * `first` (`Int`): Returns the first _n_ elements from the list.
-    * `last` (`Int`): Returns the last _n_ elements from the list.
-    * `order_by` (`StarOrder`): Order for connection
-    '''
-
-    viewer_has_starred = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerHasStarred')
-    '''Returns a boolean indicating whether the viewing user has starred
-    this starrable.
-    '''
-
-
-
 class StarredRepositoryConnection(sgqlc.types.relay.Connection):
     '''The connection type for Repository.'''
     __schema__ = github_schema
@@ -14906,26 +14986,6 @@ class SubmoduleEdge(sgqlc.types.Type):
 
 
 
-class Subscribable(sgqlc.types.Interface):
-    '''Entities that can be subscribed to for web and email
-    notifications.
-    '''
-    __schema__ = github_schema
-    __field_names__ = ('id', 'viewer_can_subscribe', 'viewer_subscription')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-    viewer_can_subscribe = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanSubscribe')
-    '''Check if the viewer is able to change their subscription status
-    for the repository.
-    '''
-
-    viewer_subscription = sgqlc.types.Field(SubscriptionState, graphql_name='viewerSubscription')
-    '''Identifies if the viewer is watching, not watching, or ignoring
-    the subscribable entity.
-    '''
-
-
-
 class SuggestedReviewer(sgqlc.types.Type):
     '''A suggestion to review a pull request based on a user's commit
     history and review comments.
@@ -14940,24 +15000,6 @@ class SuggestedReviewer(sgqlc.types.Type):
 
     reviewer = sgqlc.types.Field(sgqlc.types.non_null('User'), graphql_name='reviewer')
     '''Identifies the user suggested to review the pull request.'''
-
-
-
-class TeamAuditEntryData(sgqlc.types.Interface):
-    '''Metadata for an audit entry with action team.*'''
-    __schema__ = github_schema
-    __field_names__ = ('team', 'team_name', 'team_resource_path', 'team_url')
-    team = sgqlc.types.Field('Team', graphql_name='team')
-    '''The team associated with the action'''
-
-    team_name = sgqlc.types.Field(String, graphql_name='teamName')
-    '''The name of the team'''
-
-    team_resource_path = sgqlc.types.Field(URI, graphql_name='teamResourcePath')
-    '''The HTTP path for this team'''
-
-    team_url = sgqlc.types.Field(URI, graphql_name='teamUrl')
-    '''The HTTP URL for this team'''
 
 
 
@@ -15151,18 +15193,6 @@ class TextMatchHighlight(sgqlc.types.Type):
 
 
 
-class TopicAuditEntryData(sgqlc.types.Interface):
-    '''Metadata for an audit entry with a topic.'''
-    __schema__ = github_schema
-    __field_names__ = ('topic', 'topic_name')
-    topic = sgqlc.types.Field('Topic', graphql_name='topic')
-    '''The name of the topic added to the repository'''
-
-    topic_name = sgqlc.types.Field(String, graphql_name='topicName')
-    '''The name of the topic added to the repository'''
-
-
-
 class TransferIssuePayload(sgqlc.types.Type):
     '''Autogenerated return type of TransferIssue'''
     __schema__ = github_schema
@@ -15234,18 +15264,6 @@ class UnfollowUserPayload(sgqlc.types.Type):
 
     user = sgqlc.types.Field('User', graphql_name='user')
     '''The user that was unfollowed.'''
-
-
-
-class UniformResourceLocatable(sgqlc.types.Interface):
-    '''Represents a type that can be retrieved by a URL.'''
-    __schema__ = github_schema
-    __field_names__ = ('resource_path', 'url')
-    resource_path = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='resourcePath')
-    '''The HTML path to this resource.'''
-
-    url = sgqlc.types.Field(sgqlc.types.non_null(URI), graphql_name='url')
-    '''The URL to this resource.'''
 
 
 
@@ -15336,24 +15354,6 @@ class UnresolveReviewThreadPayload(sgqlc.types.Type):
 
     thread = sgqlc.types.Field('PullRequestReviewThread', graphql_name='thread')
     '''The thread to resolve.'''
-
-
-
-class Updatable(sgqlc.types.Interface):
-    '''Entities that can be updated.'''
-    __schema__ = github_schema
-    __field_names__ = ('viewer_can_update',)
-    viewer_can_update = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='viewerCanUpdate')
-    '''Check if the current viewer can update this object.'''
-
-
-
-class UpdatableComment(sgqlc.types.Interface):
-    '''Comments that can be updated.'''
-    __schema__ = github_schema
-    __field_names__ = ('viewer_cannot_update_reasons',)
-    viewer_cannot_update_reasons = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(CommentCannotUpdateReason))), graphql_name='viewerCannotUpdateReasons')
-    '''Reasons why the current viewer can not update this comment.'''
 
 
 

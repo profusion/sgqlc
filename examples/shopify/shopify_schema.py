@@ -1989,6 +1989,224 @@ class WeightInput(sgqlc.types.Input):
 ########################################################################
 # Output Objects and Interfaces
 ########################################################################
+class AppPurchase(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('created_at', 'name', 'price', 'status', 'test')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
+    price = sgqlc.types.Field(sgqlc.types.non_null('MoneyV2'), graphql_name='price')
+    status = sgqlc.types.Field(sgqlc.types.non_null(AppPurchaseStatus), graphql_name='status')
+    test = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='test')
+
+
+class CalculatedDiscountApplication(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('allocation_method', 'applied_to', 'description', 'id', 'target_selection', 'target_type', 'value')
+    allocation_method = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationAllocationMethod), graphql_name='allocationMethod')
+    applied_to = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationLevel), graphql_name='appliedTo')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    target_selection = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationTargetSelection), graphql_name='targetSelection')
+    target_type = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationTargetType), graphql_name='targetType')
+    value = sgqlc.types.Field(sgqlc.types.non_null('PricingValue'), graphql_name='value')
+
+
+class CommentEventSubject(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('has_timeline_comment', 'id')
+    has_timeline_comment = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasTimelineComment')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
+class CustomerMoment(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('occurred_at',)
+    occurred_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='occurredAt')
+
+
+class DiscountApplication(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('allocation_method', 'index', 'target_selection', 'target_type', 'value')
+    allocation_method = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationAllocationMethod), graphql_name='allocationMethod')
+    index = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='index')
+    target_selection = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationTargetSelection), graphql_name='targetSelection')
+    target_type = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationTargetType), graphql_name='targetType')
+    value = sgqlc.types.Field(sgqlc.types.non_null('PricingValue'), graphql_name='value')
+
+
+class DisplayableError(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('field', 'message')
+    field = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='field')
+    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
+
+
+class Event(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('app_title', 'attribute_to_app', 'attribute_to_user', 'created_at', 'critical_alert', 'id', 'message')
+    app_title = sgqlc.types.Field(String, graphql_name='appTitle')
+    attribute_to_app = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='attributeToApp')
+    attribute_to_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='attributeToUser')
+    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
+    critical_alert = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='criticalAlert')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+    message = sgqlc.types.Field(sgqlc.types.non_null(FormattedString), graphql_name='message')
+
+
+class HasEvents(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('events',)
+    events = sgqlc.types.Field(sgqlc.types.non_null('EventConnection'), graphql_name='events', args=sgqlc.types.ArgDict((
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
+        ('sort_key', sgqlc.types.Arg(EventSortKeys, graphql_name='sortKey', default='ID')),
+        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
+))
+    )
+
+
+class HasLocalizationExtensions(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('localization_extensions',)
+    localization_extensions = sgqlc.types.Field(sgqlc.types.non_null('LocalizationExtensionConnection'), graphql_name='localizationExtensions', args=sgqlc.types.ArgDict((
+        ('country_codes', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(CountryCode)), graphql_name='countryCodes', default=None)),
+        ('purposes', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(LocalizationExtensionPurpose)), graphql_name='purposes', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
+))
+    )
+
+
+class HasMetafields(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('metafield', 'metafields', 'private_metafield', 'private_metafields')
+    metafield = sgqlc.types.Field('Metafield', graphql_name='metafield', args=sgqlc.types.ArgDict((
+        ('namespace', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='namespace', default=None)),
+        ('key', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='key', default=None)),
+))
+    )
+    metafields = sgqlc.types.Field(sgqlc.types.non_null('MetafieldConnection'), graphql_name='metafields', args=sgqlc.types.ArgDict((
+        ('namespace', sgqlc.types.Arg(String, graphql_name='namespace', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
+))
+    )
+    private_metafield = sgqlc.types.Field('PrivateMetafield', graphql_name='privateMetafield', args=sgqlc.types.ArgDict((
+        ('namespace', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='namespace', default=None)),
+        ('key', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='key', default=None)),
+))
+    )
+    private_metafields = sgqlc.types.Field(sgqlc.types.non_null('PrivateMetafieldConnection'), graphql_name='privateMetafields', args=sgqlc.types.ArgDict((
+        ('namespace', sgqlc.types.Arg(String, graphql_name='namespace', default=None)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
+))
+    )
+
+
+class HasPublishedTranslations(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('translations',)
+    translations = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('PublishedTranslation'))), graphql_name='translations', args=sgqlc.types.ArgDict((
+        ('locale', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='locale', default=None)),
+))
+    )
+
+
+class LegacyInteroperability(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('legacy_resource_id',)
+    legacy_resource_id = sgqlc.types.Field(sgqlc.types.non_null(UnsignedInt64), graphql_name='legacyResourceId')
+
+
+class Media(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('alt', 'media_content_type', 'media_errors', 'preview', 'status')
+    alt = sgqlc.types.Field(String, graphql_name='alt')
+    media_content_type = sgqlc.types.Field(sgqlc.types.non_null(MediaContentType), graphql_name='mediaContentType')
+    media_errors = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MediaError'))), graphql_name='mediaErrors')
+    preview = sgqlc.types.Field('MediaPreviewImage', graphql_name='preview')
+    status = sgqlc.types.Field(sgqlc.types.non_null(MediaStatus), graphql_name='status')
+
+
+class Navigable(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('default_cursor',)
+    default_cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='defaultCursor')
+
+
+class Node(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('id',)
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
+
+
+class OnlineStorePreviewable(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('online_store_preview_url',)
+    online_store_preview_url = sgqlc.types.Field(URL, graphql_name='onlineStorePreviewUrl')
+
+
+class Publishable(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('available_publication_count', 'publication_count', 'published_on_current_publication', 'published_on_publication', 'resource_publications', 'resource_publications_v2', 'unpublished_publications')
+    available_publication_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='availablePublicationCount')
+    publication_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='publicationCount', args=sgqlc.types.ArgDict((
+        ('only_published', sgqlc.types.Arg(Boolean, graphql_name='onlyPublished', default=True)),
+))
+    )
+    published_on_current_publication = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='publishedOnCurrentPublication')
+    published_on_publication = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='publishedOnPublication', args=sgqlc.types.ArgDict((
+        ('publication_id', sgqlc.types.Arg(sgqlc.types.non_null(ID), graphql_name='publicationId', default=None)),
+))
+    )
+    resource_publications = sgqlc.types.Field(sgqlc.types.non_null('ResourcePublicationConnection'), graphql_name='resourcePublications', args=sgqlc.types.ArgDict((
+        ('only_published', sgqlc.types.Arg(Boolean, graphql_name='onlyPublished', default=True)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
+))
+    )
+    resource_publications_v2 = sgqlc.types.Field(sgqlc.types.non_null('ResourcePublicationV2Connection'), graphql_name='resourcePublicationsV2', args=sgqlc.types.ArgDict((
+        ('only_published', sgqlc.types.Arg(Boolean, graphql_name='onlyPublished', default=True)),
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
+))
+    )
+    unpublished_publications = sgqlc.types.Field(sgqlc.types.non_null('PublicationConnection'), graphql_name='unpublishedPublications', args=sgqlc.types.ArgDict((
+        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
+        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
+        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
+        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
+))
+    )
+
+
+class ShopifyPaymentsChargeStatementDescriptor(sgqlc.types.Interface):
+    __schema__ = shopify_schema
+    __field_names__ = ('default', 'prefix')
+    default = sgqlc.types.Field(String, graphql_name='default')
+    prefix = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='prefix')
+
+
 class AccessScope(sgqlc.types.Type):
     __schema__ = shopify_schema
     __field_names__ = ('description', 'handle')
@@ -2071,16 +2289,6 @@ class AppPlanV2(sgqlc.types.Type):
     __schema__ = shopify_schema
     __field_names__ = ('pricing_details',)
     pricing_details = sgqlc.types.Field(sgqlc.types.non_null('AppPricingDetails'), graphql_name='pricingDetails')
-
-
-class AppPurchase(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('created_at', 'name', 'price', 'status', 'test')
-    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
-    name = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='name')
-    price = sgqlc.types.Field(sgqlc.types.non_null('MoneyV2'), graphql_name='price')
-    status = sgqlc.types.Field(sgqlc.types.non_null(AppPurchaseStatus), graphql_name='status')
-    test = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='test')
 
 
 class AppPurchaseOneTimeConnection(sgqlc.types.relay.Connection):
@@ -2220,19 +2428,7 @@ class CalculatedDiscountAllocation(sgqlc.types.Type):
     __schema__ = shopify_schema
     __field_names__ = ('allocated_amount_set', 'discount_application')
     allocated_amount_set = sgqlc.types.Field(sgqlc.types.non_null('MoneyBag'), graphql_name='allocatedAmountSet')
-    discount_application = sgqlc.types.Field(sgqlc.types.non_null('CalculatedDiscountApplication'), graphql_name='discountApplication')
-
-
-class CalculatedDiscountApplication(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('allocation_method', 'applied_to', 'description', 'id', 'target_selection', 'target_type', 'value')
-    allocation_method = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationAllocationMethod), graphql_name='allocationMethod')
-    applied_to = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationLevel), graphql_name='appliedTo')
-    description = sgqlc.types.Field(String, graphql_name='description')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-    target_selection = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationTargetSelection), graphql_name='targetSelection')
-    target_type = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationTargetType), graphql_name='targetType')
-    value = sgqlc.types.Field(sgqlc.types.non_null('PricingValue'), graphql_name='value')
+    discount_application = sgqlc.types.Field(sgqlc.types.non_null(CalculatedDiscountApplication), graphql_name='discountApplication')
 
 
 class CalculatedDiscountApplicationConnection(sgqlc.types.relay.Connection):
@@ -2481,13 +2677,6 @@ class CommentEventAttachment(sgqlc.types.Type):
     url = sgqlc.types.Field(sgqlc.types.non_null(URL), graphql_name='url')
 
 
-class CommentEventSubject(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('has_timeline_comment', 'id')
-    has_timeline_comment = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='hasTimelineComment')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-
 class CountriesInShippingZones(sgqlc.types.Type):
     __schema__ = shopify_schema
     __field_names__ = ('country_codes', 'include_rest_of_world')
@@ -2598,7 +2787,7 @@ class CustomerJourney(sgqlc.types.Type):
     days_to_conversion = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='daysToConversion')
     first_visit = sgqlc.types.Field(sgqlc.types.non_null('CustomerVisit'), graphql_name='firstVisit')
     last_visit = sgqlc.types.Field('CustomerVisit', graphql_name='lastVisit')
-    moments = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('CustomerMoment'))), graphql_name='moments')
+    moments = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(CustomerMoment))), graphql_name='moments')
 
 
 class CustomerJourneySummary(sgqlc.types.Type):
@@ -2618,12 +2807,6 @@ class CustomerJourneySummary(sgqlc.types.Type):
     )
     moments_count = sgqlc.types.Field(Int, graphql_name='momentsCount')
     ready = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='ready')
-
-
-class CustomerMoment(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('occurred_at',)
-    occurred_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='occurredAt')
 
 
 class CustomerMomentConnection(sgqlc.types.relay.Connection):
@@ -2881,7 +3064,7 @@ class DiscountAllocation(sgqlc.types.Type):
     __schema__ = shopify_schema
     __field_names__ = ('allocated_amount_set', 'discount_application')
     allocated_amount_set = sgqlc.types.Field(sgqlc.types.non_null('MoneyBag'), graphql_name='allocatedAmountSet')
-    discount_application = sgqlc.types.Field(sgqlc.types.non_null('DiscountApplication'), graphql_name='discountApplication')
+    discount_application = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplication), graphql_name='discountApplication')
 
 
 class DiscountAmount(sgqlc.types.Type):
@@ -2889,16 +3072,6 @@ class DiscountAmount(sgqlc.types.Type):
     __field_names__ = ('amount', 'applies_on_each_item')
     amount = sgqlc.types.Field(sgqlc.types.non_null('MoneyV2'), graphql_name='amount')
     applies_on_each_item = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='appliesOnEachItem')
-
-
-class DiscountApplication(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('allocation_method', 'index', 'target_selection', 'target_type', 'value')
-    allocation_method = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationAllocationMethod), graphql_name='allocationMethod')
-    index = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='index')
-    target_selection = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationTargetSelection), graphql_name='targetSelection')
-    target_type = sgqlc.types.Field(sgqlc.types.non_null(DiscountApplicationTargetType), graphql_name='targetType')
-    value = sgqlc.types.Field(sgqlc.types.non_null('PricingValue'), graphql_name='value')
 
 
 class DiscountApplicationConnection(sgqlc.types.relay.Connection):
@@ -3367,13 +3540,6 @@ class DiscountShareableUrl(sgqlc.types.Type):
     url = sgqlc.types.Field(sgqlc.types.non_null(URL), graphql_name='url')
 
 
-class DisplayableError(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('field', 'message')
-    field = sgqlc.types.Field(sgqlc.types.list_of(sgqlc.types.non_null(String)), graphql_name='field')
-    message = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='message')
-
-
 class DomainLocalization(sgqlc.types.Type):
     __schema__ = shopify_schema
     __field_names__ = ('alternate_locales', 'country', 'default_locale')
@@ -3483,18 +3649,6 @@ class EditableProperty(sgqlc.types.Type):
     __field_names__ = ('locked', 'reason')
     locked = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='locked')
     reason = sgqlc.types.Field(FormattedString, graphql_name='reason')
-
-
-class Event(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('app_title', 'attribute_to_app', 'attribute_to_user', 'created_at', 'critical_alert', 'id', 'message')
-    app_title = sgqlc.types.Field(String, graphql_name='appTitle')
-    attribute_to_app = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='attributeToApp')
-    attribute_to_user = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='attributeToUser')
-    created_at = sgqlc.types.Field(sgqlc.types.non_null(DateTime), graphql_name='createdAt')
-    critical_alert = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='criticalAlert')
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-    message = sgqlc.types.Field(sgqlc.types.non_null(FormattedString), graphql_name='message')
 
 
 class EventBridgeWebhookSubscriptionCreatePayload(sgqlc.types.Type):
@@ -3820,78 +3974,6 @@ class FulfillmentTrackingInfoUpdateV2Payload(sgqlc.types.Type):
     user_errors = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('UserError'))), graphql_name='userErrors')
 
 
-class HasEvents(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('events',)
-    events = sgqlc.types.Field(sgqlc.types.non_null(EventConnection), graphql_name='events', args=sgqlc.types.ArgDict((
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
-        ('sort_key', sgqlc.types.Arg(EventSortKeys, graphql_name='sortKey', default='ID')),
-        ('query', sgqlc.types.Arg(String, graphql_name='query', default=None)),
-))
-    )
-
-
-class HasLocalizationExtensions(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('localization_extensions',)
-    localization_extensions = sgqlc.types.Field(sgqlc.types.non_null('LocalizationExtensionConnection'), graphql_name='localizationExtensions', args=sgqlc.types.ArgDict((
-        ('country_codes', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(CountryCode)), graphql_name='countryCodes', default=None)),
-        ('purposes', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(LocalizationExtensionPurpose)), graphql_name='purposes', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
-))
-    )
-
-
-class HasMetafields(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('metafield', 'metafields', 'private_metafield', 'private_metafields')
-    metafield = sgqlc.types.Field('Metafield', graphql_name='metafield', args=sgqlc.types.ArgDict((
-        ('namespace', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='namespace', default=None)),
-        ('key', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='key', default=None)),
-))
-    )
-    metafields = sgqlc.types.Field(sgqlc.types.non_null('MetafieldConnection'), graphql_name='metafields', args=sgqlc.types.ArgDict((
-        ('namespace', sgqlc.types.Arg(String, graphql_name='namespace', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
-))
-    )
-    private_metafield = sgqlc.types.Field('PrivateMetafield', graphql_name='privateMetafield', args=sgqlc.types.ArgDict((
-        ('namespace', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='namespace', default=None)),
-        ('key', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='key', default=None)),
-))
-    )
-    private_metafields = sgqlc.types.Field(sgqlc.types.non_null('PrivateMetafieldConnection'), graphql_name='privateMetafields', args=sgqlc.types.ArgDict((
-        ('namespace', sgqlc.types.Arg(String, graphql_name='namespace', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
-))
-    )
-
-
-class HasPublishedTranslations(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('translations',)
-    translations = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('PublishedTranslation'))), graphql_name='translations', args=sgqlc.types.ArgDict((
-        ('locale', sgqlc.types.Arg(sgqlc.types.non_null(String), graphql_name='locale', default=None)),
-))
-    )
-
-
 class ImageConnection(sgqlc.types.relay.Connection):
     __schema__ = shopify_schema
     __field_names__ = ('edges', 'page_info')
@@ -3988,12 +4070,6 @@ class KitSkillTriggerRequestPayload(sgqlc.types.Type):
     __field_names__ = ('conversation_uid', 'user_errors')
     conversation_uid = sgqlc.types.Field(String, graphql_name='conversationUid')
     user_errors = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('UserError'))), graphql_name='userErrors')
-
-
-class LegacyInteroperability(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('legacy_resource_id',)
-    legacy_resource_id = sgqlc.types.Field(sgqlc.types.non_null(UnsignedInt64), graphql_name='legacyResourceId')
 
 
 class LimitedPendingOrderCount(sgqlc.types.Type):
@@ -4192,16 +4268,6 @@ class MarketingEventEdge(sgqlc.types.Type):
     __field_names__ = ('cursor', 'node')
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field(sgqlc.types.non_null('MarketingEvent'), graphql_name='node')
-
-
-class Media(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('alt', 'media_content_type', 'media_errors', 'preview', 'status')
-    alt = sgqlc.types.Field(String, graphql_name='alt')
-    media_content_type = sgqlc.types.Field(sgqlc.types.non_null(MediaContentType), graphql_name='mediaContentType')
-    media_errors = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('MediaError'))), graphql_name='mediaErrors')
-    preview = sgqlc.types.Field('MediaPreviewImage', graphql_name='preview')
-    status = sgqlc.types.Field(sgqlc.types.non_null(MediaStatus), graphql_name='status')
 
 
 class MediaConnection(sgqlc.types.relay.Connection):
@@ -5045,30 +5111,12 @@ class MutationsStagedUploadTargetGenerateUploadParameter(sgqlc.types.Type):
     value = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='value')
 
 
-class Navigable(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('default_cursor',)
-    default_cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='defaultCursor')
-
-
 class NavigationItem(sgqlc.types.Type):
     __schema__ = shopify_schema
     __field_names__ = ('id', 'title', 'url')
     id = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='id')
     title = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='title')
     url = sgqlc.types.Field(sgqlc.types.non_null(URL), graphql_name='url')
-
-
-class Node(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('id',)
-    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
-
-
-class OnlineStorePreviewable(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('online_store_preview_url',)
-    online_store_preview_url = sgqlc.types.Field(URL, graphql_name='onlineStorePreviewUrl')
 
 
 class OrderCapturePayload(sgqlc.types.Type):
@@ -5805,47 +5853,6 @@ class PublicationEdge(sgqlc.types.Type):
     __field_names__ = ('cursor', 'node')
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field(sgqlc.types.non_null('Publication'), graphql_name='node')
-
-
-class Publishable(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('available_publication_count', 'publication_count', 'published_on_current_publication', 'published_on_publication', 'resource_publications', 'resource_publications_v2', 'unpublished_publications')
-    available_publication_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='availablePublicationCount')
-    publication_count = sgqlc.types.Field(sgqlc.types.non_null(Int), graphql_name='publicationCount', args=sgqlc.types.ArgDict((
-        ('only_published', sgqlc.types.Arg(Boolean, graphql_name='onlyPublished', default=True)),
-))
-    )
-    published_on_current_publication = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='publishedOnCurrentPublication')
-    published_on_publication = sgqlc.types.Field(sgqlc.types.non_null(Boolean), graphql_name='publishedOnPublication', args=sgqlc.types.ArgDict((
-        ('publication_id', sgqlc.types.Arg(sgqlc.types.non_null(ID), graphql_name='publicationId', default=None)),
-))
-    )
-    resource_publications = sgqlc.types.Field(sgqlc.types.non_null('ResourcePublicationConnection'), graphql_name='resourcePublications', args=sgqlc.types.ArgDict((
-        ('only_published', sgqlc.types.Arg(Boolean, graphql_name='onlyPublished', default=True)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
-))
-    )
-    resource_publications_v2 = sgqlc.types.Field(sgqlc.types.non_null('ResourcePublicationV2Connection'), graphql_name='resourcePublicationsV2', args=sgqlc.types.ArgDict((
-        ('only_published', sgqlc.types.Arg(Boolean, graphql_name='onlyPublished', default=True)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
-))
-    )
-    unpublished_publications = sgqlc.types.Field(sgqlc.types.non_null(PublicationConnection), graphql_name='unpublishedPublications', args=sgqlc.types.ArgDict((
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('after', sgqlc.types.Arg(String, graphql_name='after', default=None)),
-        ('last', sgqlc.types.Arg(Int, graphql_name='last', default=None)),
-        ('before', sgqlc.types.Arg(String, graphql_name='before', default=None)),
-        ('reverse', sgqlc.types.Arg(Boolean, graphql_name='reverse', default=False)),
-))
-    )
 
 
 class PublishablePublishPayload(sgqlc.types.Type):
@@ -6796,13 +6803,6 @@ class ShopifyPaymentsBankAccountEdge(sgqlc.types.Type):
     __field_names__ = ('cursor', 'node')
     cursor = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='cursor')
     node = sgqlc.types.Field(sgqlc.types.non_null('ShopifyPaymentsBankAccount'), graphql_name='node')
-
-
-class ShopifyPaymentsChargeStatementDescriptor(sgqlc.types.Interface):
-    __schema__ = shopify_schema
-    __field_names__ = ('default', 'prefix')
-    default = sgqlc.types.Field(String, graphql_name='default')
-    prefix = sgqlc.types.Field(sgqlc.types.non_null(String), graphql_name='prefix')
 
 
 class ShopifyPaymentsDisputeConnection(sgqlc.types.relay.Connection):

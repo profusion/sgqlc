@@ -184,7 +184,7 @@ class CodeGen:
 
     # fields without interfaces first, then order the interface
     # implementor after the interface declaration
-    def depend_cmp(a, b):
+    def depend_cmp_interfaces(a, b):
         a_ifaces = a['interfaces']
         b_ifaces = b['interfaces']
         if not a_ifaces and b_ifaces:
@@ -208,6 +208,30 @@ class CodeGen:
             return 1
         else:
             return 0
+
+    KIND_SORT_ORDER = {
+        'SCALAR': 0,
+        'ENUM': 1,
+        'INPUT_OBJECT': 2,
+        'INTERFACE': 3,
+        'OBJECT': 4,
+        'UNION': 5,
+    }
+
+    def depend_cmp_kind(a, b):
+        a_kind = CodeGen.KIND_SORT_ORDER[a['kind']]
+        b_kind = CodeGen.KIND_SORT_ORDER[b['kind']]
+        if a_kind < b_kind:
+            return -1
+        elif a_kind > b_kind:
+            return 1
+        return 0
+
+    def depend_cmp(a, b):
+        kind_cmp = CodeGen.depend_cmp_kind(a, b)
+        if kind_cmp != 0:
+            return kind_cmp
+        return CodeGen.depend_cmp_interfaces(a, b)
 
     @staticmethod
     def get_depend_sort_key():
