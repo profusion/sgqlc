@@ -13,7 +13,7 @@
 alabaster==0.7.12
 babel==2.9.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 backports.entry-points-selectable==1.1.1; python_version >= '2.7'
-certifi==2021.10.8
+certifi==2022.12.7
 charset-normalizer==2.0.7; python_version >= '3'
 coverage==6.1.2; python_version >= '3.6'
 coveralls==3.3.1
