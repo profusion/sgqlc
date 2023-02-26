@@ -15,6 +15,7 @@ Table of Contents
    sgqlc.types
    sgqlc.types.datetime
    sgqlc.types.relay
+   sgqlc.types.uuid
    sgqlc.operation
    sgqlc.endpoint
    sgqlc.endpoint.base

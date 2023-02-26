@@ -37,7 +37,7 @@ uuid1 UUID('94fda4fb-d574-470b-82e2-0f4ec2a2db20')
 uuid2 UUID('94fda4fb-d574-470b-82e2-0f4ec2a2db21')
 
 
-With UUID class and valid uuid value:
+With valid uuid value:
 
 >>> class MyUuidType(Type):
 ...     uuid = UUID
