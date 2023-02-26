@@ -77,12 +77,16 @@ The end-user classes and functions provided by this module are:
  - :func:`list_of()`, maps to GraphQL ``[Type]`` and enforces the
    object is a list of ``Type``.
 
-This module only provide built-in scalar types. However, two other
+This module only provide built-in scalar types. However, three other
 modules will extend the behavior for common conventions:
 
  - :mod:`sgqlc.types.datetime` will declare ``DateTime``, ``Date`` and
    ``Time``, mapping to Python's :mod:`datetime`. This also allows
    fields to be declared as ``my_date = datetime.date``,
+
+ - :mod:`sgqlc.types.uuid` will declare ``UUID``,
+   mapping to Python's :mod:`uuid`. This also allows
+   fields to be declared as ``my_uuid = uuid.UUID``,
 
  - :mod:`sgqlc.types.relay` will declare ``Node`` and ``Connection``,
    matching `Relay <https://facebook.github.io/relay/>`_ `Global
@@ -178,6 +182,7 @@ schema {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
   }
+  scalar UUID
   type TypeUsingPython {
     aInt: Int
     aFloat: Float
@@ -1776,9 +1781,10 @@ class ContainerType(BaseTypeWithTypename, metaclass=ContainerTypeMeta):
 
      - ``name = str`` to create a simple string field. Other basic
        types are allowed as well: ``int``, ``float``, ``str``,
-       ``bool``, ``datetime.time``, ``datetime.date`` and
-       ``datetime.datetime``. These are only used as identifiers to
-       translate using ``map_python_to_graphql`` dict. Note that
+       ``bool``, ``uuid.UUID``, ``datetime.time``,
+       ``datetime.date`` and ``datetime.datetime``. These are
+       only used as identifiers to translate using
+       ``map_python_to_graphql`` dict. Note that
        ``id``, although is not a type, maps to ``ID``.
 
      - ``name = TypeName`` for subclasses of ``BaseType``, such
