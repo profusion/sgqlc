@@ -120,7 +120,8 @@ def graphql_type_to_str(t):
 
 
 class CodeGen:
-    def __init__(self, schema_name, schema, writer, docstrings):
+    def __init__(self, schema_name, schema, writer, docstrings,
+                 disable_datetime_types):
         self.schema_name = schema_name
         self.schema = schema
         self.types = sorted(schema['types'], key=lambda x: x['name'])
@@ -129,6 +130,10 @@ class CodeGen:
         self.mutation_type = self.get_path('mutationType', 'name')
         self.subscription_type = self.get_path('subscriptionType', 'name')
         self.directives = schema.get('directives', [])
+        self.builtin_types = ('Int', 'Float', 'String', 'Boolean', 'ID')
+        self.datetime_types = () \
+            if disable_datetime_types else('DateTime', 'Date', 'Time')
+        self.relay_types = ('Node', 'PageInfo')
         self.analyze()
         self.writer = writer
         self.written_types = set()
@@ -143,10 +148,6 @@ class CodeGen:
         if d is None:
             return fallback
         return d
-
-    builtin_types = ('Int', 'Float', 'String', 'Boolean', 'ID')
-    datetime_types = ('DateTime', 'Date', 'Time')
-    relay_types = ('Node', 'PageInfo')
 
     def analyze(self):
         self.uses_datetime = False
@@ -684,6 +685,10 @@ def add_arguments(ap):
                     help=('Include schema descriptions in the generated file '
                           'as docstrings'),
                     default=False)
+    ap.add_argument('--disable-datetime-types', action='store_true',
+                    help=('Don\'t use custom sgqlc datetime types '
+                          'in generated client'),
+                    default=False)
 
 
 def handle_command(parsed_args):
@@ -705,8 +710,10 @@ def handle_command(parsed_args):
     schema = load_schema(in_file)
 
     docstrings = args['docstrings'] or False
+    disable_datetime_types = args['disable_datetime_types'] or False
 
-    gen = CodeGen(schema_name, schema, out_file.write, docstrings)
+    gen = CodeGen(schema_name, schema, out_file.write, docstrings,
+                  disable_datetime_types)
     gen.write()
     out_file.close()
 
