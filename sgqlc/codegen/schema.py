@@ -119,9 +119,25 @@ def graphql_type_to_str(t):
         return t['name']
 
 
+builtin_types_import = 'sgqlc.types'
+builtin_scalar_imports = {
+    k: builtin_types_import
+    for k in ('Int', 'Float', 'String', 'Boolean', 'ID')
+}
+datetime_scalar_imports = {
+    k: 'sgqlc.types.datetime' for k in ('DateTime', 'Date', 'Time')
+}
+relay_imports = {
+    k: 'sgqlc.types.relay' for k in ('Node', 'PageInfo')
+}
+
+default_type_imports = {**builtin_scalar_imports, **datetime_scalar_imports,
+                        **relay_imports}
+
+
 class CodeGen:
     def __init__(self, schema_name, schema, writer, docstrings,
-                 disable_datetime_types):
+                 type_imports=default_type_imports):
         self.schema_name = schema_name
         self.schema = schema
         self.types = sorted(schema['types'], key=lambda x: x['name'])
@@ -130,11 +146,10 @@ class CodeGen:
         self.mutation_type = self.get_path('mutationType', 'name')
         self.subscription_type = self.get_path('subscriptionType', 'name')
         self.directives = schema.get('directives', [])
-        self.builtin_types = ('Int', 'Float', 'String', 'Boolean', 'ID')
-        self.datetime_types = () \
-            if disable_datetime_types else('DateTime', 'Date', 'Time')
-        self.relay_types = ('Node', 'PageInfo')
+        self.type_imports = type_imports
+        self.imports = set()
         self.analyze()
+        self.uses_relay = 'sgqlc.types.relay' in self.imports
         self.writer = writer
         self.written_types = set()
         self.docstrings = docstrings
@@ -150,18 +165,16 @@ class CodeGen:
         return d
 
     def analyze(self):
-        self.uses_datetime = False
-        self.uses_relay = False
         for t in self.types:
             name = t['name']
-            if name in self.datetime_types:
-                self.uses_datetime = True
-                if self.uses_relay:
-                    break
-            elif name in self.relay_types:
-                self.uses_relay = True
-                if self.uses_datetime:
-                    break
+            try:
+                self.imports.add(self.type_imports[name])
+            except KeyError:
+                pass
+        try:
+            self.imports.remove(builtin_types_import)
+        except KeyError:
+            pass
 
     def write(self):
         self.write_header()
@@ -524,10 +537,9 @@ class %(name)s(%(bases)s):
 
     def write_type_scalar(self, t):
         name = t['name']
-        if name in self.builtin_types:
-            self.writer('%(name)s = sgqlc.types.%(name)s' % t)
-        elif name in self.datetime_types:
-            self.writer('%(name)s = sgqlc.types.datetime.%(name)s' % t)
+        imp = self.type_imports.get(name)
+        if imp:
+            self.writer('%s = %s.%s' % (name, imp, name))
         else:
             self.writer('''\
 class %(name)s(sgqlc.types.Scalar):
@@ -563,22 +575,12 @@ class %(name)s(sgqlc.types.Union):
 
     def write_header(self):
         self.writer('import sgqlc.types\n')
-        self.write_datetime_import()
-        self.write_relay_import()
+        for imp in sorted(self.imports):
+            self.writer('import %s\n' % imp)
         self.writer('\n\n%s = sgqlc.types.Schema()\n\n\n' % self.schema_name)
         self.write_relay_fixup()
         if self.docstrings:
             self.writer('__docformat__ = \'markdown\'\n\n')
-
-    def write_datetime_import(self):
-        if not self.uses_datetime:
-            return
-        self.writer('import sgqlc.types.datetime\n')
-
-    def write_relay_import(self):
-        if not self.uses_relay:
-            return
-        self.writer('import sgqlc.types.relay\n')
 
     def write_relay_fixup(self):
         if not self.uses_relay:
@@ -685,10 +687,10 @@ def add_arguments(ap):
                     help=('Include schema descriptions in the generated file '
                           'as docstrings'),
                     default=False)
-    ap.add_argument('--disable-datetime-types', action='store_true',
-                    help=('Don\'t use custom sgqlc datetime types '
-                          'in generated client'),
-                    default=False)
+    ap.add_argument('--exclude-default-types', nargs='+',
+                    choices=['Time', 'Date', 'DateTime'],
+                    help='Exclude the use of sgqlc types in generated client',
+                    default=[])
 
 
 def handle_command(parsed_args):
@@ -710,10 +712,13 @@ def handle_command(parsed_args):
     schema = load_schema(in_file)
 
     docstrings = args['docstrings'] or False
-    disable_datetime_types = args['disable_datetime_types'] or False
+    exclude_default_types = args['exclude_default_types'] or []
+
+    for k in exclude_default_types:
+        default_type_imports.pop(k)
 
     gen = CodeGen(schema_name, schema, out_file.write, docstrings,
-                  disable_datetime_types)
+                  default_type_imports)
     gen.write()
     out_file.close()
 
