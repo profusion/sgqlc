@@ -662,6 +662,16 @@ def load_schema(in_file):
             'schema must be introspection object or query result')
 
 
+scalar_import_arg_re = re.compile('^([A-Za-z_]+[A-Za-z0-9_]*)=([A-Za-z0-9_.]*)$')
+
+
+def parse_scalar_import(s):
+    m = scalar_import_arg_re.match(s)
+    if not m:
+        raise ValueError('Expected ScalarName=import.file, got %s' % (s,))
+    return m.groups()
+
+
 def add_arguments(ap):
     # Generic options to access the GraphQL API
     ap.add_argument('schema.json',
@@ -688,8 +698,13 @@ def add_arguments(ap):
                           'as docstrings'),
                     default=False)
     ap.add_argument('--exclude-default-types', nargs='+',
-                    choices=['Time', 'Date', 'DateTime'],
                     help='Exclude the use of sgqlc types in generated client',
+                    default=[])
+    ap.add_argument('--add-scalar-imports', nargs='+',
+                    help=('Specify "ScalarName=import.file" to automatically '
+                          'import "ScalarName" whenever this scalar is used in '
+                          'the schema'),
+                    type=parse_scalar_import,
                     default=[])
 
 
@@ -713,9 +728,12 @@ def handle_command(parsed_args):
 
     docstrings = args['docstrings'] or False
     exclude_default_types = args['exclude_default_types'] or []
+    add_scalar_imports = args['add_scalar_imports'] or []
 
     for k in exclude_default_types:
         default_type_imports.pop(k)
+
+    default_type_imports.update(add_scalar_imports)
 
     gen = CodeGen(schema_name, schema, out_file.write, docstrings,
                   default_type_imports)
