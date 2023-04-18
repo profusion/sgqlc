@@ -662,7 +662,8 @@ def load_schema(in_file):
             'schema must be introspection object or query result')
 
 
-scalar_import_arg_re = re.compile('^([A-Za-z_]+[A-Za-z0-9_]*)=([A-Za-z0-9_.]*)$')
+scalar_import_arg_re = re.compile(
+    '^([A-Za-z_]+[A-Za-z0-9_]*)=([A-Za-z0-9_.]*)$')
 
 
 def parse_scalar_import(s):
@@ -702,8 +703,8 @@ def add_arguments(ap):
                     default=[])
     ap.add_argument('--add-scalar-imports', nargs='+',
                     help=('Specify "ScalarName=import.file" to automatically '
-                          'import "ScalarName" whenever this scalar is used in '
-                          'the schema'),
+                          'import "ScalarName" whenever this scalar is used '
+                          'in the schema'),
                     type=parse_scalar_import,
                     default=[])
 
