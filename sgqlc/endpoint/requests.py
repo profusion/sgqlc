@@ -109,7 +109,13 @@ class RequestsEndpoint(BaseEndpoint):
         self.timeout = timeout
         self.method = method
         self.auth = auth
-        self.session = session
+        self.session = session or requests.Session()
+        self.close_session = session is not None
+
+    def __del__(self):
+        # keep the session open if it has been provided by the user
+        if self.session and self.close_session:
+            self.session.close()
 
     def __str__(self):
         return ('%s(url=%s, base_headers=%r, timeout=%r, '
@@ -178,19 +184,17 @@ class RequestsEndpoint(BaseEndpoint):
         self.logger.debug('Query:\n%s', query)
 
         try:
-            with self.session if self.session is not None \
-                    else requests.Session() as session:
-                prepped = session.prepare_request(req)
-                with session.send(prepped,
-                                  timeout=timeout or self.timeout) as f:
-                    try:
-                        f.raise_for_status()
-                        data = f.json()
-                        if data and data.get('errors'):
-                            return self._log_graphql_error(query, data)
-                        return data
-                    except json.JSONDecodeError as exc:
-                        return self._log_json_error(f.text, exc)
+            prepped = self.session.prepare_request(req)
+            with self.session.send(prepped,
+                                   timeout=timeout or self.timeout) as f:
+                try:
+                    f.raise_for_status()
+                    data = f.json()
+                    if data and data.get('errors'):
+                        return self._log_graphql_error(query, data)
+                    return data
+                except json.JSONDecodeError as exc:
+                    return self._log_json_error(f.text, exc)
         except requests.exceptions.HTTPError as exc:
             return self._log_http_error(query, req, exc)
 
