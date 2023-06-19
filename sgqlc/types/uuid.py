@@ -104,9 +104,9 @@ UUID('5a54a66f-bd21-559f-92fe-7ede767ed4b3')
 
 '''
 
-__docformat__ = "reStructuredText en"
+__docformat__ = 'reStructuredText en'
 
-__all__ = ("UUID",)
+__all__ = ('UUID',)
 
 import uuid
 import re
@@ -116,8 +116,8 @@ from . import Scalar, map_python_to_graphql
 
 class UUID(Scalar):
     _re_parse = re.compile(
-        r"(^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3})"
-        r"-[089ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        r'(^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3})'
+        r'-[089ab][0-9a-f]{3}-[0-9a-f]{12}$'
     )
 
     @classmethod
@@ -126,7 +126,7 @@ class UUID(Scalar):
             return s
         m = cls._re_parse.match(s)
         if not m:
-            raise ValueError("not valid UUID format %s" % s)
+            raise ValueError('not valid UUID format %s' % s)
 
         return uuid.UUID(s)
 
