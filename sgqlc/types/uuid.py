@@ -106,7 +106,7 @@ UUID('5a54a66f-bd21-559f-92fe-7ede767ed4b3')
 
 __docformat__ = "reStructuredText en"
 
-__all__ = "UUID"
+__all__ = ("UUID",)
 
 import uuid
 import re
