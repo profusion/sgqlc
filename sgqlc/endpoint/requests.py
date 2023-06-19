@@ -125,6 +125,29 @@ class RequestsEndpoint(BaseEndpoint):
             self.auth.__class__ if self.auth is not None else None,
             self.session.__class__ if self.session is not None else None)
 
+    def _prepare(self, query, variables, operation_name, extra_headers):
+        if isinstance(query, bytes):
+            query = query.decode('utf-8')
+        elif not isinstance(query, str):
+            # allows sgqlc.operation.Operation to be passed
+            # and generate compact representation of the queries
+            query = bytes(query).decode('utf-8')
+
+        headers = self.base_headers.copy()
+        if extra_headers:
+            headers.update(extra_headers)
+
+        if 'Accept' not in headers:
+            headers['Accept'] = 'application/json; charset=utf-8'
+
+        if self.method.upper() == 'POST':
+            get_http_request = self.get_http_post_request
+        else:
+            get_http_request = self.get_http_get_request
+
+        req = get_http_request(query, variables, operation_name, headers)
+        return query, req
+
     def __call__(self, query, variables=None,  # noqa: C901
                  operation_name=None, extra_headers=None, timeout=None):
         '''Calls the GraphQL endpoint.
@@ -160,26 +183,12 @@ class RequestsEndpoint(BaseEndpoint):
           errors. Note that both ``data`` and ``errors`` may be returned!
         :rtype: dict
         '''
-        if isinstance(query, bytes):
-            query = query.decode('utf-8')
-        elif not isinstance(query, str):
-            # allows sgqlc.operation.Operation to be passed
-            # and generate compact representation of the queries
-            query = bytes(query).decode('utf-8')
-
-        headers = self.base_headers.copy()
-        if extra_headers:
-            headers.update(extra_headers)
-
-        if 'Accept' not in headers:
-            headers['Accept'] = 'application/json; charset=utf-8'
-
-        if self.method.upper() == 'POST':
-            get_http_request = self.get_http_post_request
-        else:
-            get_http_request = self.get_http_get_request
-
-        req = get_http_request(query, variables, operation_name, headers)
+        query, req = self._prepare(
+            query=query,
+            variables=variables,
+            operation_name=operation_name,
+            extra_headers=extra_headers,
+        )
 
         self.logger.debug('Query:\n%s', query)
 

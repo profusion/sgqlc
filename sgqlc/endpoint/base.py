@@ -278,7 +278,8 @@ class BaseEndpoint:
             line = max(0, loc.get('line', 1) - 1)
             column = max(0, loc.get('column', 1) - 1)
             start_line = max(0, line - context)
-            for i, ln in enumerate(lines[start_line:line + 1], start_line):
+            end_line = line + 1
+            for i, ln in enumerate(lines[start_line:end_line], start_line):
                 s.append('{}{}{}'.format(linenofmt % i, sep, ln))
             s.append('{}{}{}'.format(' ' * (offset + len(sep)),
                                      colmark[0] * column,
