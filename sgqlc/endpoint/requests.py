@@ -81,8 +81,15 @@ class RequestsEndpoint(BaseEndpoint):
 
     logger = logging.getLogger(__name__)
 
-    def __init__(self, url, base_headers=None, timeout=None, method='POST',
-                 auth=None, session=None):
+    def __init__(
+        self,
+        url,
+        base_headers=None,
+        timeout=None,
+        method='POST',
+        auth=None,
+        session=None,
+    ):
         '''
         :param url: the default GraphQL endpoint url.
         :type url: str
@@ -118,12 +125,18 @@ class RequestsEndpoint(BaseEndpoint):
             self.session.close()
 
     def __str__(self):
-        return ('%s(url=%s, base_headers=%r, timeout=%r, '
-                'method=%s, auth=%s, session=%s)') % (
-            self.__class__.__name__, self.url, self.base_headers, self.timeout,
+        return (
+            '%s(url=%s, base_headers=%r, timeout=%r, '
+            'method=%s, auth=%s, session=%s)'
+        ) % (
+            self.__class__.__name__,
+            self.url,
+            self.base_headers,
+            self.timeout,
             self.method,
             self.auth.__class__ if self.auth is not None else None,
-            self.session.__class__ if self.session is not None else None)
+            self.session.__class__ if self.session is not None else None,
+        )
 
     def _prepare(self, query, variables, operation_name, extra_headers):
         if isinstance(query, bytes):
@@ -148,8 +161,14 @@ class RequestsEndpoint(BaseEndpoint):
         req = get_http_request(query, variables, operation_name, headers)
         return query, req
 
-    def __call__(self, query, variables=None,  # noqa: C901
-                 operation_name=None, extra_headers=None, timeout=None):
+    def __call__(
+        self,
+        query,
+        variables=None,  # noqa: C901
+        operation_name=None,
+        extra_headers=None,
+        timeout=None,
+    ):
         '''Calls the GraphQL endpoint.
 
         :param query: the GraphQL query or mutation to execute. Note
@@ -194,8 +213,9 @@ class RequestsEndpoint(BaseEndpoint):
 
         try:
             prepped = self.session.prepare_request(req)
-            with self.session.send(prepped,
-                                   timeout=timeout or self.timeout) as f:
+            with self.session.send(
+                prepped, timeout=timeout or self.timeout
+            ) as f:
                 try:
                     f.raise_for_status()
                     data = f.json()
@@ -208,18 +228,21 @@ class RequestsEndpoint(BaseEndpoint):
             return self._log_http_error(query, req, exc)
 
     def get_http_post_request(self, query, variables, operation_name, headers):
-        post_data = json.dumps({
-            'query': query,
-            'variables': variables,
-            'operationName': operation_name,
-        }).encode('utf-8')
-        headers.update({
-            'Content-Type': 'application/json; charset=utf-8'
-        })
+        post_data = json.dumps(
+            {
+                'query': query,
+                'variables': variables,
+                'operationName': operation_name,
+            }
+        ).encode('utf-8')
+        headers.update({'Content-Type': 'application/json; charset=utf-8'})
         return requests.Request(
-            url=self.url, auth=self.auth, data=post_data,
+            url=self.url,
+            auth=self.auth,
+            data=post_data,
             headers=headers,
-            method='POST')
+            method='POST',
+        )
 
     def get_http_get_request(self, query, variables, operation_name, headers):
         params = {'query': query}
@@ -230,8 +253,9 @@ class RequestsEndpoint(BaseEndpoint):
             params['variables'] = json.dumps(variables)
 
         url = add_query_to_url(self.url, params)
-        return requests.Request(url=url, auth=self.auth, headers=headers,
-                                method='GET')
+        return requests.Request(
+            url=url, auth=self.auth, headers=headers, method='GET'
+        )
 
     def _log_http_error(self, query, req, exc):
         '''Log :exc:`requests.exceptions.HTTPError`, converting to
@@ -251,20 +275,26 @@ class RequestsEndpoint(BaseEndpoint):
         '''
         self.logger.error('log_error - %s: %s', req.url, exc)
         for h in sorted(exc.response.headers):
-            self.logger.info('Response header: %s: %s', h,
-                             exc.response.headers[h])
+            self.logger.info(
+                'Response header: %s: %s', h, exc.response.headers[h]
+            )
 
         body = exc.response.text
         content_type = exc.response.headers.get('Content-Type', '')
         self.logger.info('Response [%s]:\n%s', content_type, body)
         if not content_type.startswith('application/json'):
-            return {'data': None, 'errors': [{
-                'message': str(exc),
-                'exception': exc,
-                'status': exc.response.status_code,
-                'headers': exc.response.headers,
-                'body': body,
-            }]}
+            return {
+                'data': None,
+                'errors': [
+                    {
+                        'message': str(exc),
+                        'exception': exc,
+                        'status': exc.response.status_code,
+                        'headers': exc.response.headers,
+                        'body': body,
+                    }
+                ],
+            }
         else:
             # GraphQL servers return 400 and {'errors': [...]}
             # if only errors was returned, no {'data': ...}
@@ -274,19 +304,26 @@ class RequestsEndpoint(BaseEndpoint):
                 return self._log_json_error(body, exc)
 
             if isinstance(data, dict) and data.get('errors'):
-                data.update({
-                    'exception': exc,
-                    'status': exc.response.status_code,
-                    'headers': exc.response.headers,
-                })
+                data.update(
+                    {
+                        'exception': exc,
+                        'status': exc.response.status_code,
+                        'headers': exc.response.headers,
+                    }
+                )
                 return self._log_graphql_error(query, data)
-            return {'data': None, 'errors': [{
-                'message': str(exc),
-                'exception': exc,
-                'status': exc.response.status_code,
-                'headers': exc.response.headers,
-                'body': body,
-            }]}
+            return {
+                'data': None,
+                'errors': [
+                    {
+                        'message': str(exc),
+                        'exception': exc,
+                        'status': exc.response.status_code,
+                        'headers': exc.response.headers,
+                        'body': body,
+                    }
+                ],
+            }
 
 
 if __name__ == '__main__':  # pragma: no cover
@@ -307,35 +344,57 @@ if __name__ == '__main__':  # pragma: no cover
     ap.add_argument('url', help='GraphQL endpoint address.')
     ap.add_argument('query', help='GraphQL query or mutation.')
 
-    ap.add_argument('--var', '-V', action='append', type=tuple_arg,
-                    help='NAME=VALUE variable to send alongside query.',
-                    default=[])
-    ap.add_argument('--operation', '-o',
-                    help='GraphQL operation name to send alongside query.',
-                    default=None)
-    ap.add_argument('--header', '-H', action='append', type=tuple_arg,
-                    help=('NAME=VALUE HTTP header to send. '
-                          'Example: "Authorization: bearer ${token}"'),
-                    default=[])
-    ap.add_argument('--timeout', '-t', type=float, default=None,
-                    help='Request timeout, in seconds.')
-    ap.add_argument('--verbose', '-v',
-                    help='Increase verbosity',
-                    action='count',
-                    default=0)
-    ap.add_argument('--method', '-m',
-                    choices=['GET', 'POST'],
-                    help='HTTP Method to use',
-                    default='POST',
-                    )
+    ap.add_argument(
+        '--var',
+        '-V',
+        action='append',
+        type=tuple_arg,
+        help='NAME=VALUE variable to send alongside query.',
+        default=[],
+    )
+    ap.add_argument(
+        '--operation',
+        '-o',
+        help='GraphQL operation name to send alongside query.',
+        default=None,
+    )
+    ap.add_argument(
+        '--header',
+        '-H',
+        action='append',
+        type=tuple_arg,
+        help=(
+            'NAME=VALUE HTTP header to send. '
+            'Example: "Authorization: bearer ${token}"'
+        ),
+        default=[],
+    )
+    ap.add_argument(
+        '--timeout',
+        '-t',
+        type=float,
+        default=None,
+        help='Request timeout, in seconds.',
+    )
+    ap.add_argument(
+        '--verbose', '-v', help='Increase verbosity', action='count', default=0
+    )
+    ap.add_argument(
+        '--method',
+        '-m',
+        choices=['GET', 'POST'],
+        help='HTTP Method to use',
+        default='POST',
+    )
 
     args = ap.parse_args()
 
     logfmt = '%(levelname)s: %(message)s'
     logging.basicConfig(format=logfmt, level=max(10, 40 - (args.verbose * 10)))
 
-    endpoint = RequestsEndpoint(args.url, dict(args.header), args.timeout,
-                                method=args.method)
+    endpoint = RequestsEndpoint(
+        args.url, dict(args.header), args.timeout, method=args.method
+    )
     data = endpoint(args.query, dict(args.var))
 
     json.dump(data, sys.stdout, sort_keys=True, indent=2, default=str)

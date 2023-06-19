@@ -36,7 +36,7 @@ setup(
     extras_require={
         'sphinx': ['sphinx', 'sphinx-argparse'],
         'websocket': ['websocket-client'],
-        'requests': ['requests']
+        'requests': ['requests'],
     },
     zip_safe=True,
     keywords='graphql client http endpoint',

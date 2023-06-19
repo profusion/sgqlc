@@ -118,12 +118,15 @@ def main():
             continue
         elif arg not in subcommands:
             raw_args.insert(i, 'schema')
-            sys.stderr.writelines((
-                'WARNING: ', sys.argv[0],
-                ' now requires a "command" specifier. Assuming "schema". '
-                'Please update your usage as this automatic conversion '
-                'will be removed in the future!\n'
-            ))
+            sys.stderr.writelines(
+                (
+                    'WARNING: ',
+                    sys.argv[0],
+                    ' now requires a "command" specifier. Assuming "schema". '
+                    'Please update your usage as this automatic conversion '
+                    'will be removed in the future!\n',
+                )
+            )
         break
 
     args = ap.parse_args(raw_args)

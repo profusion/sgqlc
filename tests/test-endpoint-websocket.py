@@ -15,11 +15,10 @@ endpoint.generate_id = lambda: '123'
 
 def test_endpoint_str():
     'Test websocket str() implementation'
-    eq_(str(endpoint),
-        'WebSocketEndpoint('
-        + 'url={}'.format(test_url)
-        + ', ws_options={})',
-        )
+    eq_(
+        str(endpoint),
+        'WebSocketEndpoint(' + 'url={}'.format(test_url) + ', ws_options={})',
+    )
 
 
 def test_endpoint_id():
@@ -28,9 +27,10 @@ def test_endpoint_id():
     eq_(
         re.match(
             '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
-            generated_id
-        ) is not None,
-        True
+            generated_id,
+        )
+        is not None,
+        True,
     )
 
 
@@ -172,11 +172,12 @@ def test_operation_query(mock_websocket):
     eq_(list(endpoint(bytes(op))), [{'data': {'test': ['1', '2']}}])
     eq_(
         bytes(
-            json.loads(
-                mock_connection.send.call_args_list[1][0][0]
-            )['payload']['query'],
-            encoding='utf-8'),
-        bytes(op)
+            json.loads(mock_connection.send.call_args_list[1][0][0])[
+                'payload'
+            ]['query'],
+            encoding='utf-8',
+        ),
+        bytes(op),
     )
 
 
@@ -219,7 +220,7 @@ def test_basic_subscription(mock_websocket):
     ]
     eq_(
         list(endpoint('subscription {test}')),
-        [{'data': {'test': '1'}}, {'data': {'test': '2'}}]
+        [{'data': {'test': '1'}}, {'data': {'test': '2'}}],
     )
 
 
@@ -259,8 +260,8 @@ def test_authenticated_subscription(mock_websocket):
         {
             'type': 'connection_init',
             'id': '123',
-            'payload': connection_payload
-        }
+            'payload': connection_payload,
+        },
     )
 
 

@@ -69,8 +69,9 @@ def report_download_errors(errors):
     raise SystemExit('Failed to download')
 
 
-def select_issues(repo, labels=(), states=(),
-                  first=100, after=None, last=None, before=None):
+def select_issues(
+    repo, labels=(), states=(), first=100, after=None, last=None, before=None
+):
     args = {}
     if labels:
         args['labels'] = labels
@@ -106,8 +107,9 @@ def select_issues(repo, labels=(), states=(),
     nodes.assignees(first=100).nodes.login()
 
 
-def select_pull_requests(repo, labels=(), states=(),
-                         first=100, after=None, last=None, before=None):
+def select_pull_requests(
+    repo, labels=(), states=(), first=100, after=None, last=None, before=None
+):
     args = {}
     if labels:
         args['labels'] = labels
@@ -195,24 +197,34 @@ def download(endpoint, reponame, labels=(), issue_states=(), pr_states=()):
         return report_download_errors(errors)
 
     repodata = (op + d).repository
-    while (repodata.issues.page_info.has_next_page
-           or repodata.pull_requests.page_info.has_next_page):
+    while (
+        repodata.issues.page_info.has_next_page
+        or repodata.pull_requests.page_info.has_next_page
+    ):
         op = Operation(schema.Query)
         repo = op.repository(owner=owner, name=name)
 
         if repodata.issues.page_info.has_next_page:
             select_issues(
-                repo, labels, issue_states,
-                after=repodata.issues.page_info.end_cursor)
+                repo,
+                labels,
+                issue_states,
+                after=repodata.issues.page_info.end_cursor,
+            )
 
         if repodata.pull_requests.page_info.has_next_page:
             select_pull_requests(
-                repo, labels, pr_states,
-                after=repodata.pull_requests.page_info.end_cursor)
+                repo,
+                labels,
+                pr_states,
+                after=repodata.pull_requests.page_info.end_cursor,
+            )
 
         logger.info(
             'Downloading extra connection nodes: issues=%s, prs=%s',
-            repodata.issues.page_info, repodata.pull_requests.page_info)
+            repodata.issues.page_info,
+            repodata.pull_requests.page_info,
+        )
         logger.debug('Operation:\n%s', op)
 
         cont = endpoint(op)
@@ -242,6 +254,7 @@ class ComplexObjectFilter:
     ``f.search()`` with attribute ``attrname`` of object, allowing a
     compiled regular expression to be used.
     '''
+
     def __init__(self, f, attrname):
         if isinstance(f, str):
             self.matches = lambda obj: getattr(obj, attrname) == f
@@ -281,13 +294,17 @@ class GitHubAgileDashboard:
        purposes.
 
     '''
-    def __init__(self, repo,
-                 filter_labels=(),
-                 filter_issue_states=(),
-                 filter_pr_states=(),
-                 filter_projects=(),
-                 filter_milestones=(),
-                 filter_assignees=()):
+
+    def __init__(
+        self,
+        repo,
+        filter_labels=(),
+        filter_issue_states=(),
+        filter_pr_states=(),
+        filter_projects=(),
+        filter_milestones=(),
+        filter_assignees=(),
+    ):
         self.repo = repo
         self.labels = {}
         self.projects = {}
@@ -315,9 +332,11 @@ class GitHubAgileDashboard:
         self.filter_issue_state = self._build_filter(filter_issue_states)
         self.filter_pr_state = self._build_filter(filter_pr_states)
         self.filter_project = self._build_complex_filter(
-            filter_projects, 'name')
+            filter_projects, 'name'
+        )
         self.filter_milestone = self._build_complex_filter(
-            filter_milestones, 'title')
+            filter_milestones, 'title'
+        )
         self.filter_assignee = self._build_filter(filter_assignees)
 
         self.populate()
@@ -407,15 +426,15 @@ class GitHubAgileDashboard:
         return False
 
     def filter_common(self, node):
-        if not self.filter_connection(
-                node.labels, self.filter_label, 'name'):
+        if not self.filter_connection(node.labels, self.filter_label, 'name'):
             return False
         if not self.filter_project_cards(node):
             return False
         if not self.filter_milestone_id(node):
             return False
         if not self.filter_connection(
-                node.assignees, self.filter_assignee, 'login'):
+            node.assignees, self.filter_assignee, 'login'
+        ):
             return False
         return True
 
@@ -444,8 +463,9 @@ class GitHubAgileDashboard:
 
 
 def cmd_save(endpoint, args):
-    d = download(endpoint, args.repo,
-                 args.label, args.issue_state, args.pr_state)
+    d = download(
+        endpoint, args.repo, args.label, args.issue_state, args.pr_state
+    )
     if args.pretty:
         return json_pretty_print(d, args.file)
     return json.dump(d, args.file, sort_keys=True, separators=(',', ':'))
@@ -502,15 +522,22 @@ def create_dashboard(endpoint, args):
         if d is None:
             raise SystemExit('Failed to load!')
     else:
-        d = download(endpoint, args.repo, args.label,
-                     args.issue_state, args.pr_state)
+        d = download(
+            endpoint, args.repo, args.label, args.issue_state, args.pr_state
+        )
 
-    op = create_operation(args.repo, args.label,
-                          args.issue_state, args.pr_state)
+    op = create_operation(
+        args.repo, args.label, args.issue_state, args.pr_state
+    )
     repodata = (op + d).repository
     return GitHubAgileDashboard(
-        repodata, labels, issue_states, pr_states,
-        projects, milestones, assignees,
+        repodata,
+        labels,
+        issue_states,
+        pr_states,
+        projects,
+        milestones,
+        assignees,
     )
 
 
@@ -641,6 +668,7 @@ def cmd_dashboard_text(endpoint, args):  # noqa: C901
                 color = colors['PullRequest']['reviews'][state]
                 sym = review_state_symbol[state]
                 return '%s%s' % (color, sym)
+
             return ''.join(fmt_review_state(state) for state in final)
 
         def out_pr(pr):
@@ -695,8 +723,11 @@ def cmd_dashboard_text(endpoint, args):  # noqa: C901
                     is_green = is_high_green
                     is_blue = is_high_blue
 
-                color = colors[label_rgb_to_ansi_index(
-                    is_red, is_green, is_blue, is_bright)]
+                color = colors[
+                    label_rgb_to_ansi_index(
+                        is_red, is_green, is_blue, is_bright
+                    )
+                ]
                 return '%s%s%s' % (color, n.name, colors['clear'])
 
             return ', '.join(fmt_label(n) for n in node.labels.nodes)
@@ -768,6 +799,7 @@ def cmd_dashboard_text(endpoint, args):  # noqa: C901
                 sym = review_state_symbol[r.state]
                 author = r.author.login
                 return '%s%s%s%s' % (color, sym, author, colors['clear'])
+
             return ', '.join(fmt_review(r) for r in final.values())
 
         def out_pr(pr):
@@ -834,78 +866,134 @@ if __name__ == '__main__':
         return s.split('=', 1)
 
     # Generic options to access the GraphQL API
-    ap.add_argument('--graphql-endpoint',
-                    help=('GitHub GraphQL endpoint. '
-                          'May be stored in "' + cfg_path + '", section: '
-                          '[github-agile-dashboard], key: '
-                          'graphql-endpoint=URL. '
-                          'Default=%(default)s'),
-                    default=DEFAULT_GRAPHQL_ENDPOINT)
-    ap.add_argument('--token', '-T',
-                    help=('API token to use. '
-                          'May be stored in "' + cfg_path + '", section: '
-                          '[github-agile-dashboard], key: '
-                          'token=STRING'))
-    ap.add_argument('--verbose', '-v',
-                    help='Increase verbosity',
-                    action='count',
-                    default=0)
-    ap.add_argument('--label', '-l', action='append',
-                    help='Filter issues and PR by label.',
-                    default=[])
-    ap.add_argument('--issue-state', action='append',
-                    help=('Filter Issues by state. '
-                          'Providing a single empty string disables Issues'),
-                    choices=schema.IssueState.__choices__ + ('',),
-                    default=[])
-    ap.add_argument('--pr-state', action='append',
-                    help=('Filter Pull Requests by state. '
-                          'Providing a single empty string disables '
-                          'Pull Requests'),
-                    choices=schema.PullRequestState.__choices__ + ('',),
-                    default=[])
-    ap.add_argument('repo',
-                    help='Repository name, such as "team/repo".')
+    ap.add_argument(
+        '--graphql-endpoint',
+        help=(
+            'GitHub GraphQL endpoint. '
+            'May be stored in "' + cfg_path + '", section: '
+            '[github-agile-dashboard], key: '
+            'graphql-endpoint=URL. '
+            'Default=%(default)s'
+        ),
+        default=DEFAULT_GRAPHQL_ENDPOINT,
+    )
+    ap.add_argument(
+        '--token',
+        '-T',
+        help=(
+            'API token to use. '
+            'May be stored in "' + cfg_path + '", section: '
+            '[github-agile-dashboard], key: '
+            'token=STRING'
+        ),
+    )
+    ap.add_argument(
+        '--verbose', '-v', help='Increase verbosity', action='count', default=0
+    )
+    ap.add_argument(
+        '--label',
+        '-l',
+        action='append',
+        help='Filter issues and PR by label.',
+        default=[],
+    )
+    ap.add_argument(
+        '--issue-state',
+        action='append',
+        help=(
+            'Filter Issues by state. '
+            'Providing a single empty string disables Issues'
+        ),
+        choices=schema.IssueState.__choices__ + ('',),
+        default=[],
+    )
+    ap.add_argument(
+        '--pr-state',
+        action='append',
+        help=(
+            'Filter Pull Requests by state. '
+            'Providing a single empty string disables '
+            'Pull Requests'
+        ),
+        choices=schema.PullRequestState.__choices__ + ('',),
+        default=[],
+    )
+    ap.add_argument('repo', help='Repository name, such as "team/repo".')
 
     subparsers = ap.add_subparsers(dest='command')
 
     # Save GraphQL to JSON
     sp = subparsers.add_parser('save', help='Download and save JSON to disk')
     sp.set_defaults(func=cmd_save)
-    sp.add_argument('--pretty', '-p', action='store_true',
-                    help='Pretty print JSON')
-    sp.add_argument('file', type=argparse.FileType('w'), nargs='?',
-                    help='Where to save the JSON payload',
-                    default=sys.stdout)
+    sp.add_argument(
+        '--pretty', '-p', action='store_true', help='Pretty print JSON'
+    )
+    sp.add_argument(
+        'file',
+        type=argparse.FileType('w'),
+        nargs='?',
+        help='Where to save the JSON payload',
+        default=sys.stdout,
+    )
 
     # Dashboard for a Milestone
-    sp = subparsers.add_parser('dashboard',
-                               help='View Agile Dashboard as text output')
+    sp = subparsers.add_parser(
+        'dashboard', help='View Agile Dashboard as text output'
+    )
     sp.set_defaults(func=cmd_dashboard_text)
-    sp.add_argument('--load', type=argparse.FileType('r'),
-                    help='Where to load saved JSON, otherwise downloads.')
-    sp.add_argument('--project', '-p', action='append',
-                    help=('Filter issues and PR by project title or number. '
-                          'If a string and starts and ends with "/", '
-                          'will be handled as regular expression, '
-                          'ie: "/^prefix-/".'),
-                    default=[])
-    sp.add_argument('--milestone', '-m', action='append',
-                    help=('Filter issues and PR by milestone title or number. '
-                          'If a string and starts and ends with "/", '
-                          'will be handled as regular expression, '
-                          'ie: "/^prefix-/".'),
-                    default=[])
-    sp.add_argument('--assignee', '-a', action='append',
-                    help=('Filter issues and PR by assignees. '
-                          'Use empty assignee to state "unassigned"'),
-                    default=[])
-    sp.add_argument('--colors', '-C', choices=('auto', 'yes', 'no'),
-                    help=('Select color mode (ansi colors for terminals)'),
-                    default='auto')
-    sp.add_argument('--format', '-f', choices=('oneline', 'medium', 'full'),
-                    help=('How to format issues and pull requests'),
-                    default='oneline')
+    sp.add_argument(
+        '--load',
+        type=argparse.FileType('r'),
+        help='Where to load saved JSON, otherwise downloads.',
+    )
+    sp.add_argument(
+        '--project',
+        '-p',
+        action='append',
+        help=(
+            'Filter issues and PR by project title or number. '
+            'If a string and starts and ends with "/", '
+            'will be handled as regular expression, '
+            'ie: "/^prefix-/".'
+        ),
+        default=[],
+    )
+    sp.add_argument(
+        '--milestone',
+        '-m',
+        action='append',
+        help=(
+            'Filter issues and PR by milestone title or number. '
+            'If a string and starts and ends with "/", '
+            'will be handled as regular expression, '
+            'ie: "/^prefix-/".'
+        ),
+        default=[],
+    )
+    sp.add_argument(
+        '--assignee',
+        '-a',
+        action='append',
+        help=(
+            'Filter issues and PR by assignees. '
+            'Use empty assignee to state "unassigned"'
+        ),
+        default=[],
+    )
+    sp.add_argument(
+        '--colors',
+        '-C',
+        choices=('auto', 'yes', 'no'),
+        help=('Select color mode (ansi colors for terminals)'),
+        default='auto',
+    )
+    sp.add_argument(
+        '--format',
+        '-f',
+        choices=('oneline', 'medium', 'full'),
+        help=('How to format issues and pull requests'),
+        default='oneline',
+    )
 
     args = ap.parse_args()
 
@@ -917,16 +1005,24 @@ if __name__ == '__main__':
     logging.basicConfig(format=logfmt, level=max(10, 40 - (args.verbose * 10)))
     HTTPEndpoint.logger.setLevel(endpoint_loglevel)
 
-    graphql_endpoint = (args.graphql_endpoint or cfg['graphql-endpoint']
-                        or DEFAULT_GRAPHQL_ENDPOINT)
+    graphql_endpoint = (
+        args.graphql_endpoint
+        or cfg['graphql-endpoint']
+        or DEFAULT_GRAPHQL_ENDPOINT
+    )
     token = args.token or cfg['token']
     if not token:
-        raise SystemExit('token must be provided. You may create an '
-                         'app or personal token at '
-                         'https://github.com/settings/tokens')
-    endpoint = HTTPEndpoint(graphql_endpoint, {
-        'Authorization': 'bearer ' + token,
-    })
+        raise SystemExit(
+            'token must be provided. You may create an '
+            'app or personal token at '
+            'https://github.com/settings/tokens'
+        )
+    endpoint = HTTPEndpoint(
+        graphql_endpoint,
+        {
+            'Authorization': 'bearer ' + token,
+        },
+    )
 
     if not args.command:
         raise SystemExit('missing subcommand. See --help.')

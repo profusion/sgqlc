@@ -5,9 +5,12 @@ import sys
 from sgqlc.endpoint.http import HTTPEndpoint
 from sample_operations import Operations  # noqa: I900
 
-endpoint = HTTPEndpoint('https://api.github.com/graphql', {
-    'Authorization': 'bearer ' + os.environ['GH_TOKEN'],
-})
+endpoint = HTTPEndpoint(
+    'https://api.github.com/graphql',
+    {
+        'Authorization': 'bearer ' + os.environ['GH_TOKEN'],
+    },
+)
 
 
 owner, name = sys.argv[1:3]

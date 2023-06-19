@@ -11,10 +11,12 @@ from sgqlc.operation import Operation
 
 test_url = 'http://some-server.com/graphql'
 
-extra_accept_header = ', '.join([
-    'application/json; charset=utf-8',
-    'application/vnd.xyz.feature-flag+json',
-])
+extra_accept_header = ', '.join(
+    [
+        'application/json; charset=utf-8',
+        'application/vnd.xyz.feature-flag+json',
+    ]
+)
 
 graphql_query = '''
 query GitHubRepoIssues($repoOwner: String!, $repoName: String!) {
@@ -158,15 +160,16 @@ def check_request_query(req, query):
     eq_(received, query)
 
 
-def check_mock_urlopen(mock_urlopen,
-                       method='POST',
-                       timeout=None,
-                       base_headers=None,
-                       extra_headers=None,
-                       variables=None,
-                       operation_name=None,
-                       query=None,  # defaults to `graphql_query`
-                       ):
+def check_mock_urlopen(
+    mock_urlopen,
+    method='POST',
+    timeout=None,
+    base_headers=None,
+    extra_headers=None,
+    variables=None,
+    operation_name=None,
+    query=None,  # defaults to `graphql_query`
+):
     assert mock_urlopen.called
     args = mock_urlopen.call_args
     req = args[0][0]
@@ -192,10 +195,12 @@ def test_basic(mock_urlopen):
     data = endpoint(graphql_query)
     eq_(data, json.loads(graphql_response_ok))
     check_mock_urlopen(mock_urlopen)
-    eq_(str(endpoint),
+    eq_(
+        str(endpoint),
         'HTTPEndpoint('
         + 'url={}, '.format(test_url)
-        + 'base_headers={}, timeout=None, method=POST)')
+        + 'base_headers={}, timeout=None, method=POST)',
+    )
 
 
 @patch('urllib.request.urlopen')
@@ -259,9 +264,9 @@ def test_headers(mock_urlopen):
     endpoint = HTTPEndpoint(test_url, base_headers=base_headers)
     data = endpoint(graphql_query, extra_headers=extra_headers)
     eq_(data, json.loads(graphql_response_ok))
-    check_mock_urlopen(mock_urlopen,
-                       base_headers=base_headers,
-                       extra_headers=extra_headers)
+    check_mock_urlopen(
+        mock_urlopen, base_headers=base_headers, extra_headers=extra_headers
+    )
 
 
 @patch('urllib.request.urlopen')
@@ -331,16 +336,22 @@ def test_json_error(mock_urlopen):
 
     exc = get_json_exception(graphql_response_json_error)
     got_exc = data['errors'][0].pop('exception')
-    assert isinstance(got_exc, json.JSONDecodeError), \
-        '{} is not json.JSONDecodeError'.format(type(got_exc))
+    assert isinstance(
+        got_exc, json.JSONDecodeError
+    ), '{} is not json.JSONDecodeError'.format(type(got_exc))
 
-    eq_(data, {
-        'errors': [{
-            'message': str(exc),
-            'body': graphql_response_json_error.decode('utf-8'),
-        }],
-        'data': None,
-    })
+    eq_(
+        data,
+        {
+            'errors': [
+                {
+                    'message': str(exc),
+                    'body': graphql_response_json_error.decode('utf-8'),
+                }
+            ],
+            'data': None,
+        },
+    )
     check_mock_urlopen(mock_urlopen)
 
 
@@ -361,25 +372,28 @@ def test_get(mock_urlopen):
     operation_name = 'xpto'
 
     endpoint = HTTPEndpoint(test_url, base_headers=base_headers, method='GET')
-    data = endpoint(graphql_query,
-                    extra_headers=extra_headers,
-                    variables=variables,
-                    operation_name=operation_name,
-                    )
+    data = endpoint(
+        graphql_query,
+        extra_headers=extra_headers,
+        variables=variables,
+        operation_name=operation_name,
+    )
     eq_(data, json.loads(graphql_response_ok))
-    check_mock_urlopen(mock_urlopen,
-                       method='GET',
-                       base_headers=base_headers,
-                       extra_headers=extra_headers,
-                       variables=variables,
-                       operation_name=operation_name,
-                       )
-    eq_(str(endpoint),
+    check_mock_urlopen(
+        mock_urlopen,
+        method='GET',
+        base_headers=base_headers,
+        extra_headers=extra_headers,
+        variables=variables,
+        operation_name=operation_name,
+    )
+    eq_(
+        str(endpoint),
         'HTTPEndpoint('
         + 'url={}, '.format(test_url)
         + 'base_headers={}, '.format(base_headers)
         + 'timeout=None, method=GET)',
-        )
+    )
 
 
 @patch('urllib.request.urlopen')
@@ -409,16 +423,21 @@ def test_server_http_error(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
-    eq_(data, {
-        'errors': [{
-            'message': str(err),
-            'exception': err,
-            'status': 500,
-            'headers': {'Xpto': 'abc'},
-            'body': 'xpto',
-        }],
-        'data': None,
-    })
+    eq_(
+        data,
+        {
+            'errors': [
+                {
+                    'message': str(err),
+                    'exception': err,
+                    'status': 500,
+                    'headers': {'Xpto': 'abc'},
+                    'body': 'xpto',
+                }
+            ],
+            'data': None,
+        },
+    )
     check_mock_urlopen(mock_urlopen)
 
 
@@ -437,16 +456,21 @@ def test_server_http_non_conforming_json(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
-    eq_(data, {
-        'errors': [{
-            'message': str(err),
-            'exception': err,
-            'status': 500,
-            'headers': {'Content-Type': 'application/json'},
-            'body': '{"message": "xpto"}',
-        }],
-        'data': None,
-    })
+    eq_(
+        data,
+        {
+            'errors': [
+                {
+                    'message': str(err),
+                    'exception': err,
+                    'status': 500,
+                    'headers': {'Content-Type': 'application/json'},
+                    'body': '{"message": "xpto"}',
+                }
+            ],
+            'data': None,
+        },
+    )
     check_mock_urlopen(mock_urlopen)
 
 
@@ -466,16 +490,22 @@ def test_server_error_broken_json(mock_urlopen):
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
     got_exc = data['errors'][0].pop('exception')
-    assert isinstance(got_exc, json.JSONDecodeError), \
-        '{} is not json.JSONDecodeError'.format(type(got_exc))
+    assert isinstance(
+        got_exc, json.JSONDecodeError
+    ), '{} is not json.JSONDecodeError'.format(type(got_exc))
 
-    eq_(data, {
-        'errors': [{
-            'message': str(got_exc),
-            'body': 'xpto',
-        }],
-        'data': None,
-    })
+    eq_(
+        data,
+        {
+            'errors': [
+                {
+                    'message': str(got_exc),
+                    'body': 'xpto',
+                }
+            ],
+            'data': None,
+        },
+    )
     check_mock_urlopen(mock_urlopen)
 
 
@@ -496,11 +526,13 @@ def test_server_http_graphql_error(mock_urlopen):
     data = endpoint(graphql_query)
 
     expected_data = json.loads(graphql_response_error)
-    expected_data.update({
-        'exception': err,
-        'status': 500,
-        'headers': {'Content-Type': 'application/json'},
-    })
+    expected_data.update(
+        {
+            'exception': err,
+            'status': 500,
+            'headers': {'Content-Type': 'application/json'},
+        }
+    )
 
     eq_(data, expected_data)
     check_mock_urlopen(mock_urlopen)
@@ -523,11 +555,13 @@ def test_server_http_single_error(mock_urlopen):
     data = endpoint(graphql_query)
 
     expected_data = {'errors': [{'message': 'a string'}]}
-    expected_data.update({
-        'exception': err,
-        'status': 500,
-        'headers': {'Content-Type': 'application/json'},
-    })
+    expected_data.update(
+        {
+            'exception': err,
+            'status': 500,
+            'headers': {'Content-Type': 'application/json'},
+        }
+    )
 
     eq_(data, expected_data)
     check_mock_urlopen(mock_urlopen)
@@ -550,11 +584,13 @@ def test_server_http_error_string_list(mock_urlopen):
     data = endpoint(graphql_query)
 
     expected_data = {'errors': [{'message': 'a'}, {'message': 'b'}]}
-    expected_data.update({
-        'exception': err,
-        'status': 500,
-        'headers': {'Content-Type': 'application/json'},
-    })
+    expected_data.update(
+        {
+            'exception': err,
+            'status': 500,
+            'headers': {'Content-Type': 'application/json'},
+        }
+    )
 
     eq_(data, expected_data)
     check_mock_urlopen(mock_urlopen)
@@ -577,11 +613,13 @@ def test_server_http_error_list_message(mock_urlopen):
     data = endpoint(graphql_query)
 
     expected_data = {'errors': [{'message': '[1, 2]'}]}
-    expected_data.update({
-        'exception': err,
-        'status': 500,
-        'headers': {'Content-Type': 'application/json'},
-    })
+    expected_data.update(
+        {
+            'exception': err,
+            'status': 500,
+            'headers': {'Content-Type': 'application/json'},
+        }
+    )
 
     eq_(data, expected_data)
     check_mock_urlopen(mock_urlopen)

@@ -33,8 +33,7 @@ def format_graphql_type(typ):
 
 
 def is_value_required(field):
-    return field['type']['kind'] == 'NON_NULL' \
-        and field.get('defaultValue')
+    return field['type']['kind'] == 'NON_NULL' and field.get('defaultValue')
 
 
 class Variable:
@@ -124,9 +123,7 @@ class SchemaValidation(NoValidation):
 
     def _create_type(self, typ):
         fields = typ.get('fields') or typ.get('inputFields') or []
-        typ['fields'] = {
-            f['name']: self._create_field(f) for f in fields
-        }
+        typ['fields'] = {f['name']: self._create_field(f) for f in fields}
         typ['fields'].setdefault('__typename', self._typename_field)
 
         if 'inputFields' in typ:
@@ -142,9 +139,7 @@ class SchemaValidation(NoValidation):
 
     def _create_field(self, field):
         args = field.get('args') or []
-        field['args'] = {
-            a['name']: a for a in args
-        }
+        field['args'] = {a['name']: a for a in args}
         return field
 
     def get_operation_type(self, operation_name):
@@ -189,16 +184,20 @@ class SchemaValidation(NoValidation):
             return
 
         # user-defined scalars are usually defined as strings
-        if name not in cls.builtin_types and \
-                candidate_name in cls.accepted_user_scalars:
+        if (
+            name not in cls.builtin_types
+            and candidate_name in cls.accepted_user_scalars
+        ):
             return
-        raise ValueError('got %s where %s is required' %
-                         (candidate_name, name))
+        raise ValueError(
+            'got %s where %s is required' % (candidate_name, name)
+        )
 
     def validate_enum(self, name, candidate_name, value):
         if candidate_name != 'Enum':
-            raise ValueError('got %s where %s is required' %
-                             (candidate_name, name))
+            raise ValueError(
+                'got %s where %s is required' % (candidate_name, name)
+            )
         enum = self.get_type(name)
         if value not in enum['enumValues']:
             raise ValueError('enum %s has no value %s' % (name, value))
@@ -230,8 +229,9 @@ class SchemaValidation(NoValidation):
     def validate_object(typ, candidate_name):
         name = typ['name']
         if candidate_name != name:
-            raise ValueError('got %s where %s is required' %
-                             (candidate_name, name))
+            raise ValueError(
+                'got %s where %s is required' % (candidate_name, name)
+            )
 
     def validate_input_object_fields(self, typ, obj):
         required = set()
@@ -246,8 +246,10 @@ class SchemaValidation(NoValidation):
                 required.remove(name)
 
         if required:
-            raise ValueError('missing required fields of type %s: %s' %
-                             (typ['name'], ', '.join(required)))
+            raise ValueError(
+                'missing required fields of type %s: %s'
+                % (typ['name'], ', '.join(required))
+            )
 
     @staticmethod
     def validate_type_matches(typ, candidate):
@@ -353,8 +355,9 @@ class GraphQLToPython(Visitor):
         else:
             return '%s_%s' % (parent, name)
 
-    def format_selection_set_field(self, parent, name, selection,
-                                   children, lines, idx):
+    def format_selection_set_field(
+        self, parent, name, selection, children, lines, idx
+    ):
         field_selection = '%s.%s' % (parent, selection)
         if not children:
             lines.append(field_selection)
@@ -366,8 +369,9 @@ class GraphQLToPython(Visitor):
         lines.append('%s = %s' % (sel, field_selection))
         return self.format_selection_set(sel, children, lines, idx)
 
-    def format_selection_set_inline_fragment(self, parent, type_condition,
-                                             children, lines, idx):
+    def format_selection_set_inline_fragment(
+        self, parent, type_condition, children, lines, idx
+    ):
         sel = self.selection_name(parent, '_as__%s' % type_condition, idx)
         type_condition = self.format_typename_usage(type_condition)
         idx += 1
@@ -418,17 +422,29 @@ class GraphQLToPython(Visitor):
             if kind == 'field':
                 name, selection, children = rest
                 _, idx = self.format_selection_set_field(
-                    parent, name, selection, children, lines, idx,
+                    parent,
+                    name,
+                    selection,
+                    children,
+                    lines,
+                    idx,
                 )
             elif kind == 'inline_fragment':
                 type_condition, children = rest
                 _, idx = self.format_selection_set_inline_fragment(
-                    parent, type_condition, children, lines, idx,
+                    parent,
+                    type_condition,
+                    children,
+                    lines,
+                    idx,
                 )
             elif kind == 'fragment':
-                name, = rest
+                (name,) = rest
                 _, idx = self.format_selection_set_fragment_spread(
-                    parent, name, lines, idx,
+                    parent,
+                    name,
+                    lines,
+                    idx,
                 )
 
         return SelectionFormatResult(lines, idx)
@@ -467,22 +483,26 @@ class GraphQLToPython(Visitor):
     def report_type_field_validation(cls, node, typ, ex):
         loc = cls.get_node_location(node)
         type_name = typ['name']
-        raise SystemExit('no field named %s on type %s at %s' %
-                         (ex, type_name, loc)) from ex
+        raise SystemExit(
+            'no field named %s on type %s at %s' % (ex, type_name, loc)
+        ) from ex
 
     @classmethod
     def report_field_argument_validation(cls, node, typ, field, ex):
         loc = cls.get_node_location(node)
         field_name = field['name']
         type_name = typ['name']
-        raise SystemExit('no argument named %s on field %s.%s at %s' %
-                         (ex, type_name, field_name, loc)) from ex
+        raise SystemExit(
+            'no argument named %s on field %s.%s at %s'
+            % (ex, type_name, field_name, loc)
+        ) from ex
 
     @classmethod
     def report_possible_type_validation(cls, node, typ, type_name):
         loc = cls.get_node_location(node)
-        raise SystemExit('type %s not possible for %s at %s' %
-                         (type_name, typ['name'], loc))
+        raise SystemExit(
+            'type %s not possible for %s at %s' % (type_name, typ['name'], loc)
+        )
 
     @classmethod
     def report_unknown_variable(cls, node, ex):
@@ -497,8 +517,9 @@ class GraphQLToPython(Visitor):
     @classmethod
     def report_variable_definition(cls, node, ex):
         loc = cls.get_node_location(node)
-        raise SystemExit('invalid variable definition: %s at %s' %
-                         (ex, loc)) from ex
+        raise SystemExit(
+            'invalid variable definition: %s at %s' % (ex, loc)
+        ) from ex
 
     @classmethod
     def report_unused_variables(cls, variables):
@@ -524,22 +545,26 @@ class GraphQLToPython(Visitor):
             args_definition = ', variables=dict(%s)' % (args_definition,)
         lines = [
             '_op = sgqlc.operation.Operation'
-            '(_schema_root.%s_type, name=%r%s)' % (
-                node.operation.value,
-                node.name, args_definition),
+            '(_schema_root.%s_type, name=%r%s)'
+            % (node.operation.value, node.name, args_definition),
         ]
         self.format_selection_set('_op', node.selection_set, lines, 0)
         lines.append('return _op')
         self.type_stack.pop()
         name = to_python_name(node.name)
-        return (node.operation.value, name, '''\
+        return (
+            node.operation.value,
+            name,
+            '''\
 def %(operation)s_%(name)s():
     %(lines)s
-''' % {
-            'operation': node.operation.value,
-            'name': name,
-            'lines': '\n    '.join(lines),
-        })
+'''
+            % {
+                'operation': node.operation.value,
+                'name': name,
+                'lines': '\n    '.join(lines),
+            },
+        )
 
     def enter_fragment_definition(self, node, *_args):
         try:
@@ -554,16 +579,23 @@ def %(operation)s_%(name)s():
         lines.append('return _frag')
         self.type_stack.pop()
         name = to_python_name(node.name)
-        return ('fragment', name, '''\
+        return (
+            'fragment',
+            name,
+            '''\
 def fragment_%(name)s():
     _frag = sgqlc.operation.Fragment(%(type)s, %(gql_name)r)
     %(lines)s
-''' % {
-            'name': name,
-            'gql_name': node.name,
-            'type': self.format_typename_usage(node.type_condition['name']),
-            'lines': '\n    '.join(lines)
-        })
+'''
+            % {
+                'name': name,
+                'gql_name': node.name,
+                'type': self.format_typename_usage(
+                    node.type_condition['name']
+                ),
+                'lines': '\n    '.join(lines),
+            },
+        )
 
     @staticmethod
     def leave_selection_set(node, *_args):
@@ -644,8 +676,8 @@ def fragment_%(name)s():
 
         if required:
             raise ValueError(
-                'missing required arguments: %s at %s' %
-                (', '.join(required), self.get_node_location(node))
+                'missing required arguments: %s at %s'
+                % (', '.join(required), self.get_node_location(node))
             )
 
     def leave_field(self, node, *_args):
@@ -708,8 +740,11 @@ def fragment_%(name)s():
 
     def leave_inline_fragment(self, node, *_args):
         self.type_stack.pop()
-        return ('inline_fragment', node.type_condition['name'],
-                node.selection_set)
+        return (
+            'inline_fragment',
+            node.type_condition['name'],
+            node.selection_set,
+        )
 
     def validate_value(self, node, candidate_type, value):
         try:
@@ -786,8 +821,9 @@ def fragment_%(name)s():
 
 
 class CodeGen:
-    def __init__(self, schema, schema_name, operations_gql,
-                 writer, short_names):
+    def __init__(
+        self, schema, schema_name, operations_gql, writer, short_names
+    ):
         '''
         :param schema: if provided (not ``None``), will do validation
           using :class:`SchemaValidation`, otherwise no validation
@@ -829,17 +865,22 @@ class CodeGen:
         self.writer('import sgqlc.types\n')
         self.writer('import sgqlc.operation\n')
         if self.schema_name.path:
-            self.writer('from %s import %s' %
-                        (self.schema_name.path, self.schema_name.modname))
+            self.writer(
+                'from %s import %s'
+                % (self.schema_name.path, self.schema_name.modname)
+            )
         else:
             self.writer('import ' + self.schema_name.modname)
-        self.writer('''
+        self.writer(
+            '''
 
 _schema = %s
 _schema_root = _schema.%s
 
 __all__ = ('Operations',)
-''' % (self.schema_name.modname, self.schema_name.sym))
+'''
+            % (self.schema_name.modname, self.schema_name.sym)
+        )
 
     def write_operations(self):
         for source in self.operations_gql:
@@ -879,15 +920,19 @@ def add_arguments(ap):
     ap.add_argument(
         'schema-name',
         help='The schema name to use in the imports. '
-             'It must be in the form: `modname:symbol`. '
-             'It may contain leading `.` to change the import '
-             'statement to `from . import` using that as path. '
-             'If `:symbol` is omitted, then `modname` is used.',
+        'It must be in the form: `modname:symbol`. '
+        'It may contain leading `.` to change the import '
+        'statement to `from . import` using that as path. '
+        'If `:symbol` is omitted, then `modname` is used.',
     )
     ap.add_argument(
-        'operations.py', type=argparse.FileType('w'), nargs='?',
-        help=('The output operations as Python file using '
-              'sgqlc.operation. Defaults to the stdout'),
+        'operations.py',
+        type=argparse.FileType('w'),
+        nargs='?',
+        help=(
+            'The output operations as Python file using '
+            'sgqlc.operation. Defaults to the stdout'
+        ),
         default=sys.stdout,
     )
     ap.add_argument(
@@ -900,13 +945,16 @@ def add_arguments(ap):
     ap.add_argument(
         '--schema',
         type=argparse.FileType('r', encoding=read_encoding),
-        help=('The input schema as JSON file. '
-              'Usually the output from introspection query. '
-              'If given, the operations will be validated.'),
+        help=(
+            'The input schema as JSON file. '
+            'Usually the output from introspection query. '
+            'If given, the operations will be validated.'
+        ),
         default=None,
     )
     ap.add_argument(
-        '--short-names', '-s',
+        '--short-names',
+        '-s',
         help='Use short selection names',
         default=False,
         action='store_true',
@@ -928,8 +976,7 @@ def load_schema(in_file):
     elif schema.get('__schema'):
         return schema['__schema']  # introspection field
     else:
-        raise SystemExit(
-            'schema must be introspection object or query result')
+        raise SystemExit('schema must be introspection object or query result')
 
 
 def handle_command(parsed_args):
@@ -943,8 +990,11 @@ def handle_command(parsed_args):
     operations_gql = [Source(f.read(), f.name) for f in in_files]
 
     gen = CodeGen(
-        schema, schema_name, operations_gql,
-        out_file.write, short_names,
+        schema,
+        schema_name,
+        operations_gql,
+        out_file.write,
+        short_names,
     )
     gen.write()
     out_file.close()

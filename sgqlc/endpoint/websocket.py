@@ -8,6 +8,7 @@ class WebSocketEndpoint(BaseEndpoint):
     '''
     A synchronous websocket endpoint for graphql queries or subscriptions
     '''
+
     def __init__(self, url, connection_payload=None, **ws_options):
         '''
         :param url: ws:// or wss:// url to connect to
@@ -30,7 +31,10 @@ class WebSocketEndpoint(BaseEndpoint):
 
     def __str__(self):
         return '%s(url=%s, ws_options=%s)' % (
-            self.__class__.__name__, self.url, self.ws_options)
+            self.__class__.__name__,
+            self.url,
+            self.ws_options,
+        )
 
     def __call__(self, query, variables=None, operation_name=None):
         '''
@@ -73,9 +77,9 @@ class WebSocketEndpoint(BaseEndpoint):
             # allows sgqlc.operation.Operation to be passed
             # and generate compact representation of the queries
             query = bytes(query).decode('utf-8')
-        ws = websocket.create_connection(self.url,
-                                         subprotocols=['graphql-ws'],
-                                         **self.ws_options)
+        ws = websocket.create_connection(
+            self.url, subprotocols=['graphql-ws'], **self.ws_options
+        )
         try:
             init_id = self.generate_id()
             connection_setup_dict = {'type': 'connection_init', 'id': init_id}
@@ -97,11 +101,19 @@ class WebSocketEndpoint(BaseEndpoint):
                 )
 
             query_id = self.generate_id()
-            ws.send(json.dumps({'type': 'start',
-                                'id': query_id,
-                                'payload': {'query': query,
-                                            'variables': variables,
-                                            'operationName': operation_name}}))
+            ws.send(
+                json.dumps(
+                    {
+                        'type': 'start',
+                        'id': query_id,
+                        'payload': {
+                            'query': query,
+                            'variables': variables,
+                            'operationName': operation_name,
+                        },
+                    }
+                )
+            )
             response = self._get_response(ws)
             while response['type'] != 'complete':
                 if response['id'] != query_id:
@@ -112,8 +124,10 @@ class WebSocketEndpoint(BaseEndpoint):
                 if response['type'] == 'data':
                     yield response['payload']
                 else:
-                    raise ValueError(f'Unexpected message {response} '
-                                     f'when waiting for query results')
+                    raise ValueError(
+                        f'Unexpected message {response} '
+                        f'when waiting for query results'
+                    )
                 response = self._get_response(ws)
 
         finally:

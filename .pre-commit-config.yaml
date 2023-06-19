@@ -4,6 +4,12 @@
 default_install_hook_types: [pre-commit, pre-push, pre-merge-commit]
 
 repos:
+-   repo: https://github.com/python/black
+    rev: 23.3.0
+    hooks:
+    -   id: black
+        exclude: "^(docs/|examples/.*(schema|operations)[.]py)"
+
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

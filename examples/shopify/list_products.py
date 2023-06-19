@@ -23,26 +23,32 @@ def price_range_to_text(price_range):
 
 
 def print_product(product):
-    sys.stdout.write('''\
+    sys.stdout.write(
+        '''\
 %(handle)s (%(total_inventory)s) - %(title)s
     %(description)s
     %(id)s
-''' % product)
-    sys.stdout.write('    Price: %s\n' %
-                     (price_range_to_text(product.price_range_v2),))
+'''
+        % product
+    )
+    sys.stdout.write(
+        '    Price: %s\n' % (price_range_to_text(product.price_range_v2),)
+    )
 
 
 ap = argparse.ArgumentParser(description='Shopify List Products')
 ap.add_argument('shop_store', help='Shopify Store name')
 ap.add_argument('token', help='X-Shopify-Access-Token to use')
-ap.add_argument('--page-size', '-p',
-                help='Page size to use, default=%(default)s',
-                default=3,
-                type=int)
-ap.add_argument('--verbose', '-v',
-                help='Increase verbosity',
-                action='count',
-                default=0)
+ap.add_argument(
+    '--page-size',
+    '-p',
+    help='Page size to use, default=%(default)s',
+    default=3,
+    type=int,
+)
+ap.add_argument(
+    '--verbose', '-v', help='Increase verbosity', action='count', default=0
+)
 
 args = ap.parse_args()
 
@@ -72,7 +78,7 @@ errors = d.get('errors')
 if errors:
     raise SystemExit(errors)
 
-data = (op + d)
+data = op + d
 sys.stdout.write('Shop: %(name)s - %(url)s\n' % data.shop)
 if data.shop.description:
     sys.stdout.write('   %s\n' % (data.shop.description,))

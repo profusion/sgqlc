@@ -312,6 +312,7 @@ class Node(Interface):
 
     https://facebook.github.io/relay/graphql/objectidentification.htm
     '''
+
     id = non_null(id)  # noqa: A003
 
 
@@ -320,6 +321,7 @@ class PageInfo(Type):
 
     https://facebook.github.io/relay/graphql/connections.htm
     '''
+
     end_cursor = str
     start_cursor = str
     has_next_page = non_null(bool)
@@ -345,6 +347,7 @@ class Connection(Type):
       ``obj.connection.page_info.end_cursor`` and
       the JSON backing store, if any.
     '''
+
     __auto_register = False  # do not expose this in Schema, just subclasses
     page_info = non_null(PageInfo)
 
@@ -365,10 +368,12 @@ class Connection(Type):
         elif has_other_edges:
             self.edges = other.edges
 
-        has_self_page_info = hasattr(self, 'page_info') and \
-            self.page_info is not None
-        has_other_page_info = hasattr(other, 'page_info') and \
-            other.page_info is not None
+        has_self_page_info = (
+            hasattr(self, 'page_info') and self.page_info is not None
+        )
+        has_other_page_info = (
+            hasattr(other, 'page_info') and other.page_info is not None
+        )
         if has_self_page_info and has_other_page_info:
             if hasattr(other.page_info, 'end_cursor'):
                 self.page_info.end_cursor = other.page_info.end_cursor

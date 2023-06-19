@@ -127,17 +127,24 @@ builtin_scalar_imports = {
 datetime_scalar_imports = {
     k: 'sgqlc.types.datetime' for k in ('DateTime', 'Date', 'Time')
 }
-relay_imports = {
-    k: 'sgqlc.types.relay' for k in ('Node', 'PageInfo')
-}
+relay_imports = {k: 'sgqlc.types.relay' for k in ('Node', 'PageInfo')}
 
-default_type_imports = {**builtin_scalar_imports, **datetime_scalar_imports,
-                        **relay_imports}
+default_type_imports = {
+    **builtin_scalar_imports,
+    **datetime_scalar_imports,
+    **relay_imports,
+}
 
 
 class CodeGen:
-    def __init__(self, schema_name, schema, writer, docstrings,
-                 type_imports=default_type_imports):
+    def __init__(
+        self,
+        schema_name,
+        schema,
+        writer,
+        docstrings,
+        type_imports=default_type_imports,
+    ):
         self.schema_name = schema_name
         self.schema = schema
         self.types = sorted(schema['types'], key=lambda x: x['name'])
@@ -183,14 +190,17 @@ class CodeGen:
 
     def write_banner(self, text):
         bar = '#' * 72
-        self.writer('''
+        self.writer(
+            '''
 %(bar)s
 # %(text)s
 %(bar)s
-''' % {
-            'bar': bar,
-            'text': text,
-        })
+'''
+            % {
+                'bar': bar,
+                'text': text,
+            }
+        )
 
     @staticmethod
     def has_iface(ifaces, name):
@@ -367,9 +377,9 @@ class CodeGen:
                     defval = ''
                 else:
                     defval = ' (default: `%s`)' % (defval,)
-                lines.extend(list_wrapper.wrap(
-                    '`%s` (`%s`)%s%s' % (n, t, d, defval)
-                ))
+                lines.extend(
+                    list_wrapper.wrap('`%s` (`%s`)%s%s' % (n, t, d, defval))
+                )
         self.writer(to_docstring(lines))
         self.writer('\n')
 
@@ -377,19 +387,22 @@ class CodeGen:
         name = t['name']
         if name in self.builtin_enum_names:
             return
-        self.writer('''\
+        self.writer(
+            '''\
 class %(name)s(sgqlc.types.Enum):
 %(docstrings)s\
     __schema__ = %(schema_name)s
     __choices__ = %(choices)r
 
 
-''' % {
-            'name': name,
-            'schema_name': self.schema_name,
-            'docstrings': self.get_enum_docstring(t),
-            'choices': tuple(sorted(v['name'] for v in t['enumValues'])),
-        })
+'''
+            % {
+                'name': name,
+                'schema_name': self.schema_name,
+                'docstrings': self.get_enum_docstring(t),
+                'choices': tuple(sorted(v['name'] for v in t['enumValues'])),
+            }
+        )
         self.written_types.add(name)
 
     def get_type_ref(self, t, siblings):
@@ -397,11 +410,13 @@ class %(name)s(sgqlc.types.Enum):
         if kind == 'NON_NULL':
             of_type = t['ofType']
             return 'sgqlc.types.non_null(%s)' % self.get_type_ref(
-                of_type, siblings)
+                of_type, siblings
+            )
         elif kind == 'LIST':
             of_type = t['ofType']
             return 'sgqlc.types.list_of(%s)' % self.get_type_ref(
-                of_type, siblings)
+                of_type, siblings
+            )
 
         name = t['name']
         if name in self.written_types and name not in siblings:
@@ -419,13 +434,16 @@ class %(name)s(sgqlc.types.Enum):
     def write_field_input(self, field, siblings):
         name = field['name']
         tref = self.get_type_ref(field['type'], siblings)
-        self.writer('''\
+        self.writer(
+            '''\
     %(py_name)s = sgqlc.types.Field(%(type)s, graphql_name=%(gql_name)r)
-''' % {
-            'py_name': BaseItem._to_python_name(name),
-            'gql_name': name,
-            'type': tref,
-        })
+'''
+            % {
+                'py_name': BaseItem._to_python_name(name),
+                'gql_name': name,
+                'type': tref,
+            }
+        )
         self.write_field_docstring(field)
 
     def write_arg(self, arg, siblings):
@@ -438,26 +456,32 @@ class %(name)s(sgqlc.types.Enum):
             else:
                 defval = repr(parse_graphql_value_to_json(defval))
 
-        self.writer('''\
+        self.writer(
+            '''\
         (%(py_name)r, sgqlc.types.Arg(%(type)s, graphql_name=%(gql_name)r, \
 default=%(default)s)),
-''' % {
-            'py_name': BaseItem._to_python_name(name),
-            'gql_name': name,
-            'type': tref,
-            'default': defval,
-        })
+'''
+            % {
+                'py_name': BaseItem._to_python_name(name),
+                'gql_name': name,
+                'type': tref,
+                'default': defval,
+            }
+        )
 
     def write_field_output(self, field, siblings):
         name = field['name']
         tref = self.get_type_ref(field['type'], siblings)
-        self.writer('''\
+        self.writer(
+            '''\
     %(py_name)s = sgqlc.types.Field(%(type)s, graphql_name=%(gql_name)r\
-''' % {
-            'py_name': BaseItem._to_python_name(name),
-            'gql_name': name,
-            'type': tref,
-        })
+'''
+            % {
+                'py_name': BaseItem._to_python_name(name),
+                'gql_name': name,
+                'type': tref,
+            }
+        )
         args = field['args']
         if args:
             self.writer(', args=sgqlc.types.ArgDict((\n')
@@ -471,18 +495,21 @@ default=%(default)s)),
     def write_type_container(self, t, bases, own_fields, write_field):
         name = t['name']
         py_fields, siblings = self.get_py_fields_and_siblings(own_fields)
-        self.writer('''\
+        self.writer(
+            '''\
 class %(name)s(%(bases)s):
 %(docstrings)s\
     __schema__ = %(schema_name)s
     __field_names__ = %(field_names)s
-''' % {
-            'name': name,
-            'bases': bases,
-            'docstrings': self.get_docstring(t),
-            'schema_name': self.schema_name,
-            'field_names': py_fields,
-        })
+'''
+            % {
+                'name': name,
+                'bases': bases,
+                'docstrings': self.get_docstring(t),
+                'schema_name': self.schema_name,
+                'field_names': py_fields,
+            }
+        )
         for field in own_fields:
             write_field(field, siblings)
         self.writer('\n\n')
@@ -519,7 +546,7 @@ class %(name)s(%(bases)s):
             bases = ['sgqlc.types.Type']
 
         inherited_fields = set()
-        for iface in (t['interfaces'] or ()):
+        for iface in t['interfaces'] or ():
             iface_name = iface['name']
             assert iface_name in self.written_types, iface_name
             bases.append(iface_name)
@@ -541,15 +568,18 @@ class %(name)s(%(bases)s):
         if imp:
             self.writer('%s = %s.%s' % (name, imp, name))
         else:
-            self.writer('''\
+            self.writer(
+                '''\
 class %(name)s(sgqlc.types.Scalar):
 %(docstring)s\
     __schema__ = %(schema_name)s
-''' % {
-                'name': name,
-                'docstring': self.get_docstring(t),
-                'schema_name': self.schema_name,
-            })
+'''
+                % {
+                    'name': name,
+                    'docstring': self.get_docstring(t),
+                    'schema_name': self.schema_name,
+                }
+            )
         self.writer('\n\n')
         self.written_types.add(name)
 
@@ -557,20 +587,23 @@ class %(name)s(sgqlc.types.Scalar):
         name = t['name']
         possible_types = t['possibleTypes']
         trailing_comma = ',' if len(possible_types) == 1 else ''
-        self.writer('''\
+        self.writer(
+            '''\
 class %(name)s(sgqlc.types.Union):
 %(docstring)s\
     __schema__ = %(schema_name)s
     __types__ = (%(types)s%(trailing_comma)s)
 
 
-''' % {
-            'name': name,
-            'docstring': self.get_docstring(t),
-            'schema_name': self.schema_name,
-            'types': ', '.join(v['name'] for v in possible_types),
-            'trailing_comma': trailing_comma,
-        })
+'''
+            % {
+                'name': name,
+                'docstring': self.get_docstring(t),
+                'schema_name': self.schema_name,
+                'types': ', '.join(v['name'] for v in possible_types),
+                'trailing_comma': trailing_comma,
+            }
+        )
         self.written_types.add(name)
 
     def write_header(self):
@@ -585,29 +618,35 @@ class %(name)s(sgqlc.types.Union):
     def write_relay_fixup(self):
         if not self.uses_relay:
             return
-        self.writer('''\
+        self.writer(
+            '''\
 # Unexport Node/PageInfo, let schema re-declare them
 %(schema_name)s -= sgqlc.types.relay.Node
 %(schema_name)s -= sgqlc.types.relay.PageInfo
 
 
-''' % {
-            'schema_name': self.schema_name,
-        })
+'''
+            % {
+                'schema_name': self.schema_name,
+            }
+        )
 
     def write_entry_points(self):
         self.write_banner('Schema Entry Points')
-        self.writer('''\
+        self.writer(
+            '''\
 %(schema_name)s.query_type = %(query_type)s
 %(schema_name)s.mutation_type = %(mutation_type)s
 %(schema_name)s.subscription_type = %(subscription_type)s
 
-''' % {
-            'schema_name': self.schema_name,
-            'query_type': self.query_type,
-            'mutation_type': self.mutation_type,
-            'subscription_type': self.subscription_type,
-        })
+'''
+            % {
+                'schema_name': self.schema_name,
+                'query_type': self.query_type,
+                'mutation_type': self.mutation_type,
+                'subscription_type': self.subscription_type,
+            }
+        )
 
 
 def get_basename_noext(path):
@@ -658,12 +697,12 @@ def load_schema(in_file):
     elif schema.get('__schema'):
         return schema['__schema']  # introspection field
     else:
-        raise SystemExit(
-            'schema must be introspection object or query result')
+        raise SystemExit('schema must be introspection object or query result')
 
 
 scalar_import_arg_re = re.compile(
-    '^([A-Za-z_]+[A-Za-z0-9_]*)=([A-Za-z0-9_.]*)$')
+    '^([A-Za-z_]+[A-Za-z0-9_]*)=([A-Za-z0-9_.]*)$'
+)
 
 
 def parse_scalar_import(s):
@@ -675,38 +714,67 @@ def parse_scalar_import(s):
 
 def add_arguments(ap):
     # Generic options to access the GraphQL API
-    ap.add_argument('schema.json',
-                    type=argparse.FileType('r', encoding=read_encoding),
-                    nargs='?',
-                    help=('The input schema as JSON file. '
-                          'Usually the output from introspection query.'),
-                    default=sys.stdin)
+    ap.add_argument(
+        'schema.json',
+        type=argparse.FileType('r', encoding=read_encoding),
+        nargs='?',
+        help=(
+            'The input schema as JSON file. '
+            'Usually the output from introspection query.'
+        ),
+        default=sys.stdin,
+    )
 
-    ap.add_argument('schema.py', type=argparse.FileType('w'), nargs='?',
-                    help=('The output schema as Python file using '
-                          'sgqlc.types. Defaults to the input schema name '
-                          'with .py extension.'),
-                    default=None)
+    ap.add_argument(
+        'schema.py',
+        type=argparse.FileType('w'),
+        nargs='?',
+        help=(
+            'The output schema as Python file using '
+            'sgqlc.types. Defaults to the input schema name '
+            'with .py extension.'
+        ),
+        default=None,
+    )
 
-    ap.add_argument('--schema-name', '-s',
-                    help=('The schema name to use. '
-                          'Defaults to output (or input) basename without '
-                          'extension and invalid python identifiers replaced '
-                          ' with "_".'),
-                    default=None)
-    ap.add_argument('--docstrings', '-d', action='store_true',
-                    help=('Include schema descriptions in the generated file '
-                          'as docstrings'),
-                    default=False)
-    ap.add_argument('--exclude-default-types', nargs='+',
-                    help='Exclude the use of sgqlc types in generated client',
-                    default=[])
-    ap.add_argument('--add-scalar-imports', nargs='+',
-                    help=('Specify "ScalarName=import.file" to automatically '
-                          'import "ScalarName" whenever this scalar is used '
-                          'in the schema'),
-                    type=parse_scalar_import,
-                    default=[])
+    ap.add_argument(
+        '--schema-name',
+        '-s',
+        help=(
+            'The schema name to use. '
+            'Defaults to output (or input) basename without '
+            'extension and invalid python identifiers replaced '
+            ' with "_".'
+        ),
+        default=None,
+    )
+    ap.add_argument(
+        '--docstrings',
+        '-d',
+        action='store_true',
+        help=(
+            'Include schema descriptions in the generated file '
+            'as docstrings'
+        ),
+        default=False,
+    )
+    ap.add_argument(
+        '--exclude-default-types',
+        nargs='+',
+        help='Exclude the use of sgqlc types in generated client',
+        default=[],
+    )
+    ap.add_argument(
+        '--add-scalar-imports',
+        nargs='+',
+        help=(
+            'Specify "ScalarName=import.file" to automatically '
+            'import "ScalarName" whenever this scalar is used '
+            'in the schema'
+        ),
+        type=parse_scalar_import,
+        default=[],
+    )
 
 
 def handle_command(parsed_args):
@@ -736,8 +804,9 @@ def handle_command(parsed_args):
 
     default_type_imports.update(add_scalar_imports)
 
-    gen = CodeGen(schema_name, schema, out_file.write, docstrings,
-                  default_type_imports)
+    gen = CodeGen(
+        schema_name, schema, out_file.write, docstrings, default_type_imports
+    )
     gen.write()
     out_file.close()
 

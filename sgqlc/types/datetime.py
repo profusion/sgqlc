@@ -133,7 +133,8 @@ class Time(Scalar):
 
     _re_parse = re.compile(
         r'^(?P<H>\d{2}):?(?P<M>\d{2}):?(?P<S>\d{2})(?P<MS>|[.]\d+)'
-        r'(?P<TZ>|Z|(?P<TZH>[+-]\d{2}):?(?P<TZM>\d{2}))$')
+        r'(?P<TZ>|Z|(?P<TZH>[+-]\d{2}):?(?P<TZM>\d{2}))$'
+    )
 
     @classmethod
     def converter(cls, s):
@@ -264,7 +265,8 @@ class DateTime(Scalar):
     _re_parse = re.compile(
         r'^(?P<Y>\d{4})-?(?P<m>\d{2})-?(?P<d>\d{2})T'
         r'(?P<H>\d{2}):?(?P<M>\d{2}):?(?P<S>\d{2})(?P<MS>|[.]\d+)'
-        r'(?P<TZ>|Z|(?P<TZH>[+-]\d{2}):?(?P<TZM>\d{2}))$')
+        r'(?P<TZ>|Z|(?P<TZH>[+-]\d{2}):?(?P<TZM>\d{2}))$'
+    )
 
     @classmethod
     def converter(cls, s):
@@ -272,8 +274,9 @@ class DateTime(Scalar):
             return s
         m = cls._re_parse.match(s)
         if not m:
-            raise ValueError('not in ISO 8601 format YYYY-MM-DDTHH:MM:SS: %s'
-                             % s)
+            raise ValueError(
+                'not in ISO 8601 format YYYY-MM-DDTHH:MM:SS: %s' % s
+            )
 
         year = int(m.group('Y'))
         month = int(m.group('m'))
@@ -292,8 +295,9 @@ class DateTime(Scalar):
             )
             tzinfo = datetime.timezone(d)
 
-        return datetime.datetime(year, month, day,
-                                 hour, minute, second, microsecond, tzinfo)
+        return datetime.datetime(
+            year, month, day, hour, minute, second, microsecond, tzinfo
+        )
 
     @classmethod
     def __to_json_value__(cls, value):
@@ -304,8 +308,10 @@ class DateTime(Scalar):
         return value.isoformat()
 
 
-map_python_to_graphql.update({
-    datetime.time: Time,
-    datetime.date: Date,
-    datetime.datetime: DateTime,
-})
+map_python_to_graphql.update(
+    {
+        datetime.time: Time,
+        datetime.date: Date,
+        datetime.datetime: DateTime,
+    }
+)

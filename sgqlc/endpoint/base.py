@@ -145,11 +145,16 @@ class BaseEndpoint:
         :rtype: dict
         '''
         self.logger.error('could not decode JSON response: %s', exc)
-        return {'data': None, 'errors': [{
-            'message': str(exc),
-            'exception': exc,
-            'body': body,
-        }]}
+        return {
+            'data': None,
+            'errors': [
+                {
+                    'message': str(exc),
+                    'exception': exc,
+                    'body': body,
+                }
+            ],
+        }
 
     def _fixup_graphql_error(self, data):
         '''Given a possible GraphQL error payload, make sure it's in shape.
@@ -178,16 +183,18 @@ class BaseEndpoint:
         errors = data.get('errors')
         original_errors = errors
         if not isinstance(errors, list):
-            self.logger.warning('data["errors"] is not a list! Fix up data=%r',
-                                data)
+            self.logger.warning(
+                'data["errors"] is not a list! Fix up data=%r', data
+            )
             data = data.copy()
             data['errors'] = [{'message': str(errors)}]
             return data
 
         for i, error in enumerate(errors):
             if not isinstance(error, dict):
-                self.logger.warning('Error #%d: is not a dict: %r. Fix up!',
-                                    i, error)
+                self.logger.warning(
+                    'Error #%d: is not a dict: %r. Fix up!', i, error
+                )
                 if data is original_data:
                     data = data.copy()
                 if errors is original_errors:
@@ -281,7 +288,9 @@ class BaseEndpoint:
             end_line = line + 1
             for i, ln in enumerate(lines[start_line:end_line], start_line):
                 s.append('{}{}{}'.format(linenofmt % i, sep, ln))
-            s.append('{}{}{}'.format(' ' * (offset + len(sep)),
-                                     colmark[0] * column,
-                                     colmark[1]))
+            s.append(
+                '{}{}{}'.format(
+                    ' ' * (offset + len(sep)), colmark[0] * column, colmark[1]
+                )
+            )
         return s
