@@ -69,6 +69,13 @@
           "name": "deprecated"
         },
         {
+          "args": [],
+          "locations": [
+            "INPUT_OBJECT"
+          ],
+          "name": "oneOf"
+        },
+        {
           "args": [
             {
               "defaultValue": "null",
@@ -85,6 +92,88 @@
             "OBJECT"
           ],
           "name": "accessRestricted"
+        },
+        {
+          "args": [
+            {
+              "defaultValue": null,
+              "name": "weight",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "locations": [
+            "FIELD_DEFINITION",
+            "OBJECT"
+          ],
+          "name": "cost"
+        },
+        {
+          "args": [
+            {
+              "defaultValue": null,
+              "name": "assumedSize",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "slicingArguments",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "name": "sizedFields",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "defaultValue": "true",
+              "name": "requireOneSlicingArgument",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            }
+          ],
+          "locations": [
+            "FIELD_DEFINITION"
+          ],
+          "name": "listSize"
         }
       ],
       "mutationType": {
@@ -6956,110 +7045,6 @@
               "args": [
                 {
                   "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "key",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
                   "name": "first",
                   "type": {
                     "kind": "SCALAR",
@@ -8886,6 +8871,19 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "author",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StaffMember",
                   "ofType": null
                 }
               }
@@ -11599,110 +11597,6 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "key",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
-                  "ofType": null
-                }
               }
             },
             {
@@ -22644,16 +22538,16 @@
               "name": "MISSING_ARGUMENT"
             },
             {
-              "name": "VALUE_OUTSIDE_RANGE"
-            },
-            {
-              "name": "MINIMUM_SUBTOTAL_AND_QUANTITY_RANGE_BOTH_PRESENT"
+              "name": "ACTIVE_PERIOD_OVERLAP"
             },
             {
               "name": "EXCEEDED_MAX"
             },
             {
-              "name": "ACTIVE_PERIOD_OVERLAP"
+              "name": "MINIMUM_SUBTOTAL_AND_QUANTITY_RANGE_BOTH_PRESENT"
+            },
+            {
+              "name": "VALUE_OUTSIDE_RANGE"
             },
             {
               "name": "CONFLICT"
@@ -24155,6 +24049,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "ProductVariantsBulkUpdateUserError",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "PubSubWebhookSubscriptionCreateUserError",
               "ofType": null
             },
@@ -24992,110 +24891,6 @@
                 "kind": "OBJECT",
                 "name": "PaymentTerms",
                 "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "key",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
-                  "ofType": null
-                }
               }
             },
             {
@@ -27985,6 +27780,9 @@
               "name": "CREATED_AT"
             },
             {
+              "name": "UPDATED_AT"
+            },
+            {
               "name": "ID"
             },
             {
@@ -30648,19 +30446,6 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "name": "lineItem",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "LineItem",
                   "ofType": null
                 }
               }
@@ -33746,110 +33531,6 @@
                   "ofType": null
                 }
               }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "key",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
-                  "ofType": null
-                }
-              }
             }
           ],
           "inputFields": null,
@@ -34134,110 +33815,6 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "MetafieldConnection",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "key",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
                   "ofType": null
                 }
               }
@@ -35334,19 +34911,6 @@
           "fields": [
             {
               "args": [],
-              "name": "available",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
               "name": "canDeactivate",
               "type": {
                 "kind": "NON_NULL",
@@ -35382,15 +34946,6 @@
             },
             {
               "args": [],
-              "name": "deactivationAlertHtml",
-              "type": {
-                "kind": "SCALAR",
-                "name": "FormattedString",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
               "name": "id",
               "type": {
                 "kind": "NON_NULL",
@@ -35398,19 +34953,6 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "name": "incoming",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
                   "ofType": null
                 }
               }
@@ -36105,6 +35647,15 @@
               }
             },
             {
+              "args": [],
+              "name": "staffMember",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
+                "ofType": null
+              }
+            },
+            {
               "args": [
                 {
                   "defaultValue": null,
@@ -36630,6 +36181,15 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "staffMember",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
                 "ofType": null
               }
             },
@@ -42674,34 +42234,31 @@
         {
           "enumValues": [
             {
-              "name": "ARTICLE"
-            },
-            {
-              "name": "BLOG"
-            },
-            {
-              "name": "COLLECTION"
-            },
-            {
               "name": "CUSTOMER"
             },
             {
               "name": "DRAFTORDER"
             },
             {
-              "name": "ORDER"
-            },
-            {
-              "name": "PAGE"
+              "name": "COLLECTION"
             },
             {
               "name": "PRODUCT"
             },
             {
-              "name": "PRODUCTIMAGE"
+              "name": "PRODUCTVARIANT"
             },
             {
-              "name": "PRODUCTVARIANT"
+              "name": "ARTICLE"
+            },
+            {
+              "name": "BLOG"
+            },
+            {
+              "name": "PAGE"
+            },
+            {
+              "name": "ORDER"
             },
             {
               "name": "SHOP"
@@ -43759,51 +43316,6 @@
               "args": [
                 {
                   "defaultValue": null,
-                  "name": "description",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "amount",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "MoneyInput",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "test",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "appCreditCreate",
-              "type": {
-                "kind": "OBJECT",
-                "name": "AppCreditCreatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
                   "name": "name",
                   "type": {
                     "kind": "NON_NULL",
@@ -43855,52 +43367,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "AppPurchaseOneTimeCreatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "appRevenueAttributionRecord",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "AppRevenueAttributionRecordInput",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "appRevenueAttributionRecordCreate",
-              "type": {
-                "kind": "OBJECT",
-                "name": "AppRevenueAttributionRecordCreatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "id",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "appRevenueAttributionRecordDelete",
-              "type": {
-                "kind": "OBJECT",
-                "name": "AppRevenueAttributionRecordDeletePayload",
                 "ofType": null
               }
             },
@@ -47053,73 +46519,6 @@
               "args": [
                 {
                   "defaultValue": null,
-                  "name": "input",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "InventoryAdjustQuantityInput",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "inventoryAdjustQuantity",
-              "type": {
-                "kind": "OBJECT",
-                "name": "InventoryAdjustQuantityPayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "inventoryItemAdjustments",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "LIST",
-                      "name": null,
-                      "ofType": {
-                        "kind": "NON_NULL",
-                        "name": null,
-                        "ofType": {
-                          "kind": "INPUT_OBJECT",
-                          "name": "InventoryAdjustItemInput",
-                          "ofType": null
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "locationId",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "inventoryBulkAdjustQuantityAtLocation",
-              "type": {
-                "kind": "OBJECT",
-                "name": "InventoryBulkAdjustQuantityAtLocationPayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
                   "name": "inventoryLevelId",
                   "type": {
                     "kind": "NON_NULL",
@@ -48256,293 +47655,6 @@
               "args": [
                 {
                   "defaultValue": null,
-                  "name": "id",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "priceRuleActivate",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PriceRuleActivatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "priceRule",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "PriceRuleInput",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "priceRuleDiscountCode",
-                  "type": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "PriceRuleDiscountCodeInput",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "priceRuleCreate",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PriceRuleCreatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "id",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "priceRuleDeactivate",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PriceRuleDeactivatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "id",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "priceRuleDelete",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PriceRuleDeletePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "priceRuleId",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "code",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "priceRuleDiscountCodeCreate",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PriceRuleDiscountCodeCreatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "priceRuleId",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "code",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "priceRuleDiscountCodeUpdate",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PriceRuleDiscountCodeUpdatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "id",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "priceRule",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "PriceRuleInput",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "priceRuleDiscountCode",
-                  "type": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "PriceRuleDiscountCodeInput",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "priceRuleUpdate",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PriceRuleUpdatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "input",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "PrivateMetafieldDeleteInput",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafieldDelete",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafieldDeletePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "input",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "PrivateMetafieldInput",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafieldUpsert",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafieldUpsertPayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "input",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "ProductAppendImagesInput",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "productAppendImages",
-              "type": {
-                "kind": "OBJECT",
-                "name": "ProductAppendImagesPayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
                   "name": "productId",
                   "type": {
                     "kind": "NON_NULL",
@@ -48686,50 +47798,6 @@
               "args": [
                 {
                   "defaultValue": null,
-                  "name": "id",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "imageIds",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "LIST",
-                      "name": null,
-                      "ofType": {
-                        "kind": "NON_NULL",
-                        "name": null,
-                        "ofType": {
-                          "kind": "SCALAR",
-                          "name": "ID",
-                          "ofType": null
-                        }
-                      }
-                    }
-                  }
-                }
-              ],
-              "name": "productDeleteImages",
-              "type": {
-                "kind": "OBJECT",
-                "name": "ProductDeleteImagesPayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
                   "name": "productId",
                   "type": {
                     "kind": "NON_NULL",
@@ -48828,42 +47896,6 @@
               "args": [
                 {
                   "defaultValue": null,
-                  "name": "productId",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "image",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "ImageInput",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "productImageUpdate",
-              "type": {
-                "kind": "OBJECT",
-                "name": "ProductImageUpdatePayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
                   "name": "id",
                   "type": {
                     "kind": "NON_NULL",
@@ -48945,50 +47977,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "ProductLeaveSellingPlanGroupsPayload",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "id",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "moves",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "LIST",
-                      "name": null,
-                      "ofType": {
-                        "kind": "NON_NULL",
-                        "name": null,
-                        "ofType": {
-                          "kind": "INPUT_OBJECT",
-                          "name": "MoveInput",
-                          "ofType": null
-                        }
-                      }
-                    }
-                  }
-                }
-              ],
-              "name": "productReorderImages",
-              "type": {
-                "kind": "OBJECT",
-                "name": "ProductReorderImagesPayload",
                 "ofType": null
               }
             },
@@ -52114,6 +51102,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "StaffMember",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "StandardMetafieldDefinitionTemplate",
               "ofType": null
             },
@@ -53859,110 +52852,6 @@
               }
             },
             {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "key",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
-                  "ofType": null
-                }
-              }
-            },
-            {
               "args": [],
               "name": "processedAt",
               "type": {
@@ -54742,6 +53631,15 @@
                   "ofType": null
                 }
               }
+            },
+            {
+              "args": [],
+              "name": "user",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
+                "ofType": null
+              }
             }
           ],
           "inputFields": null,
@@ -54798,13 +53696,13 @@
               "name": "CUSTOMER"
             },
             {
+              "name": "DECLINED"
+            },
+            {
               "name": "FRAUD"
             },
             {
               "name": "INVENTORY"
-            },
-            {
-              "name": "DECLINED"
             },
             {
               "name": "OTHER"
@@ -55448,6 +54346,15 @@
                   "name": "SaleConnection",
                   "ofType": null
                 }
+              }
+            },
+            {
+              "args": [],
+              "name": "user",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
+                "ofType": null
               }
             }
           ],
@@ -56822,6 +55729,15 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "MoneyBag",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "user",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
                 "ofType": null
               }
             }
@@ -63665,110 +62581,6 @@
               }
             },
             {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "key",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
-                  "ofType": null
-                }
-              }
-            },
-            {
               "args": [],
               "name": "productType",
               "type": {
@@ -67475,110 +66287,6 @@
               }
             },
             {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "key",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
-                  "ofType": null
-                }
-              }
-            },
-            {
               "args": [],
               "name": "product",
               "type": {
@@ -70019,19 +68727,6 @@
           "enumValues": null,
           "fields": [
             {
-              "args": [],
-              "name": "app",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "App",
-                  "ofType": null
-                }
-              }
-            },
-            {
               "args": [
                 {
                   "defaultValue": null,
@@ -70185,19 +68880,6 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "name": "name",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
                   "ofType": null
                 }
               }
@@ -74066,29 +72748,6 @@
               "args": [
                 {
                   "defaultValue": null,
-                  "name": "id",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "priceRule",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PriceRule",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
                   "name": "first",
                   "type": {
                     "kind": "SCALAR",
@@ -74140,196 +72799,6 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "SavedSearchConnection",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "ID",
-                  "name": "sortKey",
-                  "type": {
-                    "kind": "ENUM",
-                    "name": "PriceRuleSortKeys",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "query",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "savedSearchId",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "priceRules",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PriceRuleConnection",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "id",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "owner",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
                   "ofType": null
                 }
               }
@@ -75024,6 +73493,25 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "ShopifyPaymentsAccount",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "id",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "staffMember",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
                 "ofType": null
               }
             },
@@ -75928,6 +74416,15 @@
             },
             {
               "args": [],
+              "name": "staffMember",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
               "name": "totalRefundedSet",
               "type": {
                 "kind": "NON_NULL",
@@ -76150,6 +74647,15 @@
                   "name": "SaleConnection",
                   "ofType": null
                 }
+              }
+            },
+            {
+              "args": [],
+              "name": "user",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
+                "ofType": null
               }
             }
           ],
@@ -77819,6 +76325,15 @@
                   "name": "SaleConnection",
                   "ofType": null
                 }
+              }
+            },
+            {
+              "args": [],
+              "name": "user",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
+                "ofType": null
               }
             }
           ],
@@ -83040,110 +81555,6 @@
               "args": [
                 {
                   "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "key",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "name": "privateMetafield",
-              "type": {
-                "kind": "OBJECT",
-                "name": "PrivateMetafield",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "name": "namespace",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": "false",
-                  "name": "reverse",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Boolean",
-                    "ofType": null
-                  }
-                }
-              ],
-              "name": "privateMetafields",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PrivateMetafieldConnection",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
                   "name": "maxWidth",
                   "type": {
                     "kind": "SCALAR",
@@ -83495,6 +81906,65 @@
                       "ofType": null
                     }
                   }
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "false",
+                  "name": "reverse",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "staffMembers",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StaffMemberConnection",
+                  "ofType": null
                 }
               }
             },
@@ -86690,6 +85160,413 @@
         },
         {
           "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "active",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "name": "maxWidth",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "name": "maxHeight",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "DEFAULT",
+                  "name": "fallback",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "StaffMemberDefaultImage",
+                    "ofType": null
+                  }
+                }
+              ],
+              "name": "avatar",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Image",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "email",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "exists",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "firstName",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "initials",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "isShopOwner",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "lastName",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "locale",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "name",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "phone",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "privateData",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StaffMemberPrivateData",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "StaffMember",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "edges",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "StaffMemberEdge",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "pageInfo",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "StaffMemberConnection",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": [
+            {
+              "name": "DEFAULT"
+            },
+            {
+              "name": "TRANSPARENT"
+            },
+            {
+              "name": "NOT_FOUND"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "StaffMemberDefaultImage",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "node",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StaffMember",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "StaffMemberEdge",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": [
+            {
+              "name": "APPLICATIONS"
+            },
+            {
+              "name": "CHANNELS"
+            },
+            {
+              "name": "CUSTOMERS"
+            },
+            {
+              "name": "DASHBOARD"
+            },
+            {
+              "name": "DOMAINS"
+            },
+            {
+              "name": "DRAFT_ORDERS"
+            },
+            {
+              "name": "EDIT_ORDERS"
+            },
+            {
+              "name": "GIFT_CARDS"
+            },
+            {
+              "name": "LINKS"
+            },
+            {
+              "name": "LOCATIONS"
+            },
+            {
+              "name": "MARKETING"
+            },
+            {
+              "name": "MARKETING_SECTION"
+            },
+            {
+              "name": "ORDERS"
+            },
+            {
+              "name": "OVERVIEWS"
+            },
+            {
+              "name": "PAGES"
+            },
+            {
+              "name": "PREFERENCES"
+            },
+            {
+              "name": "PRODUCTS"
+            },
+            {
+              "name": "REPORTS"
+            },
+            {
+              "name": "THEMES"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "StaffMemberPermission",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "name": "accountSettingsUrl",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "URL",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "createdAt",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DateTime",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "StaffMemberPrivateData",
+          "possibleTypes": null
+        },
+        {
+          "enumValues": null,
           "fields": null,
           "inputFields": [
             {
@@ -89516,15 +88393,6 @@
         {
           "enumValues": null,
           "fields": [
-            {
-              "args": [],
-              "name": "carrierService",
-              "type": {
-                "kind": "OBJECT",
-                "name": "DeliveryCarrierService",
-                "ofType": null
-              }
-            },
             {
               "args": [],
               "name": "code",
@@ -92573,15 +91441,6 @@
           "fields": [
             {
               "args": [],
-              "name": "carrierService",
-              "type": {
-                "kind": "OBJECT",
-                "name": "DeliveryCarrierService",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
               "name": "code",
               "type": {
                 "kind": "NON_NULL",
@@ -93278,6 +92137,15 @@
               "type": {
                 "kind": "UNION",
                 "name": "TenderTransactionDetails",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "name": "user",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StaffMember",
                 "ofType": null
               }
             }
@@ -96105,27 +94973,6 @@
             },
             {
               "args": [],
-              "name": "privateMetafieldNamespaces",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "args": [],
               "name": "topic",
               "type": {
                 "kind": "NON_NULL",
@@ -97119,6 +95966,19 @@
             },
             {
               "args": [],
+              "name": "isPrivatelyDocumented",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "name",
               "type": {
                 "kind": "NON_NULL",
@@ -97214,6 +96074,19 @@
             {
               "args": [],
               "name": "isDeprecated",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "isPrivatelyDocumented",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -97625,6 +96498,32 @@
             },
             {
               "args": [],
+              "name": "isOneOf",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "name": "isPrivatelyDocumented",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
               "name": "isProtected",
               "type": {
                 "kind": "NON_NULL",
@@ -97704,7 +96603,7 @@
             },
             {
               "args": [],
-              "name": "specifiedByUrl",
+              "name": "specifiedByURL",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
