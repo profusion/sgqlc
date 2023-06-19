@@ -216,7 +216,7 @@ def test_basic(mock_requests_send):
         'RequestsEndpoint('
         + 'url={}, '.format(test_url)
         + 'base_headers={}, timeout=None, method=POST, auth=None, '
-        + 'session=None)')
+        + 'session=<class \'requests.sessions.Session\'>)')
 
 
 @patch('requests.sessions.Session.send')
@@ -236,7 +236,7 @@ def test_basic_auth(mock_requests_send):
         + 'url={}, '.format(test_url)
         + 'base_headers={}, timeout=None, method=POST, '
         + 'auth=<class \'requests.auth.HTTPBasicAuth\'>, '
-        + 'session=None)')
+        + 'session=<class \'requests.sessions.Session\'>)')
 
 
 @patch('requests.sessions.Session.send')
@@ -439,7 +439,8 @@ def test_get(mock_requests_send):
         'RequestsEndpoint('
         + 'url={}, '.format(test_url)
         + 'base_headers={}, '.format(base_headers)
-        + 'timeout=None, method=GET, auth=None, session=None)',
+        + 'timeout=None, method=GET, auth=None, '
+        + 'session=<class \'requests.sessions.Session\'>)',
         )
 
 

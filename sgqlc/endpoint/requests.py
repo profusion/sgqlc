@@ -110,7 +110,7 @@ class RequestsEndpoint(BaseEndpoint):
         self.method = method
         self.auth = auth
         self.session = session or requests.Session()
-        self.close_session = session is not None
+        self.close_session = session is None
 
     def __del__(self):
         # keep the session open if it has been provided by the user
