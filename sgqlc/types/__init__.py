@@ -978,7 +978,7 @@ def get_variable_or_none(v):
 
 def get_variable_or_none_input(v, indent, indent_string):
     if v is None:
-        return "null"
+        return 'null'
     if isinstance(v, Variable):
         return Variable.__to_graphql_input__(v, indent, indent_string)
 
@@ -1432,7 +1432,7 @@ class EnumMeta(BaseMeta):
 
     def __to_graphql_input__(cls, value, indent=0, indent_string='  '):
         if value is None:
-            return "null"
+            return 'null'
         return value
 
     def __to_json_value__(cls, value):
@@ -1686,13 +1686,13 @@ class ContainerTypeMeta(BaseMetaWithTypename):
 
     def __get_field_names(cls):
         try:
-            return getattr(cls, "__field_names__")
+            return getattr(cls, '__field_names__')
         except AttributeError:
             all_fields = super(ContainerTypeMeta, cls).__dir__()
             return (
                 name
                 for name in all_fields
-                if not name.startswith("_")
+                if not name.startswith('_')
             )
 
     def __create_own_fields(cls):

@@ -2451,7 +2451,7 @@ class Operation:
         else:  # pragma: no cover
             raise ValueError(
                 "schema doesn't define %s as query, mutation "
-                "or subscription type"
+                'or subscription type'
                 % (typ.__name__,)
             )
 

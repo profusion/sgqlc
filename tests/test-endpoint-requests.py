@@ -226,8 +226,8 @@ def test_basic_auth(mock_requests_send):
     configure_mock_requests_send(mock_requests_send, graphql_response_ok)
 
     endpoint = RequestsEndpoint(test_url,
-                                auth=requests.auth.HTTPBasicAuth("user",
-                                                                 "password"))
+                                auth=requests.auth.HTTPBasicAuth('user',
+                                                                 'password'))
     data = endpoint(graphql_query)
     eq_(data, json.loads(graphql_response_ok))
     check_mock_requests_send(mock_requests_send)
