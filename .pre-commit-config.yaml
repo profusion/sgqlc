@@ -1,0 +1,78 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+default_install_hook_types: [pre-commit, pre-push, pre-merge-commit]
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+    -   id: check-shebang-scripts-are-executable
+    -   id: check-merge-conflict
+    -   id: check-toml
+    -   id: check-case-conflict
+    -   id: double-quote-string-fixer
+    -   id: end-of-file-fixer
+        exclude: ^examples/.*schema[.](json|py)
+    -   id: mixed-line-ending
+    -   id: trailing-whitespace
+
+-   repo: https://github.com/pycqa/flake8
+    rev: 5.0.0
+    hooks:
+    -   id: flake8
+        additional_dependencies:
+          - flake8-builtins
+          - flake8-colors
+          - flake8-comprehensions
+          - flake8-deprecated
+          - flake8-module-name
+          - flake8-print
+          - flake8-requirements
+          - flake8-rst-docstrings
+          - flake8-tidy-imports
+
+-   repo: local
+    hooks:
+    -   id: tests
+        name: tests
+        entry: nosetests
+        language: system
+        pass_filenames: false
+        always_run: true
+        types: [python]
+
+    -   id: docs
+        name: docs
+        entry: sphinx-build doc/source doc/build
+        language: system
+        pass_filenames: false
+        always_run: true
+        types: [python]
+        stages: [push, merge-commit]
+
+    -   id: check-release
+        name: check-release
+        entry: python3 setup.py create_release
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [push, merge-commit]
+
+    -   id: test-github-example
+        name: Test GitHub example
+        entry: ./utils/test-example-common.sh ./examples/github
+        language: script
+        pass_filenames: false
+        always_run: true
+        types: [python]
+        stages: [push, merge-commit]
+
+    -   id: test-shopify-example
+        name: Test Shopify example
+        entry: ./utils/test-example-common.sh ./examples/shopify
+        language: script
+        pass_filenames: false
+        always_run: true
+        types: [python]
+        stages: [push, merge-commit]

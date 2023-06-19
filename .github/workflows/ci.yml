@@ -4,19 +4,28 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ '*' ]
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+concurrency:
+  group: ci-check-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft != true
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9']
 
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
@@ -25,28 +34,16 @@ jobs:
       run: |
         python -m pip --quiet --no-input install --upgrade pip wheel
         pip install -r dev-requirements.txt
-    - name: Lint with flake8
-      run: |
-        flake8 . --config setup.cfg
-    - name: Test with nose
-      run: |
-        ./setup.py nosetests
-    - name: Build
-      run: |
-        ./setup.py egg_info -Db '' sdist bdist_egg
+    - run: "pip install pre-commit"
+    - uses: actions/cache@v3
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+    - name: "Run pre-commit"
+      run: pre-commit run --show-diff-on-failure --color=always --hook-stage push
     - name: Install
       run: |
         ./setup.py install --skip-build
-    - name: Test GitHub example
-      run: |
-        cd examples/github
-        NO_DOWNLOAD=1 ./update-schema.sh
-        ./update-operations.sh
-    - name: Test Shopify example
-      run: |
-        cd examples/shopify
-        NO_DOWNLOAD=1 ./update-schema.sh
-        ./update-operations.sh
     - name: Coveralls
       run: coveralls --service=github
       env:

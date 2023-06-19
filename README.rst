@@ -491,20 +491,19 @@ You need to use `pipenv <https://pipenv.readthedocs.io/en/latest>`_.
     pipenv install --dev
     pipenv shell
 
-Install the git hooks:
+Install the `pre-commit <https://pre-commit.com/index.html#install>`_:
 
 ::
 
-   ./utils/git/install-git-hooks.sh
+   pre-commit install -f
 
 Run the tests (one of the below):
 
 ::
 
-    ./utils/git/pre-commit       # flake8 and nose
-
-    ./setup.py nosetests         # only nose (unit/doc tests)
-    flake8 --config setup.cfg .  # style checks
+    pre-commit run -a            # run all tests: flake8, nosetests, ...
+    pre-commit run -a flake8     # run only flake8 test
+    pre-commit run -a tests      # run only nosetests (unit tests)
 
 Keep 100% coverage. You can look at the coverage report at
 ``cover/index.html``.  To do that, prefer
