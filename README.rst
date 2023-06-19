@@ -249,7 +249,7 @@ However, writing GraphQL queries and later interpreting the results
 may be cumbersome. That's solved by our ``sgqlc.types``, which is
 usually paired with ``sgqlc.operation`` to generate queries and then
 interpret results (see more at ``examples/basic/02_schema_types.py``). The
-example below matches a subset of 
+example below matches a subset of
 `GitHub API v4 <https://developer.github.com/v4/query/>`_.
 In GraphQL syntax it would be::
 
@@ -423,7 +423,7 @@ You can also generate these operations given a GraphQL Domain Specific
 Language (DSL) operation:
 
 .. code-block::
-   
+
    # sample_operations.gql
 
    query ListIssues($owner: String!, $name: String!) {
@@ -507,10 +507,10 @@ Run the tests (one of the below):
     flake8 --config setup.cfg .  # style checks
 
 Keep 100% coverage. You can look at the coverage report at
-``cover/index.html``.  To do that, prefer 
+``cover/index.html``.  To do that, prefer
 `doctest <https://docs.python.org/3.7/library/doctest.html>`_
 so it serves as
-both documentation and test. However we use 
+both documentation and test. However we use
 `nose <https://nose.readthedocs.io>`_ to write explicit tests that would be
 hard to express using ``doctest``.
 
