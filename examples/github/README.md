@@ -6,8 +6,8 @@ Works best if your project is not huge, and makes use of 'milestones'.
 Usage:
 
 ```bash
-pipenv install -d
-pipenv shell
+poetry install --all-extras
+poetry shell
 export GH_TOKEN=<your github API token>
 
 cd examples/github

@@ -59,7 +59,7 @@ repos:
 
     -   id: check-release
         name: check-release
-        entry: python3 setup.py create_release
+        entry: poetry build
         language: system
         pass_filenames: false
         always_run: true

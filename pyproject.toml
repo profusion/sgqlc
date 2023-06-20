@@ -25,6 +25,56 @@ norecursedirs = [
     'utils',
 ]
 
+[tool.poetry]
+name = 'sgqlc'
+version = '16.2'
+description = 'Simple GraphQL Client'
+readme = 'README.rst'
+authors = [
+    'Gustavo Sverzut Barbieri <barbieri@profusion.mobi>',
+]
+homepage = 'http://github.com/profusion/sgqlc'
+repository = 'http://github.com/profusion/sgqlc'
+documentation = 'https://sgqlc.readthedocs.io/'
+license = 'ISCL'
+keywords = ['graphql', 'client', 'http', 'endpoint']
+classifiers=[
+    'Development Status :: 4 - Beta',
+    'Environment :: Console',
+    'Environment :: Web Environment',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: ISC License (ISCL)',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Topic :: Utilities',
+]
+packages = [{ include = 'sgqlc' }]
+include = [
+    { path = 'AUTHORS', format = 'sdist' },
+    { path = 'doc/source', format = 'sdist' },
+    { path = 'tests', format = 'sdist' },
+]
+
+[tool.poetry.scripts]
+sgqlc-codegen = 'sgqlc.codegen:main'
+
+[tool.poetry.dependencies]
+python = '^3.7'
+graphql-core = '^3.1.7'
+websocket-client = { version = '*', optional = true }
+requests = { version = '*', optional = true }
+
+[tool.poetry.extras]
+websocket = ['websocket-client']
+requests = ['requests']
+
+[tool.poetry.group.dev.dependencies]
+coveralls = '*'
+pytest = '*'
+pytest-cov = '*'
+sphinx = '*'
+sphinx-argparse = '*'
+
 [build-system]
-requires = ['setuptools', 'wheel']
-build-backend = 'setuptools.build_meta:__legacy__'
+requires = ['poetry-core']
+build-backend = 'poetry.core.masonry.api'

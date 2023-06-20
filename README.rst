@@ -13,18 +13,18 @@ Introduction
 This package offers an easy to use `GraphQL <http://graphql.org>`_
 client. It's composed of the following modules:
 
-- :mod:`sgqlc.types`: declare GraphQL in Python, base to generate and
-  interpret queries. Submodule :mod:`sgqlc.types.datetime` will
-  provide bindings for :mod:`datetime` and ISO 8601, while
-  :mod:`sgqlc.types.relay` will expose ``Node``, ``PageInfo`` and
+- ``sgqlc.types``: declare GraphQL in Python, base to generate and
+  interpret queries. Submodule ``sgqlc.types.datetime`` will
+  provide bindings for ``datetime`` and ISO 8601, while
+  ``sgqlc.types.relay`` will expose ``Node``, ``PageInfo`` and
   ``Connection``.
 
-- :mod:`sgqlc.operation`: use declared types to generate and
+- ``sgqlc.operation``: use declared types to generate and
   interpret queries.
 
-- :mod:`sgqlc.endpoint`: provide access to GraphQL endpoints, notably
-  :mod:`sgqlc.endpoint.http` provides :class:`HTTPEndpoint` using
-  :mod:`urllib.request.urlopen()`.
+- ``sgqlc.endpoint``: provide access to GraphQL endpoints, notably
+  ``sgqlc.endpoint.http`` provides ``HTTPEndpoint`` using
+  ``urllib.request.urlopen()``.
 
 
 What's GraphQL?
@@ -182,8 +182,8 @@ interpret the results. So **what was the rationale to create sgqlc?**
   types, such as ``Date``, ``Time`` and ``DateTime``. Often these are
   serialized as ISO 8601 strings and the user must parse them in their
   application. We offer ``sgqlc.types.datetime`` to automatically
-  generate :class:`datetime.date`, :class:`datetime.time` and
-  :class:`datetime.datetime`.
+  generate ``datetime.date``, ``datetime.time`` and
+  ``datetime.datetime``.
 
 - Make it easy to write dynamic queries, including nested. As seen,
   GraphQL can be used to fetch lots of information in one go; however
@@ -194,7 +194,7 @@ interpret the results. So **what was the rationale to create sgqlc?**
   "solve" this by parsing the query locally before sending it to
   server. However usually the indentation is screwed and reviewing it
   is painful. We change that approach: use
-  :class:`sgqlc.operation.Operation` and it will always generate valid
+  ``sgqlc.operation.Operation`` and it will always generate valid
   queries, which can be printed out and properly indented. Bonus point
   is that it can be used to later interpret the JSON results into native
   Python objects.
@@ -205,11 +205,11 @@ interpret the results. So **what was the rationale to create sgqlc?**
   and its widely used. To load more data, you need to extend the
   previous data with newly fetched information, updating not only the
   nodes and edges, but also page information. This is done
-  automatically by :class:`sgqlc.types.relay.Connection`.
+  automatically by ``sgqlc.types.relay.Connection``.
 
 It also helps with code-generation, ``sgqlc-codegen`` can generate both
 the classes matching a GraphQL Schema or functions to return
-:class:`sgqlc.operation.Operation` based on executable documents
+``sgqlc.operation.Operation`` based on executable documents
 GraphQL Domain Specific Language (DSL).
 
 
@@ -384,7 +384,7 @@ introspection call:
    user@host$ sgqlc-codegen schema github_schema.json github_schema.py
 
 This generates ``github_schema`` that provides the
-:class:`sgqlc.types.Schema` instance of the same name ``github_schema``.
+``sgqlc.types.Schema`` instance of the same name ``github_schema``.
 Then it's a matter of using that in your Python code, as in the example below
 from ``examples/github/github_agile_dashboard.py``:
 
@@ -484,12 +484,12 @@ License
 Getting started developing
 --------------------------
 
-You need to use `pipenv <https://pipenv.readthedocs.io/en/latest>`_.
+You need to use `poetry <https://python-poetry.org/docs/#installation>`_.
 
 ::
 
-    pipenv install --dev
-    pipenv shell
+    poetry install --all-extras --with dev
+    poetry shell
 
 Install the `pre-commit <https://pre-commit.com/index.html#install>`_:
 
@@ -518,7 +518,7 @@ changes look right:
 
 ::
 
-    ./setup.py build_sphinx
+    sphinx-build doc/source doc/build
     open doc/build/html/index.html
 
 

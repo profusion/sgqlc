@@ -4,8 +4,8 @@ Example: Simple GraphQL Client
 Usage:
 
 ```bash
-pipenv install -d
-pipenv shell
+poetry install --all-extras
+poetry shell
 export GH_TOKEN=<your github API token>
 
 cd examples/basic

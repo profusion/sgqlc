@@ -24,27 +24,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: "Install Poetry"
+      run: "pip install poetry"
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-        cache: pip
-        cache-dependency-path: dev-requirements.txt
+        cache: poetry
     - name: Install dependencies
-      run: |
-        python -m pip --quiet --no-input install --upgrade pip wheel
-        pip install -r dev-requirements.txt
+      run: "poetry install --no-interaction --all-extras --with dev"
     - run: "pip install pre-commit"
     - uses: actions/cache@v3
       with:
         path: ~/.cache/pre-commit
         key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
     - name: "Run pre-commit"
-      run: pre-commit run --show-diff-on-failure --color=always --hook-stage push --all-files
-    - name: Install
-      run: |
-        ./setup.py install --skip-build
+      run: poetry run pre-commit run --show-diff-on-failure --color=always --hook-stage push --all-files
     - name: Coveralls
-      run: coveralls --service=github
+      run: poetry run coveralls --service=github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
