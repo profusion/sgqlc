@@ -22,11 +22,12 @@ requests = "*"
 "flake8-tidy-imports" = "*"
 "flake8-print" = "*"
 pygments = "*"
-nose = "*"
 sphinx = "*"
 requests = "*"
 sphinx-argparse = "*"
 coveralls = "*"
+pytest = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.7"

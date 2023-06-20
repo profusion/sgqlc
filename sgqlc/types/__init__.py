@@ -170,19 +170,6 @@ schema {
   scalar String
   scalar Boolean
   scalar ID
-  scalar Time
-  scalar Date
-  scalar DateTime
-  interface Node {
-    id: ID!
-  }
-  type PageInfo {
-    endCursor: String
-    startCursor: String
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-  }
-  scalar UUID
   type TypeUsingPython {
     aInt: Int
     aFloat: Float
@@ -752,8 +739,6 @@ class Schema:
         ...
         >>> for t in global_schema.type.values():  # doctest: +ELLIPSIS
         ...     print(repr(t))
-        ...
-        type PageInfo {
         ...
         type TypeUsingPython {
         ...

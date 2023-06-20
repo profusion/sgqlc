@@ -3,7 +3,6 @@ import json
 import urllib.error
 import urllib.request
 
-from nose.tools import eq_
 from unittest.mock import patch
 from sgqlc.endpoint.http import HTTPEndpoint, add_query_to_url
 from sgqlc.types import Schema, Type
@@ -91,7 +90,7 @@ def check_request_url(req, expected):
         None,
         split.fragment,
     ).geturl()
-    eq_(received, expected)
+    assert received == expected
 
 
 def check_request_headers_(req, headers, name):
@@ -101,7 +100,9 @@ def check_request_headers_(req, headers, name):
         headers = headers.items()
     for k, v in headers:
         g = req.get_header(k)
-        eq_(g, v, 'Failed {} header {}: {!r} != {!r}'.format(name, k, v, g))
+        assert g == v, 'Failed {} header {}: {!r} != {!r}'.format(
+            name, k, v, g
+        )
 
 
 def check_request_headers(req, base_headers, extra_headers):
@@ -109,9 +110,11 @@ def check_request_headers(req, base_headers, extra_headers):
         accept_header = extra_accept_header
     else:
         accept_header = 'application/json; charset=utf-8'
-    eq_(req.get_header('Accept'), accept_header)
+    assert req.get_header('Accept') == accept_header
     if req.method == 'POST':
-        eq_(req.get_header('Content-type'), 'application/json; charset=utf-8')
+        assert (
+            req.get_header('Content-type') == 'application/json; charset=utf-8'
+        )
     check_request_headers_(req, base_headers, 'base')
     check_request_headers_(req, extra_headers, 'extra')
 
@@ -132,7 +135,7 @@ def check_request_variables(req, variables):
         query = get_request_url_query(req)
         received = json.loads(query.get('variables', 'null'))
 
-    eq_(received, variables)
+    assert received == variables
 
 
 def check_request_operation_name(req, operation_name):
@@ -143,7 +146,7 @@ def check_request_operation_name(req, operation_name):
         query = get_request_url_query(req)
         received = query.get('operationName')
 
-    eq_(received, operation_name)
+    assert received == operation_name
 
 
 def check_request_query(req, query):
@@ -157,7 +160,7 @@ def check_request_query(req, query):
     if isinstance(query, bytes):
         query = query.decode('utf-8')
 
-    eq_(received, query)
+    assert received == query
 
 
 def check_mock_urlopen(
@@ -173,13 +176,13 @@ def check_mock_urlopen(
     assert mock_urlopen.called
     args = mock_urlopen.call_args
     req = args[0][0]
-    eq_(req.method, method)
+    assert req.method == method
     check_request_url(req, test_url)
     check_request_headers(req, base_headers, extra_headers)
     check_request_variables(req, variables)
     check_request_operation_name(req, operation_name)
     check_request_query(req, query or graphql_query)
-    eq_(args[1]['timeout'], timeout)
+    assert args[1]['timeout'] == timeout
 
 
 # -- Actual Tests --
@@ -193,13 +196,11 @@ def test_basic(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
-    eq_(data, json.loads(graphql_response_ok))
+    assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(mock_urlopen)
-    eq_(
-        str(endpoint),
-        'HTTPEndpoint('
-        + 'url={}, '.format(test_url)
-        + 'base_headers={}, timeout=None, method=POST)',
+    assert str(endpoint) == (
+        'HTTPEndpoint(url={}, '.format(test_url)
+        + 'base_headers={}, timeout=None, method=POST)'
     )
 
 
@@ -211,7 +212,7 @@ def test_basic_bytes_query(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query.encode('utf-8'))
-    eq_(data, json.loads(graphql_response_ok))
+    assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(mock_urlopen)
 
 
@@ -223,7 +224,7 @@ def test_basic_operation_query(mock_urlopen):
 
     schema = Schema()
 
-    # MyType and Query may be declared if doctests were processed by nose
+    # MyType and Query may be declared if doctests were processed by pytest
     if 'MyType' in schema:
         schema -= schema.MyType
 
@@ -243,7 +244,7 @@ def test_basic_operation_query(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(op)
-    eq_(data, json.loads(graphql_response_ok))
+    assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(mock_urlopen, query=bytes(op))
 
 
@@ -263,7 +264,7 @@ def test_headers(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url, base_headers=base_headers)
     data = endpoint(graphql_query, extra_headers=extra_headers)
-    eq_(data, json.loads(graphql_response_ok))
+    assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(
         mock_urlopen, base_headers=base_headers, extra_headers=extra_headers
     )
@@ -279,7 +280,7 @@ def test_default_timeout(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url, timeout=timeout)
     data = endpoint(graphql_query)
-    eq_(data, json.loads(graphql_response_ok))
+    assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(mock_urlopen, timeout=timeout)
 
 
@@ -293,7 +294,7 @@ def test_call_timeout(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url, timeout=1)
     data = endpoint(graphql_query, timeout=timeout)
-    eq_(data, json.loads(graphql_response_ok))
+    assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(mock_urlopen, timeout=timeout)
 
 
@@ -307,7 +308,7 @@ def test_variables(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query, variables)
-    eq_(data, json.loads(graphql_response_ok))
+    assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(mock_urlopen, variables=variables)
 
 
@@ -321,7 +322,7 @@ def test_operation_name(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query, operation_name=operation_name)
-    eq_(data, json.loads(graphql_response_ok))
+    assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(mock_urlopen, operation_name=operation_name)
 
 
@@ -340,18 +341,15 @@ def test_json_error(mock_urlopen):
         got_exc, json.JSONDecodeError
     ), '{} is not json.JSONDecodeError'.format(type(got_exc))
 
-    eq_(
-        data,
-        {
-            'errors': [
-                {
-                    'message': str(exc),
-                    'body': graphql_response_json_error.decode('utf-8'),
-                }
-            ],
-            'data': None,
-        },
-    )
+    assert data == {
+        'errors': [
+            {
+                'message': str(exc),
+                'body': graphql_response_json_error.decode('utf-8'),
+            }
+        ],
+        'data': None,
+    }
     check_mock_urlopen(mock_urlopen)
 
 
@@ -378,7 +376,7 @@ def test_get(mock_urlopen):
         variables=variables,
         operation_name=operation_name,
     )
-    eq_(data, json.loads(graphql_response_ok))
+    assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(
         mock_urlopen,
         method='GET',
@@ -387,12 +385,10 @@ def test_get(mock_urlopen):
         variables=variables,
         operation_name=operation_name,
     )
-    eq_(
-        str(endpoint),
-        'HTTPEndpoint('
-        + 'url={}, '.format(test_url)
+    assert str(endpoint) == (
+        'HTTPEndpoint(url={}, '.format(test_url)
         + 'base_headers={}, '.format(base_headers)
-        + 'timeout=None, method=GET)',
+        + 'timeout=None, method=GET)'
     )
 
 
@@ -404,7 +400,7 @@ def test_server_reported_error(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
-    eq_(data, json.loads(graphql_response_error))
+    assert data == json.loads(graphql_response_error)
     check_mock_urlopen(mock_urlopen)
 
 
@@ -423,21 +419,18 @@ def test_server_http_error(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
-    eq_(
-        data,
-        {
-            'errors': [
-                {
-                    'message': str(err),
-                    'exception': err,
-                    'status': 500,
-                    'headers': {'Xpto': 'abc'},
-                    'body': 'xpto',
-                }
-            ],
-            'data': None,
-        },
-    )
+    assert data == {
+        'errors': [
+            {
+                'message': str(err),
+                'exception': err,
+                'status': 500,
+                'headers': {'Xpto': 'abc'},
+                'body': 'xpto',
+            }
+        ],
+        'data': None,
+    }
     check_mock_urlopen(mock_urlopen)
 
 
@@ -456,21 +449,18 @@ def test_server_http_non_conforming_json(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
-    eq_(
-        data,
-        {
-            'errors': [
-                {
-                    'message': str(err),
-                    'exception': err,
-                    'status': 500,
-                    'headers': {'Content-Type': 'application/json'},
-                    'body': '{"message": "xpto"}',
-                }
-            ],
-            'data': None,
-        },
-    )
+    assert data, {
+        'errors': [
+            {
+                'message': str(err),
+                'exception': err,
+                'status': 500,
+                'headers': {'Content-Type': 'application/json'},
+                'body': '{"message": "xpto"}',
+            }
+        ],
+        'data': None,
+    }
     check_mock_urlopen(mock_urlopen)
 
 
@@ -494,18 +484,15 @@ def test_server_error_broken_json(mock_urlopen):
         got_exc, json.JSONDecodeError
     ), '{} is not json.JSONDecodeError'.format(type(got_exc))
 
-    eq_(
-        data,
-        {
-            'errors': [
-                {
-                    'message': str(got_exc),
-                    'body': 'xpto',
-                }
-            ],
-            'data': None,
-        },
-    )
+    assert data, {
+        'errors': [
+            {
+                'message': str(got_exc),
+                'body': 'xpto',
+            }
+        ],
+        'data': None,
+    }
     check_mock_urlopen(mock_urlopen)
 
 
@@ -534,7 +521,7 @@ def test_server_http_graphql_error(mock_urlopen):
         }
     )
 
-    eq_(data, expected_data)
+    assert data == expected_data
     check_mock_urlopen(mock_urlopen)
 
 
@@ -563,7 +550,7 @@ def test_server_http_single_error(mock_urlopen):
         }
     )
 
-    eq_(data, expected_data)
+    assert data == expected_data
     check_mock_urlopen(mock_urlopen)
 
 
@@ -592,7 +579,7 @@ def test_server_http_error_string_list(mock_urlopen):
         }
     )
 
-    eq_(data, expected_data)
+    assert data == expected_data
     check_mock_urlopen(mock_urlopen)
 
 
@@ -621,7 +608,7 @@ def test_server_http_error_list_message(mock_urlopen):
         }
     )
 
-    eq_(data, expected_data)
+    assert data == expected_data
     check_mock_urlopen(mock_urlopen)
 
 
@@ -633,11 +620,11 @@ def test_add_query_to_url_dict_of_list():
     'Test if add_query_to_url() with extra_query as a dict-of-list works'
 
     url = add_query_to_url('http://domain.com?a=1&a=2', {'a': ['3', '4']})
-    eq_(url, 'http://domain.com?a=1&a=2&a=3&a=4')
+    assert url == 'http://domain.com?a=1&a=2&a=3&a=4'
 
 
 def test_add_query_to_url_sequence():
     'Test if add_query_to_url() with extra_query as sequence of pairs works'
 
     u = add_query_to_url('http://domain.com?a=1&a=2', (('a', '3'), ('a', '4')))
-    eq_(u, 'http://domain.com?a=1&a=2&a=3&a=4')
+    assert u == 'http://domain.com?a=1&a=2&a=3&a=4'

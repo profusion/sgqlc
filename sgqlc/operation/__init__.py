@@ -1492,7 +1492,7 @@ number
 >>> op.repository(id='repo2', __alias__='alias').issues.title()
 title
 >>> type(op['repository'])  # it's the selector, not a selection!
-<class 'sgqlc.operation.Selector'>
+<class 'sgqlc.operation.__init__.Selector'>
 >>> op['repository'].__selection__() # default selection
 repository(id: "repo1") {
   issues {

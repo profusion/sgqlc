@@ -57,8 +57,6 @@ setup(
         ],
     },
     packages=find_packages(exclude=('doc', 'examples', 'utils', 'tests')),
-    test_suite='nose.collector',
-    tests_require=['nose', 'coverage'],
     command_options={
         'build_sphinx': {
             'project': ('setup.py', name),

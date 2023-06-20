@@ -501,16 +501,16 @@ Run the tests (one of the below):
 
 ::
 
-    pre-commit run -a            # run all tests: flake8, nosetests, ...
-    pre-commit run -a flake8     # run only flake8 test
-    pre-commit run -a tests      # run only nosetests (unit tests)
+    pre-commit run -a            # run all tests: flake8, pytest, ...
+    pre-commit run -a flake8     # run only flake8
+    pre-commit run -a tests      # run only pytest (unit tests)
 
 Keep 100% coverage. You can look at the coverage report at
 ``cover/index.html``.  To do that, prefer
 `doctest <https://docs.python.org/3.7/library/doctest.html>`_
 so it serves as
 both documentation and test. However we use
-`nose <https://nose.readthedocs.io>`_ to write explicit tests that would be
+`pytest <https://docs.pytest.org/>`_ to write explicit tests that would be
 hard to express using ``doctest``.
 
 Build and review the generated Sphinx documentation, and validate if your

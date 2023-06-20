@@ -4,6 +4,27 @@ skip-string-normalization = true
 target-version = ['py37']
 force-exclude = '/(doc/|examples/.*(schema|operations)[.]py)'
 
+[tool.pytest.ini_options]
+addopts = '--import-mode=importlib --doctest-modules --cov=sgqlc --cov-fail-under=100 --cov-report=term-missing --cov-report=xml --cov-report=html:cover'
+python_files = ['test-*.py', 'test_*.py']
+testpaths = [
+    'sgqlc',
+    'tests',
+]
+norecursedirs = [
+    '.eggs',
+    '.git',
+    '.github',
+    '.venv',
+    '*.egg-info',
+    'build',
+    'cover',
+    'dist',
+    'doc',
+    'examples',
+    'utils',
+]
+
 [build-system]
 requires = ['setuptools', 'wheel']
 build-backend = 'setuptools.build_meta:__legacy__'

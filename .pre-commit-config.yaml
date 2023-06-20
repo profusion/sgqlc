@@ -42,7 +42,7 @@ repos:
     hooks:
     -   id: tests
         name: tests
-        entry: nosetests
+        entry: pytest
         language: system
         pass_filenames: false
         always_run: true
