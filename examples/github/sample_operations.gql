@@ -19,5 +19,9 @@ query ListIssues(
                 endCursor
             }
         }
+        # use null_value and boolean_value to test Visitor pattern, see #170
+        rulesets(last: null, includeParents: false) {
+            totalCount
+        }
     }
 }

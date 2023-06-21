@@ -21,6 +21,8 @@ def query_list_issues():
     _op_repository_issues_page_info = _op_repository_issues.page_info()
     _op_repository_issues_page_info.has_next_page()
     _op_repository_issues_page_info.end_cursor()
+    _op_repository_rulesets = _op_repository.rulesets(last=None, include_parents=False)
+    _op_repository_rulesets.total_count()
     return _op
 
 
