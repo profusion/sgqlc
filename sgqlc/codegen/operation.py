@@ -55,6 +55,20 @@ class Null:
         return 'None'
 
 
+# Use TrueValue instead of True as Visitor.leave_* understands True as BREAK,
+# which stops visiting.
+class TrueValue:
+    def __repr__(self):
+        return 'True'
+
+
+# Use FalseValue instead of False as Visitor.leave_* understands False as SKIP,
+# which skips visiting the node.
+class FalseValue:
+    def __repr__(self):
+        return 'False'
+
+
 class NoValidation:
     def get_operation_type(self, operation_name):
         return None
@@ -772,7 +786,10 @@ def fragment_%(name)s():
         return value
 
     def leave_boolean_value(self, node, *_args):
-        value = node.value
+        if node.value:
+            value = TrueValue()  # can't return True due Visitor() pattern
+        else:
+            value = FalseValue()  # can't return True due Visitor() pattern
         self.validate_value(node, 'Boolean', value)
         return value
 

@@ -29,6 +29,20 @@ class Null:
         return 'None'
 
 
+# Use TrueValue instead of True as Visitor.leave_* understands True as BREAK,
+# which stops visiting.
+class TrueValue:
+    def __repr__(self):
+        return 'True'
+
+
+# Use FalseValue instead of False as Visitor.leave_* understands False as SKIP,
+# which skips visiting the node.
+class FalseValue:
+    def __repr__(self):
+        return 'False'
+
+
 class JSONOutputVisitor(Visitor):
     def leave_IntValue(self, node, *args):
         return int(node.value)
@@ -40,7 +54,10 @@ class JSONOutputVisitor(Visitor):
         return node.value
 
     def leave_BooleanValue(self, node, *args):
-        return node.value
+        if node.value:
+            return TrueValue()  # can't return True due Visitor() pattern
+        else:
+            return FalseValue()  # can't return True due Visitor() pattern
 
     def leave_EnumValue(self, node, *args):
         return node.value
