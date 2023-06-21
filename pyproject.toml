@@ -75,6 +75,10 @@ pytest-cov = '*'
 sphinx = '*'
 sphinx-argparse = '*'
 
+[tool.poetry.group.docs.dependencies]
+sphinx = '*'
+sphinx-argparse = '*'
+
 [build-system]
 requires = ['poetry-core']
 build-backend = 'poetry.core.masonry.api'
