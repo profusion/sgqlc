@@ -130,4 +130,7 @@ def main():
         break
 
     args = ap.parse_args(raw_args)
+    if 'func' not in args:
+        ap.error('missing command')
+
     args.func(args)
