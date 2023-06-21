@@ -14,6 +14,7 @@ exclude =
 
 per-file-ignores =
    examples/**:T201
+   utils/**:T201
    # 'RST399 Document or section may not begin with a transition.', but none really :-(
    sgqlc/introspection/__init__.py:RST399
 
