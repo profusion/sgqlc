@@ -126,6 +126,13 @@ See examples:
 Examples
 --------
 
+Let's start our examples/doctest by restoring the ``gloal_schema`` to the
+original schema after ``sgqlc.types`` was loaded the first time
+(ie: ``pytest`` shares execution, so if ``sgqlc.operation`` was
+loaded before ``sgqlc.types``, we need to restore to the initial snapshot):
+
+>>> global_schema.__snapshot_restore__(__types_schema_snapshot__)
+
 Common Usage
 ~~~~~~~~~~~~
 
@@ -667,6 +674,23 @@ class Schema:
             self.__all.update(base_schema.__all)
             for k, v in base_schema.__kinds.items():
                 self.__kinds.setdefault(k, ODict()).update(v)
+
+    def __snapshot_create__(self):
+        state = (
+            self.__all,
+            self.__kinds,
+            self.__cache__,
+        )
+        import copy
+
+        return copy.deepcopy(state)
+
+    def __snapshot_restore__(self, state):
+        import copy
+
+        # yet another copy, so we don't modify the snapshot!
+        state = copy.deepcopy(state)
+        self.__all, self.__kinds, self.__cache__ = state
 
     def __contains__(self, key):
         '''Checks if the type name is known in this schema.
@@ -2930,3 +2954,8 @@ map_python_to_graphql = {
     bool: Boolean,
     id: ID,
 }
+
+
+# Save the global schema snapshot, used in doctest and possible by
+# some external users that need to remove temporary types
+__types_schema_snapshot__ = global_schema.__snapshot_create__()

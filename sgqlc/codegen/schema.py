@@ -137,14 +137,18 @@ def graphql_type_to_str(t):
 
 
 builtin_types_import = 'sgqlc.types'
-builtin_scalar_imports = {
-    k: builtin_types_import
-    for k in ('Int', 'Float', 'String', 'Boolean', 'ID')
-}
-datetime_scalar_imports = {
-    k: 'sgqlc.types.datetime' for k in ('DateTime', 'Date', 'Time')
-}
-relay_imports = {k: 'sgqlc.types.relay' for k in ('Node', 'PageInfo')}
+builtin_scalar_imports = dict.fromkeys(
+    ('Int', 'Float', 'String', 'Boolean', 'ID'),
+    builtin_types_import,
+)
+datetime_scalar_imports = dict.fromkeys(
+    ('DateTime', 'Date', 'Time'),
+    'sgqlc.types.datetime',
+)
+relay_imports = dict.fromkeys(
+    ('Node', 'PageInfo'),
+    'sgqlc.types.relay',
+)
 
 default_type_imports = {
     **builtin_scalar_imports,

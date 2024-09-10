@@ -5,13 +5,13 @@ default_install_hook_types: [pre-commit, pre-push, pre-merge-commit]
 
 repos:
 -   repo: https://github.com/python/black
-    rev: 23.3.0
+    rev: 24.8.0
     hooks:
     -   id: black
         exclude: "^(docs/|examples/.*(schema|operations)[.]py)"
 
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
     -   id: check-shebang-scripts-are-executable
     -   id: check-merge-conflict
@@ -24,7 +24,7 @@ repos:
     -   id: trailing-whitespace
 
 -   repo: https://github.com/pycqa/flake8
-    rev: 5.0.0
+    rev: 7.1.1
     hooks:
     -   id: flake8
         additional_dependencies:
