@@ -23,7 +23,7 @@ jobs:
         python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: "Install Poetry"
       run: "pip install poetry"
     - name: Set up Python ${{ matrix.python-version }}
@@ -34,7 +34,7 @@ jobs:
     - name: Install dependencies
       run: "poetry install --no-interaction --all-extras --with dev"
     - run: "pip install pre-commit"
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: ~/.cache/pre-commit
         key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
