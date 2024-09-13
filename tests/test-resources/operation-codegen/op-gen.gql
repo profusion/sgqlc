@@ -1,7 +1,0 @@
-query QueryFieldOnNestedInterface {
-    foo {
-        ... on Bar {
-            barField
-        }
-    }
-}
