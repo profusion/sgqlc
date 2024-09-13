@@ -2502,6 +2502,26 @@ class Operation:
         self.__args._set_container(typ.__schema__, self)
         self.__selection_list = SelectionList(typ)
 
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self, value):
+        self.__name = value
+
+    @property
+    def args(self):
+        return self.__args
+
+    @args.setter
+    def args(self, variables_dict):
+        variable_args = OrderedDict()
+        for k, v in variables_dict.items():
+            variable_args['$' + k] = v
+        self.__args = ArgDict(variable_args)
+        self.__args._set_container(self.__type.__schema__, self)
+
     def _get_kind(self):
         typ = self.__type
         schema = typ.__schema__
