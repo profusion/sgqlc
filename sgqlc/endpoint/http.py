@@ -183,7 +183,15 @@ class HTTPEndpoint(BaseEndpoint):
         try:
             with self.urlopen(req, timeout=timeout or self.timeout) as f:
                 headers = f.headers
-                body = f.read().decode('utf-8')
+                content_encoding = headers.get('Content-Encoding')
+                if content_encoding and 'gzip' in content_encoding:
+                    import gzip
+
+                    content = gzip.decompress(f.read())
+                    del headers['Content-Encoding']
+                else:
+                    content = f.read()
+                body = content.decode('utf-8')
                 try:
                     data = json.loads(body)
                     if data and headers:

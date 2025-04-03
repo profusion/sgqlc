@@ -1,3 +1,4 @@
+import gzip
 import io
 import json
 import urllib.error
@@ -34,6 +35,13 @@ graphql_headers_ok = {
     'Content-Type': 'application/json; charset=utf8',
     'X-Ratelimit-Limit': '1000',
 }
+
+graphql_headers_gzip = {
+    'Content-Type': 'application/json; charset=utf8',
+    'X-Ratelimit-Limit': '1000',
+    'Content-Encoding': 'gzip',
+}
+
 
 graphql_response_ok = b'''
 {
@@ -269,6 +277,21 @@ def test_basic_operation_query(mock_urlopen):
     data = endpoint(op)
     assert data == json.loads(graphql_response_ok)
     check_mock_urlopen(mock_urlopen, query=bytes(op))
+
+
+@patch('urllib.request.urlopen')
+def test_basic_gzip_query(mock_urlopen):
+    'Test if query with gzip compression works'
+
+    graphql_response_gzip = gzip.compress(graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_gzip, graphql_headers_gzip
+    )
+
+    endpoint = HTTPEndpoint(test_url)
+    data = endpoint(graphql_query.encode('utf-8'))
+    assert data == json.loads(graphql_response_ok)
+    check_mock_urlopen(mock_urlopen)
 
 
 @patch('urllib.request.urlopen')
