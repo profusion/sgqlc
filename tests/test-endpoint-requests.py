@@ -13,6 +13,10 @@ class MockResponse:
     def __init__(self, json_data, status_code):
         self.json_data = json_data
         self.status_code = status_code
+        self.headers = {
+            'content-type': 'application/json; charset=utf8',
+            'x-ratelimit-limit': '1000',
+        }
         self.text = json_data
 
     def __enter__(self):
@@ -52,6 +56,10 @@ query GitHubRepoIssues($repoOwner: String!, $repoName: String!) {
 
 graphql_response_ok = '''
 {
+  "headers": {
+    "content-type": "application/json; charset=utf8",
+    "x-ratelimit-limit": "1000"
+  },
   "data": {
     "repository": {
       "issues": {
@@ -68,6 +76,10 @@ graphql_response_ok = '''
 
 graphql_response_error = '''
 {
+  "headers": {
+    "content-type": "application/json; charset=utf8",
+    "x-ratelimit-limit": "1000"
+  },
   "errors": [{
     "message": "Server Reported Error",
     "locations": [{"line": 1, "column": 1}]

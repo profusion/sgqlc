@@ -59,6 +59,8 @@ class HTTPEndpoint(BaseEndpoint):
        :exc:`json.JSONDecodeError` those are stored in the
        "exception" key.
 
+    :headers: dictionary of HTTP response headers.
+
     .. note::
 
       Both ``data`` and ``errors`` may be returned, for instance if
@@ -164,8 +166,9 @@ class HTTPEndpoint(BaseEndpoint):
         :type timeout: float
 
         :return: dict with optional fields ``data`` containing the GraphQL
-          returned data as nested dict and ``errors`` with an array of
-          errors. Note that both ``data`` and ``errors`` may be returned!
+          returned data as nested dict, ``headers`` with a dictionary of
+          response headers, and ``errors`` with an array of errors.
+          Note that both ``data`` and ``errors`` may be returned!
         :rtype: dict
         '''
         query, req = self._prepare(
@@ -179,9 +182,12 @@ class HTTPEndpoint(BaseEndpoint):
 
         try:
             with self.urlopen(req, timeout=timeout or self.timeout) as f:
+                headers = f.headers
                 body = f.read().decode('utf-8')
                 try:
                     data = json.loads(body)
+                    if data and headers:
+                        data['headers'] = dict(headers)
                     if data and data.get('errors'):
                         return self._log_graphql_error(query, data)
                     return data

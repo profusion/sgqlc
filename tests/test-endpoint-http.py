@@ -3,7 +3,7 @@ import json
 import urllib.error
 import urllib.request
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from sgqlc.endpoint.http import HTTPEndpoint, add_query_to_url
 from sgqlc.types import Schema, Type
 from sgqlc.operation import Operation
@@ -30,8 +30,17 @@ query GitHubRepoIssues($repoOwner: String!, $repoName: String!) {
 }
 '''
 
+graphql_headers_ok = {
+    'Content-Type': 'application/json; charset=utf8',
+    'X-Ratelimit-Limit': '1000',
+}
+
 graphql_response_ok = b'''
 {
+  "headers": {
+    "Content-Type": "application/json; charset=utf8",
+    "X-Ratelimit-Limit": "1000"
+  },
   "data": {
     "repository": {
       "issues": {
@@ -48,6 +57,10 @@ graphql_response_ok = b'''
 
 graphql_response_error = b'''
 {
+  "headers": {
+    "Content-Type": "application/json; charset=utf8",
+    "X-Ratelimit-Limit": "1000"
+  },
   "errors": [{
     "message": "Server Reported Error",
     "locations": [{"line": 1, "column": 1}]
@@ -74,11 +87,15 @@ def get_json_exception(s):
         return e
 
 
-def configure_mock_urlopen(mock_urlopen, payload):
+def configure_mock_urlopen(mock_urlopen, payload, headers):
     if isinstance(payload, Exception):
         mock_urlopen.side_effect = payload
     else:
-        mock_urlopen.return_value = io.BytesIO(payload)
+        res = MagicMock()
+        res.__enter__.return_value = res
+        res.headers = headers
+        res.read.return_value = payload
+        mock_urlopen.return_value = res
 
 
 def check_request_url(req, expected):
@@ -192,7 +209,9 @@ def check_mock_urlopen(
 def test_basic(mock_urlopen):
     'Test if basic usage with only essential parameters works'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_ok, graphql_headers_ok
+    )
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
@@ -208,7 +227,9 @@ def test_basic(mock_urlopen):
 def test_basic_bytes_query(mock_urlopen):
     'Test if query with type bytes works'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_ok, graphql_headers_ok
+    )
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query.encode('utf-8'))
@@ -220,7 +241,9 @@ def test_basic_bytes_query(mock_urlopen):
 def test_basic_operation_query(mock_urlopen):
     'Test if query with type sgqlc.operation.Operation() works'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_ok, graphql_headers_ok
+    )
 
     schema = Schema()
 
@@ -252,7 +275,9 @@ def test_basic_operation_query(mock_urlopen):
 def test_headers(mock_urlopen):
     'Test if all headers are passed'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_ok, graphql_headers_ok
+    )
 
     base_headers = {
         'Xpto': 'abc',
@@ -274,7 +299,9 @@ def test_headers(mock_urlopen):
 def test_default_timeout(mock_urlopen):
     'Test if default timeout is respected'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_ok, graphql_headers_ok
+    )
 
     timeout = 123
 
@@ -288,7 +315,9 @@ def test_default_timeout(mock_urlopen):
 def test_call_timeout(mock_urlopen):
     'Test if call timeout takes precedence over default'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_ok, graphql_headers_ok
+    )
 
     timeout = 123
 
@@ -302,7 +331,9 @@ def test_call_timeout(mock_urlopen):
 def test_variables(mock_urlopen):
     'Test if variables are passed to server'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_ok, graphql_headers_ok
+    )
 
     variables = {'repoOwner': 'owner', 'repoName': 'name'}
 
@@ -316,7 +347,9 @@ def test_variables(mock_urlopen):
 def test_operation_name(mock_urlopen):
     'Test if operation name is passed to server'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_ok, graphql_headers_ok
+    )
 
     operation_name = 'xpto'
 
@@ -330,7 +363,9 @@ def test_operation_name(mock_urlopen):
 def test_json_error(mock_urlopen):
     'Test if broken server responses (invalid JSON) is handled'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_json_error)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_json_error, graphql_headers_ok
+    )
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
@@ -357,7 +392,9 @@ def test_json_error(mock_urlopen):
 def test_get(mock_urlopen):
     'Test if HTTP method GET request works'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_ok)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_ok, graphql_headers_ok
+    )
 
     base_headers = {
         'Xpto': 'abc',
@@ -396,7 +433,9 @@ def test_get(mock_urlopen):
 def test_server_reported_error(mock_urlopen):
     'Test if GraphQL errors reported with HTTP 200 is handled properly'
 
-    configure_mock_urlopen(mock_urlopen, graphql_response_error)
+    configure_mock_urlopen(
+        mock_urlopen, graphql_response_error, graphql_headers_ok
+    )
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
@@ -415,7 +454,7 @@ def test_server_http_error(mock_urlopen):
         {'Xpto': 'abc'},
         io.BytesIO(b'xpto'),
     )
-    configure_mock_urlopen(mock_urlopen, err)
+    configure_mock_urlopen(mock_urlopen, err, graphql_headers_ok)
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
@@ -445,7 +484,7 @@ def test_server_http_non_conforming_json(mock_urlopen):
         {'Content-Type': 'application/json'},
         io.BytesIO(b'{"message": "xpto"}'),
     )
-    configure_mock_urlopen(mock_urlopen, err)
+    configure_mock_urlopen(mock_urlopen, err, graphql_headers_ok)
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
@@ -475,7 +514,7 @@ def test_server_error_broken_json(mock_urlopen):
         {'Content-Type': 'application/json'},
         io.BytesIO(b'xpto'),
     )
-    configure_mock_urlopen(mock_urlopen, err)
+    configure_mock_urlopen(mock_urlopen, err, graphql_headers_ok)
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
@@ -507,7 +546,7 @@ def test_server_http_graphql_error(mock_urlopen):
         {'Content-Type': 'application/json'},
         io.BytesIO(graphql_response_error),
     )
-    configure_mock_urlopen(mock_urlopen, err)
+    configure_mock_urlopen(mock_urlopen, err, graphql_headers_ok)
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
@@ -536,7 +575,7 @@ def test_server_http_single_error(mock_urlopen):
         {'Content-Type': 'application/json'},
         io.BytesIO(b'{"errors": "a string"}'),
     )
-    configure_mock_urlopen(mock_urlopen, err)
+    configure_mock_urlopen(mock_urlopen, err, graphql_headers_ok)
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
@@ -565,7 +604,7 @@ def test_server_http_error_string_list(mock_urlopen):
         {'Content-Type': 'application/json'},
         io.BytesIO(b'{"errors": ["a", "b"]}'),
     )
-    configure_mock_urlopen(mock_urlopen, err)
+    configure_mock_urlopen(mock_urlopen, err, graphql_headers_ok)
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
@@ -594,7 +633,7 @@ def test_server_http_error_list_message(mock_urlopen):
         {'Content-Type': 'application/json'},
         io.BytesIO(b'{"errors": [{"message": [1, 2]}]}'),
     )
-    configure_mock_urlopen(mock_urlopen, err)
+    configure_mock_urlopen(mock_urlopen, err, graphql_headers_ok)
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
