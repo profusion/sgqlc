@@ -132,7 +132,7 @@ class Time(Scalar):
     '''
 
     _re_parse = re.compile(
-        r'^(?P<H>\d{2}):?(?P<M>\d{2}):?(?P<S>\d{2})(?P<MS>|[.]\d+)'
+        r'^(?P<H>\d{2}):?(?P<M>\d{2})(:?(?P<S>\d{2}))?(?P<MS>|[.]\d+)'
         r'(?P<TZ>|Z|(?P<TZH>[+-]\d{2}):?(?P<TZM>\d{2}))$'
     )
 
@@ -146,7 +146,7 @@ class Time(Scalar):
 
         hour = int(m.group('H'))
         minute = int(m.group('M'))
-        second = int(m.group('S'))
+        second = int(m.group('S') or 0)
         microsecond = int(m.group('MS')[1:] or 0)
         tzinfo = None
         if m.group('TZ') == 'Z':
@@ -264,7 +264,7 @@ class DateTime(Scalar):
 
     _re_parse = re.compile(
         r'^(?P<Y>\d{4})-?(?P<m>\d{2})-?(?P<d>\d{2})T'
-        r'(?P<H>\d{2}):?(?P<M>\d{2}):?(?P<S>\d{2})(?P<MS>|[.]\d+)'
+        r'(?P<H>\d{2}):?(?P<M>\d{2})(:?(?P<S>\d{2}))?(?P<MS>|[.]\d+)'
         r'(?P<TZ>|Z|(?P<TZH>[+-]\d{2}):?(?P<TZM>\d{2}))$'
     )
 
@@ -283,7 +283,7 @@ class DateTime(Scalar):
         day = int(m.group('d'))
         hour = int(m.group('H'))
         minute = int(m.group('M'))
-        second = int(m.group('S'))
+        second = int(m.group('S') or 0)
         microsecond = int(m.group('MS')[1:] or 0)
         tzinfo = None
         if m.group('TZ') == 'Z':
