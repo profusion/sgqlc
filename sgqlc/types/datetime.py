@@ -112,6 +112,12 @@ class Time(Scalar):
     datetime.time(12, 34, 56, tzinfo=...(...-1, ...70200)))
     >>> Time('123456+0530') # doctest: +ELLIPSIS
     datetime.time(12, 34, 56, tzinfo=...(...19800)))
+    >>> Time('12:34') # HH:MM, missing seconds, naive = no timezone
+    datetime.time(12, 34)
+    >>> Time('12:34Z')
+    datetime.time(12, 34, tzinfo=datetime.timezone.utc)
+    >>> Time('12:34-05:30') # doctest: +ELLIPSIS
+    datetime.time(12, 34, tzinfo=...(...-1, ...70200)))
 
     Pre-converted values are allowed:
 
@@ -242,6 +248,12 @@ class DateTime(Scalar):
     datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=..., ...70200)))
     >>> DateTime('20180102T123456+0530') # doctest: +ELLIPSIS
     datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(...19800)))
+    >>> DateTime('2018-01-02T12:34') # HH:MM, missing seconds, no timezone
+    datetime.datetime(2018, 1, 2, 12, 34)
+    >>> DateTime('2018-01-02T12:34Z')
+    datetime.datetime(2018, 1, 2, 12, 34, tzinfo=datetime.timezone.utc)
+    >>> DateTime('2018-01-02T12:34-05:30') # doctest: +ELLIPSIS
+    datetime.datetime(2018, 1, 2, 12, 34, tzinfo=..., ...70200)))
 
     Pre-converted values are allowed:
 
