@@ -507,7 +507,7 @@ Run the tests (one of the below):
 
 Keep 100% coverage. You can look at the coverage report at
 ``cover/index.html``.  To do that, prefer
-`doctest <https://docs.python.org/3.12/library/doctest.html>`_
+`doctest <https://docs.python.org/3.13/library/doctest.html>`_
 so it serves as
 both documentation and test. However we use
 `pytest <https://docs.pytest.org/>`_ to write explicit tests that would be

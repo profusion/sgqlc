@@ -1,7 +1,7 @@
 [tool.black]
 line-length = 79
 skip-string-normalization = true
-target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312', 'py313']
 force-exclude = '/(doc/|examples/.*(schema|operations)[.]py)'
 
 [tool.pytest.ini_options]
@@ -59,8 +59,7 @@ include = [
 sgqlc-codegen = 'sgqlc.codegen:main'
 
 [tool.poetry.dependencies]
-# <3.13 is to enable coveralls 4, which requires python >=3.8,<3.13
-python = '>=3.8,<3.13'
+python = '>=3.8,<4'
 graphql-core = '^3.2.4'
 websocket-client = { version = '*', optional = true }
 requests = { version = '*', optional = true }
@@ -70,7 +69,6 @@ websocket = ['websocket-client']
 requests = ['requests']
 
 [tool.poetry.group.dev.dependencies]
-coveralls = '*'
 pytest = '*'
 pytest-cov = '*'
 sphinx = '*'

@@ -20,14 +20,14 @@ jobs:
     if: github.event.pull_request.draft != true
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
     - uses: actions/checkout@v4
     - name: "Install Poetry"
       run: "pip install poetry"
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         cache: poetry
@@ -41,6 +41,18 @@ jobs:
     - name: "Run pre-commit"
       run: poetry run pre-commit run --show-diff-on-failure --color=always --hook-stage push --all-files
     - name: Coveralls
-      run: poetry run coveralls --service=github
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: coverallsapp/github-action@v2
+      with:
+        flag-name: build-${{ matrix.python-version }}
+        parallel: true
+
+  finish:
+    needs: build
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
+        carryforward: "build-3.9,build-3.10,build-3.11,build-3.12,build-3.13"
