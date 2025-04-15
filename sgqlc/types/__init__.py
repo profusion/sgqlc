@@ -2924,26 +2924,31 @@ class Int(Scalar):
 
 class Float(Scalar):
     'Maps GraphQL ``Float`` to Python ``float``.'
+
     converter = float
 
 
 class String(Scalar):
     'Maps GraphQL ``String`` to Python ``str``.'
+
     converter = str
 
 
 class Boolean(Scalar):
     'Maps GraphQL ``Boolean`` to Python ``bool``.'
+
     converter = bool
 
 
 class ID(Scalar):
     'Maps GraphQL ``ID`` to Python ``str``.'
+
     converter = str
 
 
 class UnknownType(Type):
     'Type found in the response that was not present in schema'
+
     __auto_register = False  # do not expose this in Schema, just subclasses
 
 
