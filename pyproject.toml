@@ -6,6 +6,7 @@ force-exclude = '/(doc/|examples/.*(schema|operations)[.]py)'
 
 [tool.pytest.ini_options]
 addopts = '--import-mode=importlib --doctest-modules --cov=sgqlc --cov-fail-under=100 --cov-report=term-missing --cov-report=xml --cov-report=html:cover'
+asyncio_mode = 'auto'
 python_files = ['test-*.py', 'test_*.py']
 testpaths = [
     'sgqlc',
@@ -69,14 +70,18 @@ sgqlc-codegen = 'sgqlc.codegen:main'
 [project.optional-dependencies]
 websocket = ['websocket-client']
 requests = ['requests']
+httpx = ['httpx']
 
 [tool.poetry.group.dev.dependencies]
 pytest = '*'
 pytest-cov = '*'
+pytest-asyncio = '*'
 sphinx = '*'
 sphinx-argparse = '*'
 websocket-client = '*'
 requests = '*'
+httpx = '*'
+respx = '*'
 
 [tool.poetry.group.docs.dependencies]
 sphinx = '*'

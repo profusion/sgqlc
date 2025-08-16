@@ -244,6 +244,24 @@ hand-written query (see more at ``examples/basic/01_http_endpoint.py``):
    endpoint = HTTPEndpoint(url, headers)
    data = endpoint(query, variables)
 
+To make an asynchronous query, use the `httpx` library with `HTTPXEndpoint`
+(see more at ``examples/basic/04_httpx_endpoint.py``):
+
+.. code-block:: python
+
+   from sgqlc.endpoint.httpx import HTTPXEndpoint
+   import httpx
+
+   async def main():
+       url = 'http://server.com/graphql'
+       headers = {'Authorization': 'bearer TOKEN'}
+
+       query = 'query { ... }'
+       variables = {'varName': 'value'}
+
+       endpoint = HTTPEndpoint(url, headers, client=httpx.AsyncClient())
+       data = await endpoint(query, variables)
+
 
 However, writing GraphQL queries and later interpreting the results
 may be cumbersome. That's solved by our ``sgqlc.types``, which is
