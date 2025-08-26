@@ -25,17 +25,14 @@ norecursedirs = [
     'utils',
 ]
 
-[tool.poetry]
+[project]
 name = 'sgqlc'
 version = '16.5'
 description = 'Simple GraphQL Client'
 readme = 'README.rst'
 authors = [
-    'Gustavo Sverzut Barbieri <barbieri@profusion.mobi>',
+    { name = 'Gustavo Sverzut Barbieri', email = 'barbieri@profusion.mobi' },
 ]
-homepage = 'http://github.com/profusion/sgqlc'
-repository = 'http://github.com/profusion/sgqlc'
-documentation = 'https://sgqlc.readthedocs.io/'
 license = 'ISCL'
 keywords = ['graphql', 'client', 'http', 'endpoint']
 classifiers=[
@@ -48,6 +45,12 @@ classifiers=[
     'Programming Language :: Python',
     'Topic :: Utilities',
 ]
+requires-python = '>=3.8,<4'
+dependencies = [
+    'graphql-core~=3.2.4'
+]
+
+[tool.poetry]
 packages = [{ include = 'sgqlc' }]
 include = [
     { path = 'AUTHORS', format = 'sdist' },
@@ -55,16 +58,15 @@ include = [
     { path = 'tests', format = 'sdist' },
 ]
 
-[tool.poetry.scripts]
+[project.urls]
+Homepage = 'http://github.com/profusion/sgqlc'
+Repository = 'http://github.com/profusion/sgqlc'
+Documentation = 'https://sgqlc.readthedocs.io/'
+
+[project.scripts]
 sgqlc-codegen = 'sgqlc.codegen:main'
 
-[tool.poetry.dependencies]
-python = '>=3.8,<4'
-graphql-core = '^3.2.4'
-websocket-client = { version = '*', optional = true }
-requests = { version = '*', optional = true }
-
-[tool.poetry.extras]
+[project.optional-dependencies]
 websocket = ['websocket-client']
 requests = ['requests']
 
