@@ -21,10 +21,11 @@ per-file-ignores =
 # I801: from x import Y
 # RST304: :class:, :func:, :mod: are supported by sphinx
 # RST303: literalinclude is supported by sphinx
+# RST299: Previously unseen warning, not yet assigned a unique code.
 # N999: ignore dashes in the name (ideally only disabled for examples/)
 # W503: old coding style (new PEP8 is enforced by W504)
 # A005: the module is shadowing a Python builtin module (http, uuid, datetime, types)
-ignore = I801,RST303,RST304,N999,W503,A005
+ignore = I801,RST303,RST304,RST299,N999,W503,A005
 max-complexity = 10
 max-line-length = 79
 known-modules = websocket-client:[websocket],graphql-core:[graphql]
