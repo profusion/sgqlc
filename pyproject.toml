@@ -47,7 +47,7 @@ classifiers=[
 ]
 requires-python = '>=3.8,<4'
 dependencies = [
-    'graphql-core~=3.2.4'
+    'graphql-core~=3.2.6'
 ]
 
 [tool.poetry]
@@ -75,6 +75,8 @@ pytest = '*'
 pytest-cov = '*'
 sphinx = '*'
 sphinx-argparse = '*'
+websocket-client = '*'
+requests = '*'
 
 [tool.poetry.group.docs.dependencies]
 sphinx = '*'
