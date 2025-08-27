@@ -259,7 +259,7 @@ To make an asynchronous query, use the `httpx` library with `HTTPXEndpoint`
        query = 'query { ... }'
        variables = {'varName': 'value'}
 
-       endpoint = HTTPEndpoint(url, headers, client=httpx.AsyncClient())
+       endpoint = HTTPXEndpoint(url, headers, client=httpx.AsyncClient())
        data = await endpoint(query, variables)
 
 

@@ -225,7 +225,7 @@ class HTTPXEndpoint(HTTPEndpoint):
             }
 
     def get_http_post_request(self, query, variables, operation_name, headers):
-        '''Createa a http POST request for the query.'''
+        '''Create an HTTP POST request for the query.'''
         return self.client.build_request(
             method='POST',
             url=self.url,
@@ -238,7 +238,7 @@ class HTTPXEndpoint(HTTPEndpoint):
         )
 
     def get_http_get_request(self, query, variables, operation_name, headers):
-        '''Create a http GET request for the query.'''
+        '''Create an HTTP GET request for the query.'''
         params = {'query': query}
         if operation_name:
             params['operationName'] = operation_name
