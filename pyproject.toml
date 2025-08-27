@@ -29,7 +29,7 @@ norecursedirs = [
 
 [project]
 name = 'sgqlc'
-version = '16.5'
+version = '17'
 description = 'Simple GraphQL Client'
 readme = 'README.rst'
 authors = [

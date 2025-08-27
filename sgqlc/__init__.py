@@ -25,4 +25,4 @@ modules:
 '''
 
 __docformat__ = 'reStructuredText en'
-__version__ = '16.5'
+__version__ = '17'
