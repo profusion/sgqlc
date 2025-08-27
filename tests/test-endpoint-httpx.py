@@ -503,8 +503,27 @@ async def test_server_http_error_async(respx_mock):
 def test_server_http_non_conforming_json(respx_mock):
     'Test if HTTP error that is NOT conforming to GraphQL payload is handled'
 
+    content = '{"message": "xpto"}'
+    content_length = len(content)
+
+    req = httpx.Request('POST', test_url)
+    res = httpx.Response(
+        500,
+        content=content,
+        headers={
+            'content-type': 'application/json',
+            'content-length': str(content_length),
+        },
+        request=req,
+    )
+    exp_exc = None  # placeholder, will always be set in the handler below
+    try:
+        res.raise_for_status()
+    except httpx.HTTPStatusError as e:
+        exp_exc = e
+
     route = respx_mock.route(name='graphql', method='POST', url=test_url).mock(
-        return_value=httpx.Response(500, json={'message': 'xpto'})
+        return_value=res,
     )
 
     endpoint = HTTPXEndpoint(test_url)
@@ -515,13 +534,16 @@ def test_server_http_non_conforming_json(respx_mock):
         got_exc, httpx.HTTPStatusError
     ), '{} is not httpx.HTTPStatusError'.format(type(got_exc))
 
-    assert data, {
+    assert data == {
         'errors': [
             {
-                'message': 'hi',
+                'message': str(exp_exc),
                 'status': 500,
-                'headers': {'Content-Type': 'application/json'},
-                'body': '{"message": "xpto"}',
+                'headers': {
+                    'content-type': 'application/json',
+                    'content-length': str(content_length),
+                },
+                'body': content,
             }
         ],
         'data': None,
@@ -545,7 +567,7 @@ def test_server_error_broken_json(respx_mock):
         got_exc, json.JSONDecodeError
     ), '{} is not json.JSONDecodeError'.format(type(got_exc))
 
-    assert data, {
+    assert data == {
         'errors': [
             {
                 'message': str(got_exc),

@@ -511,7 +511,7 @@ def test_server_http_non_conforming_json(mock_urlopen):
 
     endpoint = HTTPEndpoint(test_url)
     data = endpoint(graphql_query)
-    assert data, {
+    assert data == {
         'errors': [
             {
                 'message': str(err),
@@ -546,7 +546,7 @@ def test_server_error_broken_json(mock_urlopen):
         got_exc, json.JSONDecodeError
     ), '{} is not json.JSONDecodeError'.format(type(got_exc))
 
-    assert data, {
+    assert data == {
         'errors': [
             {
                 'message': str(got_exc),
