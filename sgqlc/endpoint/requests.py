@@ -57,6 +57,8 @@ class RequestsEndpoint(BaseEndpoint):
     :data: object matching the GraphQL requests, or ``null`` if only
        errors were returned.
 
+    :headers: dictionary of HTTP response headers.
+
     :errors: list of errors, which are objects with the key "message" and
        optionally others, such as "location" (for errors matching GraphQL
        input). Instead of raising exceptions, such as
@@ -198,8 +200,10 @@ class RequestsEndpoint(BaseEndpoint):
         :type timeout: float
 
         :return: dict with optional fields ``data`` containing the GraphQL
-          returned data as nested dict and ``errors`` with an array of
-          errors. Note that both ``data`` and ``errors`` may be returned!
+          returned data as nested dict, ``headers`` with a dictionary of
+          response headers with lower-cased keys, and ``errors`` with an
+          array of errors. Note that both ``data`` and ``errors`` may be
+          returned!
         :rtype: dict
         '''
         query, req = self._prepare(
@@ -219,6 +223,8 @@ class RequestsEndpoint(BaseEndpoint):
                 try:
                     f.raise_for_status()
                     data = f.json()
+                    if data:
+                        data['headers'] = dict(f.headers)
                     if data and data.get('errors'):
                         return self._log_graphql_error(query, data)
                     return data

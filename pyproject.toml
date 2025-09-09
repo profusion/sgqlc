@@ -1,11 +1,13 @@
 [tool.black]
 line-length = 79
 skip-string-normalization = true
-target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312', 'py313']
 force-exclude = '/(doc/|examples/.*(schema|operations)[.]py)'
 
 [tool.pytest.ini_options]
 addopts = '--import-mode=importlib --doctest-modules --cov=sgqlc --cov-fail-under=100 --cov-report=term-missing --cov-report=xml --cov-report=html:cover'
+asyncio_mode = 'auto'
+asyncio_default_fixture_loop_scope = 'function'
 python_files = ['test-*.py', 'test_*.py']
 testpaths = [
     'sgqlc',
@@ -25,17 +27,14 @@ norecursedirs = [
     'utils',
 ]
 
-[tool.poetry]
+[project]
 name = 'sgqlc'
-version = '16.3'
+version = '17'
 description = 'Simple GraphQL Client'
 readme = 'README.rst'
 authors = [
-    'Gustavo Sverzut Barbieri <barbieri@profusion.mobi>',
+    { name = 'Gustavo Sverzut Barbieri', email = 'barbieri@profusion.mobi' },
 ]
-homepage = 'http://github.com/profusion/sgqlc'
-repository = 'http://github.com/profusion/sgqlc'
-documentation = 'https://sgqlc.readthedocs.io/'
 license = 'ISCL'
 keywords = ['graphql', 'client', 'http', 'endpoint']
 classifiers=[
@@ -48,6 +47,12 @@ classifiers=[
     'Programming Language :: Python',
     'Topic :: Utilities',
 ]
+requires-python = '>=3.8,<4'
+dependencies = [
+    'graphql-core~=3.2.6'
+]
+
+[tool.poetry]
 packages = [{ include = 'sgqlc' }]
 include = [
     { path = 'AUTHORS', format = 'sdist' },
@@ -55,26 +60,29 @@ include = [
     { path = 'tests', format = 'sdist' },
 ]
 
-[tool.poetry.scripts]
+[project.urls]
+Homepage = 'http://github.com/profusion/sgqlc'
+Repository = 'http://github.com/profusion/sgqlc'
+Documentation = 'https://sgqlc.readthedocs.io/'
+
+[project.scripts]
 sgqlc-codegen = 'sgqlc.codegen:main'
 
-[tool.poetry.dependencies]
-# <3.13 is to enable coveralls 4, which requires python >=3.8,<3.13
-python = '>=3.8,<3.13'
-graphql-core = '^3.2.4'
-websocket-client = { version = '*', optional = true }
-requests = { version = '*', optional = true }
-
-[tool.poetry.extras]
+[project.optional-dependencies]
 websocket = ['websocket-client']
 requests = ['requests']
+httpx = ['httpx']
 
 [tool.poetry.group.dev.dependencies]
-coveralls = '*'
 pytest = '*'
 pytest-cov = '*'
+pytest-asyncio = '*'
 sphinx = '*'
 sphinx-argparse = '*'
+websocket-client = '*'
+requests = '*'
+httpx = '*'
+respx = '*'
 
 [tool.poetry.group.docs.dependencies]
 sphinx = '*'

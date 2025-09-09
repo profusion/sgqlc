@@ -5,7 +5,13 @@ Usage:
 
 ```bash
 poetry install --all-extras
+
+# If using https://github.com/python-poetry/poetry-plugin-shell
 poetry shell
+
+# it not using poetry shell, manually activate it
+eval $(poetry env activate)
+
 export GH_TOKEN=<your github API token>
 
 cd examples/basic

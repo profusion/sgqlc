@@ -149,6 +149,9 @@ class SchemaValidation(NoValidation):
         possible_types = typ['possibleTypes'] or typ['interfaces'] or []
         typ['possibleTypes'] = {t['name'] for t in possible_types}
 
+        interfaces = typ['interfaces'] or []
+        typ['interfaces'] = {t['name'] for t in interfaces}
+
         return typ
 
     def _create_field(self, field):
@@ -743,7 +746,8 @@ def fragment_%(name)s():
             self.type_stack.append(None)
             return
         type_name = node.type_condition.name.value
-        if type_name not in typ['possibleTypes']:
+        condition_type = self.validation.get_type(type_name)
+        if not self._type_valid_in_fragment(condition_type, typ):
             self.report_possible_type_validation(node, typ, type_name)
 
         try:
@@ -751,6 +755,13 @@ def fragment_%(name)s():
             self.type_stack.append(typ)
         except KeyError as ex:
             self.report_type_validation(node, ex)
+
+    @staticmethod
+    def _type_valid_in_fragment(condition_type, fragment_type):
+        return (
+            fragment_type['name'] in condition_type['interfaces']
+            or condition_type['name'] in fragment_type['possibleTypes']
+        )
 
     def leave_inline_fragment(self, node, *_args):
         self.type_stack.pop()

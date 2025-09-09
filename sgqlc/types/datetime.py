@@ -112,6 +112,12 @@ class Time(Scalar):
     datetime.time(12, 34, 56, tzinfo=...(...-1, ...70200)))
     >>> Time('123456+0530') # doctest: +ELLIPSIS
     datetime.time(12, 34, 56, tzinfo=...(...19800)))
+    >>> Time('12:34') # HH:MM, missing seconds, naive = no timezone
+    datetime.time(12, 34)
+    >>> Time('12:34Z')
+    datetime.time(12, 34, tzinfo=datetime.timezone.utc)
+    >>> Time('12:34-05:30') # doctest: +ELLIPSIS
+    datetime.time(12, 34, tzinfo=...(...-1, ...70200)))
 
     Pre-converted values are allowed:
 
@@ -132,7 +138,7 @@ class Time(Scalar):
     '''
 
     _re_parse = re.compile(
-        r'^(?P<H>\d{2}):?(?P<M>\d{2}):?(?P<S>\d{2})(?P<MS>|[.]\d+)'
+        r'^(?P<H>\d{2}):?(?P<M>\d{2})(:?(?P<S>\d{2}))?(?P<MS>|[.]\d+)'
         r'(?P<TZ>|Z|(?P<TZH>[+-]\d{2}):?(?P<TZM>\d{2}))$'
     )
 
@@ -146,7 +152,7 @@ class Time(Scalar):
 
         hour = int(m.group('H'))
         minute = int(m.group('M'))
-        second = int(m.group('S'))
+        second = int(m.group('S') or 0)
         microsecond = int(m.group('MS')[1:] or 0)
         tzinfo = None
         if m.group('TZ') == 'Z':
@@ -242,6 +248,12 @@ class DateTime(Scalar):
     datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=..., ...70200)))
     >>> DateTime('20180102T123456+0530') # doctest: +ELLIPSIS
     datetime.datetime(2018, 1, 2, 12, 34, 56, tzinfo=...(...19800)))
+    >>> DateTime('2018-01-02T12:34') # HH:MM, missing seconds, no timezone
+    datetime.datetime(2018, 1, 2, 12, 34)
+    >>> DateTime('2018-01-02T12:34Z')
+    datetime.datetime(2018, 1, 2, 12, 34, tzinfo=datetime.timezone.utc)
+    >>> DateTime('2018-01-02T12:34-05:30') # doctest: +ELLIPSIS
+    datetime.datetime(2018, 1, 2, 12, 34, tzinfo=..., ...70200)))
 
     Pre-converted values are allowed:
 
@@ -264,7 +276,7 @@ class DateTime(Scalar):
 
     _re_parse = re.compile(
         r'^(?P<Y>\d{4})-?(?P<m>\d{2})-?(?P<d>\d{2})T'
-        r'(?P<H>\d{2}):?(?P<M>\d{2}):?(?P<S>\d{2})(?P<MS>|[.]\d+)'
+        r'(?P<H>\d{2}):?(?P<M>\d{2})(:?(?P<S>\d{2}))?(?P<MS>|[.]\d+)'
         r'(?P<TZ>|Z|(?P<TZH>[+-]\d{2}):?(?P<TZM>\d{2}))$'
     )
 
@@ -283,7 +295,7 @@ class DateTime(Scalar):
         day = int(m.group('d'))
         hour = int(m.group('H'))
         minute = int(m.group('M'))
-        second = int(m.group('S'))
+        second = int(m.group('S') or 0)
         microsecond = int(m.group('MS')[1:] or 0)
         tzinfo = None
         if m.group('TZ') == 'Z':

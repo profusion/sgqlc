@@ -244,6 +244,24 @@ hand-written query (see more at ``examples/basic/01_http_endpoint.py``):
    endpoint = HTTPEndpoint(url, headers)
    data = endpoint(query, variables)
 
+To make an asynchronous query, use the `httpx` library with `HTTPXEndpoint`
+(see more at ``examples/basic/04_httpx_endpoint.py``):
+
+.. code-block:: python
+
+   from sgqlc.endpoint.httpx import HTTPXEndpoint
+   import httpx
+
+   async def main():
+       url = 'http://server.com/graphql'
+       headers = {'Authorization': 'bearer TOKEN'}
+
+       query = 'query { ... }'
+       variables = {'varName': 'value'}
+
+       endpoint = HTTPXEndpoint(url, headers, client=httpx.AsyncClient())
+       data = await endpoint(query, variables)
+
 
 However, writing GraphQL queries and later interpreting the results
 may be cumbersome. That's solved by our ``sgqlc.types``, which is
@@ -507,7 +525,7 @@ Run the tests (one of the below):
 
 Keep 100% coverage. You can look at the coverage report at
 ``cover/index.html``.  To do that, prefer
-`doctest <https://docs.python.org/3.12/library/doctest.html>`_
+`doctest <https://docs.python.org/3.13/library/doctest.html>`_
 so it serves as
 both documentation and test. However we use
 `pytest <https://docs.pytest.org/>`_ to write explicit tests that would be
