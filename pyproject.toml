@@ -72,6 +72,7 @@ sgqlc-codegen = 'sgqlc.codegen:main'
 websocket = ['websocket-client']
 requests = ['requests']
 httpx = ['httpx']
+pytest = ['pytest']
 
 [tool.poetry.group.dev.dependencies]
 pytest = '*'

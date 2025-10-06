@@ -160,7 +160,7 @@ class HTTPXEndpoint(HTTPEndpoint):
             try:
                 response = self.client.send(req)
                 return self._parse_httpx_response(query, response)
-            except httpx.HTTPError as exc:
+            except httpx.HTTPStatusError as exc:
                 return self._log_httpx_error(query, req, exc)
 
     def _parse_httpx_response(self, query, response):

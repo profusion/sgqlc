@@ -1,6 +1,7 @@
 import json
 
 import httpx
+import pytest
 
 from sgqlc.endpoint.httpx import HTTPXEndpoint
 from sgqlc.types import Schema, Type
@@ -548,6 +549,21 @@ def test_server_http_non_conforming_json(respx_mock):
         ],
         'data': None,
     }
+    check_respx_route(route)
+
+
+def test_server_http_transport_error(respx_mock):
+    'Test if a transport error will get passed back to the caller'
+
+    route = respx_mock.route(name='graphql', method='POST', url=test_url).mock(
+        side_effect=httpx.RemoteProtocolError
+    )
+
+    endpoint = HTTPXEndpoint(test_url)
+
+    with pytest.raises(httpx.RemoteProtocolError):
+        endpoint(graphql_query)
+
     check_respx_route(route)
 
 
