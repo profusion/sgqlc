@@ -61,7 +61,7 @@ class HTTPXEndpoint(HTTPEndpoint):
     :errors: list of errors, which are objects with the key "message" and
        optionally others, such as "location" (for errors matching GraphQL
        input). Instead of raising exceptions, such as
-       :exc:`requests.exceptions.HTTPError` or
+       :exc:`requests.exceptions.HTTPStatusError` or
        :exc:`json.JSONDecodeError` those are stored in the
        "exception" key.
 
@@ -152,7 +152,7 @@ class HTTPXEndpoint(HTTPEndpoint):
                 try:
                     response = await self.client.send(req)
                     return self._parse_httpx_response(query, response)
-                except httpx.HTTPError as exc:
+                except httpx.HTTPStatusError as exc:
                     return self._log_httpx_error(query, req, exc)
 
             return runner()

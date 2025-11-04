@@ -552,7 +552,7 @@ def test_server_http_non_conforming_json(respx_mock):
     check_respx_route(route)
 
 
-def test_server_http_transport_error(respx_mock):
+async def test_server_http_transport_error(respx_mock):
     'Test if a transport error will get passed back to the caller'
 
     route = respx_mock.route(name='graphql', method='POST', url=test_url).mock(
@@ -563,6 +563,13 @@ def test_server_http_transport_error(respx_mock):
 
     with pytest.raises(httpx.RemoteProtocolError):
         endpoint(graphql_query)
+
+    check_respx_route(route)
+
+    endpoint = HTTPXEndpoint(test_url, client=httpx.AsyncClient())
+
+    with pytest.raises(httpx.RemoteProtocolError):
+        await endpoint(graphql_query)
 
     check_respx_route(route)
 
