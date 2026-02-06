@@ -40,7 +40,7 @@ import logging
 import requests
 
 
-from .base import BaseEndpoint, add_query_to_url
+from .base import BaseEndpoint, JSONEncoder, add_query_to_url
 
 
 class RequestsEndpoint(BaseEndpoint):
@@ -239,7 +239,8 @@ class RequestsEndpoint(BaseEndpoint):
                 'query': query,
                 'variables': variables,
                 'operationName': operation_name,
-            }
+            },
+            cls=JSONEncoder,
         ).encode('utf-8')
         headers.update(
             {
@@ -261,7 +262,7 @@ class RequestsEndpoint(BaseEndpoint):
             params['operationName'] = operation_name
 
         if variables:
-            params['variables'] = json.dumps(variables)
+            params['variables'] = json.dumps(variables, cls=JSONEncoder)
 
         url = add_query_to_url(self.url, params)
         return requests.Request(

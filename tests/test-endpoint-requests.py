@@ -1,11 +1,12 @@
 import io
 import json
+import pytest
 import requests
 import urllib
 
 from unittest.mock import patch
 from sgqlc.endpoint.requests import RequestsEndpoint, add_query_to_url
-from sgqlc.types import Schema, Type
+from sgqlc.types import Schema, Type, Input
 from sgqlc.operation import Operation
 
 
@@ -168,7 +169,18 @@ def check_request_variables(req, variables):
         query = get_request_url_query(req)
         received = json.loads(query.get('variables', 'null'))
 
-    assert received == variables
+    if not variables:
+        assert received == variables
+        return
+
+    # Convert Input types to their JSON representation for comparison
+    expected = {}
+    for k, v in variables.items():
+        if hasattr(v, '__json_data__'):
+            expected[k] = v.__json_data__
+        else:
+            expected[k] = v
+    assert received == expected
 
 
 def check_request_operation_name(req, operation_name):
@@ -688,6 +700,56 @@ def test_server_http_error_list_message(mock_requests_send):
 
     assert data == expected_data
     check_mock_requests_send(mock_requests_send)
+
+
+@patch('requests.sessions.Session.send')
+def test_variables_with_input_type(mock_requests_send):
+    '[Requests] - Test if variables with sgqlc.types.Input are serialized'
+    schema = Schema()
+
+    # MyInput may be declared if doctests were processed by pytest
+    if 'MyInput' in schema:
+        schema -= schema.MyInput
+
+    class MyInput(Input):
+        __schema__ = schema
+        a_str = str
+        a_int = int
+
+    configure_mock_requests_send(
+        mock_requests_send,
+        graphql_response_ok,
+    )
+
+    variables = {'input': MyInput(a_str='hello', a_int=42)}
+
+    endpoint = RequestsEndpoint(test_url)
+    data = endpoint(graphql_query, variables)
+    assert data['data']['repository']['issues']['nodes'][0]['number'] == 1
+    check_mock_requests_send(mock_requests_send, variables=variables)
+
+
+@patch('requests.sessions.Session.send')
+def test_variables_with_bogus_type(mock_requests_send):
+    '''
+    [Requests] - Test if variables with non-serializable types
+    raise TypeError
+    '''
+
+    class BogusType:
+        pass
+
+    configure_mock_requests_send(
+        mock_requests_send,
+        graphql_response_ok,
+    )
+
+    variables = {'input': BogusType()}
+
+    endpoint = RequestsEndpoint(test_url)
+    with pytest.raises(TypeError):
+        endpoint(graphql_query, variables)
+    assert mock_requests_send.called is False
 
 
 # add_query_to_url():

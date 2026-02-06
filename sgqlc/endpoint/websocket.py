@@ -1,4 +1,4 @@
-from sgqlc.endpoint.base import BaseEndpoint
+from sgqlc.endpoint.base import BaseEndpoint, JSONEncoder
 import websocket
 import uuid
 import json
@@ -85,7 +85,7 @@ class WebSocketEndpoint(BaseEndpoint):
             connection_setup_dict = {'type': 'connection_init', 'id': init_id}
             if self.connection_payload:
                 connection_setup_dict['payload'] = self.connection_payload
-            ws.send(json.dumps(connection_setup_dict))
+            ws.send(json.dumps(connection_setup_dict, cls=JSONEncoder))
 
             response = self._get_response(ws)
             if response['type'] != 'connection_ack':
@@ -111,7 +111,8 @@ class WebSocketEndpoint(BaseEndpoint):
                             'variables': variables,
                             'operationName': operation_name,
                         },
-                    }
+                    },
+                    cls=JSONEncoder,
                 )
             )
             response = self._get_response(ws)

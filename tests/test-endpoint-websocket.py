@@ -5,7 +5,7 @@ from unittest.mock import patch, Mock
 from sgqlc.endpoint.websocket import WebSocketEndpoint
 
 from sgqlc.operation import Operation
-from sgqlc.types import Schema, Type
+from sgqlc.types import Schema, Type, Input
 
 test_url = 'ws://localhost:12345/graphql'
 endpoint = WebSocketEndpoint(test_url)
@@ -359,3 +359,59 @@ def test_query_bad_message_id(mock_create_connection):
         raise Exception('should have failed')
     except ValueError as e:
         assert e.args[0] == 'Unexpected id 321 when waiting for query results'
+
+
+@patch('websocket.create_connection')
+def test_variables_with_input_type(mock_create_connection):
+    'Test if variables with sgqlc.types.Input are properly serialized'
+    schema = Schema()
+
+    # MyInput may be declared if doctests were processed by pytest
+    if 'MyInput' in schema:
+        schema -= schema.MyInput
+
+    class MyInput(Input):
+        __schema__ = schema
+        a_str = str
+        a_int = int
+
+    mock_connection = Mock()
+    mock_create_connection.return_value = mock_connection
+    mock_connection.recv.side_effect = [
+        '{"type": "connection_ack", "id": "123"}',
+        '{"type": "data", "id": "123", "payload": {"data": {"test": "ok"}}}',
+        '{"type": "complete", "id": "123"}',
+    ]
+
+    variables = {'input': MyInput(a_str='hello', a_int=42)}
+    result = list(endpoint('query {test}', variables))
+    assert result == [{'data': {'test': 'ok'}}]
+
+    # Verify the variables were serialized with Input.__json_data__
+    calls = mock_connection.send.call_args_list
+    query_call = calls[1][0][0]  # Second call (first is connection_init)
+    query_data = json.loads(query_call)
+    assert query_data['payload']['variables'] == {
+        'input': {'aStr': 'hello', 'aInt': 42}
+    }
+
+
+@patch('websocket.create_connection')
+def test_variables_with_bogus_type(mock_create_connection):
+    'Test if variables with non-serializable types raise TypeError'
+
+    class BogusType:
+        pass
+
+    mock_connection = Mock()
+    mock_create_connection.return_value = mock_connection
+    mock_connection.recv.side_effect = [
+        '{"type": "connection_ack", "id": "123"}',
+    ]
+
+    variables = {'input': BogusType()}
+
+    import pytest
+
+    with pytest.raises(TypeError):
+        list(endpoint('query {test}', variables))

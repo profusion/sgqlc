@@ -29,8 +29,38 @@ __docformat__ = 'reStructuredText en'
 
 __all__ = ('BaseEndpoint',)
 
+import json
 import logging
 import urllib.parse
+
+
+class JSONEncoder(json.JSONEncoder):
+    '''JSON encoder that handles sgqlc.types.Input instances.
+
+    This encoder automatically converts :class:`sgqlc.types.Input`
+    instances to their JSON-serializable dictionary representation by
+    accessing the ``__json_data__`` attribute.
+
+    Other non-serializable types will raise :exc:`TypeError` as usual.
+
+    Example usage:
+
+    >>> from sgqlc.types import Input
+    >>> class MyInput(Input):
+    ...     a_field = str
+    ...
+    >>> value = MyInput(a_field='test')
+    >>> json.dumps({'input': value}, cls=JSONEncoder)
+    '{"input": {"aField": "test"}}'
+    '''
+
+    def default(self, o):
+        # Check if it's an Input type by looking for __json_data__
+        # attribute. This avoids importing sgqlc.types which would
+        # create a circular dependency
+        if hasattr(o, '__json_data__'):
+            return o.__json_data__
+        return super().default(o)
 
 
 def add_query_to_url(url, extra_query):

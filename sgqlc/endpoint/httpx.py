@@ -37,7 +37,7 @@ __all__ = ('HTTPXEndpoint',)
 import json
 import httpx
 
-from .base import add_query_to_url
+from .base import JSONEncoder, add_query_to_url
 from .http import HTTPEndpoint
 from typing import Optional, Union, Dict
 
@@ -231,7 +231,8 @@ class HTTPXEndpoint(HTTPEndpoint):
                 'query': query,
                 'variables': variables,
                 'operationName': operation_name,
-            }
+            },
+            cls=JSONEncoder,
         ).encode('utf-8')
         headers.update(
             {
@@ -253,7 +254,7 @@ class HTTPXEndpoint(HTTPEndpoint):
             params['operationName'] = operation_name
 
         if variables:
-            params['variables'] = json.dumps(variables)
+            params['variables'] = json.dumps(variables, cls=JSONEncoder)
 
         url = add_query_to_url(self.url, params)
 

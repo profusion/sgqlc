@@ -1,12 +1,13 @@
 import gzip
 import io
 import json
+import pytest
 import urllib.error
 import urllib.request
 
 from unittest.mock import MagicMock, patch
 from sgqlc.endpoint.http import HTTPEndpoint, add_query_to_url
-from sgqlc.types import Schema, Type
+from sgqlc.types import Schema, Type, Input
 from sgqlc.operation import Operation
 
 test_url = 'http://some-server.com/graphql'
@@ -160,7 +161,18 @@ def check_request_variables(req, variables):
         query = get_request_url_query(req)
         received = json.loads(query.get('variables', 'null'))
 
-    assert received == variables
+    if not variables:
+        assert received == variables
+        return
+
+    # Convert Input types to their JSON representation for comparison
+    expected = {}
+    for k, v in variables.items():
+        if hasattr(v, '__json_data__'):
+            expected[k] = v.__json_data__
+        else:
+            expected[k] = v
+    assert received == expected
 
 
 def check_request_operation_name(req, operation_name):
@@ -672,6 +684,56 @@ def test_server_http_error_list_message(mock_urlopen):
 
     assert data == expected_data
     check_mock_urlopen(mock_urlopen)
+
+
+@patch('urllib.request.urlopen')
+def test_variables_with_input_type(mock_urlopen):
+    'Test if variables with sgqlc.types.Input are properly serialized'
+
+    schema = Schema()
+
+    # MyInput may be declared if doctests were processed by pytest
+    if 'MyInput' in schema:
+        schema -= schema.MyInput
+
+    class MyInput(Input):
+        __schema__ = schema
+        a_str = str
+        a_int = int
+
+    configure_mock_urlopen(
+        mock_urlopen,
+        graphql_response_ok,
+        graphql_headers_ok,
+    )
+
+    variables = {'input': MyInput(a_str='hello', a_int=42)}
+
+    endpoint = HTTPEndpoint(test_url)
+    data = endpoint(graphql_query, variables)
+    assert data['data']['repository']['issues']['nodes'][0]['number'] == 1
+    check_mock_urlopen(mock_urlopen, variables=variables)
+
+
+@patch('urllib.request.urlopen')
+def test_variables_with_bogus_type(mock_urlopen):
+    'Test if variables with non-serializable types raise TypeError'
+
+    class BogusType:
+        pass
+
+    configure_mock_urlopen(
+        mock_urlopen,
+        graphql_response_ok,
+        graphql_headers_ok,
+    )
+
+    variables = {'input': BogusType()}
+
+    endpoint = HTTPEndpoint(test_url)
+    with pytest.raises(TypeError):
+        endpoint(graphql_query, variables)
+    assert not mock_urlopen.called
 
 
 # add_query_to_url():
