@@ -241,7 +241,12 @@ class RequestsEndpoint(BaseEndpoint):
                 'operationName': operation_name,
             }
         ).encode('utf-8')
-        headers.update({'Content-Type': 'application/json; charset=utf-8'})
+        headers.update(
+            {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Content-Length': str(len(post_data)),
+            }
+        )
         return requests.Request(
             url=self.url,
             auth=self.auth,

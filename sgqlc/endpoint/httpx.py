@@ -226,15 +226,24 @@ class HTTPXEndpoint(HTTPEndpoint):
 
     def get_http_post_request(self, query, variables, operation_name, headers):
         '''Create an HTTP POST request for the query.'''
+        post_data = json.dumps(
+            {
+                'query': query,
+                'variables': variables,
+                'operationName': operation_name,
+            }
+        ).encode('utf-8')
+        headers.update(
+            {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Content-Length': str(len(post_data)),
+            }
+        )
         return self.client.build_request(
             method='POST',
             url=self.url,
             headers=headers,
-            json={
-                'query': query,
-                'variables': variables,
-                'operationName': operation_name,
-            },
+            content=post_data,
         )
 
     def get_http_get_request(self, query, variables, operation_name, headers):

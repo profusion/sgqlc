@@ -215,7 +215,7 @@ class HTTPEndpoint(BaseEndpoint):
         headers.update(
             {
                 'Content-Type': 'application/json; charset=utf-8',
-                'Content-Length': len(post_data),
+                'Content-Length': str(len(post_data)),
             }
         )
         return urllib.request.Request(

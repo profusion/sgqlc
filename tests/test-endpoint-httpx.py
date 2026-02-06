@@ -104,7 +104,7 @@ def check_request_headers(req, base_headers, extra_headers):
         accept_header = 'application/json; charset=utf-8'
     assert req.headers['Accept'] == accept_header
     if req.method == 'POST':
-        assert req.headers['Content-type'] == 'application/json'
+        assert req.headers['Content-type'] == 'application/json; charset=utf-8'
     check_request_headers_(req, base_headers, 'base')
     check_request_headers_(req, extra_headers, 'extra')
 
