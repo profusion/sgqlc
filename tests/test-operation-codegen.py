@@ -1,4 +1,6 @@
 from io import StringIO
+
+import pytest
 from graphql import Source
 
 from sgqlc.codegen.operation import CodeGen, load_schema, ParsedSchemaName
@@ -230,3 +232,35 @@ def test_operation_gen_nested_interface():
         generated_operations = result_buff.getvalue()
         result_buff.close()
         assert expected_generated_query in generated_operations
+
+
+@pytest.mark.parametrize(
+    'schema',
+    [None, NESTED_INTERFACE_SCHEMA],
+    ids=['without-schema', 'with-schema'],
+)
+def test_operation_gen_no_argument_fields(schema):
+    query = '''
+query TestQuery {
+    foo {
+        fooField
+        aliasFoo: fooField
+    }
+}
+'''
+    result_buff = StringIO()
+    schema_name = ParsedSchemaName.parse_schema_name('.schema')
+
+    with StringIO(query) as op_file:
+        gen = CodeGen(
+            load_schema(StringIO(schema)) if schema else None,
+            schema_name,
+            [Source(op_file.read(), 'op-gen.gql')],
+            result_buff.write,
+            short_names=False,
+        )
+        gen.write()
+
+    generated_operations = result_buff.getvalue()
+    assert '_op_foo.foo_field()' in generated_operations
+    assert "_op_foo.foo_field(__alias__='alias_foo')" in generated_operations

@@ -960,4 +960,4 @@ websocket = ["websocket-client"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.8,<4"
-content-hash = "7a3763fb3135e478b9951f2fece53b9c7daf5de46cf14fbee1677dad408dd321"
+content-hash = "1e39e2bbd75cdc22367a5b618893d10b45e3d4bd90be566569876cfdcad42a9d"
