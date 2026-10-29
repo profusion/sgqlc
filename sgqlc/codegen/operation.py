@@ -687,7 +687,7 @@ def fragment_%(name)s():
             if is_value_required(a):
                 required.add(a['name'])
 
-        for name, _ in node.arguments:
+        for name, _ in node.arguments or ():
             if name in required:
                 required.remove(name)
 
@@ -700,7 +700,7 @@ def fragment_%(name)s():
     def leave_field(self, node, *_args):
         self.validate_required_arguments(node)
 
-        args = node.arguments
+        args = node.arguments or ()
         alias = ''
         if node.alias:
             alias = to_python_name(node.alias)

@@ -21,6 +21,10 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        graphql-core: ['3.2.6', '3.3.1']
+        exclude:
+          - python-version: '3.9'
+            graphql-core: '3.3.1'
 
     steps:
     - uses: actions/checkout@v4
@@ -33,6 +37,8 @@ jobs:
         cache: poetry
     - name: Install dependencies
       run: "poetry install --no-interaction --all-extras --with dev"
+    - name: Select graphql-core version
+      run: poetry run pip install "graphql-core==${{ matrix.graphql-core }}"
     - run: "pip install pre-commit"
     - uses: actions/cache@v4
       with:
@@ -43,7 +49,7 @@ jobs:
     - name: Coveralls
       uses: coverallsapp/github-action@v2
       with:
-        flag-name: build-${{ matrix.python-version }}
+        flag-name: build-${{ matrix.python-version }}-graphql-${{ matrix.graphql-core }}
         parallel: true
 
   finish:
@@ -55,4 +61,4 @@ jobs:
       uses: coverallsapp/github-action@v2
       with:
         parallel-finished: true
-        carryforward: "build-3.9,build-3.10,build-3.11,build-3.12,build-3.13"
+        carryforward: "build-3.9-graphql-3.2.6,build-3.10-graphql-3.2.6,build-3.10-graphql-3.3.1,build-3.11-graphql-3.2.6,build-3.11-graphql-3.3.1,build-3.12-graphql-3.2.6,build-3.12-graphql-3.3.1,build-3.13-graphql-3.2.6,build-3.13-graphql-3.3.1"
